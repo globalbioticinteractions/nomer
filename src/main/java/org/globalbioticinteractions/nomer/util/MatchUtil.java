@@ -1,47 +1,43 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.PropertyEnricherFactory;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.taxon.GlobalNamesService;
-import org.eol.globi.taxon.GlobalNamesSources;
 import org.eol.globi.taxon.RowHandler;
-import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 public class MatchUtil {
-    private static final String DEPOT_PREFIX = "https://depot.globalbioticinteractions.org/snapshot/target/data/taxa/";
-    private final static String TAXON_MAP_DEFAULT_URL = DEPOT_PREFIX +"taxonMap.tsv.gz";
-    private final static String TAXON_CACHE_DEFAULT_URL = DEPOT_PREFIX + "taxonCache.tsv.gz";
+    private final static Log LOG = LogFactory.getLog(MatchUtil.class);
 
-    public static void match(String[] args, boolean shouldReplace) {
-        TaxonCacheService cacheService = null;
+    public static void match(final List<String> matcherIds, boolean shouldReplace) {
         try {
-            String taxonCacheURI = StringUtils.defaultIfBlank(args.length > 0 ? args[0] : "", TAXON_CACHE_DEFAULT_URL);
-            String taxonMapURI = StringUtils.defaultIfBlank(args.length > 1 ? args[1] : "", TAXON_MAP_DEFAULT_URL);
-            cacheService = new TaxonCacheService(taxonCacheURI, taxonMapURI);
-            cacheService.setTemporary(false);
+            final Stream<TermMatcher> matchers =
+                    matcherIds
+                            .stream()
+                            .map(matcherId -> {
+                                TermMatcher e = TermMatcherRegistry.termMatcherFor(matcherId);
+                                return Optional.ofNullable(e);
+                            }).filter(Optional::isPresent)
+                            .map(Optional::get);
 
-            TermMatcher termMatcher = new GlobalNamesService(Arrays.asList(GlobalNamesSources.values()));
-            termMatcher = PropertyEnricherFactory.createTaxonMatcher();
-            termMatcher = cacheService;
-            resolve(System.in, new TermMatchingRowHandler(shouldReplace, System.out, termMatcher));
+            Optional<TermMatcher> firstMatcher = matchers.findFirst();
+            TermMatcher matcher = firstMatcher.orElseGet(TermMatcherRegistry::defaultMatcher);
+            LOG.info("using matcher [" + matcher.getClass().getName() + "]");
+            resolve(System.in, new TermMatchingRowHandler(shouldReplace, System.out, matcher));
         } catch (IOException | PropertyEnricherException e) {
             throw new RuntimeException("failed to resolve taxon", e);
-        } finally {
-            if (cacheService != null) {
-                cacheService.shutdown();
-            }
         }
     }
 

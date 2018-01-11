@@ -4,10 +4,10 @@ import com.beust.jcommander.Parameters;
 import org.globalbioticinteractions.nomer.util.MatchUtil;
 
 @Parameters(separators = "= ", commandDescription = "Replace")
-public class CmdReplace implements Runnable {
+public class CmdReplace extends CmdDefaultParams {
 
     @Override
     public void run() {
-        MatchUtil.match(new String[]{}, true);
+        MatchUtil.match(getMatchers(), true);
     }
 }
