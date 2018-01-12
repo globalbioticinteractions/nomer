@@ -49,9 +49,9 @@ To include ```nomer``` in your project, add the following sections to your pom.x
 ### Building
 
 * Clone this repository
-* Run `mvn package`
-* Copy `target/nomer-0.0.1-jar-with-dependencies.jar`
 * Run tests using `mvn test`.
+* Run `mvn package`
+* Copy `nomer/target/nomer-0.0.1-jar-with-dependencies.jar` to ```[some dir]/nomer.jar```
 
 ## Usage
 
