@@ -15,9 +15,26 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.eol</groupId>
-            <artifactId>eol-globi-name-correct</artifactId>
-            <version>0.9.8</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>nomer-name-correct</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-vfs2</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.15</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
 
         <dependency>

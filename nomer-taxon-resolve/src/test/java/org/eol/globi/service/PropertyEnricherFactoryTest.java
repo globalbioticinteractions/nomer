@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.Map;
 
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 public class PropertyEnricherFactoryTest {
@@ -17,7 +17,7 @@ public class PropertyEnricherFactoryTest {
 
     @Before
     public void init() {
-        taxonEnricher = PropertyEnricherFactory.createTaxonEnricher();
+        taxonEnricher = PropertyEnricherFactory.createTaxonEnricher(null);
     }
 
     @After

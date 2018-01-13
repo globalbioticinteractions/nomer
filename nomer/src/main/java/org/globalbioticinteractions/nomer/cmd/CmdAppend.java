@@ -8,7 +8,7 @@ public class CmdAppend extends CmdDefaultParams {
 
     @Override
     public void run() {
-        MatchUtil.match(getMatchers(), false);
+        MatchUtil.match(getMatchers(), false, this);
     }
 
 

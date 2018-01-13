@@ -17,9 +17,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.eol</groupId>
-            <artifactId>eol-globi-taxon-resolver</artifactId>
-            <version>${globi.version}</version>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>nomer-taxon-resolver</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.globalnames</groupId>

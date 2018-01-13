@@ -18,12 +18,12 @@ public class TermMatcherRegistry {
         }
     });
 
-    public static TermMatcher termMatcherFor(String id) {
+    public static TermMatcher termMatcherFor(String id, TermMatcherContext ctx) {
         TermMatcherFactory factory = registry.get(id);
-        return factory == null ? defaultMatcher() : factory.createTermMatcher();
+        return factory == null ? defaultMatcher(ctx) : factory.createTermMatcher(ctx);
     }
 
-    public static TermMatcher defaultMatcher() {
-        return new TermMatcherCacheFactory().createTermMatcher();
+    public static TermMatcher defaultMatcher(TermMatcherContext ctx) {
+        return new TermMatcherCacheFactory().createTermMatcher(ctx);
     }
 }

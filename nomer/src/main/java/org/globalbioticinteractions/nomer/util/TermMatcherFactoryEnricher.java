@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class TermMatcherFactoryEnricher implements TermMatcherFactory {
 
     @Override
-    public TermMatcher createTermMatcher() {
-        return PropertyEnricherFactory.createTaxonMatcher();
+    public TermMatcher createTermMatcher(TermMatcherContext ctx) {
+        return PropertyEnricherFactory.createTaxonMatcher(ctx);
     }
 }

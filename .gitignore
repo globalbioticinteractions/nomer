@@ -1,6 +1,7 @@
 .idea
 *.iml
 target
+.nomer/
 
 datasets
 # Compiled class file

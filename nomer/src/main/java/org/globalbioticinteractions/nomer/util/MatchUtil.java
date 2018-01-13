@@ -21,19 +21,19 @@ import java.util.stream.Stream;
 public class MatchUtil {
     private final static Log LOG = LogFactory.getLog(MatchUtil.class);
 
-    public static void match(final List<String> matcherIds, boolean shouldReplace) {
+    public static void match(final List<String> matcherIds, boolean shouldReplace, TermMatcherContext ctx) {
         try {
             final Stream<TermMatcher> matchers =
                     matcherIds
                             .stream()
                             .map(matcherId -> {
-                                TermMatcher e = TermMatcherRegistry.termMatcherFor(matcherId);
+                                TermMatcher e = TermMatcherRegistry.termMatcherFor(matcherId, ctx);
                                 return Optional.ofNullable(e);
                             }).filter(Optional::isPresent)
                             .map(Optional::get);
 
             Optional<TermMatcher> firstMatcher = matchers.findFirst();
-            TermMatcher matcher = firstMatcher.orElseGet(TermMatcherRegistry::defaultMatcher);
+            TermMatcher matcher = firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
             LOG.info("using matcher [" + matcher.getClass().getName() + "]");
             resolve(System.in, new TermMatchingRowHandler(shouldReplace, System.out, matcher));
         } catch (IOException | PropertyEnricherException e) {

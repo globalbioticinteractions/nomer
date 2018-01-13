@@ -19,7 +19,7 @@ public class TermMatcherCorrectFactory implements TermMatcherFactory {
     private final CorrectionService taxonNameCorrector = new TaxonNameCorrector();
 
     @Override
-    public TermMatcher createTermMatcher() {
+    public TermMatcher createTermMatcher(TermMatcherContext ctx) {
         return new TermMatcher() {
 
             @Override

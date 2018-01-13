@@ -9,8 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
@@ -21,7 +21,7 @@ public class TaxonEnricherImplIT {
 
     @BeforeClass
     public static void init() {
-        taxonEnricher = PropertyEnricherFactory.createTaxonEnricher();
+        taxonEnricher = PropertyEnricherFactory.createTaxonEnricher(null);
     }
 
     @AfterClass

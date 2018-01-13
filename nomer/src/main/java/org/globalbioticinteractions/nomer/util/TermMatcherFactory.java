@@ -4,6 +4,6 @@ import org.eol.globi.taxon.TermMatcher;
 
 public interface TermMatcherFactory {
 
-    TermMatcher createTermMatcher();
+    TermMatcher createTermMatcher(TermMatcherContext ctx);
 
 }

@@ -24,7 +24,7 @@ public class TermMatchingRowHandlerTest {
     public void resolveWithEnricher() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = PropertyEnricherFactory.createTaxonMatcher();
+        final TermMatcher matcher = PropertyEnricherFactory.createTaxonMatcher(null);
         MatchUtil.resolve(is, new TermMatchingRowHandler(false, os, matcher));
         assertThat(os.toString(), startsWith("NCBI:9606\tHomo sapiens\tSAME_AS\tNCBI:9606\tHomo sapiens\tspecies\tman @en | human @en\t"));
     }

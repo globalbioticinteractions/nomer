@@ -14,22 +14,23 @@ import org.eol.globi.taxon.NODCTaxonService;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.WoRMSService;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
 
 public class PropertyEnricherFactory {
-    public static PropertyEnricher createTaxonEnricher() {
-        return getTaxonEnricher();
+    public static PropertyEnricher createTaxonEnricher(TermMatcherContext ctx) {
+        return getTaxonEnricher(ctx);
     }
 
-    private static TaxonEnricherImpl getTaxonEnricher() {
+    private static TaxonEnricherImpl getTaxonEnricher(TermMatcherContext ctx) {
         return new TaxonEnricherImpl() {{
             setServices(new ArrayList<PropertyEnricher>() {
                 {
                     add(new EnvoService());
                     add(new FunctionalGroupService());
                     add(new NBNService());
-                    add(new NODCTaxonService());
+                    add(new NODCTaxonService(ctx));
                     add(new ITISService());
                     add(new NCBIService());
                     add(new GBIFService());
@@ -43,7 +44,7 @@ public class PropertyEnricherFactory {
         }};
     }
 
-    public static TermMatcher createTaxonMatcher() {
-        return getTaxonEnricher();
+    public static TermMatcher createTaxonMatcher(TermMatcherContext ctx) {
+        return getTaxonEnricher(ctx);
     }
 }

@@ -23,13 +23,15 @@ public class NODCTaxonParserTest {
             terms.add(taxonParser.next());
         }
 
-        assertThat(terms.size(), is(6));
+        assertThat(terms.size(), is(7));
         assertThat(terms.get(0).a, is("NODC:01"));
         assertThat(terms.get(0).b, is("ITIS:202419"));
         assertThat(terms.get(1).a, is("NODC:0101"));
         assertThat(terms.get(1).b, is("ITIS:1"));
         assertThat(terms.get(5).a, is("NODC:9227040101"));
         assertThat(terms.get(5).b, is("ITIS:180725"));
+        assertThat(terms.get(6).a, is("NODC:8831020404"));
+        assertThat(terms.get(6).b, is("NODC:8831070502"));
     }
 
     static NODCTaxonParser getTestParser() throws IOException {

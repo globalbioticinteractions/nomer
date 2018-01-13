@@ -20,6 +20,7 @@
             <artifactId>eol-globi-taxon-resolver</artifactId>
             <version>${globi.version}</version>
         </dependency>
+
     </dependencies>
 
 </project>
