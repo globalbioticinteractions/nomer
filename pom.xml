@@ -15,4 +15,12 @@
         <module>nomer</module>
     </modules>
 
+    <distributionManagement>
+        <repository>
+            <id>globi-datasets</id>
+            <name>AWS Datasets Repository</name>
+            <url>s3://globi/datasets</url>
+        </repository>
+    </distributionManagement>
+
 </project>
