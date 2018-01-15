@@ -14,8 +14,10 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -34,6 +36,9 @@ public class TermMatcherFactoryEnricherTest {
 
     @Test
     public void nodc() throws PropertyEnricherException {
+        final URL nodcTestArchive = getClass().getResource("/org/eol/globi/taxon/nodc_archive.zip");
+        assertNotNull(nodcTestArchive);
+
         TermMatcherContext ctx = new TermMatcherContextCaching() {
 
             @Override
@@ -45,7 +50,7 @@ public class TermMatcherFactoryEnricherTest {
             public String getProperty(String key) {
                 System.out.println("for key [" + key + "]");
                 if (StringUtils.equals("nodc.url", key)) {
-                    String urlString = "zip:" + getClass().getResource("/org/eol/globi/taxon/nodc_archive.zip").toString()
+                    String urlString = "zip:" + nodcTestArchive.toString()
                             + "!/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
                     System.out.println("resource [" + urlString + "]");
                     return urlString;
