@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>nomer</artifactId>
-    <name>nomer</name>
+    <name>Nomer Commandline</name>
     <description>maps identifiers and names to taxonomic names and ontological terms</description>
 
     <dependencies>
