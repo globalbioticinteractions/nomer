@@ -28,10 +28,8 @@ public class TermMatcherFactoryEnricherTest {
 
     @Before
     public void clean() throws IOException {
-        System.out.println("clean start..");
         FileUtils.deleteQuietly(cacheDir);
         FileUtils.forceMkdir(cacheDir);
-        System.out.println("clean end.");
     }
 
     @Test
@@ -49,11 +47,9 @@ public class TermMatcherFactoryEnricherTest {
 
             @Override
             public String getProperty(String key) {
-                System.out.println("for key [" + key + "]");
                 if (StringUtils.equals("nodc.url", key)) {
                     String urlString = "zip:" + nodcTestArchive.toString()
                             + "!/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
-                    System.out.println("resource [" + urlString + "]");
                     return urlString;
                 }
                 return null;
