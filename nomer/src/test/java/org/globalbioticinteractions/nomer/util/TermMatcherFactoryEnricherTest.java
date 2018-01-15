@@ -26,8 +26,8 @@ public class TermMatcherFactoryEnricherTest {
 
     @Before
     public void clean() throws IOException {
-        FileUtils.deleteQuietly(cacheDir);
-        assertTrue(cacheDir.mkdirs());
+        FileUtils.forceDelete(cacheDir);
+        cacheDir.mkdirs();
     }
 
     @Test
