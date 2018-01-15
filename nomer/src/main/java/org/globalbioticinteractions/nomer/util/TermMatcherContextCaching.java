@@ -33,7 +33,7 @@ public abstract class TermMatcherContextCaching implements TermMatcherContext {
             File cachedFile = new File(getCacheDir(), hex + ".gz");
             String location = "[" + uri + "] at [" + cachedFile.getAbsolutePath() + "]";
             if (!cachedFile.exists()) {
-                String msg = "caching" + location;
+                String msg = "caching " + location;
                 LOG.info(msg + "...");
                 FileSystemManager fsManager = VFS.getManager();
                 FileObject fileObj = fsManager.resolveFile(uri);
