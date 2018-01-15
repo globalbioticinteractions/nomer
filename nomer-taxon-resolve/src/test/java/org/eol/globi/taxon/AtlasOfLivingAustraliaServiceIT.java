@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class AtlasOfLivingAustraliaServiceTest {
+public class AtlasOfLivingAustraliaServiceIT {
 
     @Test
     public void lookupTaxonByGUID() throws PropertyEnricherException {
