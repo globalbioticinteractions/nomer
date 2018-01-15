@@ -47,6 +47,7 @@ public class TermMatcherFactoryEnricherTest {
                 if (StringUtils.equals("nodc.url", key)) {
                     String urlString = "zip:" + getClass().getResource("/org/eol/globi/taxon/nodc_archive.zip").toString()
                             + "!/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
+                    System.out.println("resource [" + urlString + "]");
                     return urlString;
                 }
                 return null;
