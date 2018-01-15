@@ -1,7 +1,6 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
@@ -11,7 +10,6 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.CacheService;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
@@ -20,7 +18,6 @@ import org.mapdb.DBMaker;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
@@ -111,7 +108,9 @@ public class NODCTaxonService implements PropertyEnricher {
             TaxonCacheService.close(nodc2itis.getEngine());
             nodc2itis = null;
         }
-        FileUtils.deleteQuietly(getCacheDir());
+        if (ctx != null && StringUtils.isNotEmpty(ctx.getCacheDir())) {
+            FileUtils.deleteQuietly(getCacheDir());
+        }
     }
 
     private File getCacheDir() {
