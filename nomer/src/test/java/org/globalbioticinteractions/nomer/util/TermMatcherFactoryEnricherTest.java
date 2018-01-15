@@ -36,8 +36,9 @@ public class TermMatcherFactoryEnricherTest {
 
     @Test
     public void nodc() throws PropertyEnricherException {
-        final URL nodcTestArchive = getClass().getResource("/org/eol/globi/taxon/nodc_archive.zip");
-        assertNotNull(nodcTestArchive);
+        String testArchivePath = "/org/eol/globi/taxon/nodc_archive.zip";
+        final URL nodcTestArchive = getClass().getResource(testArchivePath);
+        assertNotNull("failed to find [" + testArchivePath + "]", nodcTestArchive);
 
         TermMatcherContext ctx = new TermMatcherContextCaching() {
 
