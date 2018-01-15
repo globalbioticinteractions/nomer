@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class TermMatcherFactoryEnricherTest {
 
 
-    private final File cacheDir = new File("target/nomer-cache");
+    private final File cacheDir = new File("./target/nomer-cache");
 
     @Before
     public void clean() throws IOException {
