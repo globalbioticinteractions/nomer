@@ -37,7 +37,10 @@ public abstract class TermMatcherContextCaching implements TermMatcherContext {
                 LOG.info(msg + "...");
                 FileSystemManager fsManager = VFS.getManager();
                 FileObject fileObj = fsManager.resolveFile(uri);
-                IOUtils.copyLarge(fileObj.getContent().getInputStream(), new GZIPOutputStream(new FileOutputStream(cachedFile)));
+                GZIPOutputStream output = new GZIPOutputStream(new FileOutputStream(cachedFile));
+                IOUtils.copyLarge(fileObj.getContent().getInputStream(), output);
+                output.flush();
+                IOUtils.closeQuietly(output);
                 LOG.info(msg + " done.");
             }
             LOG.info("using cached " + location);
