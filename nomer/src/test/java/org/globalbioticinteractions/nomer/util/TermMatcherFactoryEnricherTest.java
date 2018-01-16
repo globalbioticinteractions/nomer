@@ -48,7 +48,7 @@ public class TermMatcherFactoryEnricherTest {
 
             @Override
             public String getProperty(String key) {
-                if (StringUtils.equals("nodc.url", key)) {
+                if (StringUtils.equals("nomer.nodc.url", key)) {
                     String urlString = "zip:" + nodcTestArchive.toString()
                             + "!/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
                     return urlString;

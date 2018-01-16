@@ -1,9 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
@@ -14,7 +12,6 @@ import org.eol.globi.util.CSVTSVUtil;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;

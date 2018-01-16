@@ -26,8 +26,8 @@ public class TermMatcherCacheFactoryTest {
             @Override
             public String getProperty(String key) {
                 Map<String, String> props = new TreeMap<>();
-                props.put("term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMap.tsv.gz").toString());
-                props.put("term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCache.tsv.gz").toString());
+                props.put("nomer.term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMap.tsv.gz").toString());
+                props.put("nomer.term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCache.tsv.gz").toString());
                 return props.get(key);
             }
 

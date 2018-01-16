@@ -59,7 +59,7 @@ public class NODCTaxonService implements PropertyEnricher {
     }
 
     private String getNodcResourceUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nodc.url");
+        return ctx.getProperty("nomer.nodc.url");
     }
 
     private void lazyInit() throws PropertyEnricherException {

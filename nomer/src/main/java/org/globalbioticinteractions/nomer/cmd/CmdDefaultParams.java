@@ -2,13 +2,17 @@ package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContextCaching;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +24,16 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
 
     private static final Log LOG = LogFactory.getLog(CmdDefaultParams.class);
     public static final String SCHEMA_DEFAULT = "[ { \"column\": 1, \"type\": \"name\" }, {\"column\": 0, \"type\": \"externalId\" } ]";
+    public static final String PROPERTIES_DEFAULT = "classpath:/org/globalbioticinteractions/nomer/default.properties";
 
     @Parameter(names = {"--cache-dir", "-c"}, description = "cache directory")
     private String cacheDir = "./.nomer";
 
-    @Parameter(names = {"--schema", "-s"}, description = "terse schema definition")
+    @Parameter(names = {"--schema", "-s"}, description = "sparse schema definition")
     private String schema = SCHEMA_DEFAULT;
+
+    @Parameter(names = {"--properties", "-p"}, description = "point to properties file to override defaults.")
+    private String propertiesResource = "";
 
     @Override
     public String getCacheDir() {
@@ -34,13 +42,28 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
 
     @Override
     public String getProperty(String key) {
+        Properties props = getProperties();
+        return StringUtils.trim(props.getProperty(key));
+    }
+
+    Properties getProperties() {
         Properties props = new Properties(System.getProperties());
         try {
-            props.load(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/default.properties"));
+            props.load(ResourceUtil.asInputStream(PROPERTIES_DEFAULT));
+            props = new Properties(props);
+            if (StringUtils.isNotBlank(getPropertiesResource())) {
+                File propertiesFile = new File(getPropertiesResource());
+                if (propertiesFile.exists() && propertiesFile.isFile()) {
+                    props.load(new FileInputStream(propertiesFile));
+                } else {
+                    props.load(ResourceUtil.asInputStream(getPropertiesResource()));
+                }
+            }
         } catch (IOException e) {
-            throw new RuntimeException("failed to load defaults", e);
+            throw new RuntimeException("failed to load properties from [" + getPropertiesResource() + "]", e);
         }
-        return props.getProperty(key);
+
+        return props;
     }
 
     @Parameter(description = "[matcher1] [matcher2] ...")
@@ -55,6 +78,10 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
     public Map<Integer, String> getInputSchema() {
         String schema = this.schema;
         return parseSchema(schema);
+    }
+
+    public String getPropertiesResource() {
+        return StringUtils.trim(propertiesResource);
     }
 
     static Map<Integer, String> parseSchema(String schema) {

@@ -43,7 +43,6 @@ public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
             try {
                 enrichedProperties = enrichTaxonWithPropertyValue(errorCounts, service, properties);
                 if (TaxonUtil.isResolved(enrichedProperties)) {
-                    enrichedProperties = TaxonUtil.appendNameSourceInfo(enrichedProperties, service.getClass(), getDate());
                     break;
                 }
             } catch (PropertyEnricherException e) {

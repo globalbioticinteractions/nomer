@@ -59,7 +59,7 @@ public class CmdDefaultParamsTest {
        assertNotNull(System.getProperty("foo"));
 
        assertThat(cmdDefaultParams.getProperty("foo"), Is.is("bar"));
-       assertNotNull(cmdDefaultParams.getProperty("nodc.url"));
+       assertNotNull(cmdDefaultParams.getProperty("nomer.nodc.url"));
     }
 
 }
