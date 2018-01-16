@@ -16,9 +16,9 @@ public class ResolvingRowHandler implements RowHandler {
     private final boolean shouldReplace;
     private final PrintStream p;
 
-    public ResolvingRowHandler(boolean shouldReplace, OutputStream os, PropertyEnricher enricher) {
+    public ResolvingRowHandler(OutputStream os, PropertyEnricher enricher, TermMatcherContext ctx) {
         this.enricher = enricher;
-        this.shouldReplace = shouldReplace;
+        this.shouldReplace = ctx.shouldReplaceTerms();
         this.p = new PrintStream(os);
     }
 

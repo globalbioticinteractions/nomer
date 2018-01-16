@@ -1,38 +1,32 @@
 package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.vfs2.CacheStrategy;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemException;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
-import org.apache.commons.vfs2.impl.StandardFileSystemManager;
-import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.globalbioticinteractions.nomer.util.TermMatcherContextCaching;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
 abstract class CmdDefaultParams extends TermMatcherContextCaching implements Runnable {
 
+    private static final Log LOG = LogFactory.getLog(CmdDefaultParams.class);
+    public static final String SCHEMA_DEFAULT = "[[1,2]]";
+
     @Parameter(names = {"--cache-dir", "-c"}, description = "cache directory")
     private String cacheDir = "./.nomer";
+
+    @Parameter(names = {"--schema", "-s"}, description = "terse schema definition: [[column index term id1, column index term label1], [column index term id2, column index term label2], ...]")
+    private String schema = SCHEMA_DEFAULT;
 
     @Override
     public String getCacheDir() {
@@ -53,7 +47,34 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
     @Parameter(description = "[matcher1] [matcher2] ...")
     private List<String> matchers = new ArrayList<>();
 
-    List<String> getMatchers() {
+    @Override
+    public List<String> getMatchers() {
         return matchers;
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getSchema() {
+        String schema = this.schema;
+        return parseSchema(schema);
+    }
+
+    static List<Pair<Integer, Integer>> parseSchema(String schema) {
+        List<Pair<Integer, Integer>> termIdLabelColumnPairs = new ArrayList<>();
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(schema);
+            if (jsonNode.isArray()) {
+                for (JsonNode node : jsonNode) {
+                    if (node.isArray() && node.size() > 1) {
+                        termIdLabelColumnPairs.add(new ImmutablePair<>(node.get(0).asInt(), node.get(1).asInt()));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LOG.error("failed to parse schema \"" + schema + "\", returning default \"" + SCHEMA_DEFAULT + "\" instead.", e);
+
+        }
+        return ListUtils.unmodifiableList(termIdLabelColumnPairs.size() == 0
+                ? Collections.singletonList(new ImmutablePair<>(1, 2))
+                : termIdLabelColumnPairs);
     }
 }

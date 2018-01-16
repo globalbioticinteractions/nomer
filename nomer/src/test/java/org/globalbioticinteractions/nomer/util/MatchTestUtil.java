@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
@@ -18,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,6 +28,24 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class MatchTestUtil {
+
+    public static TermMatcherContext contextWithReplace() {
+        return new TermMatcherContextDefault() {
+            @Override
+            public boolean shouldReplaceTerms() {
+                return true;
+            }
+        };
+    }
+
+    public static TermMatcherContext contextWithoutReplace() {
+        return new TermMatcherContextDefault() {
+            @Override
+            public boolean shouldReplaceTerms() {
+                return false;
+            }
+        };
+    }
 
     static class PropertyEnricherPassThrough implements PropertyEnricher {
 
@@ -66,4 +86,36 @@ public class MatchTestUtil {
         return new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv", "classpath:/org/eol/globi/taxon/taxonMap.tsv");
     }
 
+    private static class TermMatcherContextDefault implements TermMatcherContext {
+
+        @Override
+        public String getCacheDir() {
+            return null;
+        }
+
+        @Override
+        public String getProperty(String key) {
+            return null;
+        }
+
+        @Override
+        public InputStream getResource(String uri) throws IOException {
+            return null;
+        }
+
+        @Override
+        public List<String> getMatchers() {
+            return null;
+        }
+
+        @Override
+        public List<Pair<Integer, Integer>> getSchema() {
+            return null;
+        }
+
+        @Override
+        public boolean shouldReplaceTerms() {
+            return false;
+        }
+    }
 }

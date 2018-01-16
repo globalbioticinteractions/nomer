@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TermImpl;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -53,6 +55,21 @@ public class TermMatcherFactoryEnricherTest {
                     return urlString;
                 }
                 return null;
+            }
+
+            @Override
+            public List<String> getMatchers() {
+                return null;
+            }
+
+            @Override
+            public List<Pair<Integer, Integer>> getSchema() {
+                return null;
+            }
+
+            @Override
+            public boolean shouldReplaceTerms() {
+                return false;
             }
 
         };

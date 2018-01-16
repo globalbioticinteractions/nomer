@@ -8,6 +8,11 @@ public class CmdReplace extends CmdDefaultParams {
 
     @Override
     public void run() {
-        MatchUtil.match(getMatchers(), true, this);
+        MatchUtil.match(getMatchers(), this);
+    }
+
+    @Override
+    public boolean shouldReplaceTerms() {
+        return true;
     }
 }

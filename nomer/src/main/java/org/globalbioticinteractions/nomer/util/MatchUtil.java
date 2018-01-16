@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public class MatchUtil {
     private final static Log LOG = LogFactory.getLog(MatchUtil.class);
 
-    public static void match(final List<String> matcherIds, boolean shouldReplace, TermMatcherContext ctx) {
+    public static void match(final List<String> matcherIds, TermMatcherContext ctx) {
         try {
             final Stream<TermMatcher> matchers =
                     matcherIds
@@ -35,7 +35,7 @@ public class MatchUtil {
             Optional<TermMatcher> firstMatcher = matchers.findFirst();
             TermMatcher matcher = firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
             LOG.info("using matcher [" + matcher.getClass().getName() + "]");
-            resolve(System.in, new TermMatchingRowHandler(shouldReplace, System.out, matcher));
+            resolve(System.in, new TermMatchingRowHandler(System.out, matcher, ctx));
         } catch (IOException | PropertyEnricherException e) {
             throw new RuntimeException("failed to resolve taxon", e);
         }

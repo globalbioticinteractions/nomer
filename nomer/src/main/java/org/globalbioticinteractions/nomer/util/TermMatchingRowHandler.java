@@ -22,8 +22,8 @@ public class TermMatchingRowHandler implements RowHandler {
     private final PrintStream p;
     private TermMatcher termMatcher;
 
-    public TermMatchingRowHandler(boolean shouldReplace, OutputStream os, TermMatcher termMatcher) {
-        this.shouldReplace = shouldReplace;
+    public TermMatchingRowHandler(OutputStream os, TermMatcher termMatcher, TermMatcherContext ctx) {
+        this.shouldReplace = ctx.shouldReplaceTerms();
         this.p = new PrintStream(os);
         this.termMatcher = termMatcher;
     }
