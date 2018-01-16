@@ -171,18 +171,5 @@
                 <enabled>true</enabled>
             </releases>
         </repository>
-
-        <repository>
-            <id>globi-datasets</id>
-            <name>GloBI Thirdparty Datasets</name>
-            <url>https://depot.globalbioticinteractions.org/datasets</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
     </repositories>
-
 </project>
