@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
 
@@ -11,7 +12,12 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        TaxonCacheService cacheService = new TaxonCacheService(TAXON_CACHE_DEFAULT_URL, TAXON_MAP_DEFAULT_URL);
+        String termMapUrl = ctx.getProperty("term.map.url");
+        String termCacheUrl = ctx.getProperty("term.cache.url");
+
+        TaxonCacheService cacheService = new TaxonCacheService(
+                StringUtils.isBlank(termCacheUrl) ? TAXON_CACHE_DEFAULT_URL : termCacheUrl,
+                StringUtils.isBlank(termMapUrl) ? TAXON_MAP_DEFAULT_URL : termMapUrl);
         cacheService.setTemporary(false);
         return cacheService;
     }
