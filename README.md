@@ -2,13 +2,13 @@
 [![Build Status](https://travis-ci.org/globalbioticinteractions/nomer.svg?branch=master)](https://travis-ci.org/globalbioticinteractions/nomer) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![DOI](https://zenodo.org/badge/117019305.svg)](https://zenodo.org/badge/latestdoi/117019305)
 
-Maps identifiers and names to taxonomic names and ontological terms.
+Maps identifiers and names to taxonomic names and ontological terms. 
 
-Used by [GloBI](https://globalbioticinteraction.org).
+Standard out (stdout) is used for results, and standard error (stderr) is used for logging (e.g., progress reporting). Designed to work with [*nix pipes](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29) or as simple commandline tool.
 
-<a href="http://globalbioticinteractions.org/">
-  <img src="http://www.globalbioticinteractions.org/assets/globi.svg" height="120">
-</a>
+Nomer expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema``` property. See ```properties``` command to list available properties.
+
+Different kind of matchers can be select to do the matchers. Offline matching is supported by some matchers like ```globi-cache```.
 
 ## Table of Contents
 
@@ -49,9 +49,9 @@ To include ```nomer``` in your project, add the following sections to your pom.x
 ### Building
 
 * Clone this repository
-* Run tests using `mvn test`.
-* Run `mvn package`
-* Copy `nomer/target/nomer-0.0.1-jar-with-dependencies.jar` to ```[some dir]/nomer.jar```
+* Run tests using `mvn test` (optional).
+* Run `mvn package -DskipTests` to build (standalone) jar
+* Copy `nomer/target/nomer-[version]-jar-with-dependencies.jar` to ```[some dir]/nomer.jar```
 
 ## Usage
 
@@ -64,15 +64,9 @@ Usage: <main class> [command] [command options]
     append      Append term matches to row
       Usage: append [options] [matcher]
         Options:
-          --cache-dir, -c
-            cache directory
-            Default: ./.nomer
           --properties, -p
             point to properties file to override defaults.
             Default: <empty string>
-          --schema, -s
-            sparse schema definition
-            Default: [ { "column": 1, "type": "name" }, {"column": 0, "type": "externalId" } ]
 
     matchers      Lists all or selected matcher configuration(s)
       Usage: matchers
@@ -80,28 +74,16 @@ Usage: <main class> [command] [command options]
     clean      Cleans term matcher cache.
       Usage: clean [options] [matcher]
         Options:
-          --cache-dir, -c
-            cache directory
-            Default: ./.nomer
           --properties, -p
             point to properties file to override defaults.
             Default: <empty string>
-          --schema, -s
-            sparse schema definition
-            Default: [ { "column": 1, "type": "name" }, {"column": 0, "type": "externalId" } ]
 
     properties      Lists properties.
       Usage: properties [options] [matcher]
         Options:
-          --cache-dir, -c
-            cache directory
-            Default: ./.nomer
           --properties, -p
             point to properties file to override defaults.
             Default: <empty string>
-          --schema, -s
-            sparse schema definition
-            Default: [ { "column": 1, "type": "name" }, {"column": 0, "type": "externalId" } ]
 ```
 
 ## Examples 
