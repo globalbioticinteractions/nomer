@@ -66,7 +66,7 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
         return props;
     }
 
-    @Parameter(description = "[matcher1] [matcher2] ...")
+    @Parameter(description = "[matcher]")
     private List<String> matchers = new ArrayList<>();
 
     @Override

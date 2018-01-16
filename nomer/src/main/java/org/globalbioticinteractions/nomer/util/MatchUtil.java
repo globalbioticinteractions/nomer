@@ -56,6 +56,9 @@ public class MatchUtil {
                 System.err.println();
             }
         }
+        if (counter % (25 * 50) != 0) {
+            System.err.println();
+        }
     }
 
     static Taxon resolveTaxon(PropertyEnricher enricher, Taxon taxonProvided) throws PropertyEnricherException {
