@@ -8,6 +8,8 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static junit.framework.TestCase.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class CmdDefaultParamsTest {
@@ -40,6 +42,24 @@ public class CmdDefaultParamsTest {
            put(0, "externalId");
            put(1, "name");
        }}));
+    }
+
+   @Test
+    public void getProperty() {
+       CmdDefaultParams cmdDefaultParams = new CmdDefaultParams() {
+
+           @Override
+           public void run() {
+
+           }
+       };
+
+       assertNull(System.getProperty("foo"));
+       System.setProperty("foo", "bar");
+       assertNotNull(System.getProperty("foo"));
+
+       assertThat(cmdDefaultParams.getProperty("foo"), Is.is("bar"));
+       assertNotNull(cmdDefaultParams.getProperty("nodc.url"));
     }
 
 }
