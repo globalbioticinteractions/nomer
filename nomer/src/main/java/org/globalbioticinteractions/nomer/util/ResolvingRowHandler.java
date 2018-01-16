@@ -24,7 +24,7 @@ public class ResolvingRowHandler implements RowHandler {
 
     @Override
     public void onRow(String[] row) throws PropertyEnricherException {
-        Stream<Taxon> resolvedTaxa = Stream.of(MatchUtil.resolveTaxon(enricher, TermMatchingRowHandler.asTaxon(row, ctx.getSchema())));
+        Stream<Taxon> resolvedTaxa = Stream.of(MatchUtil.resolveTaxon(enricher, TermMatchingRowHandler.asTaxon(row, ctx.getInputSchema())));
         TermMatchingRowHandler.linesForTaxa(row,
                 resolvedTaxa,
                 ctx.shouldReplaceTerms(),

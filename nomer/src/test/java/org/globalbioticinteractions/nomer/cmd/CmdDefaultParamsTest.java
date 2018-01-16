@@ -5,22 +5,31 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import static org.junit.Assert.assertThat;
 
 public class CmdDefaultParamsTest {
 
     @Test
     public void testSchema() {
-        Pair<Integer, Integer> pair =
-                CmdDefaultParams.parseSchema("[2,3]");
-        assertThat(pair, Is.is(new ImmutablePair<>(2,3)));
+        Map<Integer, String> pair =
+                CmdDefaultParams.parseSchema("[ {\"column\": 2, \"type\": \"externalId\"}, {\"column\": 3, \"type\": \"name\"}]");
+        assertThat(pair, Is.is(new TreeMap<Integer, String>() {{
+            put(2, "externalId");
+            put(3, "name");
+        }}));
     }
 
    @Test
     public void testInvalidSchema() {
-        Pair<Integer, Integer> pair =
-                CmdDefaultParams.parseSchema("{[1,2,3], [4,5]]");
-        assertThat(pair, Is.is(new ImmutablePair<>(1,2)));
+       Map<Integer, String> pair =
+               CmdDefaultParams.parseSchema("[ this ain't valid n\": 3, \"type\": \"name\"}]");
+       assertThat(pair, Is.is(new TreeMap<Integer, String>() {{
+           put(0, "externalId");
+           put(1, "name");
+       }}));
     }
 
 }

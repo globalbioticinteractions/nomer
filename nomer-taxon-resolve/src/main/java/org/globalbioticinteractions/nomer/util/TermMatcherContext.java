@@ -1,10 +1,9 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.lang3.tuple.Pair;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 public interface TermMatcherContext {
 
@@ -16,7 +15,9 @@ public interface TermMatcherContext {
 
     List<String> getMatchers();
 
-    Pair<Integer, Integer> getSchema();
+    Map<Integer, String> getInputSchema();
+
+    Map<Integer, String> getOutputSchema();
 
     boolean shouldReplaceTerms();
 }

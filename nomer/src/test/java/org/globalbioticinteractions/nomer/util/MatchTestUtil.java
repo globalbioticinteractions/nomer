@@ -110,8 +110,16 @@ public class MatchTestUtil {
         }
 
         @Override
-        public Pair<Integer, Integer> getSchema() {
-            return new ImmutablePair<>(0,1);
+        public Map<Integer, String> getInputSchema() {
+            return new TreeMap<Integer, String>() {{
+                put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                put(1, PropertyAndValueDictionary.NAME);
+            }};
+        }
+
+        @Override
+        public Map<Integer, String> getOutputSchema() {
+            return null;
         }
 
         @Override

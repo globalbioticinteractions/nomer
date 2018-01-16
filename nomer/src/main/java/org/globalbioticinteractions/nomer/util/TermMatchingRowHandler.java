@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,14 +31,15 @@ public class TermMatchingRowHandler implements RowHandler {
         this.termMatcher = termMatcher;
     }
 
-    static Taxon asTaxon(String[] row, Pair<Integer, Integer> schema) {
-        Taxon taxon;
-        if (schema == null || Math.max(schema.getRight(), schema.getLeft()) > row.length) {
-            taxon = new TaxonImpl("", ""); // nothin'
-        } else {
-            taxon = new TaxonImpl(row[schema.getRight()], row[schema.getLeft()]);
+    static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
+        Map<String, String> taxonMap = new TreeMap<>();
+        for (Map.Entry<Integer, String> indexType : schema.entrySet()) {
+            Integer key = indexType.getKey();
+            if (row.length > key) {
+                taxonMap.put(indexType.getValue(), row[key]);
+            }
         }
-        return taxon;
+        return TaxonUtil.mapToTaxon(taxonMap);
     }
 
     static void linesForTaxa(String[] row, Stream<Taxon> resolvedTaxa, boolean shouldReplace, PrintStream p, NameTypeOf nameTypeOf) {
@@ -68,7 +71,7 @@ public class TermMatchingRowHandler implements RowHandler {
 
         @Override
         public void onRow(final String[] row) throws PropertyEnricherException {
-            Taxon taxonProvided = asTaxon(row, ctx.getSchema());
+            Taxon taxonProvided = asTaxon(row, ctx.getInputSchema());
             termMatcher.findTerms(Arrays.asList(taxonProvided), new TermMatchListener() {
                 @Override
                 public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {

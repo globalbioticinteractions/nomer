@@ -47,7 +47,12 @@ public class NODCTaxonServiceIT {
             }
 
             @Override
-            public Pair<Integer, Integer> getSchema() {
+            public Map<Integer, String> getInputSchema() {
+                return null;
+            }
+
+            @Override
+            public Map<Integer, String> getOutputSchema() {
                 return null;
             }
 

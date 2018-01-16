@@ -15,6 +15,8 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.StringStartsWith.startsWith;
@@ -63,8 +65,11 @@ public class TermMatchingRowHandlerTest {
         final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
         MatchUtil.resolve(is, new TermMatchingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault() {
             @Override
-            public Pair<Integer, Integer> getSchema() {
-                return new ImmutablePair<>(2,3);
+            public Map<Integer, String> getInputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(2, "externalId");
+                    put(3, "name");
+                }};
             }
         }));
         String[] lines = os.toString().split("\n");
