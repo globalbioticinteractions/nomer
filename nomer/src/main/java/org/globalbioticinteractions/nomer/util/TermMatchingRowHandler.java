@@ -73,7 +73,7 @@ public class TermMatchingRowHandler implements RowHandler {
             termMatcher.findTerms(Arrays.asList(taxonProvided), new TermMatchListener() {
                 @Override
                 public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
-                    Taxon taxonWithServiceInfo = (TaxonUtil.mapToTaxon(TaxonUtil.appendNameSourceInfo(TaxonUtil.taxonToMap(taxon), termMatcher.getClass(), new Date())));
+                    Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxon));
                     linesForTaxa(row, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
                 }
             });
