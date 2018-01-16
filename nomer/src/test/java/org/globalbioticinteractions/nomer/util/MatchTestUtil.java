@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricher;
@@ -110,7 +111,7 @@ public class MatchTestUtil {
 
         @Override
         public Pair<Integer, Integer> getSchema() {
-            return null;
+            return new ImmutablePair<>(0,1);
         }
 
         @Override
