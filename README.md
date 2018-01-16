@@ -8,7 +8,9 @@ Standard out (stdout) is used for results, and standard error (stderr) is used f
 
 Nomer expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema``` property. See ```properties``` command to list available properties.
 
-Different kind of matchers can be select to do the matchers. Offline matching is supported by some matchers like ```globi-cache```.
+Different kind of matchers can be select to do the matchers. Offline matching is supported by some matchers like ```globi-cache```. Note that ```globi-cache``` will download a taxon map/cache archive initially, and re-uses the indexes until the cache in cleaned up.
+
+Matchers can be added by writing some java code that implements an interface.
 
 ## Table of Contents
 
