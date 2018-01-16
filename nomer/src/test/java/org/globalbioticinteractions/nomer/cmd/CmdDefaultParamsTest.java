@@ -1,7 +1,5 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -26,40 +24,40 @@ public class CmdDefaultParamsTest {
 
     @Test
     public void defaultSchema() {
-        Map<Integer, String> pair =
-                CmdDefaultParams.parseSchema(CmdDefaultParams.SCHEMA_DEFAULT);
-        assertThat(pair, Is.is(new TreeMap<Integer, String>() {{
+        Map<Integer, String> schema = new CmdDefaultParams() {
+
+            @Override
+            public void run() {
+
+            }
+        }.getInputSchema();
+        assertThat(schema, Is.is(new TreeMap<Integer, String>() {{
             put(0, "externalId");
             put(1, "name");
         }}));
     }
 
-   @Test
+    @Test(expected = RuntimeException.class)
     public void testInvalidSchema() {
-       Map<Integer, String> pair =
-               CmdDefaultParams.parseSchema("[ this ain't valid n\": 3, \"type\": \"name\"}]");
-       assertThat(pair, Is.is(new TreeMap<Integer, String>() {{
-           put(0, "externalId");
-           put(1, "name");
-       }}));
+        CmdDefaultParams.parseSchema("[ this ain't valid n\": 3, \"type\": \"name\"}]");
     }
 
-   @Test
+    @Test
     public void getProperty() {
-       CmdDefaultParams cmdDefaultParams = new CmdDefaultParams() {
+        CmdDefaultParams cmdDefaultParams = new CmdDefaultParams() {
 
-           @Override
-           public void run() {
+            @Override
+            public void run() {
 
-           }
-       };
+            }
+        };
 
-       assertNull(System.getProperty("foo"));
-       System.setProperty("foo", "bar");
-       assertNotNull(System.getProperty("foo"));
+        assertNull(System.getProperty("foo"));
+        System.setProperty("foo", "bar");
+        assertNotNull(System.getProperty("foo"));
 
-       assertThat(cmdDefaultParams.getProperty("foo"), Is.is("bar"));
-       assertNotNull(cmdDefaultParams.getProperty("nomer.nodc.url"));
+        assertThat(cmdDefaultParams.getProperty("foo"), Is.is("bar"));
+        assertNotNull(cmdDefaultParams.getProperty("nomer.nodc.url"));
     }
 
 }

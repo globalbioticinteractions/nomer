@@ -23,21 +23,14 @@ import java.util.TreeMap;
 abstract class CmdDefaultParams extends TermMatcherContextCaching implements Runnable {
 
     private static final Log LOG = LogFactory.getLog(CmdDefaultParams.class);
-    public static final String SCHEMA_DEFAULT = "[ { \"column\": 1, \"type\": \"name\" }, {\"column\": 0, \"type\": \"externalId\" } ]";
     public static final String PROPERTIES_DEFAULT = "classpath:/org/globalbioticinteractions/nomer/default.properties";
-
-    @Parameter(names = {"--cache-dir", "-c"}, description = "cache directory")
-    private String cacheDir = "./.nomer";
-
-    @Parameter(names = {"--schema", "-s"}, description = "sparse schema definition")
-    private String schema = SCHEMA_DEFAULT;
 
     @Parameter(names = {"--properties", "-p"}, description = "point to properties file to override defaults.")
     private String propertiesResource = "";
 
     @Override
     public String getCacheDir() {
-        return cacheDir;
+        return getProperty("nomer.cache.dir");
     }
 
     @Override
@@ -76,7 +69,7 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
 
     @Override
     public Map<Integer, String> getInputSchema() {
-        String schema = this.schema;
+        String schema = getProperty("nomer.schema");
         return parseSchema(schema);
     }
 
@@ -91,12 +84,10 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
             if (jsonNode.isArray() && jsonNode.size() > 0) {
                 for (JsonNode node : jsonNode) {
                     schemaMap.put(node.get("column").asInt(), node.get("type").asText());
-
                 }
             }
         } catch (IOException e) {
-            LOG.error("failed to parse schema \"" + schema + "\", returning default \"" + SCHEMA_DEFAULT + "\" instead.", e);
-
+            throw new RuntimeException("failed to parse schema \"" + schema + "\"", e);
         }
         return MapUtils.unmodifiableMap(schemaMap.size() < 2
                 ? new TreeMap<Integer, String>() {{
