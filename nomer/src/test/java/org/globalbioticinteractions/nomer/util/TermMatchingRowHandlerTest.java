@@ -89,8 +89,32 @@ public class TermMatchingRowHandlerTest {
     public void resolveGlobalNamesBatch() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens\tone");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchUtil.resolve(is, new TermMatchingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI), MatchTestUtil.contextReplaceTerms()));
+        MatchUtil.resolve(is, new TermMatchingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI),
+                MatchTestUtil.contextReplaceTerms()));
         assertThat(os.toString(), containsString("NCBI:9606\tHomo sapiens\tone\n"));
+    }
+
+    @Test
+    public void resolveGlobalNamesBatchWithSpecific() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("a tree\ta pony\tNCBI:9606\tHomo sapiens\tone");
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        MatchUtil.resolve(is, new TermMatchingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI),
+                new MatchTestUtil.TermMatcherContextDefault() {
+                    @Override
+                    public Map<Integer, String> getInputSchema() {
+                        return new TreeMap<Integer, String>() {{
+                            put(2, "externalId");
+                            put(3, "name");
+                        }};
+                    }
+
+                    @Override
+                    public boolean shouldReplaceTerms() {
+                        return true;
+                    }
+                }));
+
+        assertThat(os.toString(), containsString("a tree\ta pony\tNCBI:9606\tHomo sapiens\tone\n"));
     }
 
     @Test

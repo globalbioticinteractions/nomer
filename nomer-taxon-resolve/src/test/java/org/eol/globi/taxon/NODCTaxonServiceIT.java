@@ -1,6 +1,5 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricherException;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -48,11 +47,6 @@ public class NODCTaxonServiceIT {
 
             @Override
             public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
                 return null;
             }
 

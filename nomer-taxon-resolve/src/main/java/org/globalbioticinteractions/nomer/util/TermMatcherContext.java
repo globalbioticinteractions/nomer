@@ -17,7 +17,4 @@ public interface TermMatcherContext {
 
     Map<Integer, String> getInputSchema();
 
-    Map<Integer, String> getOutputSchema();
-
-    boolean shouldReplaceTerms();
 }

@@ -1,22 +1,12 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.PropertyEnricherFactory;
-import org.eol.globi.taxon.GlobalNamesService;
-import org.eol.globi.taxon.GlobalNamesSources;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.DateUtil;
-import org.hamcrest.core.Is;
-import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -24,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class MatchTestUtil {
@@ -115,11 +103,6 @@ public class MatchTestUtil {
                 put(0, PropertyAndValueDictionary.EXTERNAL_ID);
                 put(1, PropertyAndValueDictionary.NAME);
             }};
-        }
-
-        @Override
-        public Map<Integer, String> getOutputSchema() {
-            return null;
         }
 
         @Override

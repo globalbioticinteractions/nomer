@@ -1,10 +1,7 @@
 package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
@@ -14,8 +11,6 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContextCaching;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -60,11 +55,6 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
     public Map<Integer, String> getInputSchema() {
         String schema = this.schema;
         return parseSchema(schema);
-    }
-
-    @Override
-    public Map<Integer, String> getOutputSchema() {
-        return null;
     }
 
     static Map<Integer, String> parseSchema(String schema) {

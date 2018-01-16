@@ -46,7 +46,6 @@ public class CmdLine {
                 .addObject(new CommandMain())
                 .addCommand("version", new CmdVersion())
                 .addCommand("append", new CmdAppend())
-                .addCommand("replace", new CmdReplace())
                 .addCommand("matchers", new CmdMatchers())
                 .build();
     }

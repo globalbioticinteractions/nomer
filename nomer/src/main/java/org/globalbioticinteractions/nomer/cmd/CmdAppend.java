@@ -11,9 +11,4 @@ public class CmdAppend extends CmdDefaultParams {
         MatchUtil.match(getMatchers(), this);
     }
 
-
-    @Override
-    public boolean shouldReplaceTerms() {
-        return false;
-    }
 }

@@ -67,11 +67,6 @@ public class TermMatcherFactoryEnricherTest {
             }
 
             @Override
-            public Map<Integer, String> getOutputSchema() {
-                return null;
-            }
-
-            @Override
             public boolean shouldReplaceTerms() {
                 return false;
             }
