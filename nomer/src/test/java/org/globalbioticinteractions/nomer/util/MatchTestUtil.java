@@ -29,7 +29,7 @@ import static org.junit.Assert.assertThat;
 
 public class MatchTestUtil {
 
-    public static TermMatcherContext contextWithReplace() {
+    static TermMatcherContext contextReplaceTerms() {
         return new TermMatcherContextDefault() {
             @Override
             public boolean shouldReplaceTerms() {
@@ -38,7 +38,7 @@ public class MatchTestUtil {
         };
     }
 
-    public static TermMatcherContext contextWithoutReplace() {
+    static TermMatcherContext contextAppendTerms() {
         return new TermMatcherContextDefault() {
             @Override
             public boolean shouldReplaceTerms() {
