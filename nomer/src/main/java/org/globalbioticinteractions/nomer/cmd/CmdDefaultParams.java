@@ -19,12 +19,12 @@ import java.util.TreeMap;
 abstract class CmdDefaultParams extends TermMatcherContextCaching implements Runnable {
 
     private static final Log LOG = LogFactory.getLog(CmdDefaultParams.class);
-    public static final String SCHEMA_DEFAULT = "[ { \"column\": 1, \"type\": \"name\" }, {\"column\": 0, \"type\"=\"externalId\" } ]";
+    public static final String SCHEMA_DEFAULT = "[ { \"column\": 1, \"type\": \"name\" }, {\"column\": 0, \"type\": \"externalId\" } ]";
 
     @Parameter(names = {"--cache-dir", "-c"}, description = "cache directory")
     private String cacheDir = "./.nomer";
 
-    @Parameter(names = {"--schema", "-s"}, description = "terse schema definition: [[column index term id1, column index term label1], [column index term id2, column index term label2], ...]")
+    @Parameter(names = {"--schema", "-s"}, description = "terse schema definition")
     private String schema = SCHEMA_DEFAULT;
 
     @Override

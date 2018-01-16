@@ -22,6 +22,16 @@ public class CmdDefaultParamsTest {
         }}));
     }
 
+    @Test
+    public void defaultSchema() {
+        Map<Integer, String> pair =
+                CmdDefaultParams.parseSchema(CmdDefaultParams.SCHEMA_DEFAULT);
+        assertThat(pair, Is.is(new TreeMap<Integer, String>() {{
+            put(2, "externalId");
+            put(3, "name");
+        }}));
+    }
+
    @Test
     public void testInvalidSchema() {
        Map<Integer, String> pair =

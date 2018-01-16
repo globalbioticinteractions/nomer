@@ -18,24 +18,6 @@ import static org.junit.Assert.assertThat;
 
 public class MatchTestUtil {
 
-    static TermMatcherContext contextReplaceTerms() {
-        return new TermMatcherContextDefault() {
-            @Override
-            public boolean shouldReplaceTerms() {
-                return true;
-            }
-        };
-    }
-
-    static TermMatcherContext contextAppendTerms() {
-        return new TermMatcherContextDefault() {
-            @Override
-            public boolean shouldReplaceTerms() {
-                return false;
-            }
-        };
-    }
-
     static class PropertyEnricherPassThrough implements PropertyEnricher {
 
         @Override
@@ -105,9 +87,5 @@ public class MatchTestUtil {
             }};
         }
 
-        @Override
-        public boolean shouldReplaceTerms() {
-            return false;
-        }
     }
 }

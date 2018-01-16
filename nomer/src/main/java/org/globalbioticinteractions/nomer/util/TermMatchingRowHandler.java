@@ -1,9 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
@@ -42,7 +40,7 @@ public class TermMatchingRowHandler implements RowHandler {
         return TaxonUtil.mapToTaxon(taxonMap);
     }
 
-    static void linesForTaxa(String[] row, Stream<Taxon> resolvedTaxa, boolean shouldReplace, PrintStream p, NameTypeOf nameTypeOf) {
+    static void linesForTaxa(String[] row, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf) {
         Stream<String> provided = Stream.of(row);
 
         Stream<Stream<String>> lines = resolvedTaxa.map(taxon -> Stream.of(
@@ -58,9 +56,7 @@ public class TermMatchingRowHandler implements RowHandler {
                 taxon.getNameSource(),
                 taxon.getNameSourceURL(),
                 taxon.getNameSourceAccessedAt()))
-                .map(resolved -> shouldReplace
-                        ? Stream.concat(resolved.skip(1).limit(2), provided.skip(2))
-                        : Stream.concat(provided, resolved));
+                .map(resolved -> Stream.concat(provided, resolved));
 
         lines.map(combinedLine -> CSVTSVUtil.mapEscapedValues(combinedLine)
                 .collect(Collectors.joining("\t")))
@@ -76,7 +72,7 @@ public class TermMatchingRowHandler implements RowHandler {
                 @Override
                 public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
                     Taxon taxonWithServiceInfo = (TaxonUtil.mapToTaxon(TaxonUtil.appendNameSourceInfo(TaxonUtil.taxonToMap(taxon), termMatcher.getClass(), new Date())));
-                    linesForTaxa(row, Stream.of(taxonWithServiceInfo), ctx.shouldReplaceTerms(), p, taxon1 -> nameType);
+                    linesForTaxa(row, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
                 }
             });
         }

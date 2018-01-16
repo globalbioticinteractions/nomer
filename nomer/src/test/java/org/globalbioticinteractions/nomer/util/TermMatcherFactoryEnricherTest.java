@@ -66,11 +66,6 @@ public class TermMatcherFactoryEnricherTest {
                 return null;
             }
 
-            @Override
-            public boolean shouldReplaceTerms() {
-                return false;
-            }
-
         };
         TermMatcher termMatcher = new TermMatcherFactoryEnricher().createTermMatcher(ctx);
         termMatcher.findTerms(Arrays.asList(new TermImpl("NODC:9227040101", "Mickey")), new TermMatchListener() {

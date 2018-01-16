@@ -50,10 +50,6 @@ public class NODCTaxonServiceIT {
                 return null;
             }
 
-            @Override
-            public boolean shouldReplaceTerms() {
-                return false;
-            }
         });
         nodcTaxonService.init(NODCTaxonParserTest.getTestParser());
     }

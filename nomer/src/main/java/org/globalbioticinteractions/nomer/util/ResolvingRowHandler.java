@@ -27,7 +27,6 @@ public class ResolvingRowHandler implements RowHandler {
         Stream<Taxon> resolvedTaxa = Stream.of(MatchUtil.resolveTaxon(enricher, TermMatchingRowHandler.asTaxon(row, ctx.getInputSchema())));
         TermMatchingRowHandler.linesForTaxa(row,
                 resolvedTaxa,
-                ctx.shouldReplaceTerms(),
                 p,
                 taxon -> TaxonUtil.isResolved(taxon) ? NameType.SAME_AS : NameType.NONE);
     }
