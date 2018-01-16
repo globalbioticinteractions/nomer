@@ -86,7 +86,7 @@ public class MatchTestUtil {
         return new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv", "classpath:/org/eol/globi/taxon/taxonMap.tsv");
     }
 
-    private static class TermMatcherContextDefault implements TermMatcherContext {
+    static class TermMatcherContextDefault implements TermMatcherContext {
 
         @Override
         public String getCacheDir() {
@@ -109,7 +109,7 @@ public class MatchTestUtil {
         }
 
         @Override
-        public List<Pair<Integer, Integer>> getSchema() {
+        public Pair<Integer, Integer> getSchema() {
             return null;
         }
 

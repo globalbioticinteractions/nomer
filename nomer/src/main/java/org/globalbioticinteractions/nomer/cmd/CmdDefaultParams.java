@@ -20,7 +20,7 @@ import java.util.Properties;
 abstract class CmdDefaultParams extends TermMatcherContextCaching implements Runnable {
 
     private static final Log LOG = LogFactory.getLog(CmdDefaultParams.class);
-    public static final String SCHEMA_DEFAULT = "[[1,2]]";
+    public static final String SCHEMA_DEFAULT = "[1,2]";
 
     @Parameter(names = {"--cache-dir", "-c"}, description = "cache directory")
     private String cacheDir = "./.nomer";
@@ -53,28 +53,24 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
     }
 
     @Override
-    public List<Pair<Integer, Integer>> getSchema() {
+    public Pair<Integer, Integer> getSchema() {
         String schema = this.schema;
         return parseSchema(schema);
     }
 
-    static List<Pair<Integer, Integer>> parseSchema(String schema) {
-        List<Pair<Integer, Integer>> termIdLabelColumnPairs = new ArrayList<>();
+    static Pair<Integer, Integer> parseSchema(String schema) {
+        Pair<Integer, Integer> termIdLabelColumnPair = null;
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(schema);
-            if (jsonNode.isArray()) {
-                for (JsonNode node : jsonNode) {
-                    if (node.isArray() && node.size() > 1) {
-                        termIdLabelColumnPairs.add(new ImmutablePair<>(node.get(0).asInt(), node.get(1).asInt()));
-                    }
-                }
+            if (jsonNode.isArray() && jsonNode.size() > 1) {
+                termIdLabelColumnPair = new ImmutablePair<>(jsonNode.get(0).asInt(), jsonNode.get(1).asInt());
             }
         } catch (IOException e) {
             LOG.error("failed to parse schema \"" + schema + "\", returning default \"" + SCHEMA_DEFAULT + "\" instead.", e);
 
         }
-        return ListUtils.unmodifiableList(termIdLabelColumnPairs.size() == 0
-                ? Collections.singletonList(new ImmutablePair<>(1, 2))
-                : termIdLabelColumnPairs);
+        return termIdLabelColumnPair == null
+                ? new ImmutablePair<>(1, 2)
+                : termIdLabelColumnPair;
     }
 }

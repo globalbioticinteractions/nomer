@@ -47,7 +47,7 @@ public class NODCTaxonServiceIT {
             }
 
             @Override
-            public List<Pair<Integer, Integer>> getSchema() {
+            public Pair<Integer, Integer> getSchema() {
                 return null;
             }
 

@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.util;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -18,29 +19,27 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TermMatchingRowHandler implements RowHandler {
-    private final boolean shouldReplace;
     private final PrintStream p;
+    private final TermMatcherContext ctx;
     private TermMatcher termMatcher;
 
     public TermMatchingRowHandler(OutputStream os, TermMatcher termMatcher, TermMatcherContext ctx) {
-        this.shouldReplace = ctx.shouldReplaceTerms();
+        this.ctx = ctx;
         this.p = new PrintStream(os);
         this.termMatcher = termMatcher;
     }
 
-    static Taxon asTaxon(String[] row) {
+    static Taxon asTaxon(String[] row, Pair<Integer, Integer> schema) {
         Taxon taxon;
-        if (row.length == 1) {
-            taxon = new TaxonImpl(null, row[0]);
-        } else if (row.length > 1) {
-            taxon = new TaxonImpl(row[1], row[0]);
+        if (schema == null || Math.max(schema.getRight(), schema.getLeft()) > row.length) {
+            taxon = new TaxonImpl("", ""); // nothin'
         } else {
-            taxon = new TaxonImpl("", "");
+            taxon = new TaxonImpl(row[schema.getRight()], row[schema.getLeft()]);
         }
         return taxon;
     }
 
-    public static void linesForTaxa(String[] row, Stream<Taxon> resolvedTaxa, boolean shouldReplace, PrintStream p, NameTypeOf nameTypeOf) {
+    static void linesForTaxa(String[] row, Stream<Taxon> resolvedTaxa, boolean shouldReplace, PrintStream p, NameTypeOf nameTypeOf) {
         Stream<String> provided = Stream.of(row);
 
         Stream<Stream<String>> lines = resolvedTaxa.map(taxon -> Stream.of(
@@ -69,12 +68,12 @@ public class TermMatchingRowHandler implements RowHandler {
 
         @Override
         public void onRow(final String[] row) throws PropertyEnricherException {
-            Taxon taxonProvided = asTaxon(row);
+            Taxon taxonProvided = asTaxon(row, ctx.getSchema());
             termMatcher.findTerms(Arrays.asList(taxonProvided), new TermMatchListener() {
                 @Override
                 public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
                     Taxon taxonWithServiceInfo = (TaxonUtil.mapToTaxon(TaxonUtil.appendNameSourceInfo(TaxonUtil.taxonToMap(taxon), termMatcher.getClass(), new Date())));
-                    linesForTaxa(row, Stream.of(taxonWithServiceInfo), shouldReplace, p, taxon1 -> nameType);
+                    linesForTaxa(row, Stream.of(taxonWithServiceInfo), ctx.shouldReplaceTerms(), p, taxon1 -> nameType);
                 }
             });
         }

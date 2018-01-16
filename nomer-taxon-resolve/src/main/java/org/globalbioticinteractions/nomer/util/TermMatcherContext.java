@@ -16,7 +16,7 @@ public interface TermMatcherContext {
 
     List<String> getMatchers();
 
-    List<Pair<Integer, Integer>> getSchema();
+    Pair<Integer, Integer> getSchema();
 
     boolean shouldReplaceTerms();
 }

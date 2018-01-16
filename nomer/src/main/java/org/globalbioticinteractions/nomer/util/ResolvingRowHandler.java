@@ -13,21 +13,21 @@ import java.util.stream.Stream;
 
 public class ResolvingRowHandler implements RowHandler {
     private final PropertyEnricher enricher;
-    private final boolean shouldReplace;
     private final PrintStream p;
+    private final TermMatcherContext ctx;
 
     public ResolvingRowHandler(OutputStream os, PropertyEnricher enricher, TermMatcherContext ctx) {
         this.enricher = enricher;
-        this.shouldReplace = ctx.shouldReplaceTerms();
+        this.ctx = ctx;
         this.p = new PrintStream(os);
     }
 
     @Override
     public void onRow(String[] row) throws PropertyEnricherException {
-        Stream<Taxon> resolvedTaxa = Stream.of(MatchUtil.resolveTaxon(enricher, TermMatchingRowHandler.asTaxon(row)));
+        Stream<Taxon> resolvedTaxa = Stream.of(MatchUtil.resolveTaxon(enricher, TermMatchingRowHandler.asTaxon(row, ctx.getSchema())));
         TermMatchingRowHandler.linesForTaxa(row,
                 resolvedTaxa,
-                shouldReplace,
+                ctx.shouldReplaceTerms(),
                 p,
                 taxon -> TaxonUtil.isResolved(taxon) ? NameType.SAME_AS : NameType.NONE);
     }

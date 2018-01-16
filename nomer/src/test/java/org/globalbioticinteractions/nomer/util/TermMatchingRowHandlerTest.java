@@ -1,6 +1,8 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.PropertyEnricherFactory;
 import org.eol.globi.taxon.GlobalNamesService;
@@ -52,6 +54,22 @@ public class TermMatchingRowHandlerTest {
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("EOL:1276240\tHomo sapiens\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));
+    }
+
+    @Test
+    public void resolveTaxonCacheMatchFirstLineWithNonDefaultSchema() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone");
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
+        MatchUtil.resolve(is, new TermMatchingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault() {
+            @Override
+            public Pair<Integer, Integer> getSchema() {
+                return new ImmutablePair<>(2,3);
+            }
+        }));
+        String[] lines = os.toString().split("\n");
+        assertThat(lines.length, Is.is(1));
+        assertThat(lines[0], startsWith("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));
     }
 
     @Test
