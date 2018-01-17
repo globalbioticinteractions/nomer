@@ -8,7 +8,7 @@ Standard out (stdout) is used for results, and standard error (stderr) is used f
 
 ```Nomer``` expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema``` property. See ```properties``` command to list available properties.
 
-Different kind of matchers can be select to do the matchers. Offline matching is supported by some matchers like ```globi-cache```. Note that ```globi-cache``` will download a taxon map/cache archive initially, and re-uses the indexes until the cache in cleaned up. The cache itself can be archived so that results can be reproduced provided a java virtual machine and a compatible ```nomer.jar``` are available.` 
+Different kind of matchers can be select to do the term matching. Offline matching is supported by some matchers like ```globi-cache```. Note that ```globi-cache``` will download a taxon map/cache archive initially, and re-uses the indexes until the cache in cleaned up. The cache itself can be archived so that results can be reproduced in a different environment without need to rebuild the term match index.` 
 
 Matchers can be added by writing some java code that implements an interface.
 
@@ -96,11 +96,11 @@ Usage: <main class> [command] [command options]
 
 ### Match term by id with default matcher
 
-```echo -e "NCBI:9606\t" | java -jar nomer.jar append > matches.tsv```
+```echo -e "NCBI:9606\t" | java -Xmx4G -jar nomer.jar append > matches.tsv```
 
 ### Match term by name with default matcher
 
-```echo -e "\tHomo sapiens" | java -jar nomer.jar append > matches.tsv```
+```echo -e "\tHomo sapiens" | java -Xmx4G -jar nomer.jar append > matches.tsv```
 
 matches.tsv should now include entries like
 
