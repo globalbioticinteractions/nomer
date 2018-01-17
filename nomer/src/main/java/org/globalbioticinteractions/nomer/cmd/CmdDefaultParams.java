@@ -35,12 +35,12 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
 
     @Override
     public String getProperty(String key) {
-        Properties props = getProperties();
-        return StringUtils.trim(props.getProperty(key));
+        String value = System.getProperty(key, getProperties().getProperty(key));
+        return StringUtils.trim(value);
     }
 
     Properties getProperties() {
-        Properties props = new Properties(System.getProperties());
+        Properties props = new Properties();
         try {
             props.load(ResourceUtil.asInputStream(PROPERTIES_DEFAULT));
             props = new Properties(props);
