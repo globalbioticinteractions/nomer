@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +15,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContextCaching;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,8 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
 
     private static final Log LOG = LogFactory.getLog(CmdDefaultParams.class);
     public static final String PROPERTIES_DEFAULT = "classpath:/org/globalbioticinteractions/nomer/default.properties";
+
+    private Properties properties = null;
 
     @Parameter(names = {"--properties", "-p"}, description = "point to properties file to override defaults.")
     private String propertiesResource = "";
@@ -40,6 +44,10 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
     }
 
     Properties getProperties() {
+        return properties == null ? initProperties() : properties;
+    }
+
+    private Properties initProperties() {
         Properties props = new Properties();
         try {
             props.load(ResourceUtil.asInputStream(PROPERTIES_DEFAULT));
@@ -47,9 +55,13 @@ abstract class CmdDefaultParams extends TermMatcherContextCaching implements Run
             if (StringUtils.isNotBlank(getPropertiesResource())) {
                 File propertiesFile = new File(getPropertiesResource());
                 if (propertiesFile.exists() && propertiesFile.isFile()) {
-                    props.load(new FileInputStream(propertiesFile));
+                    FileInputStream inStream = new FileInputStream(propertiesFile);
+                    props.load(inStream);
+                    IOUtils.closeQuietly(inStream);
                 } else {
-                    props.load(ResourceUtil.asInputStream(getPropertiesResource()));
+                    InputStream inStream = ResourceUtil.asInputStream(getPropertiesResource());
+                    props.load(inStream);
+                    IOUtils.closeQuietly(inStream);
                 }
             }
         } catch (IOException e) {
