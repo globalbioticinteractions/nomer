@@ -81,7 +81,7 @@ public class INaturalistTaxonService implements PropertyEnricher {
     }
 
     private JsonNode getSpeciesInfo(String taxonId) throws IOException {
-        String response = HttpUtil.getContent("http://api.inaturalist.org/v1/taxa/" + taxonId);
+        String response = HttpUtil.getContent("https://api.inaturalist.org/v1/taxa/" + taxonId);
         return new ObjectMapper().readTree(response);
     }
 
