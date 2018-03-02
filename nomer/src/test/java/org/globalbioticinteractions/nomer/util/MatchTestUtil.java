@@ -61,7 +61,7 @@ public class MatchTestUtil {
 
         @Override
         public String getCacheDir() {
-            return null;
+            return "target/cache-dir";
         }
 
         @Override
