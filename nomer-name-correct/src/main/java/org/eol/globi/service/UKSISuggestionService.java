@@ -93,7 +93,7 @@ public class UKSISuggestionService implements PropertyEnricher, NameSuggester {
                 Object externalId = study.get("NBN_TAXON_VERSION_KEY");
                 Object recommendedScientificName = study.get("RECOMMENDED_SCIENTIFIC_NAME");
                 Taxon taxonTerm = new TaxonImpl();
-                taxonTerm.setExternalId(TaxonomyProvider.ID_PREFIX_USKI + externalId);
+                taxonTerm.setExternalId("UKSI:" + externalId);
                 taxonTerm.setName(recommendedScientificName.toString());
                 service.addTerm(taxonName.toString(), taxonTerm);
             }
