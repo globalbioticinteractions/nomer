@@ -64,7 +64,7 @@ public class TermMatcherCacheFactoryTest {
 
     @Test
     public void smallCacheLimitTwoHits() throws PropertyEnricherException {
-        assertNumberOfHits("2", 2);
+        assertNumberOfHits("3", 2);
     }
 
     @Test
