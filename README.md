@@ -50,6 +50,8 @@ To include ```nomer``` in your project, add the following sections to your pom.x
 
 ### Building
 
+Please use [maven](https://maven.apache.org) version 3.3+ , otherwise you might find issues like [this one](https://github.com/globalbioticinteractions/nomer/issues/3).
+
 * Clone this repository
 * Run tests using `mvn test` (optional).
 * Run `mvn package -DskipTests` to build (standalone) jar
