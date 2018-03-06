@@ -11,6 +11,6 @@ public class TermMatcherFactoryGlobalNames implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return  new GlobalNamesService(Arrays.asList(GlobalNamesSources.values()));
+        return new GlobalNamesService(Arrays.asList(GlobalNamesSources.values()));
     }
 }
