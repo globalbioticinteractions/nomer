@@ -114,8 +114,8 @@ matches.tsv should now include entries like
 ### ITIS
 
 ```echo -e "ITIS:180547" | java -jar nomer.jar append globi-enrich```
-where expected output includes:
 
+where expected output includes:
 ```
 ITIS:180547 SAME_AS ITIS:180547 Enhydra lutris  Species     Animalia | Bilateria | Deuterostomia | Chordata | Vertebrata | Gnathostomata | Tetrapoda | Mammalia | Theria | Eutheria | Carnivora | Caniformia | Mustelidae | Lutrinae | Enhydra | Enhydra lutris ITIS:202423 | ITIS:914154 | ITIS:914156 | ITIS:158852 | ITIS:331030 | ITIS:914179 | ITIS:914181 | ITIS:179913 | ITIS:179916 | ITIS:179925 | ITIS:180539 | ITIS:552303 | ITIS:180545 | ITIS:552326 | ITIS:180546 | ITIS:180547   Kingdom | Subkingdom | Infrakingdom | Phylum | Subphylum | Infraphylum | Superclass | Class | Subclass | Infraclass | Order | Suborder | Family | Subfamily | Genus | Species   http://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=180547
 ```
