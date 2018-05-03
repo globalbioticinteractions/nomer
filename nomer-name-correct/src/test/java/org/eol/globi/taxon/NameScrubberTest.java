@@ -19,4 +19,9 @@ public class NameScrubberTest {
         assertThat(getNameSuggester().suggest("Aegathoa oculata?"), is("Aegathoa oculata"));
     }
 
+    @Test
+    public void dropUnderscore() {
+        assertThat(getNameSuggester().suggest("Homo_sapiens"), is("Homo sapiens"));
+    }
+
 }

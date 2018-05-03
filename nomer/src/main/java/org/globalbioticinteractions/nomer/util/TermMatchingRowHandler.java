@@ -12,6 +12,7 @@ import org.eol.globi.util.CSVTSVUtil;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class TermMatchingRowHandler implements RowHandler {
         this.termMatcher = termMatcher;
     }
 
-    static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
+    public static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
         Map<String, String> taxonMap = new TreeMap<>();
         for (Map.Entry<Integer, String> indexType : schema.entrySet()) {
             Integer key = indexType.getKey();
@@ -67,12 +68,9 @@ public class TermMatchingRowHandler implements RowHandler {
         @Override
         public void onRow(final String[] row) throws PropertyEnricherException {
             Taxon taxonProvided = asTaxon(row, ctx.getInputSchema());
-            termMatcher.findTerms(Arrays.asList(taxonProvided), new TermMatchListener() {
-                @Override
-                public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
-                    Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxon));
-                    linesForTaxa(row, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
-                }
+            termMatcher.findTerms(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
+                Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxon));
+                linesForTaxa(row, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
             });
         }
     }

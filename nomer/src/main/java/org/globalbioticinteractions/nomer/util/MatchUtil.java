@@ -2,10 +2,7 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eol.globi.domain.Taxon;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 
@@ -14,31 +11,39 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 public class MatchUtil {
+
     private final static Log LOG = LogFactory.getLog(MatchUtil.class);
 
     public static void match(final List<String> matcherIds, TermMatcherContext ctx) {
-        try {
-            final Stream<TermMatcher> matchers =
-                    matcherIds
-                            .stream()
-                            .map(matcherId -> {
-                                TermMatcher e = TermMatcherRegistry.termMatcherFor(matcherId, ctx);
-                                return Optional.ofNullable(e);
-                            }).filter(Optional::isPresent)
-                            .map(Optional::get);
+        TermMatcher matcher = getTermMatcher(matcherIds, ctx);
+        LOG.info("using matcher [" + matcher.getClass().getName() + "]");
+        match(new TermMatchingRowHandler(System.out, matcher, ctx));
+    }
 
-            Optional<TermMatcher> firstMatcher = matchers.findFirst();
-            TermMatcher matcher = firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
-            LOG.info("using matcher [" + matcher.getClass().getName() + "]");
-            resolve(System.in, new TermMatchingRowHandler(System.out, matcher, ctx));
+    public static void match(RowHandler handler) {
+        try {
+            resolve(System.in, handler);
         } catch (IOException | PropertyEnricherException e) {
             throw new RuntimeException("failed to resolve taxon", e);
         }
+    }
+
+    public static TermMatcher getTermMatcher(List<String> matcherIds, TermMatcherContext ctx) {
+        final Stream<TermMatcher> matchers =
+                matcherIds
+                        .stream()
+                        .map(matcherId -> {
+                            TermMatcher e = TermMatcherRegistry.termMatcherFor(matcherId, ctx);
+                            return Optional.ofNullable(e);
+                        }).filter(Optional::isPresent)
+                        .map(Optional::get);
+
+        Optional<TermMatcher> firstMatcher = matchers.findFirst();
+        return firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
     }
 
     public static void resolve(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
@@ -59,11 +64,6 @@ public class MatchUtil {
         if (counter % (25 * 50) != 0) {
             System.err.println();
         }
-    }
-
-    static Taxon resolveTaxon(PropertyEnricher enricher, Taxon taxonProvided) throws PropertyEnricherException {
-        Map<String, String> enriched = enricher.enrich(TaxonUtil.taxonToMap(taxonProvided));
-        return TaxonUtil.mapToTaxon(enriched);
     }
 
 }
