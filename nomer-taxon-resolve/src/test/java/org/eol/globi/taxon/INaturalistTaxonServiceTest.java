@@ -32,5 +32,14 @@ public class INaturalistTaxonServiceTest {
         assertThat(enriched.get(PropertyAndValueDictionary.PATH_NAMES), is("kingdom | subkingdom | phylum | class | order | family | subfamily | genus | species"));
         assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Plantae | Tracheophyta | Magnoliophyta | Magnoliopsida | Fabales | Fabaceae | Faboideae | Sophora | Sophora prostrata"));
     }
+    @Test
+    public void lookupByCode2() throws IOException, PropertyEnricherException {
+        Map<String, String> props = Collections.unmodifiableMap(new HashMap<String, String>() {{
+            put(PropertyAndValueDictionary.EXTERNAL_ID, "INAT_TAXON:379688");
+        }});
+        PropertyEnricher propertyEnricher = new INaturalistTaxonService();
+        Map<String, String> enriched = propertyEnricher.enrich(props);
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Bacteria | Firmicutes | Mollicutes | \"candidatus phytoplasma\""));
+    }
 
 }
