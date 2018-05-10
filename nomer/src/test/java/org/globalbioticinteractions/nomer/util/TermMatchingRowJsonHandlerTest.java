@@ -43,8 +43,58 @@ public class TermMatchingRowJsonHandlerTest {
     @Test
     public void resolveNCBIWithEnricherNoID() throws IOException, PropertyEnricherException {
         String inputString = "\tCanis lupus";
-        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"@id\":\"\",\"name\":\"Canis lupus\"}}}";
+        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"name\":\"Canis lupus\"}}}";
         resolveAndAssert(inputString, expectedOutput, term -> new TaxonImpl(term.getName(), "EOL:328607"));
+    }
+
+    @Test
+    public void resolveNCBIWithEnricherEmptyName() throws IOException, PropertyEnricherException {
+        String inputString = "\tCanis lupus";
+        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"equivalent_to\":{\"name\":\"Canis lupus\"}}}";
+        resolveAndAssert(inputString, expectedOutput, term -> new TaxonImpl(null, "EOL:328607"));
+    }
+
+    @Test
+    public void resolveNCBIWithEnricherWithPath() throws IOException, PropertyEnricherException {
+        String inputString = "\tCanis lupus";
+        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"name\":\"Canis lupus\"}},\"rank1\":{\"@id\":\"id1\",\"name\":\"name1\"},\"norank\":{\"@id\":\"id2\",\"name\":\"name2\"},\"path\":{\"names\":[\"name1\",\"name2\",\"name3\"],\"ids\":[\"id1\",\"id2\",\"id3\"],\"ranks\":[\"rank1\",\"\",\"species\"]}}";
+        TermMapper termMapper = term -> {
+            TaxonImpl taxon = new TaxonImpl(term.getName(), "EOL:328607");
+            taxon.setRank("species");
+            taxon.setPath("name1 | name2 | name3");
+            taxon.setPathIds("id1 | id2 | id3");
+            taxon.setPathNames("rank1 | | species");
+            return taxon;
+        };
+        resolveAndAssert(inputString, expectedOutput, termMapper);
+    }
+
+    @Test
+    public void resolveNCBIWithEnricherWithNullPath() throws IOException, PropertyEnricherException {
+        String inputString = "\tCanis lupus";
+        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"name\":\"Canis lupus\"}}}";
+        TermMapper termMapper = term -> {
+            TaxonImpl taxon = new TaxonImpl(term.getName(), "EOL:328607");
+            taxon.setPath(null);
+            taxon.setPathIds("id1 | id2 | id3");
+            taxon.setPathNames("rank1 | | rank3");
+            return taxon;
+        };
+        resolveAndAssert(inputString, expectedOutput, termMapper);
+    }
+
+    @Test
+    public void resolveNCBIWithEnricherWithMisalignedPath() throws IOException, PropertyEnricherException {
+        String inputString = "\tCanis lupus";
+        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"name\":\"Canis lupus\"}}}";
+        TermMapper termMapper = term -> {
+            TaxonImpl taxon = new TaxonImpl(term.getName(), "EOL:328607");
+            taxon.setPath("name1 | name2");
+            taxon.setPathIds("id1 | id2 | id3");
+            taxon.setPathNames("rank1 | | rank3");
+            return taxon;
+        };
+        resolveAndAssert(inputString, expectedOutput, termMapper);
     }
 
     private void resolveAndAssert(String inputString, String expectedOutput, TermMapper termMapper) throws IOException, PropertyEnricherException {
