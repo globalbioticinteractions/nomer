@@ -31,7 +31,7 @@ import java.util.Map;
 public class AtlasOfLivingAustraliaService implements PropertyEnricher {
 
     private static final String AFD_TSN_PREFIX = "urn:lsid:biodiversity.org.au:afd.taxon:";
-    private static final String ATLAS_OF_LIVING_AUSTRALIA_TAXON = "ALATaxon:";
+    private static final String ATLAS_OF_LIVING_AUSTRALIA_TAXON = TaxonomyProvider.ATLAS_OF_LIVING_AUSTRALIA.getIdPrefix();
 
     @Override
     public Map<String, String> enrich(final Map<String, String> properties) throws PropertyEnricherException {
