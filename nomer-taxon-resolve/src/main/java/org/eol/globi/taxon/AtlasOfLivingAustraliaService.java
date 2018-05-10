@@ -1,7 +1,9 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.codehaus.jackson.JsonNode;
@@ -28,15 +30,17 @@ import java.util.Map;
 
 public class AtlasOfLivingAustraliaService implements PropertyEnricher {
 
-    public static final String AFD_TSN_PREFIX = "urn:lsid:biodiversity.org.au:afd.taxon:";
+    private static final String AFD_TSN_PREFIX = "urn:lsid:biodiversity.org.au:afd.taxon:";
+    private static final String ATLAS_OF_LIVING_AUSTRALIA_TAXON = "ALATaxon:";
 
     @Override
     public Map<String, String> enrich(final Map<String, String> properties) throws PropertyEnricherException {
-        Map<String, String> enrichedProperties = new HashMap<String, String>(properties);
+        Map<String, String> enrichedProperties = new HashMap<>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
         if (StringUtils.isBlank(externalId) || hasSupportedExternalId(externalId)) {
             if (needsEnrichment(properties)) {
                 String guid = StringUtils.replace(externalId, TaxonomyProvider.ID_PREFIX_AUSTRALIAN_FAUNAL_DIRECTORY, AFD_TSN_PREFIX);
+                guid = StringUtils.replace(guid, ATLAS_OF_LIVING_AUSTRALIA_TAXON, "");
                 String taxonName = properties.get(PropertyAndValueDictionary.NAME);
                 if (StringUtils.isBlank(guid) && StringUtils.length(taxonName) > 2) {
                     guid = findTaxonGUIDByName(taxonName);
@@ -52,7 +56,8 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
 
     private boolean hasSupportedExternalId(String externalId) throws PropertyEnricherException {
         return StringUtils.startsWith(externalId, TaxonomyProvider.ID_PREFIX_AUSTRALIAN_FAUNAL_DIRECTORY)
-                || StringUtils.startsWith(externalId, AFD_TSN_PREFIX);
+                || StringUtils.startsWith(externalId, AFD_TSN_PREFIX)
+                || StringUtils.startsWith(externalId, ATLAS_OF_LIVING_AUSTRALIA_TAXON);
     }
 
     private boolean needsEnrichment(Map<String, String> properties) {
@@ -94,8 +99,6 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
                     }
                 }
             }
-
-
         } catch (URISyntaxException e) {
             throw new PropertyEnricherException("failed to create uri", e);
         } catch (JsonProcessingException e) {
@@ -106,7 +109,7 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
         return guid;
     }
 
-    protected Map<String, String> findTaxonInfoByGUID(String taxonGUID) throws PropertyEnricherException {
+    private Map<String, String> findTaxonInfoByGUID(String taxonGUID) throws PropertyEnricherException {
         Map<String, String> info = Collections.emptyMap();
         try {
             URI uri = taxonInfoByGUID(taxonGUID);
@@ -114,7 +117,7 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
             if (StringUtils.isNotBlank(response)) {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode node = mapper.readTree(response);
-                info = new HashMap<String, String>();
+                info = new HashMap<>();
                 if (node.has("taxonConcept")) {
                     info.putAll(parseTaxonConcept(node.get("taxonConcept")));
                 }
@@ -144,7 +147,7 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
         final List<String> commonNameList = new ArrayList<String>();
         for (final JsonNode commonName : commonNames) {
             if (commonName.has("nameString") && commonName.has("language")) {
-                commonNameList.add(commonName.get("nameString").getTextValue() + " @"  + commonName.get("language").getTextValue().split("-")[0]);
+                commonNameList.add(commonName.get("nameString").getTextValue() + " @" + commonName.get("language").getTextValue().split("-")[0]);
             }
         }
         return new HashMap<String, String>() {{
@@ -173,7 +176,7 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
                 String guid = "";
                 String guidName = rank + "Guid";
                 if (classification.has(guidName)) {
-                    guid = StringUtils.trim(classification.get(guidName).asText());
+                    guid = ATLAS_OF_LIVING_AUSTRALIA_TAXON + StringUtils.trim(classification.get(guidName).asText());
                 }
                 pathIds.add(guid);
             }
@@ -198,7 +201,7 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
 
         if (classification.has("guid")) {
             String guid = classification.get("guid").getTextValue();
-            String externalId = StringUtils.replace(guid, AFD_TSN_PREFIX, TaxonomyProvider.ID_PREFIX_AUSTRALIAN_FAUNAL_DIRECTORY);
+            String externalId = ATLAS_OF_LIVING_AUSTRALIA_TAXON + guid;
             info.put(PropertyAndValueDictionary.EXTERNAL_ID, externalId);
         }
 
@@ -215,6 +218,12 @@ public class AtlasOfLivingAustraliaService implements PropertyEnricher {
         String response;
         try {
             response = HttpUtil.executeWithTimer(get, responseHandler);
+        } catch (HttpResponseException e) {
+            if (HttpStatus.SC_NOT_FOUND == e.getStatusCode()) {
+                response = "{}";
+            } else {
+                throw new PropertyEnricherException("failed to lookup [" + uri.toString() + "]", e);
+            }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to lookup [" + uri.toString() + "]", e);
         }
