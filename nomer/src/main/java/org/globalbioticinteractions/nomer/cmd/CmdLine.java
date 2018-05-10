@@ -47,6 +47,7 @@ public class CmdLine {
                 .addCommand("version", new CmdVersion())
                 .addCommand("append", new CmdAppend())
                 .addCommand("appendJson", new CmdAppendJson())
+                .addCommand("append-json", new CmdAppendJson())
                 .addCommand("matchers", new CmdMatchers())
                 .addCommand("clean", new CmdClean())
                 .addCommand("properties", new CmdProperties())

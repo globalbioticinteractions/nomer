@@ -3,9 +3,14 @@ package org.globalbioticinteractions.nomer.util;
 import org.apache.commons.io.IOUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.PropertyEnricherFactory;
 import org.eol.globi.taxon.RowHandler;
+import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.hamcrest.core.Is;
 import org.junit.Test;
@@ -13,6 +18,8 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -23,15 +30,29 @@ public class TermMatchingRowJsonHandlerTest {
     public void resolveWithEnricher() throws IOException, PropertyEnricherException {
         String inputString = "ITIS:180596\tCanis lupus";
         String expectedOutput = "{\"species\":{\"@id\":\"ITIS:180596\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"@id\":\"ITIS:180596\",\"name\":\"Canis lupus\"}}}";
-        resolveAndAssert(inputString, expectedOutput);
+        resolveAndAssert(inputString, expectedOutput, term -> new TaxonImpl(term.getName(), term.getId()));
     }
 
-    private void resolveAndAssert(String inputString, String expectedOutput) throws IOException, PropertyEnricherException {
+    @Test
+    public void resolveNCBIWithEnricher() throws IOException, PropertyEnricherException {
+        String inputString = "NCBI:9612\tCanis lupus";
+        String expectedOutput = "{\"species\":{\"@id\":\"NCBITaxon:9612\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"@id\":\"NCBITaxon:9612\",\"name\":\"Canis lupus\"}}}";
+        resolveAndAssert(inputString, expectedOutput, term -> new TaxonImpl(term.getName(), term.getId()));
+    }
+
+    @Test
+    public void resolveNCBIWithEnricherNoID() throws IOException, PropertyEnricherException {
+        String inputString = "\tCanis lupus";
+        String expectedOutput = "{\"species\":{\"@id\":\"EOL:328607\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"@id\":\"\",\"name\":\"Canis lupus\"}}}";
+        resolveAndAssert(inputString, expectedOutput, term -> new TaxonImpl(term.getName(), "EOL:328607"));
+    }
+
+    private void resolveAndAssert(String inputString, String expectedOutput, TermMapper termMapper) throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream(inputString);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        final TermMatcher matcher = PropertyEnricherFactory.createTaxonMatcher(null);
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();
+        TermMatcher matcher = new MappingTermMatcher(termMapper);
         RowHandler rowHandler = new TermMatchingRowJsonHandler(os, matcher, ctx);
         MatchUtil.resolve(is, rowHandler);
         JsonNode jsonNode = new ObjectMapper().readTree(os.toString());
@@ -39,11 +60,31 @@ public class TermMatchingRowJsonHandlerTest {
         assertThat(jsonNode, Is.is(expectedJson));
     }
 
-    @Test
-    public void resolveNCBIWithEnricher() throws IOException, PropertyEnricherException {
-        String inputString = "NCBI:9612\tCanis lupus";
-        String expectedOutput = "{\"species\":{\"@id\":\"NCBITaxon:9612\",\"name\":\"Canis lupus\",\"equivalent_to\":{\"@id\":\"NCBITaxon:9612\",\"name\":\"Canis lupus\"}}}";
-        resolveAndAssert(inputString, expectedOutput);
+    public static class MappingTermMatcher implements TermMatcher {
+
+        private final TermMapper mapper;
+
+        public MappingTermMatcher(TermMapper mapper) {
+            this.mapper = mapper;
+        }
+
+        @Override
+        public void findTermsForNames(List<String> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+            findTerms(list.stream().map(name -> new TermImpl(null, name)).collect(Collectors.toList()), termMatchListener);
+        }
+
+        @Override
+        public void findTerms(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+            for (Term term : list) {
+                Taxon taxon = mapper.mapTerm(term);
+                taxon.setRank("species");
+                termMatchListener.foundTaxonForName(null, term.getName(), taxon, NameType.SAME_AS);
+            }
+        }
+
     }
 
+    public interface TermMapper {
+        Taxon mapTerm(Term term);
+    }
 }
