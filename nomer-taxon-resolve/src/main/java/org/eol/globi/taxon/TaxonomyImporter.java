@@ -86,6 +86,11 @@ public class TaxonomyImporter {
             }
 
             @Override
+            public void addTerm(String key, Taxon term) {
+                taxonImportListener.addTerm(key, term);
+            }
+
+            @Override
             public void start() {
                 taxonImportListener.start();
             }

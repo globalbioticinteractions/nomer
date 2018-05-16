@@ -91,6 +91,11 @@ public class GulfBaseTaxonParserTest {
         }
 
         @Override
+        public void addTerm(String key, Taxon term) {
+
+        }
+
+        @Override
         public void start() {
 
         }
@@ -115,6 +120,11 @@ public class GulfBaseTaxonParserTest {
                 terms.add(taxonTerm);
             }
             count++;
+        }
+
+        @Override
+        public void addTerm(String key, Taxon term) {
+
         }
 
         @Override
