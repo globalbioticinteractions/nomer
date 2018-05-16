@@ -46,7 +46,6 @@ public class CmdLine {
                 .addObject(new CommandMain())
                 .addCommand("version", new CmdVersion())
                 .addCommand("append", new CmdAppend())
-                .addCommand("appendJson", new CmdAppendJson())
                 .addCommand("append-json", new CmdAppendJson())
                 .addCommand("validate-terms", new CmdValidateTerms())
                 .addCommand("validate-links", new CmdValidateLinks())
