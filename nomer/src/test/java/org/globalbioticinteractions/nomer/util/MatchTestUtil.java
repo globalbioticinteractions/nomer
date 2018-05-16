@@ -18,39 +18,18 @@ import static org.junit.Assert.assertThat;
 
 public class MatchTestUtil {
 
-    static class PropertyEnricherPassThrough implements PropertyEnricher {
+    public static TermMatcherContextDefault getLocalTermMatcherCache() {
+        return new TermMatcherContextDefault() {
 
-        @Override
-        public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-            return MapUtils.unmodifiableMap(new TreeMap<String, String>(properties) {{
-                put(PropertyAndValueDictionary.NAME_SOURCE, "A name source");
-                put(PropertyAndValueDictionary.NAME_SOURCE_URL, "http://example.org");
-                put(PropertyAndValueDictionary.NAME_SOURCE_ACCESSED_AT, DateUtil.printDate(new Date(0)));
-            }});
-        }
+            @Override
+            public String getProperty(String key) {
+                Map<String, String> props = new TreeMap<>();
+                props.put("nomer.term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMap.tsv.gz").toString());
+                props.put("nomer.term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCache.tsv.gz").toString());
+                return props.get(key);
+            }
 
-        @Override
-        public void shutdown() {
-
-        }
-    }
-
-    static class PropertyEnricherMatch implements PropertyEnricher {
-
-        @Override
-        public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-            return MapUtils.unmodifiableMap(new TreeMap<String, String>(properties) {{
-                put(PropertyAndValueDictionary.NAME_SOURCE, "A name source");
-                put(PropertyAndValueDictionary.NAME_SOURCE_URL, "http://example.org");
-                put(PropertyAndValueDictionary.NAME_SOURCE_ACCESSED_AT, DateUtil.printDate(new Date(0)));
-                put(PropertyAndValueDictionary.PATH, "one | two");
-            }});
-        }
-
-        @Override
-        public void shutdown() {
-
-        }
+        };
     }
 
     static TaxonCacheService createTaxonCacheService() {

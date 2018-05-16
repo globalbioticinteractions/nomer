@@ -56,7 +56,7 @@ public class NCBIService implements PropertyEnricher {
 
     protected void setPropertyToFirstValue(String propertyName, String taxonNames, Map<String, String> enriched) {
         if (taxonNames != null) {
-            String[] split1 = taxonNames.split("\\" + CharsetConstant.SEPARATOR_CHAR);
+            String[] split1 = StringUtils.splitByWholeSeparatorPreserveAllTokens(taxonNames, CharsetConstant.SEPARATOR_CHAR);
             enriched.put(propertyName, split1[0].trim());
         }
     }
@@ -64,7 +64,7 @@ public class NCBIService implements PropertyEnricher {
     protected String firstWillBeLast(String taxonNames) {
         String transformedNames = taxonNames;
         if (taxonNames != null) {
-            String[] split1 = taxonNames.split("\\" + CharsetConstant.SEPARATOR_CHAR);
+            String[] split1 = StringUtils.splitByWholeSeparatorPreserveAllTokens(taxonNames, CharsetConstant.SEPARATOR_CHAR);
             List<String> list1 = Arrays.asList(split1);
             Collections.rotate(list1, -1);
             transformedNames = StringUtils.join(list1, CharsetConstant.SEPARATOR);

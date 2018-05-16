@@ -1,17 +1,14 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
-import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;

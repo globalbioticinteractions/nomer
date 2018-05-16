@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class MatchUtil {
         String line;
         long counter = 0;
         while ((line = reader.readLine()) != null) {
-            String[] row = line.split("\t");
+            String[] row = CSVTSVUtil.splitTSV(line);
             rowHandler.onRow(row);
             counter++;
             if (counter % 25 == 0) {

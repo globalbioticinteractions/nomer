@@ -8,7 +8,6 @@ import java.util.Properties;
 
 @Parameters(separators = "= ", commandDescription = "Lists properties.")
 public class CmdProperties extends CmdDefaultParams {
-    private final static Log LOG = LogFactory.getLog(CmdProperties.class);
 
     @Override
     public void run() {

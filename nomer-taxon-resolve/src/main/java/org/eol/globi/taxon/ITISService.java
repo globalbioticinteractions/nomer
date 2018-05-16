@@ -68,7 +68,7 @@ public class ITISService implements PropertyEnricher {
 
     protected static void setPropertyToLastValue(String propertyName, String taxonNames, Map<String, String> enriched) {
         if (taxonNames != null) {
-            String[] split1 = taxonNames.split("\\" + CharsetConstant.SEPARATOR_CHAR);
+            String[] split1 = StringUtils.splitByWholeSeparatorPreserveAllTokens(taxonNames, CharsetConstant.SEPARATOR_CHAR);
             enriched.put(propertyName, split1[split1.length - 1].trim());
         }
     }
