@@ -8,7 +8,7 @@ import org.globalbioticinteractions.nomer.util.MatchUtil;
 import org.globalbioticinteractions.nomer.util.TermMatchingRowJsonHandler;
 
 @Parameters(separators = "= ", commandDescription = "embeds term matches into json")
-public class CmdAppendJson extends CmdDefaultParams {
+public class CmdAppendJson extends CmdMatcherParams {
     private final static Log LOG = LogFactory.getLog(CmdAppendJson.class);
 
     @Override

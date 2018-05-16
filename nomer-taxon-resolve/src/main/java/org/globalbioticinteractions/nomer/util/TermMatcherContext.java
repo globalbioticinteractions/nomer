@@ -6,11 +6,9 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
-public interface TermMatcherContext {
+public interface TermMatcherContext extends PropertyContext {
 
     String getCacheDir();
-
-    String getProperty(String key);
 
     InputStream getResource(String uri) throws IOException;
 

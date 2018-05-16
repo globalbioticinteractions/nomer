@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.globalbioticinteractions.nomer.cmd.CmdDefaultParams;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public abstract class TermMatcherContextCaching implements TermMatcherContext {
+public abstract class TermMatcherContextCaching extends CmdDefaultParams implements TermMatcherContext {
     private final static Log LOG = LogFactory.getLog(TermMatcherContextCaching.class);
 
     @Override

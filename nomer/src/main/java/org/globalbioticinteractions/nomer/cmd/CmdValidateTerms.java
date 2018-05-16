@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 @Parameters(separators = "= ", commandDescription = "Validate terms")
-public class CmdValidateTerms extends CmdDefaultParams {
+public class CmdValidateTerms extends CmdMatcherParams {
 
     @Override
     public void run() {

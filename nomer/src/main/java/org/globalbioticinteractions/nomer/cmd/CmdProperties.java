@@ -1,13 +1,12 @@
 package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameters;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import scala.tools.nsc.Global;
 
 import java.util.Properties;
 
 @Parameters(separators = "= ", commandDescription = "Lists properties.")
-public class CmdProperties extends CmdDefaultParams {
+public class CmdProperties extends CmdDefaultParams implements Runnable {
 
     @Override
     public void run() {
