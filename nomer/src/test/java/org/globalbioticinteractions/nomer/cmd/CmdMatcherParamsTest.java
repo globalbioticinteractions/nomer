@@ -42,31 +42,5 @@ public class CmdMatcherParamsTest {
         CmdMatcherParams.parseSchema("[ this ain't valid n\": 3, \"type\": \"name\"}]");
     }
 
-    @Test
-    public void getProperty() {
-        CmdMatcherParams cmdMatcherParams = new CmdMatcherParams() {
-
-            @Override
-            public void run() {
-
-            }
-        };
-
-        assertNull(System.getProperty("foo"));
-        System.setProperty("foo", "bar");
-        assertNotNull(System.getProperty("foo"));
-
-        assertThat(cmdMatcherParams.getProperty("foo"), Is.is("bar"));
-        String propertyDefault = cmdMatcherParams.getProperty("nomer.nodc.url");
-
-        System.setProperty("nomer.nodc.url", "testing123");
-
-        assertThat(cmdMatcherParams.getProperty("nomer.nodc.url"), Is.is("testing123"));
-
-        System.clearProperty("nomer.nodc.url");
-
-        assertThat(cmdMatcherParams.getProperty("nomer.nodc.url"), Is.is(propertyDefault));
-
-    }
 
 }

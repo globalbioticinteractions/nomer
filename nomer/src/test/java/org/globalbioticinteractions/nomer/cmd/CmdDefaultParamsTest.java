@@ -22,6 +22,8 @@ public class CmdDefaultParamsTest {
         assertNotNull(System.getProperty("foo"));
 
         assertThat(cmdMatcherParams.getProperty("foo"), Is.is("bar"));
+        System.clearProperty("foo");
+
         String propertyDefault = cmdMatcherParams.getProperty("nomer.nodc.url");
 
         System.setProperty("nomer.nodc.url", "testing123");
