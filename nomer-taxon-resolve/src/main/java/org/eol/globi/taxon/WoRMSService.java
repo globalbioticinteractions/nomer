@@ -112,8 +112,8 @@ public class WoRMSService implements PropertyEnricher {
                 String[] langCodes = CSVTSVUtil.splitPipes(languageCodes);
                 List<String> names = new ArrayList<String>();
                 for (int i = 0; i < commonNames.length && (langCodes.length == commonNames.length); i++) {
-                    String code = languageLookup.lookupLanguageCodeFor(langCodes[i]);
-                    names.add(commonNames[i] + " @" + (code == null ? langCodes[i] : code));
+                    String code = languageLookup.lookupLanguageCodeFor(StringUtils.trim(langCodes[i]));
+                    names.add(StringUtils.trim(commonNames[i]) + " @" + (code == null ? langCodes[i] : code));
                 }
                 properties.put(PropertyAndValueDictionary.COMMON_NAMES, StringUtils.join(names, CharsetConstant.SEPARATOR));
             }
