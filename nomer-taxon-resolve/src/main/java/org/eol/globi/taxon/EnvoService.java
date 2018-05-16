@@ -1,12 +1,12 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.util.CSVTSVUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -93,7 +93,7 @@ public class EnvoService implements PropertyEnricher {
             taxon.setPath(path[0]);
             taxon.setPathIds(path[1]);
             if (StringUtils.isBlank(taxon.getName())) {
-                String[] split = StringUtils.splitPreserveAllTokens(taxon.getPath(), CharsetConstant.SEPARATOR_CHAR);
+                String[] split = CSVTSVUtil.splitPipes(taxon.getPath());
                 if (split != null) {
                     taxon.setName(StringUtils.trim(split[split.length - 1]));
                 }

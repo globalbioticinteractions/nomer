@@ -10,6 +10,7 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.LanguageCodeLookup;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
 
 import java.io.ByteArrayInputStream;
@@ -97,7 +98,7 @@ public class WoRMSService implements PropertyEnricher {
                 value = XmlUtil.extractPath(response1, "AphiaID", TaxonomyProvider.ID_PREFIX_WORMS);
                 properties.put(PropertyAndValueDictionary.PATH_IDS, StringUtils.isBlank(value) ? null : value);
                 value = XmlUtil.extractPath(response1, "rank", "");
-                String[] ranks = StringUtils.splitPreserveAllTokens(value, CharsetConstant.SEPARATOR);
+                String[] ranks = CSVTSVUtil.splitPipes(value);
                 if (ranks != null && ranks.length > 0) {
                     properties.put(PropertyAndValueDictionary.RANK, StringUtils.trim(StringUtils.lowerCase(ranks[ranks.length - 1])));
                 }
@@ -107,8 +108,8 @@ public class WoRMSService implements PropertyEnricher {
                 response1 = getResponse("getAphiaVernacularsByID", "AphiaID", aphiaId.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
                 String vernaculars = XmlUtil.extractPath(response1, "vernacular", "");
                 String languageCodes = XmlUtil.extractPath(response1, "language_code", "");
-                String[] commonNames = StringUtils.splitByWholeSeparator(vernaculars, CharsetConstant.SEPARATOR);
-                String[] langCodes = StringUtils.splitByWholeSeparator(languageCodes, CharsetConstant.SEPARATOR);
+                String[] commonNames = CSVTSVUtil.splitPipes(vernaculars);
+                String[] langCodes = CSVTSVUtil.splitPipes(languageCodes);
                 List<String> names = new ArrayList<String>();
                 for (int i = 0; i < commonNames.length && (langCodes.length == commonNames.length); i++) {
                     String code = languageLookup.lookupLanguageCodeFor(langCodes[i]);

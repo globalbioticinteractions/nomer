@@ -1,9 +1,8 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.CSVTSVUtil;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -65,8 +64,8 @@ public class ITISServiceIntegrationTest {
         assertThat(getLength(enrich, PropertyAndValueDictionary.PATH_NAMES), is(expectedPathLength));
     }
 
-    private int getLength(Map<String, String> enrich, String pathIds) {
-        return StringUtils.splitPreserveAllTokens(enrich.get(pathIds), CharsetConstant.SEPARATOR_CHAR).length;
+    private int getLength(Map<String, String> enrich, String key) {
+        return CSVTSVUtil.splitPipes(enrich.get(key)).length;
     }
 
 }

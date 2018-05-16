@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -12,6 +11,7 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -51,7 +51,7 @@ public class TermMatchingRowJsonHandler implements RowHandler {
     }
 
     private ArrayNode addArray(ObjectNode pathNode, String names1, String path) {
-        String[] split = StringUtils.split(path, CharsetConstant.SEPARATOR_CHAR);
+        String[] split = CSVTSVUtil.splitPipes(path);
         ArrayNode names = pathNode.putArray(names1);
         for (String s : split) {
             names.add(StringUtils.trim(s));
@@ -60,9 +60,9 @@ public class TermMatchingRowJsonHandler implements RowHandler {
     }
 
     private void appendSecondaryTerms(ObjectNode resolved, Taxon taxon, ObjectMapper obj) {
-        String[] pathRanks = StringUtils.split(taxon.getPathNames(), CharsetConstant.SEPARATOR_CHAR);
-        String[] pathIds = StringUtils.split(taxon.getPathIds(), CharsetConstant.SEPARATOR_CHAR);
-        String[] path = StringUtils.split(taxon.getPath(), CharsetConstant.SEPARATOR_CHAR);
+        String[] pathRanks = CSVTSVUtil.splitPipes(taxon.getPathNames());
+        String[] pathIds = CSVTSVUtil.splitPipes(taxon.getPathIds());
+        String[] path = CSVTSVUtil.splitPipes(taxon.getPath());
         for (int i = 0; path != null && i < path.length; i++) {
             if (pathIds != null && pathIds.length == path.length) {
                 TaxonImpl taxon1 = new TaxonImpl(StringUtils.trim(path[i]), StringUtils.trim(pathIds[i]));

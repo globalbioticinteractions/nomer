@@ -8,6 +8,7 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
 
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class ITISService implements PropertyEnricher {
 
     protected static void setPropertyToLastValue(String propertyName, String taxonNames, Map<String, String> enriched) {
         if (taxonNames != null) {
-            String[] split1 = StringUtils.splitByWholeSeparatorPreserveAllTokens(taxonNames, CharsetConstant.SEPARATOR_CHAR);
+            String[] split1 = CSVTSVUtil.splitPipes(taxonNames);
             enriched.put(propertyName, split1[split1.length - 1].trim());
         }
     }

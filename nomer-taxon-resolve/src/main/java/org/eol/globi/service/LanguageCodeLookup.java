@@ -2,7 +2,7 @@ package org.eol.globi.service;
 
 // see http://www-01.sil.org/iso639-3/iso-639-3.tab
 
-import org.apache.commons.lang3.StringUtils;
+import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +21,7 @@ public class LanguageCodeLookup {
         String line;
         try {
             while ((line = reader.readLine()) != null) {
-                String[] row = StringUtils.splitPreserveAllTokens(line, '\t');
+                String[] row = CSVTSVUtil.splitTSV(line);
                 if (row.length > 3) {
                     iso_639_3_to_639_1.put(row[0], row[3]);
                 }

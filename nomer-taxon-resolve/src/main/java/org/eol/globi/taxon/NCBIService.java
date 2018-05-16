@@ -8,6 +8,7 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class NCBIService implements PropertyEnricher {
 
     protected void setPropertyToFirstValue(String propertyName, String taxonNames, Map<String, String> enriched) {
         if (taxonNames != null) {
-            String[] split1 = StringUtils.splitByWholeSeparatorPreserveAllTokens(taxonNames, CharsetConstant.SEPARATOR_CHAR);
+            String[] split1 = CSVTSVUtil.splitPipes((taxonNames));
             enriched.put(propertyName, split1[0].trim());
         }
     }
@@ -64,7 +65,7 @@ public class NCBIService implements PropertyEnricher {
     protected String firstWillBeLast(String taxonNames) {
         String transformedNames = taxonNames;
         if (taxonNames != null) {
-            String[] split1 = StringUtils.splitByWholeSeparatorPreserveAllTokens(taxonNames, CharsetConstant.SEPARATOR_CHAR);
+            String[] split1 = CSVTSVUtil.splitPipes(taxonNames);
             List<String> list1 = Arrays.asList(split1);
             Collections.rotate(list1, -1);
             transformedNames = StringUtils.join(list1, CharsetConstant.SEPARATOR);

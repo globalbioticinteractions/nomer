@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.taxon.TaxonCacheParser;
 import org.eol.globi.taxon.TaxonMapParser;
@@ -47,7 +46,7 @@ public final class TermValidatorPredicates {
         Taxon taxon = TaxonCacheParser.parseLine(line);
         String ids = taxon == null ? null : taxon.getPathIds();
         return StringUtils.isBlank(ids)
-                || Stream.of(StringUtils.splitByWholeSeparatorPreserveAllTokens(ids, CharsetConstant.SEPARATOR_CHAR))
+                || Stream.of(CSVTSVUtil.splitPipes(ids))
                 .map(StringUtils::trim)
                 .filter(StringUtils::isNotBlank)
                 .allMatch(SUPPORTED_ID);
@@ -71,7 +70,7 @@ public final class TermValidatorPredicates {
     private static int getLength(String path) {
         int pathLength = 0;
         if (StringUtils.isNotBlank(path)) {
-            pathLength = StringUtils.splitByWholeSeparatorPreserveAllTokens(path,"|").length;
+            pathLength = CSVTSVUtil.splitPipes(path).length;
         }
         return pathLength;
     }

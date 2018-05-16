@@ -1,9 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.lang.StringUtils;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.TaxonCacheParser;
+import org.eol.globi.util.CSVTSVUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -64,7 +62,7 @@ public class TermValidatorPredicatesTest {
         assertFalse(TermValidatorPredicates.VALID_NUMBER_OF_TERM_COLUMNS.test("BLAH:123\t"));
         String t = "\t\t\t\t\t\t\t\t";
         assertThat(t.length(), Is.is(8));
-        assertThat(StringUtils.splitByWholeSeparatorPreserveAllTokens(t,"\t").length, Is.is(9));
+        assertThat(CSVTSVUtil.splitTSV(t).length, Is.is(9));
 
         assertTrue(TermValidatorPredicates.VALID_NUMBER_OF_TERM_COLUMNS.test(t));
     }
