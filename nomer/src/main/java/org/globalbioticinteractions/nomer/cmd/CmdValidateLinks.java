@@ -25,7 +25,7 @@ public class CmdValidateLinks extends CmdDefaultParams {
     public void run() {
         validate(
                 new BufferedReader(new InputStreamReader(System.in)).lines(),
-                TermValidatorPredicates.MAP_PREDICATES);
+                TermValidatorPredicates.LINK_VALIDATION_PREDICATES);
     }
 
 }

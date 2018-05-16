@@ -1,20 +1,13 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.collections4.MapUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.service.PropertyEnricher;
-import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.eol.globi.util.DateUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import static org.junit.Assert.assertThat;
 
 public class MatchTestUtil {
 

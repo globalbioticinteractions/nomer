@@ -14,6 +14,7 @@ import org.eol.globi.taxon.TermResource;
 import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -50,8 +51,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
 
             @Override
             public Predicate<String> getValidator() {
-                return all(TermValidatorPredicates
-                        .TERM_PREDICATES);
+                return TermValidatorPredicates.PATH_EXISTS;
             }
         };
 
@@ -74,8 +74,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
 
             @Override
             public Predicate<String> getValidator() {
-                return all(TermValidatorPredicates
-                        .MAP_PREDICATES);
+                return Objects::nonNull;
             }
         };
         return new TaxonCacheService(terms, links);

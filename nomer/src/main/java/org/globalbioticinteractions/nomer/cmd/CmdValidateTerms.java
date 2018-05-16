@@ -13,7 +13,7 @@ public class CmdValidateTerms extends CmdDefaultParams {
     public void run() {
         CmdValidateLinks.validate(
                 new BufferedReader(new InputStreamReader(System.in)).lines(),
-                TermValidatorPredicates.TERM_PREDICATES);
+                TermValidatorPredicates.TERM_VALIDATION_PREDICATES);
     }
 
 }
