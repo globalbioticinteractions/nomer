@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static org.globalbioticinteractions.nomer.util.TermValidatorPredicates.allFor;
+
 @Parameters(separators = "= ", commandDescription = "Validate term links")
 public class CmdValidateLinks extends CmdDefaultParams implements Runnable {
 
@@ -25,7 +27,7 @@ public class CmdValidateLinks extends CmdDefaultParams implements Runnable {
     public void run() {
         validate(
                 new BufferedReader(new InputStreamReader(System.in)).lines(),
-                TermValidatorPredicates.LINK_VALIDATION_PREDICATES);
+                allFor(TermValidatorPredicates.LINK_VALIDATION_PREDICATES));
     }
 
 }

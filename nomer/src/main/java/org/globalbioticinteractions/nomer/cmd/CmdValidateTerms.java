@@ -6,6 +6,8 @@ import org.globalbioticinteractions.nomer.util.TermValidatorPredicates;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import static org.globalbioticinteractions.nomer.util.TermValidatorPredicates.allFor;
+
 @Parameters(separators = "= ", commandDescription = "Validate terms")
 public class CmdValidateTerms extends CmdDefaultParams implements Runnable {
 
@@ -13,7 +15,7 @@ public class CmdValidateTerms extends CmdDefaultParams implements Runnable {
     public void run() {
         CmdValidateLinks.validate(
                 new BufferedReader(new InputStreamReader(System.in)).lines(),
-                TermValidatorPredicates.TERM_VALIDATION_PREDICATES);
+                allFor(TermValidatorPredicates.TERM_VALIDATION_PREDICATES));
     }
 
 }

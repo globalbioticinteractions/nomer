@@ -23,6 +23,13 @@ public class TermValidatorPredicatesTest {
     }
 
     @Test
+    public void idWithPrefix() throws PropertyEnricherException, IOException {
+        Predicate<String> unsupportedId = TermValidatorPredicates.PREFIXED_ID;
+        assertThat(unsupportedId.test("EOL:123"), is(true));
+        assertThat(unsupportedId.test("noprefix123\t"), is(false));
+    }
+
+    @Test
     public void consistentTermCachePath() throws PropertyEnricherException, IOException {
         assertTrue(TermValidatorPredicates.CONSISTENT_PATH.test("EOL:1276240\tAnas crecca carolinensis\tInfraspecies\tGreen-winged Teal @en | Sarcelle à ailes vertes @fr | Amerikaanse Wintertaling @nl | \tAnimalia | Chordata | Aves | Anseriformes | Anatidae | Anas | Anas crecca | Anas crecca carolinensis\tEOL:1 | EOL:694 | EOL:695 | EOL:8024 | EOL:8027 | EOL:17930 | EOL:1048951 | EOL:1276240\tkingdom | phylum | class | order | family | genus | species | infraspecies\thttp://eol.org/pages/1276240\thttp://media.eol.org/content/2012/11/04/08/35791_98_68.jpg"));
         assertFalse(TermValidatorPredicates.CONSISTENT_PATH.test("EOL:1276240\tAnas crecca carolinensis\tInfraspecies\tGreen-winged Teal @en | Sarcelle à ailes vertes @fr | Amerikaanse Wintertaling @nl | \tAnimalia | Chordata | Aves | Anseriformes | Anatidae | Anas crecca | Anas crecca carolinensis\tEOL:1 | EOL:694 | EOL:695 | EOL:8024 | EOL:8027 | EOL:17930 | EOL:1048951 | EOL:1276240\tkingdom | phylum | class | order | family | genus | species | infraspecies\thttp://eol.org/pages/1276240\thttp://media.eol.org/content/2012/11/04/08/35791_98_68.jpg"));

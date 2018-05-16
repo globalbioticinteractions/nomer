@@ -80,14 +80,6 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
         return new TaxonCacheService(terms, links);
     }
 
-    private static Predicate<String> all(List<Pair<Predicate<String>, String>> mapPredicates) {
-        return mapPredicates
-                .stream()
-                .map(Pair::getLeft)
-                .reduce(Predicate::and)
-                .orElse(Objects::nonNull);
-    }
-
     public static String getTermMapUrl(TermMatcherContext ctx) {
         String taxonMapUrl = ctx.getProperty("nomer.term.map.url");
         return StringUtils.isBlank(taxonMapUrl) ? TAXON_MAP_DEFAULT_URL : taxonMapUrl;
