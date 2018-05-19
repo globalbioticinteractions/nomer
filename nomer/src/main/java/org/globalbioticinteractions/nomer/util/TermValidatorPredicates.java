@@ -69,7 +69,7 @@ public final class TermValidatorPredicates {
             Pair.of(Objects::nonNull, "non empty"),
             Pair.of(VALID_NUMBER_OF_TERM_COLUMNS, "9 columns"),
             Pair.of(SUPPORTED_ID, "supported id"),
-            Pair.of(PREFIXED_ID, "git gi id"),
+            Pair.of(PREFIXED_ID, "prefixed id"),
             Pair.of(CONSISTENT_PATH, "consistent term path"),
             Pair.of(PATH_EXISTS, "non empty term path or path ids"),
             Pair.of(SUPPORTED_PATH_IDS, "supported path ids"),
