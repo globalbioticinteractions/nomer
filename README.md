@@ -72,6 +72,27 @@ Usage: <main class> [command] [command options]
             point to properties file to override defaults.
             Default: <empty string>
 
+    append-json      embeds term matches into json
+      Usage: append-json [options] [matcher]
+        Options:
+          --properties, -p
+            point to properties file to override defaults.
+            Default: <empty string>
+
+    validate-term      Validate terms
+      Usage: validate-term [options]
+        Options:
+          --properties, -p
+            point to properties file to override defaults.
+            Default: <empty string>
+
+    validate-term-link      Validate term links
+      Usage: validate-term-link [options]
+        Options:
+          --properties, -p
+            point to properties file to override defaults.
+            Default: <empty string>
+
     matchers      Lists all or selected matcher configuration(s)
       Usage: matchers
 
@@ -83,7 +104,7 @@ Usage: <main class> [command] [command options]
             Default: <empty string>
 
     properties      Lists properties.
-      Usage: properties [options] [matcher]
+      Usage: properties [options]
         Options:
           --properties, -p
             point to properties file to override defaults.
@@ -142,6 +163,26 @@ expected output includes tab separated lines like, where the first two columns a
 	Canis lupus	SAME_AS	IRMNG:11407661	Canis lupus	species		Animalia | Chordata | Mammalia | Carnivora | Canidae | Canis | Canis lupus	IRMNG:11 | IRMNG:148 | IRMNG:1310 | IRMNG:12116 | IRMNG:104585 | IRMNG:1282727 | IRMNG:11407661	kingdom | phylum | class | order | family | genus | species	http://www.marine.csiro.au/mirrorsearch/ir_search.list_species?sp_id=11407661
 	Canis lupus	SAME_AS	GBIF:5219173	Canis lupus	species		Animalia | Chordata | Mammalia | Carnivora | Canidae | Canis | Canis lupus	GBIF:1 | GBIF:44 | GBIF:359 | GBIF:732 | GBIF:9701 | GBIF:5219142 | GBIF:5219173kingdom | phylum | class | order | family | genus | species	http://www.gbif.org/species/5219173
 ```
+
+### validate taxonCache and taxonMap
+
+ To validate terms (aka TaxonCache) and term linkages (aka TaxonMap) to be used with the offline term matchers, you can use the ```validate-term``` and ```validate-term-link``` commands. 
+
+For instance, if you'd like to validate the first 10 lines of the taxonCache as published in https://zenodo.org/record/1213465 do:
+
+```curl -L "https://zenodo.org/record/1213465/files/taxonCacheFirst10.tsv" | java -jar nomer.jar validate-term```
+
+Expected result looks something like ```[FAIL|OK]\t[validation test]\t[...]``` where [...] is the validated line. Parts of the result of the above command includes:
+
+```
+OK	9 columns	4701dc84-660a-4c51-bd16-593997f2370b	Coelomomyces iliensis	species		Fungi | Chytridiomycota | Blastocladiomycetes | Blastocladiales | Coelomomycetaceae | Coelomomyces | Coelomomyces iliensis	urn:lsid:indexfungorum.org:names:90156 | urn:lsid:indexfungorum.org:names:90736 | urn:lsid:indexfungorum.org:names:90742 | urn:lsid:indexfungorum.org:names:90414 | urn:lsid:indexfungorum.org:names:80619 | urn:lsid:indexfungorum.org:names:20136 | 4701dc84-660a-4c51-bd16-593997f2370b	kingdom | phylum | class | order | family | genus | species
+FAIL	supported id	4701dc84-660a-4c51-bd16-593997f2370b	Coelomomyces iliensis	species		Fungi | Chytridiomycota | Blastocladiomycetes | Blastocladiales | Coelomomycetaceae | Coelomomyces | Coelomomyces iliensis	urn:lsid:indexfungorum.org:names:90156 | urn:lsid:indexfungorum.org:names:90736 | urn:lsid:indexfungorum.org:names:90742 | urn:lsid:indexfungorum.org:names:90414 | urn:lsid:indexfungorum.org:names:80619 | urn:lsid:indexfungorum.org:names:20136 | 4701dc84-660a-4c51-bd16-593997f2370b	kingdom | phylum | class | order | family | genus | species
+FAIL	prefixed id	4701dc84-660a-4c51-bd16-593997f2370b	Coelomomyces iliensis	species		Fungi | Chytridiomycota | Blastocladiomycetes | Blastocladiales | Coelomomycetaceae | Coelomomyces | Coelomomyces iliensis	urn:lsid:indexfungorum.org:names:90156 | urn:lsid:indexfungorum.org:names:90736 | urn:lsid:indexfungorum.org:names:90742 | urn:lsid:indexfungorum.org:names:90414 | urn:lsid:indexfungorum.org:names:80619 | urn:lsid:indexfungorum.org:names:20136 | 4701dc84-660a-4c51-bd16-593997f2370b	kingdom | phylum | class | order | family | genus | species
+```
+
+This validation report tell us that the line starting with ```4701dc84-660a-4c51-bd16-593997f2370b    Coelomomyces iliensis``` has (expected) 9 columns, but has an id that is not supported by nomer nor does the id conform to the ```[some namespace]:[some id]``` format. Note that the GloBI Taxon Graph publication at http://doi.org/10.5281/zenodo.1213465 prompted the development of the validation features. For more historic context, please see https://github.com/globalbioticinteractions/nomer/issues/5 .
+
+A similar feature for term links (aka TaxonMap) are available through the command ```validate-term-link```. 
 
 ## Contribute
 
