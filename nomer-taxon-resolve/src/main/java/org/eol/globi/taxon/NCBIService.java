@@ -27,8 +27,12 @@ public class NCBIService implements PropertyEnricher {
         // see http://www.ncbi.nlm.nih.gov/books/NBK25500/
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.NCBI.getIdPrefix())) {
-            String tsn = externalId.replace(TaxonomyProvider.ID_PREFIX_NCBI, "");
+        String prefixAlt = "NCBITaxon:";
+        if (StringUtils.startsWith(externalId, TaxonomyProvider.NCBI.getIdPrefix())
+                || StringUtils.startsWith(externalId, prefixAlt)) {
+            String tsn = externalId
+                    .replace(prefixAlt, "")
+                    .replace(TaxonomyProvider.ID_PREFIX_NCBI, "");
             if (tsn.matches("\\d+")) {
                 String fullHierarchy = getResponse("db=taxonomy&id=" + tsn);
                 if (fullHierarchy.contains("<Taxon>")) {
