@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<!DOCTYPE TaxaSet PUBLIC "-//NLM//DTD Taxon, 14th January 2002//EN"
+        "https://www.ncbi.nlm.nih.gov/entrez/query/DTD/taxon.dtd">
+<TaxaSet>
+    <Taxon>
+        <TaxId>2170100</TaxId>
+        <ScientificName>Cereal yellow dwarf virus RPV</ScientificName>
+        <OtherNames>
+            <Synonym>Barley yellow dwarf virus - RPV</Synonym>
+            <Synonym>Barley yellow dwarf virus RPV</Synonym>
+            <Synonym>Barley yellow dwarf virus-RPV</Synonym>
+            <Synonym>Cereal yellow dwarf virus - RPV</Synonym>
+            <Synonym>Cereal yellow dwarf virus-RPV</Synonym>
+            <Acronym>BYDV-RPV</Acronym>
+            <Acronym>CYDV-RPV</Acronym>
+        </OtherNames>
+        <ParentTaxId>119164</ParentTaxId>
+        <Rank>species</Rank>
+        <Division>Viruses</Division>
+        <GeneticCode>
+            <GCId>1</GCId>
+            <GCName>Standard</GCName>
+        </GeneticCode>
+        <MitoGeneticCode>
+            <MGCId>0</MGCId>
+            <MGCName>Unspecified</MGCName>
+        </MitoGeneticCode>
+        <Lineage>Viruses; ssRNA viruses; ssRNA positive-strand viruses, no DNA stage; Luteoviridae; Polerovirus
+        </Lineage>
+        <LineageEx>
+            <Taxon>
+                <TaxId>10239</TaxId>
+                <ScientificName>Viruses</ScientificName>
+                <Rank>superkingdom</Rank>
+            </Taxon>
+            <Taxon>
+                <TaxId>439488</TaxId>
+                <ScientificName>ssRNA viruses</ScientificName>
+                <Rank>no rank</Rank>
+            </Taxon>
+            <Taxon>
+                <TaxId>35278</TaxId>
+                <ScientificName>ssRNA positive-strand viruses, no DNA stage</ScientificName>
+                <Rank>no rank</Rank>
+            </Taxon>
+            <Taxon>
+                <TaxId>119163</TaxId>
+                <ScientificName>Luteoviridae</ScientificName>
+                <Rank>family</Rank>
+            </Taxon>
+            <Taxon>
+                <TaxId>119164</TaxId>
+                <ScientificName>Polerovirus</ScientificName>
+                <Rank>genus</Rank>
+            </Taxon>
+        </LineageEx>
+        <CreateDate>2018/04/16 15:57:13</CreateDate>
+        <UpdateDate>2018/04/17 11:08:43</UpdateDate>
+        <PubDate>2002/04/28 19:02:00</PubDate>
+        <AkaTaxIds>
+            <TaxId>191217</TaxId>
+        </AkaTaxIds>
+    </Taxon>
+</TaxaSet>

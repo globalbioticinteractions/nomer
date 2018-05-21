@@ -1,10 +1,15 @@
 package org.eol.globi.taxon;
 
+import org.apache.commons.io.IOUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TaxonUtil;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +45,36 @@ public class NCBIServiceTest {
         Map<String, String> enrich = enricher.enrich(props);
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
+    }
+
+
+    @Test
+    public void parseInconsistentWithAltNCBI191217() throws PropertyEnricherException {
+        PropertyEnricher enricher = new NCBIService();
+        HashMap<String, String> props = new HashMap<String, String>() {{
+            put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:191217");
+        }};
+        Map<String, String> enrich = enricher.enrich(props);
+        Taxon taxon = TaxonUtil.mapToTaxon(enrich);
+        int expectedLength = 6;
+        assertThat(taxon.getPath().split("\\|").length, is(expectedLength));
+        assertThat(taxon.getPathNames().split("\\|").length, is(expectedLength));
+        assertThat(taxon.getPathIds().split("\\|").length, is(expectedLength));
+        assertThat(taxon.getPathIds(), containsString("NCBI:2170100"));
+    }
+
+    @Test
+    public void parseInconsistentPathWithAltNCBI191217() throws IOException, PropertyEnricherException {
+        String data = IOUtils.toString(getClass().getResourceAsStream("ncbi191217.xml"));
+        HashMap<String, String> enriched = new HashMap<>();
+        new NCBIService().parseAndPopulate(enriched, "bla", data);
+
+        Taxon taxon = TaxonUtil.mapToTaxon(enriched);
+        int expectedLength = 6;
+        assertThat(taxon.getPath().split("\\|").length, is(expectedLength));
+        assertThat(taxon.getPathNames().split("\\|").length, is(expectedLength));
+        assertThat(taxon.getPathIds().split("\\|").length, is(expectedLength));
+        assertThat(taxon.getPathIds(), containsString("NCBI:2170100"));
     }
 
     @Test
