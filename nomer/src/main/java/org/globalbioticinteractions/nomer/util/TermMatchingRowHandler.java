@@ -49,10 +49,7 @@ public class TermMatchingRowHandler implements RowHandler {
                 taxon.getPathIds(),
                 taxon.getPathNames(),
                 taxon.getExternalUrl(),
-                taxon.getThumbnailUrl(),
-                taxon.getNameSource(),
-                taxon.getNameSourceURL(),
-                taxon.getNameSourceAccessedAt()))
+                taxon.getThumbnailUrl()))
                 .map(resolved -> Stream.concat(provided, resolved));
 
         lines.map(combinedLine -> CSVTSVUtil.mapEscapedValues(combinedLine)
@@ -61,13 +58,12 @@ public class TermMatchingRowHandler implements RowHandler {
     }
 
 
-
-        @Override
-        public void onRow(final String[] row) throws PropertyEnricherException {
-            Taxon taxonProvided = asTaxon(row, ctx.getInputSchema());
-            termMatcher.findTerms(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
-                Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxon));
-                linesForTaxa(row, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
-            });
-        }
+    @Override
+    public void onRow(final String[] row) throws PropertyEnricherException {
+        Taxon taxonProvided = asTaxon(row, ctx.getInputSchema());
+        termMatcher.findTerms(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
+            Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxon));
+            linesForTaxa(row, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
+        });
     }
+}
