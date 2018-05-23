@@ -13,6 +13,7 @@ public class TermMatcherRegistry {
             put("default", new TermMatcherCacheFactory());
             put("globi-correct", new TermMatcherCorrectFactory());
             put("globi-cache", new TermMatcherCacheFactory());
+            put("globi-taxon-rank", new TermMatcherFactoryTaxonRanks());
             put("globi-enrich", new TermMatcherFactoryEnricher());
             put("globi-globalnames", new TermMatcherFactoryGlobalNames());
         }

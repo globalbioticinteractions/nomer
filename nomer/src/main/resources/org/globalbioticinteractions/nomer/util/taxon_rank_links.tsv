@@ -1,0 +1,213 @@
+providedId	providedName	resolvedId	resolvedName
+	?		
+	**		
+	***		
+	*****		
+	a		
+	b		
+	c		
+	cl.	WD:Q37517	class
+	clade	no:match	clade
+	class	WD:Q37517	class
+	Class	WD:Q37517	class
+	cohort	WD:Q2981883	cohort
+	cultivar	WD:Q4886	cultivar
+	d		
+	division	WD:Q38348	phylum
+	Division	WD:Q38348	phylum
+	domain	WD:Q146481	domain
+	e		
+	epifamily	WD:Q10296147	epifamily
+	espesye	WD:Q7432	species
+	f.	WD:Q279749	form
+	fam.	WD:Q35409	family
+	familie	WD:Q35409	family
+	family	WD:Q35409	family
+	Family	WD:Q35409	family
+	form	WD:Q279749	form
+	Form	WD:Q279749	form
+	forma	WD:Q279749	form
+	forma specialis	WD:Q3825509	forma specialis
+	f.sp.	WD:Q3825509	forma specialis
+	g	no:match	g
+	gen.	WD:Q34740	genus
+	generic hybrid	no:match	g
+	genus	WD:Q34740	genus
+	Genus	WD:Q34740	genus
+	genushybrid	no:match	g
+	geslacht	WD:Q34740	genus
+	hybrid	no:match	g
+	hybrid formula	no:match	g
+	informal	no:match	g
+	infraclass	WD:Q2007442	infraclass
+	Infraclass	WD:Q2007442	infraclass
+	infradivision	WD:Q23759835	infradivision
+	Infradivision	WD:Q23759835	infradivision
+	infrakingdom	WD:Q3150876	infrakingdom
+	Infrakingdom	WD:Q3150876	infrakingdom
+	infraorde	WD:Q2889003	infraorder
+	infraorder	WD:Q2889003	infraorder
+	Infraorder	WD:Q2889003	infraorder
+	infraphylum	WD:Q2361851	infraphylum
+	Infraphylum	WD:Q2361851	infraphylum
+	infraspecies	WD:Q21446603	infraspecies
+	infraspecificname	WD:Q21446603	infraspecies
+	kaharian	WD:Q36732	kingdom
+	kingdom	WD:Q36732	kingdom
+	Kingdom	WD:Q36732	kingdom
+	klase	WD:Q37517	class
+	klasse	WD:Q37517	class
+	microspecies	WD:Q7432	species
+	no rank	no:match	no rank
+	no rank - terminal	no:match	no rank - terminal
+	nothovariety		
+	onderfamilie	WD:Q5481039	infrafamily
+	onderklasse	WD:Q2007442	infraclass
+	onderorde	WD:Q2889003	infraorder
+	ord.	WD:Q36602	order
+	orde	WD:Q36602	order
+	orden	WD:Q36602	order
+	order	WD:Q36602	order
+	Order	WD:Q36602	order
+	pamilya	WD:Q35409	family
+	parvorder	WD:Q6311258	parvorder
+	Parvorder	WD:Q6311258	parvorder
+	paylum	WD:Q38348	phylum
+	phyl.	WD:Q38348	phylum
+	phylum	WD:Q38348	phylum
+	Phylum	WD:Q38348	phylum
+	regn.	WD:Q36732	kingdom
+	rijk	WD:Q36732	kingdom
+	sari	WD:Q34740	genus
+	sect	no:match	sect
+	sect.	no:match	sect.
+	section	no:match	section
+	Section	no:match	Section
+	ser.	WD:Q3025161	series
+	soort	WD:Q7432	species
+	sp.	WD:Q7432	species
+	species	WD:Q7432	species
+	Species	WD:Q7432	species
+	species aggregate		
+	species group		
+	species hybrid		
+	species pro parte		
+	species sensu lato		
+	species subgroup		
+	ß		
+	stam		
+	subclass	WD:Q5867051	subclass
+	Subclass	WD:Q5867051	subclass
+	subdiv.	WD:Q1153785	subdivision
+	subdivision	WD:Q1153785	subdivision
+	Subdivision	WD:Q1153785	subdivision
+	subfamily	WD:Q2455704	subfamily
+	Subfamily	WD:Q2455704	subfamily
+	subgen.	WD:Q3238261	subgenus
+	subgenus	WD:Q3238261	subgenus
+	Subgenus	WD:Q3238261	subgenus
+	subkingdom	WD:Q2752679	subkingdom
+	Subkingdom	WD:Q2752679	subkingdom
+	suborder	WD:Q5867959	suborder
+	Suborder	WD:Q5867959	suborder
+	subphylum	WD:Q1153785	subphylum
+	sub phylum	WD:Q1153785	subphylum
+	Subphylum	WD:Q1153785	subphylum
+	subsect.	no:match	subsect.
+	subsection	no:match	subsection
+	Subsection	no:match	
+	subser.	WD:Q13198444	subseries
+	subsp.	WD:Q68947	subspecies
+	subspecies	WD:Q68947	subspecies
+	Subspecies	WD:Q68947	subspecies
+	subterclass	WD:Q21061204	subterclass
+	Subterclass	WD:Q21061204	subterclass
+	subtrib.	WD:Q3965313	subtribe
+	subtribe	WD:Q3965313	subtribe
+	Subtribe	WD:Q3965313	subtribe
+	subvariety	WD:Q630771	subvariety
+	superclass	WD:Q3504061	superclass
+	Superclass	WD:Q3504061	superclass
+	super cohort	WD:Q6054425	supercohort
+	superdivision	WD:Q3978005	superphylum
+	Superdivision	WD:Q3978005	superphylum
+	superdomain	WD:Q22666877	superdomain
+	superfamilie	WD:Q2136103	superfamily
+	superfamily	WD:Q2136103	superfamily
+	Superfamily	WD:Q2136103	superfamily
+	superkingdom	WD:Q19858692	superkingdom
+	superorder	WD:Q5868144	superorder
+	super order	WD:Q5868144	superorder
+	Superorder	WD:Q5868144	superorder
+	superpamilya	WD:Q2136103	superfamily
+	superphylum	WD:Q3978005	superphylum
+	Superphylum	WD:Q3978005	superphylum
+	supertribe	WD:Q14817220	supertribe
+	Supertribe	WD:Q14817220	supertribe
+	tak		
+	tax.vag.		
+	trib.	WD:Q227936	tribe
+	tribe	WD:Q227936	tribe
+	Tribe	WD:Q227936	tribe
+	unknown	no:match	
+	unranked	no:match	
+	[unranked]	no:match	
+	Unranked	no:match	
+	unranked clade	no:match	
+	V.	WD:Q767728	variety
+	var.	WD:Q767728	variety
+	varietas	WD:Q767728	variety
+	variety	WD:Q767728	variety
+	Variety	WD:Q767728	variety
+	WD:Q10296147	WD:Q10296147	epifamily
+	WD:Q10861375	WD:Q10861375	subsection
+	WD:Q10861426	WD:Q10861426	section
+	WD:Q10861678	WD:Q10861678	order
+	WD:Q1153785	WD:Q1153785	subphylum
+	WD:Q146481	WD:Q146481	domain
+	WD:Q14817220	WD:Q14817220	supertribe
+	WD:Q2007442	WD:Q2007442	infraclass
+	WD:Q21061204	WD:Q21061204	subterclass
+	WD:Q21074316	WD:Q21074316	Q21074316
+	WD:Q2136103	WD:Q2136103	superfamily
+	WD:Q22666877	WD:Q22666877	superdomain
+	WD:Q227936	WD:Q227936	tribe
+	WD:Q2361851	WD:Q2361851	infraphylum
+	WD:Q2455704	WD:Q2455704	subfamily
+	WD:Q2752679	WD:Q2752679	subkingdom
+	WD:Q279749	WD:Q279749	form
+	WD:Q2889003	WD:Q2889003	infraorder
+	WD:Q2981883	WD:Q2981883	cohort
+	WD:Q3150876	WD:Q3150876	infrakingdom
+	WD:Q3181348	WD:Q3181348	section
+	WD:Q3238261	WD:Q3238261	subgenus
+	WD:Q334460	WD:Q38348	phylum
+	WD:Q34740	WD:Q34740	genus
+	WD:Q3491997	WD:Q1153785	subphylum
+	WD:Q3504061	WD:Q3504061	superclass
+	WD:Q35409	WD:Q35409	family
+	WD:Q36602	WD:Q36602	order
+	WD:Q36732	WD:Q36732	kingdom
+	WD:Q37517	WD:Q37517	class
+	WD:Q3825509	WD:Q3825509	forma specialis
+	WD:Q38348	WD:Q38348	phylum
+	WD:Q3965313	WD:Q3965313	subtribe
+	WD:Q3978005	WD:Q3978005	superphylum
+	WD:Q5867051	WD:Q5867051	subclass
+	WD:Q5867959	WD:Q5867959	suborder
+	WD:Q5868144	WD:Q5868144	superorder
+	WD:Q6054237	WD:Q6054237	magnorder
+	WD:Q6054425	WD:Q6054425	supercohort
+	WD:Q6054535	WD:Q6054535	infralegion
+	WD:Q6054637	WD:Q6054637	sublegion
+	WD:Q6054795	WD:Q6054795	superlegion
+	WD:Q6311258	WD:Q6311258	parvorder
+	WD:Q6462265	WD:Q6462265	grandorder
+	WD:Q6541077	WD:Q6541077	subcohort
+	WD:Q68947	WD:Q68947	subspecies
+	WD:Q7432	WD:Q7432	species
+	WD:Q7504331	WD:Q7504331	legion
+	WD:Q7506274	WD:Q7506274	mirorder
+	WD:Q767728	WD:Q767728	variety
+	zoosection	WD:Q10861426	section
+	zoosubsection	WD:Q10861375	subsection
