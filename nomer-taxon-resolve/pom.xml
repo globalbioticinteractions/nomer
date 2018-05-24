@@ -20,7 +20,11 @@
             <artifactId>eol-globi-taxon-resolver</artifactId>
             <version>${globi.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>apache-jena-libs</artifactId>
+            <version>2.13.0</version>
+            <type>pom</type>
+        </dependency>
     </dependencies>
-
 </project>
