@@ -6,6 +6,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -30,18 +31,6 @@ public class TermMatcherFactoryTaxonRanksTest {
     @Test
     public void ranks() throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("", "genus"));
-        AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTerms(bla, (aLong, s, taxon, nameType) -> {
-            assertThat(taxon.getExternalId(), is("WD:Q34740"));
-            assertThat(taxon.getName(), is("genus"));
-            found.set(true);
-        });
-        assertTrue(found.get());
-    }
-
-    @Test
-    public void ranksNoMatch() throws PropertyEnricherException {
-        List<Term> bla = Collections.singletonList(new TermImpl("bla:1234", null));
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.findTerms(bla, (aLong, s, taxon, nameType) -> {
             assertThat(taxon.getExternalId(), is("WD:Q34740"));
