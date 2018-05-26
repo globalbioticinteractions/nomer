@@ -63,6 +63,12 @@ public class TaxonNameCorrectorTest {
     }
 
     @Test
+    public void longHayden() {
+        assertThat(new ManualSuggester().suggest("Cetacean blubber"), is("Cetacea"));
+        assertThat(new ManualSuggester().suggest("cetacean blubber"), is("Cetacea"));
+    }
+
+    @Test
     public void circularSuggestions() {
         assertThat(CORRECTOR.correct("Mimesa bicolor"), is("Mimesa bicolor"));
         assertThat(CORRECTOR.correct("Mimesa equestris"), is("Mimesa equestris"));
