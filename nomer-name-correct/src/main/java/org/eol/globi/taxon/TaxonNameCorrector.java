@@ -34,6 +34,7 @@ public class TaxonNameCorrector implements CorrectionService {
         if (suggestors == null) {
             suggestors = new ArrayList<NameSuggester>() {
                 {
+                    add(new RemoveStopWordService());
                     add(new UKSISuggestionService());
                     add(new ManualSuggester());
                     add(new NameScrubber());
@@ -42,7 +43,7 @@ public class TaxonNameCorrector implements CorrectionService {
                 }
             };
         }
-        List<String> suggestions = new ArrayList<String>();
+        List<String> suggestions = new ArrayList<>();
         suggestion = taxonName;
         suggestions.add(suggestion);
         boolean isCircular = false;
