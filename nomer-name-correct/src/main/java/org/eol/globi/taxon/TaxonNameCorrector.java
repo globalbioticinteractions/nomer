@@ -34,10 +34,10 @@ public class TaxonNameCorrector implements CorrectionService {
         if (suggestors == null) {
             suggestors = new ArrayList<NameSuggester>() {
                 {
-                    add(new RemoveStopWordService());
                     add(new UKSISuggestionService());
                     add(new ManualSuggester());
                     add(new NameScrubber());
+                    add(new RemoveStopWordService());
                     add(new GlobalNamesCanon());
                     add(new ManualSuggester());
                 }

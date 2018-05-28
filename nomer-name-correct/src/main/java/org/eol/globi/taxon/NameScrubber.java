@@ -10,6 +10,8 @@ class NameScrubber implements NameSuggester {
     }
 
     private static String clean(String name) {
+        name = name.replaceAll("^\\d+$", "");
+        name = name.replaceAll("((<[:alpha:]+>)|(</[:alpha:]+>)|(<[:alpha:]+/>))", "");
         name = name.replaceAll("[^\\p{L}\\p{N}-\\.\\(\\)]", " ");
         return name.trim();
     }

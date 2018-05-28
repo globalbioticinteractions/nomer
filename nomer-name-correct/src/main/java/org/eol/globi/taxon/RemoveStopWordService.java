@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,7 +20,7 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
 
     private List<String> stopwords = null;
 
-    private String resource = "classpath:/org/eol/globi/service/stopwords.tsv";
+    private String resource = "classpath:/org/eol/globi/service/non-taxa-words.tsv";
 
     @Override
     public String suggest(String name) {
@@ -29,12 +28,13 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
         if (StringUtils.isNotBlank(name)) {
             init();
             suggested = Stream.of(name)
-                    .flatMap(s -> Stream.of(StringUtils.split(s, ' ')))
+                    .flatMap(s -> Stream.of(StringUtils.split(s, " ()-")))
                     .map(StringUtils::trim)
                     .filter(w -> !stopwords.contains(StringUtils.lowerCase(w)))
                     .collect(Collectors.joining(" "));
+
         }
-        return suggested;
+        return StringUtils.length(name) == StringUtils.length(suggested) ? name : suggested;
     }
 
     private void init() {

@@ -24,4 +24,15 @@ public class NameScrubberTest {
         assertThat(getNameSuggester().suggest("Homo_sapiens"), is("Homo sapiens"));
     }
 
+    @Test
+    public void dropTag() {
+        assertThat(getNameSuggester().suggest("<a>Homo sapiens</a>"), is("Homo sapiens"));
+        assertThat(getNameSuggester().suggest("<p>Homo sapiens</a>"), is("Homo sapiens"));
+    }
+
+    @Test
+    public void digitsOnly() {
+        assertThat(getNameSuggester().suggest("123"), is(""));
+    }
+
 }
