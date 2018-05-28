@@ -41,6 +41,12 @@ public class RemoveStopWordServiceTest {
     }
 
     @Test
+    public void removeStopword6() throws IOException {
+        String suggest = new RemoveStopWordService().suggest("Sycon (Scypha) raphanus");
+        assertThat(suggest, is("Sycon (Scypha) raphanus"));
+    }
+
+    @Test
     public void removeStopword5() throws IOException {
         String suggest = new RemoveStopWordService().suggest("Amphipoda-nostopwordhere");
         assertThat(suggest, is("Amphipoda-nostopwordhere"));

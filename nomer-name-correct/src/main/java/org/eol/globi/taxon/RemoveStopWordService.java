@@ -27,11 +27,11 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
         String suggested = name;
         if (StringUtils.isNotBlank(name)) {
             init();
-            suggested = Stream.of(name)
-                    .flatMap(s -> Stream.of(StringUtils.split(s, " ()-")))
-                    .map(StringUtils::trim)
-                    .filter(w -> !stopwords.contains(StringUtils.lowerCase(w)))
-                    .collect(Collectors.joining(" "));
+            String[] nameParts = StringUtils.split(name, " ()-");
+            Stream<String> suggestedParts = Stream.of(nameParts)
+                    .filter(w -> !stopwords.contains(StringUtils.trim(StringUtils.lowerCase(w))));
+            List<String> collect = suggestedParts.collect(Collectors.toList());
+            suggested = collect.size() == nameParts.length ? name : StringUtils.join(collect, " ");
 
         }
         return StringUtils.length(name) == StringUtils.length(suggested) ? name : suggested;
