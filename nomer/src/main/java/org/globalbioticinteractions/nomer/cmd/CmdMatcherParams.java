@@ -39,14 +39,13 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
 
     @Override
     public Map<Integer, String> getInputSchema() {
-        String schema = getProperty("nomer.input.schema");
+        String schema = getProperty("nomer.schema.input");
         return parseSchema(schema);
     }
 
     @Override
     public Map<Integer, String> getOutputSchema() {
-        String schema = getProperty("nomer.output.schema");
-        return parseSchema(schema);
+        return parseSchema(getProperty("nomer.schema.output"));
     }
 
     static Map<Integer, String> parseSchema(String schema) {
@@ -61,11 +60,12 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
         } catch (IOException e) {
             throw new RuntimeException("failed to parse schema \"" + schema + "\"", e);
         }
-        return MapUtils.unmodifiableMap(schemaMap.size() < 2
-                ? new TreeMap<Integer, String>() {{
+        TreeMap<Integer, String> defaultSchema = new TreeMap<Integer, String>() {{
             put(0, PropertyAndValueDictionary.EXTERNAL_ID);
             put(1, PropertyAndValueDictionary.NAME);
-        }}
+        }};
+        return MapUtils.unmodifiableMap(schemaMap.size() < 1
+                ? defaultSchema
                 : schemaMap);
     }
 }
