@@ -45,6 +45,7 @@ public class CmdLine {
         return JCommander.newBuilder()
                 .addObject(new CommandMain())
                 .addCommand("version", new CmdVersion())
+                .addCommand("replace", new CmdReplace())
                 .addCommand("append", new CmdAppend())
                 .addCommand("append-json", new CmdAppendJson())
                 .addCommand("validate-term", new CmdValidateTerms())

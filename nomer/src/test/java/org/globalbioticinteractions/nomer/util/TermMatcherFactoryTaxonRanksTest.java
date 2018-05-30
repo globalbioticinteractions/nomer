@@ -52,6 +52,18 @@ public class TermMatcherFactoryTaxonRanksTest {
         assertTrue(found.get());
     }
 
+    @Test
+    public void byId() throws PropertyEnricherException {
+        List<Term> bla = Collections.singletonList(new TermImpl("WD:Q7432", ""));
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.findTerms(bla, (aLong, s, taxon, nameType) -> {
+            assertThat(taxon.getExternalId(), is("WD:Q7432"));
+            assertThat(taxon.getName(), is("species"));
+            found.set(true);
+        });
+        assertTrue(found.get());
+    }
+
 
 
 }

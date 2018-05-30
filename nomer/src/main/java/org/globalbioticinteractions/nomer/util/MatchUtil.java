@@ -22,14 +22,14 @@ public class MatchUtil {
     public static void match(final List<String> matcherIds, TermMatcherContext ctx) {
         TermMatcher matcher = getTermMatcher(matcherIds, ctx);
         LOG.info("using matcher [" + matcher.getClass().getName() + "]");
-        match(new TermMatchingRowHandler(System.out, matcher, ctx));
+        match(new AppendingRowHandler(System.out, matcher, ctx));
     }
 
     public static void match(RowHandler handler) {
         try {
-            resolve(System.in, handler);
+            apply(System.in, handler);
         } catch (IOException | PropertyEnricherException e) {
-            throw new RuntimeException("failed to resolve taxon", e);
+            throw new RuntimeException("failed to apply taxon", e);
         }
     }
 
@@ -47,7 +47,7 @@ public class MatchUtil {
         return firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
     }
 
-    public static void resolve(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
+    public static void apply(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
         long counter = 0;

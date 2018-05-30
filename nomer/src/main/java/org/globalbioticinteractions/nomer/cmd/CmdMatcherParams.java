@@ -39,7 +39,13 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
 
     @Override
     public Map<Integer, String> getInputSchema() {
-        String schema = getProperty("nomer.schema");
+        String schema = getProperty("nomer.input.schema");
+        return parseSchema(schema);
+    }
+
+    @Override
+    public Map<Integer, String> getOutputSchema() {
+        String schema = getProperty("nomer.output.schema");
         return parseSchema(schema);
     }
 

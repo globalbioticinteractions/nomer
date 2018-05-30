@@ -104,7 +104,7 @@ public class TermMatchingRowJsonHandlerTest {
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();
         TermMatcher matcher = new MappingTermMatcher(termMapper);
         RowHandler rowHandler = new TermMatchingRowJsonHandler(os, matcher, ctx);
-        MatchUtil.resolve(is, rowHandler);
+        MatchUtil.apply(is, rowHandler);
         JsonNode jsonNode = new ObjectMapper().readTree(os.toString());
         JsonNode expectedJson = new ObjectMapper().readTree(expectedOutput);
         assertThat(jsonNode, Is.is(expectedJson));

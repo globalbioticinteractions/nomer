@@ -16,4 +16,6 @@ public interface TermMatcherContext extends PropertyContext {
 
     Map<Integer, String> getInputSchema();
 
+    Map<Integer, String> getOutputSchema();
+
 }

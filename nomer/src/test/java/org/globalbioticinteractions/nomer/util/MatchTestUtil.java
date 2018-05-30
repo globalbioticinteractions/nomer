@@ -59,5 +59,10 @@ public class MatchTestUtil {
             }};
         }
 
+        @Override
+        public Map<Integer, String> getOutputSchema() {
+            return null;
+        }
+
     }
 }

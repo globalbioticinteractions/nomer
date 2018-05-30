@@ -66,6 +66,11 @@ public class TermMatcherFactoryEnricherTest {
                 return null;
             }
 
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
         };
         TermMatcher termMatcher = new TermMatcherFactoryEnricher().createTermMatcher(ctx);
         termMatcher.findTerms(Arrays.asList(new TermImpl("NODC:9227040101", "Mickey")), new TermMatchListener() {

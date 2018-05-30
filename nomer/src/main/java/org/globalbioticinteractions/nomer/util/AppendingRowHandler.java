@@ -15,12 +15,12 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TermMatchingRowHandler implements RowHandler {
+public class AppendingRowHandler implements RowHandler {
     private final PrintStream p;
     private final TermMatcherContext ctx;
     private TermMatcher termMatcher;
 
-    public TermMatchingRowHandler(OutputStream os, TermMatcher termMatcher, TermMatcherContext ctx) {
+    public AppendingRowHandler(OutputStream os, TermMatcher termMatcher, TermMatcherContext ctx) {
         this.ctx = ctx;
         this.p = new PrintStream(os);
         this.termMatcher = termMatcher;

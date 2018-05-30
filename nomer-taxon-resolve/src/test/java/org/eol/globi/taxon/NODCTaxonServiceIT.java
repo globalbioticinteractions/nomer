@@ -50,6 +50,11 @@ public class NODCTaxonServiceIT {
                 return null;
             }
 
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
         });
         nodcTaxonService.init(NODCTaxonParserTest.getTestParser());
     }
