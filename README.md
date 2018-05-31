@@ -161,6 +161,33 @@ $ java -jar nomer.jar version
 0.0.7
 ```
 
+### Show supported matches
+``` console
+$ java -jar nomer.jar matcher -v
+```
+Result as of May 2018 is formatted as a table below:
+
+ name | description
+ --- | ---
+ ala-taxon | Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix.
+ envo-term | Lookup envo terms by name or by id using ENVO:* prefix.
+ eol-taxon | Lookup taxa in Encyclopedia of Life (EOL) by name or by id using EOL:* prefix.
+ gbif-taxon-id | Lookup taxon in GBIF by id using prefix GBIF:* prefix.
+ globi-correct | Scrubs names using GloBI's (taxonomic) name scrubber. Scrubbing includes removing of stopwords (e.g., undefined), correcting common typos using a "crappy" names list, parse to canonical name using gnparser (see https://github.com/GlobalNamesArchitecture/gnparser), and more.
+ globi-enrich | Uses GloBI's taxon enricher to find first term match by id or name. Needs internet connection to work. Uses various web apis like Encyclopedia of Life, World Registry of Marine Species (WoRMS), Integrated Taxonomic Information System (ITIS), National Biodiversity Network (NBN) and more.
+ globi-globalnames | Uses https://resolver.globalnames.org to match taxon names. Searches by name only (not id). Needs internet connection to work.
+ globi-taxon-cache | Uses GloBI's Taxon Graph to lookup terms by id or name across many taxonomies / ontologies. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information.
+ globi-taxon-rank | Finds taxonomic rank identifiers by rank commons name (e.g., species, order, soort). Uses Wikidata taxon rank items. Caches a copy locally on first usage to allow for subsequent offline usage.
+ gulfbase-taxon | Look up taxa of https://gulfbase.org by name or id with BioGoMx:* prefix.
+ inaturalist-taxon-id | Lookup taxon in iNaturalist by id with INAT_TAXON:* prefix.
+ itis-taxon-id | Use itis webservice to lookup taxa by id using ITIS:* prefix.
+ nbn-taxon-id | Lookup taxon of National Biodiversity Network by id with NBN:* prefix.
+ ncbi-taxon-id | Lookup NCBI taxon by id with NCBI:* prefix.
+ nodc-taxon-id | Lookup taxon in the Taxonomic Code of the National Oceanographic Data Center (NODC) by id with prefix NODC: . Maps to ITIS terms if possible.
+ worms-taxon | Lookup taxon in WoRMS by name or by id with WORMS:* prefix.
+
+If you'd like to add new matchers, please open [a new issue](https://github.com/globalbioticinteractions/nomer/issues/new) and describe your desires.
+
 ### Match term by id with default matcher
 
 ``` console
