@@ -14,6 +14,7 @@ Matchers can be added by writing some java code that implements an interface.
 
 ## Table of Contents
 
+- [Prerequisites](#prerequisites)
 - [Install](#install)
 - [Usage](#usage)
 - [Examples](#examples)
@@ -21,11 +22,21 @@ Matchers can be added by writing some java code that implements an interface.
 - [Contribute](#contribute)
 - [License](#license)
 
+## Prerequisites
+
+Nomer needs Java 8+.
+
 ## Install
 
-### Official releases
+Nomer is a stand-alone java application, packaged in a jarfile. You can build you own (see [building](#building) or download a prebuilt jar at [releases](https://github.com/globalbioticinteractions/nomer/releases).
 
-You can use this project by including `nomer.jar` from one of the [releases](https://github.com/globalbioticinteractions/nomer/releases).
+On linux (and Mac) it is recommended to make an alias by appending the following to ~/.bash_aliases :
+
+```
+alias nomer='java -Xmx4G -jar [some dir]/nomer.jar'
+```
+
+where [some dir] is the location where nomer.jar lives. With this alias, you can now do ```nomer version``` instead of ```java -jar nomer.jar version```.
 
 ### Maven, Gradle, SBT
 Nomer is made available through a [maven](https://maven.apache.org) repository.
@@ -60,54 +71,84 @@ Please use [maven](https://maven.apache.org) version 3.3+ , otherwise you might 
 ## Usage
 
 ```
-Usage: <main class> [command] [command options]
+Usage: nomer [command] [command options]
   Commands:
-    version      Show Version
+    version      Show Version.
       Usage: version
 
-    append      Append term matches to row
+    replace      Replace exact term matches in row. The input schema is used
+            to select the id and/or name to match to. The output schema is
+            used to select the columns to write into. If a term has multiple
+            matches, first match is used.
+      Usage: replace [options] [matcher]
+        Options:
+          -p, --properties
+            Path to properties file to override defaults.
+            Default: <empty string>
+
+    append      Append term match to row using id and name columns specified
+            in input schema. Multiple matches result in multiple rows.
       Usage: append [options] [matcher]
         Options:
-          --properties, -p
-            point to properties file to override defaults.
+          -o, --output-format
+            tsv, json
+            Default: tsv
+          -p, --properties
+            Path to properties file to override defaults.
             Default: <empty string>
 
-    append-json      embeds term matches into json
-      Usage: append-json [options] [matcher]
+    matchers      Lists supported matcher and descriptions in JSONT.
+      Usage: matchers [options]
         Options:
-          --properties, -p
-            point to properties file to override defaults.
+          -o, --output-format
+            tsv, json
+            Default: tsv
+          -v, --verbose
+            if set, matcher descriptions are included for tsv.
+            Default: false
+
+    properties      Lists configuration properties. Can be used to make a
+            local copy and override default settings using the
+            [--properties=[local copy]] option.
+      Usage: properties [options]
+        Options:
+          -p, --properties
+            Path to properties file to override defaults.
             Default: <empty string>
 
-    validate-term      Validate terms
+    input-schema      Show input schema in JSON.
+      Usage: input-schema [options]
+        Options:
+          -p, --properties
+            Path to properties file to override defaults.
+            Default: <empty string>
+
+    output-schema      Show output schema.
+      Usage: output-schema [options]
+        Options:
+          -p, --properties
+            Path to properties file to override defaults.
+            Default: <empty string>
+
+    validate-term      Validate terms.
       Usage: validate-term [options]
         Options:
-          --properties, -p
-            point to properties file to override defaults.
+          -p, --properties
+            Path to properties file to override defaults.
             Default: <empty string>
 
-    validate-term-link      Validate term links
+    validate-term-link      Validate term links.
       Usage: validate-term-link [options]
         Options:
-          --properties, -p
-            point to properties file to override defaults.
+          -p, --properties
+            Path to properties file to override defaults.
             Default: <empty string>
-
-    matchers      Lists all or selected matcher configuration(s)
-      Usage: matchers
 
     clean      Cleans term matcher cache.
       Usage: clean [options] [matcher]
         Options:
-          --properties, -p
-            point to properties file to override defaults.
-            Default: <empty string>
-
-    properties      Lists properties.
-      Usage: properties [options]
-        Options:
-          --properties, -p
-            point to properties file to override defaults.
+          -p, --properties
+            Path to properties file to override defaults.
             Default: <empty string>
 ```
 
@@ -115,7 +156,10 @@ Usage: <main class> [command] [command options]
 
 ### Show version
 
-```java -jar nomer.jar version```
+``` console
+$java -jar nomer.jar version
+0.0.7
+```
 
 ### Match term by id with default matcher
 
@@ -163,6 +207,51 @@ expected output includes tab separated lines like, where the first two columns a
 	Canis lupus	SAME_AS	IRMNG:11407661	Canis lupus	species		Animalia | Chordata | Mammalia | Carnivora | Canidae | Canis | Canis lupus	IRMNG:11 | IRMNG:148 | IRMNG:1310 | IRMNG:12116 | IRMNG:104585 | IRMNG:1282727 | IRMNG:11407661	kingdom | phylum | class | order | family | genus | species	http://www.marine.csiro.au/mirrorsearch/ir_search.list_species?sp_id=11407661
 	Canis lupus	SAME_AS	GBIF:5219173	Canis lupus	species		Animalia | Chordata | Mammalia | Carnivora | Canidae | Canis | Canis lupus	GBIF:1 | GBIF:44 | GBIF:359 | GBIF:732 | GBIF:9701 | GBIF:5219142 | GBIF:5219173kingdom | phylum | class | order | family | genus | species	http://www.gbif.org/species/5219173
 ```
+
+### replacing term matches
+
+In addition to appending the found matches to a provided input row, Nomer also supports replacing the matched values.
+
+Looking up _Canis lupus_ using globalnames with the replace command would look like:
+
+``` console
+$ echo -e "\tCanis lupus" | java -jar nomer.jar replace globi-globalnames
+NCBI:9612	Canis lupus
+```
+
+If multiple matches for the term are available, the first match will be replaced.
+
+The replace commands also supports pipe delimited paths, like:
+
+``` console
+$ echo -e "\tAnimalia | Mammalia | Canis lupus" | java -jar nomer.jar replace globi-globalnames
+ITIS:202423 | NCBI:40674 | NCBI:9612	Animalia | Mammalia | Canis lupus
+```
+
+Or when using a matcher that supports lookup by id:
+``` console
+$ echo -e "ITIS:202423 | NCBI:40674 | NCBI:9612\t" | java -jar nomer.jar replace globi-enrich
+ITIS:202423 | NCBI:40674 | NCBI:9612    Animalia | Mammalia | Canis lupus
+```
+
+If you have an existing tabular file where the id and name columns are not the first and second respectively,
+then, you can change the input/output schema. For instance, if you'd like to match on ids in the third (=2) column
+and write the matching id and name in the first (=0) and second (=1) column (= default), you can do something like:
+
+``` console
+$ echo -e "\t\tNCBI:9606" | java -Dnomer.schema.input="[{\"column\":2,\"type\":\"externalId\"}]" -jar nomer.jar replace ncbi-taxon-id
+NCBI:9606	Homo sapiens	NCBI:9606
+```
+
+To avoid escaping of double quotes (i.e. ```"``` -> ```\"```), and to keep your commands relatively short, perhaps an easier way to change the input / output schema is the save the default properties to a file using ```java -jar nomer properties > my.properties```.
+Now, edit the properties ```nomer.schema.input``` and ```nomer.schema.output``` to suit your needs. After you are done, you can use the properties by running someting like:
+
+``` console
+$ echo -e "\t\tNCBI:9606" | java -jar nomer.jar --properties=my.properties replace ncbi-taxon-id
+NCBI:9606	Homo sapiens	NCBI:9606
+```
+... to reproduce the results from the previous example.
+
 
 ### validate taxonCache and taxonMap
 
