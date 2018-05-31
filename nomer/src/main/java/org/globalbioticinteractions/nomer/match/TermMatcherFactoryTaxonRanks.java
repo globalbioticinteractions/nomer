@@ -32,7 +32,7 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
                 URL terms = getClass().getResource(resourceNameRanks);
                 Pair<PrintStream, File> termWriter = writerAndFileFor(terms, resourceNameRanks, cacheDir);
                 listeners.add(WikidataTaxonRankLoader.createCacheWriter(termWriter.getLeft()));
-                taxonRankCacheUrl = termWriter.getRight().toURI().toASCIIString();
+                taxonRankCacheUrl = termWriter.getRight().toURI().toString();
             }
 
             String taxonRankMapUrl = ctx.getProperty("nomer.taxon.rank.map.url");
