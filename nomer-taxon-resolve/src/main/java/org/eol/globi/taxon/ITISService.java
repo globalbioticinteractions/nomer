@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@PropertyEnricherInfo(name = "itis-taxon-id", description = "use itis webservice to lookup taxa by id using ITIS:* prefix")
+@PropertyEnricherInfo(name = "itis-taxon-id", description = "Use itis webservice to lookup taxa by id using ITIS:* prefix.")
 public class ITISService implements PropertyEnricher {
 
     @Override
