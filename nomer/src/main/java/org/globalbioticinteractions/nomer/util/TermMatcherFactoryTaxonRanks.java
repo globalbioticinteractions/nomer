@@ -60,6 +60,16 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
 
     }
 
+    @Override
+    public String getName() {
+        return "globi-taxon-rank";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Finds taxonomic rank identifiers by rank commons name (e.g., species, order, soort). Uses Wikidata taxon rank items. Caches a copy locally on first usage to allow for subsequent offline usage.";
+    }
+
     private Pair<PrintStream, File> writerAndFileFor(URL terms, String resourceName, File cacheDir) throws IOException {
         File tmpRanks = new File(cacheDir, "wikidata_appended_" + resourceName);
         FileUtils.copyURLToFile(terms, tmpRanks);

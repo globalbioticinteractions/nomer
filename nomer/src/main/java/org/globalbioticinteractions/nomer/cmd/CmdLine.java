@@ -21,6 +21,7 @@ public class CmdLine {
 
     public static void run(String[] args) throws Throwable {
         JCommander jc = new CmdLine().buildCommander();
+        jc.setProgramName("nomer");
         try {
             jc.parse(args);
             CmdLine.run(jc.getCommands().get(jc.getParsedCommand()));
@@ -47,12 +48,13 @@ public class CmdLine {
                 .addCommand("version", new CmdVersion())
                 .addCommand("replace", new CmdReplace())
                 .addCommand("append", new CmdAppend())
-                .addCommand("append-json", new CmdAppendJson())
                 .addCommand("validate-term", new CmdValidateTerms())
                 .addCommand("validate-term-link", new CmdValidateLinks())
                 .addCommand("matchers", new CmdMatchers())
                 .addCommand("clean", new CmdClean())
                 .addCommand("properties", new CmdProperties())
+                .addCommand("input-schema", new CmdInputSchema())
+                .addCommand("output-schema", new CmdOutputSchema())
                 .build();
     }
 

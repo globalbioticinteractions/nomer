@@ -17,14 +17,6 @@ import java.util.stream.Stream;
 
 public class MatchUtil {
 
-    private final static Log LOG = LogFactory.getLog(MatchUtil.class);
-
-    public static void match(final List<String> matcherIds, TermMatcherContext ctx) {
-        TermMatcher matcher = getTermMatcher(matcherIds, ctx);
-        LOG.info("using matcher [" + matcher.getClass().getName() + "]");
-        match(new AppendingRowHandler(System.out, matcher, ctx));
-    }
-
     public static void match(RowHandler handler) {
         try {
             apply(System.in, handler);

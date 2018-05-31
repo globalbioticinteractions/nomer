@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static org.globalbioticinteractions.nomer.util.TermValidatorPredicates.allFor;
 
-@Parameters(separators = "= ", commandDescription = "Validate term links")
+@Parameters(separators = "= ", commandDescription = "Validate term links.")
 public class CmdValidateLinks extends CmdDefaultParams implements Runnable {
 
     static void validate(Stream<String> lines, List<Pair<Predicate<String>, String>> mapPredicates) {

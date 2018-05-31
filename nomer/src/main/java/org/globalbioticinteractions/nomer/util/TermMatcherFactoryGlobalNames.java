@@ -13,4 +13,14 @@ public class TermMatcherFactoryGlobalNames implements TermMatcherFactory {
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
         return new GlobalNamesService(Arrays.asList(GlobalNamesSources.values()));
     }
+
+    @Override
+    public String getName() {
+        return "globi-globalnames";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Uses https://resolver.globalnames.org to match taxon names. Searches by name only (not id). Needs internet connection to work.";
+    }
 }

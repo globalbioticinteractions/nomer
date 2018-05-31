@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 
 import static org.globalbioticinteractions.nomer.util.TermValidatorPredicates.allFor;
 
-@Parameters(separators = "= ", commandDescription = "Validate terms")
+@Parameters(separators = "= ", commandDescription = "Validate terms.")
 public class CmdValidateTerms extends CmdDefaultParams implements Runnable {
 
     @Override

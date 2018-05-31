@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-public class TermMatchingRowJsonHandlerTest {
+public class AppendingRowHandlerJsonTest {
 
     @Test
     public void resolveWithEnricher() throws IOException, PropertyEnricherException {
@@ -103,7 +103,7 @@ public class TermMatchingRowJsonHandlerTest {
 
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();
         TermMatcher matcher = new MappingTermMatcher(termMapper);
-        RowHandler rowHandler = new TermMatchingRowJsonHandler(os, matcher, ctx);
+        RowHandler rowHandler = new AppendingRowHandlerJson(os, matcher, ctx);
         MatchUtil.apply(is, rowHandler);
         JsonNode jsonNode = new ObjectMapper().readTree(os.toString());
         JsonNode expectedJson = new ObjectMapper().readTree(expectedOutput);

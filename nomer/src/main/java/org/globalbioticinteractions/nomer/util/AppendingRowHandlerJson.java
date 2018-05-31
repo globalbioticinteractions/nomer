@@ -17,12 +17,12 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
 
-public class TermMatchingRowJsonHandler implements RowHandler {
+public class AppendingRowHandlerJson implements RowHandler {
     private final TermMatcherContext ctx;
     private final TermMatcher matcher;
     private PrintStream out;
 
-    public TermMatchingRowJsonHandler(OutputStream os, TermMatcher matcher, TermMatcherContext ctx) {
+    public AppendingRowHandlerJson(OutputStream os, TermMatcher matcher, TermMatcherContext ctx) {
         this.ctx = ctx;
         this.matcher = matcher;
         this.out = new PrintStream(os);
@@ -41,7 +41,8 @@ public class TermMatchingRowJsonHandler implements RowHandler {
                 ArrayNode names = addArray(pathNode, "names", taxon.getPath());
                 ArrayNode ids = addArray(pathNode, "ids", taxon.getPathIds());
                 ArrayNode ranks = addArray(pathNode, "ranks", taxon.getPathNames());
-                if (names.size() == ids.size() && names.size() == ranks.size()) {
+                if ((ids == null || names.size() == ids.size())
+                        && (names == null || names.size() == ranks.size())) {
                     resolved.put("path", pathNode);
                 }
             }
@@ -51,10 +52,13 @@ public class TermMatchingRowJsonHandler implements RowHandler {
     }
 
     private ArrayNode addArray(ObjectNode pathNode, String names1, String path) {
+        ArrayNode names = null;
         String[] split = CSVTSVUtil.splitPipes(path);
-        ArrayNode names = pathNode.putArray(names1);
-        for (String s : split) {
-            names.add(StringUtils.trim(s));
+        if (split != null) {
+            names = pathNode.putArray(names1);
+            for (String s : split) {
+                names.add(StringUtils.trim(s));
+            }
         }
         return names;
     }

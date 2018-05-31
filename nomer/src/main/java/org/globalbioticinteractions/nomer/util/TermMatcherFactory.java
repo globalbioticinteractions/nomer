@@ -6,4 +6,8 @@ public interface TermMatcherFactory {
 
     TermMatcher createTermMatcher(TermMatcherContext ctx);
 
+    String getName();
+
+    String getDescription();
+
 }

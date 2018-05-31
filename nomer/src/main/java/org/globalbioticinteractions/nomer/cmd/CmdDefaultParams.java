@@ -17,7 +17,7 @@ public abstract class CmdDefaultParams implements PropertyContext {
     public static final String PROPERTIES_DEFAULT = "classpath:/org/globalbioticinteractions/nomer/default.properties";
     private Properties properties = null;
 
-    @Parameter(names = {"--properties", "-p"}, description = "point to properties file to override defaults.")
+    @Parameter(names = {"-p", "--properties"}, description = "Path to properties file to override defaults.")
     private String propertiesResource = "";
 
 
