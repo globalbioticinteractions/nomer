@@ -50,20 +50,9 @@ public class MatchUtil {
     public static void apply(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
-        long counter = 0;
         while ((line = reader.readLine()) != null) {
             String[] row = CSVTSVUtil.splitTSV(line);
             rowHandler.onRow(row);
-            counter++;
-            if (counter % 25 == 0) {
-                System.err.print(".");
-            }
-            if (counter % (25 * 50) == 0) {
-                System.err.println();
-            }
-        }
-        if (counter % (25 * 50) != 0) {
-            System.err.println();
         }
     }
 

@@ -49,7 +49,6 @@ public abstract class CmdDefaultParams implements PropertyContext {
                 }
             }
             properties = props;
-            props.list(System.err);
         } catch (IOException e) {
             throw new RuntimeException("failed to load properties from [" + getPropertiesResource() + "]", e);
         }
