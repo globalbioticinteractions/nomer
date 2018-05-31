@@ -48,13 +48,13 @@ public class CmdLine {
                 .addCommand("version", new CmdVersion())
                 .addCommand("replace", new CmdReplace())
                 .addCommand("append", new CmdAppend())
-                .addCommand("validate-term", new CmdValidateTerms())
-                .addCommand("validate-term-link", new CmdValidateLinks())
                 .addCommand("matchers", new CmdMatchers())
-                .addCommand("clean", new CmdClean())
                 .addCommand("properties", new CmdProperties())
                 .addCommand("input-schema", new CmdInputSchema())
                 .addCommand("output-schema", new CmdOutputSchema())
+                .addCommand("validate-term", new CmdValidateTerms())
+                .addCommand("validate-term-link", new CmdValidateLinks())
+                .addCommand("clean", new CmdClean())
                 .build();
     }
 

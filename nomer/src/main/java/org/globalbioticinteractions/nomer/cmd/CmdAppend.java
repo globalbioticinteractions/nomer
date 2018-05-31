@@ -13,7 +13,7 @@ import org.globalbioticinteractions.nomer.util.AppendingRowHandlerJson;
 @Parameters(separators = "= ", commandDescription = "Append term match to row using id and name columns specified in input schema. Multiple matches result in multiple rows.")
 public class CmdAppend extends CmdMatcherParams {
 
-    @Parameter(names = {"-o", "--output-format"}, description = "[tsv, json]", validateWith = JsonTsvFormatValidator.class)
+    @Parameter(names = {"-o", "--output-format"}, description = "tsv, json", validateWith = JsonTsvFormatValidator.class)
     private String outputFormat = "tsv";
 
     @Override
