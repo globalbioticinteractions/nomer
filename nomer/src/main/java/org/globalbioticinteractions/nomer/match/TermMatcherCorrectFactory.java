@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.TaxonImpl;
@@ -9,8 +9,8 @@ import org.eol.globi.taxon.CorrectionService;
 import org.eol.globi.taxon.TaxonNameCorrector;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

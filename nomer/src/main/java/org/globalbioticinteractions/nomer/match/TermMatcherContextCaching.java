@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -7,6 +7,7 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
 import org.globalbioticinteractions.nomer.cmd.CmdDefaultParams;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.File;
 import java.io.FileInputStream;

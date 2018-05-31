@@ -1,8 +1,12 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.service.CacheService;
 import org.eol.globi.service.PropertyEnricherException;
+import org.globalbioticinteractions.nomer.match.TermMatcherCacheFactory;
+import org.globalbioticinteractions.nomer.util.MatchTestUtil;
+import org.globalbioticinteractions.nomer.util.TermValidator;
+import org.globalbioticinteractions.nomer.util.TermValidatorFactory;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 

@@ -6,6 +6,7 @@ import org.eol.globi.taxon.GlobalNamesService;
 import org.eol.globi.taxon.GlobalNamesSources;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.TermMatcherFactoryEnsembleEnricher;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 

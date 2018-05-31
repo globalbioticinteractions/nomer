@@ -1,12 +1,13 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.FileUtils;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.TermMatcherFactoryTaxonRanks;
+import org.globalbioticinteractions.nomer.util.MatchTestUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;

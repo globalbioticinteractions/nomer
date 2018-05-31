@@ -25,11 +25,11 @@ public class MatchTestUtil {
         };
     }
 
-    static TaxonCacheService createTaxonCacheService() {
+    public static TaxonCacheService createTaxonCacheService() {
         return new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv", "classpath:/org/eol/globi/taxon/taxonMap.tsv");
     }
 
-    static class TermMatcherContextDefault implements TermMatcherContext {
+    public static class TermMatcherContextDefault implements TermMatcherContext {
 
         @Override
         public String getCacheDir() {

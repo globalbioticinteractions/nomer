@@ -1,6 +1,7 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 public interface TermMatcherFactory {
 

@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;

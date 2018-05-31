@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
@@ -11,9 +11,10 @@ import org.eol.globi.taxon.TaxonMapParser;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.TermResource;
 import org.eol.globi.util.CSVTSVUtil;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.globalbioticinteractions.nomer.util.TermValidatorPredicates;
 
 import java.io.File;
-import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;

@@ -1,9 +1,11 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.TermMatchEnsembleFactory;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
 import java.util.Collections;

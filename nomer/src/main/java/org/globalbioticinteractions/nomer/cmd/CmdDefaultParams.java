@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.PropertyContext;
-import org.globalbioticinteractions.nomer.util.TermMatcherContextCaching;
 
 import java.io.File;
 import java.io.FileInputStream;

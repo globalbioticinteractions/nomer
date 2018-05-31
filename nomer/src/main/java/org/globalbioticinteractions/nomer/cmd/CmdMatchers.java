@@ -7,12 +7,10 @@ import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
-import org.globalbioticinteractions.nomer.util.TermMatcherFactory;
-import org.globalbioticinteractions.nomer.util.TermMatcherRegistry;
+import org.globalbioticinteractions.nomer.match.TermMatcherFactory;
+import org.globalbioticinteractions.nomer.match.TermMatcherRegistry;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

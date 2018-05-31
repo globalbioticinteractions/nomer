@@ -1,10 +1,10 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.taxon.GlobalNamesService;
 import org.eol.globi.taxon.GlobalNamesSources;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
-import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
 public class TermMatcherFactoryGlobalNames implements TermMatcherFactory {

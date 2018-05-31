@@ -1,11 +1,10 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
+import org.globalbioticinteractions.nomer.match.TermMatcherRegistry;
 
 import java.io.BufferedReader;
 import java.io.IOException;

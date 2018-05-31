@@ -2,24 +2,15 @@ package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.util.ResourceUtil;
-import org.globalbioticinteractions.nomer.util.TermMatcherContextCaching;
+import org.globalbioticinteractions.nomer.match.TermMatcherContextCaching;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.TreeMap;
 
 public abstract class CmdMatcherParams extends TermMatcherContextCaching implements Runnable {

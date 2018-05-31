@@ -1,8 +1,9 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.IOUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
+import org.globalbioticinteractions.nomer.match.WikidataTaxonRankLoader;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;

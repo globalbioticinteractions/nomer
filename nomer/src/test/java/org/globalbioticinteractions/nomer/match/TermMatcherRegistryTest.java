@@ -1,4 +1,4 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -7,6 +7,8 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.TermMatcherRegistry;
+import org.globalbioticinteractions.nomer.util.MatchTestUtil;
 import org.junit.Test;
 
 import java.util.Collections;
