@@ -164,13 +164,13 @@ $ java -jar nomer.jar version
 ### Match term by id with default matcher
 
 ``` console
-echo -e "NCBI:9606\t" | java -Xmx4G -jar nomer.jar append > matches.tsv
+$ echo -e "NCBI:9606\t" | java -Xmx4G -jar nomer.jar append > matches.tsv
 ```
 
 ### Match term by name with default matcher
 
 ``` console
-echo -e "\tHomo sapiens" | java -Xmx4G -jar nomer.jar append > matches.tsv
+$ echo -e "\tHomo sapiens" | java -Xmx4G -jar nomer.jar append > matches.tsv
 ```
 
 matches.tsv should now include entries like
