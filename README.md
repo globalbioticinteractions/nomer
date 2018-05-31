@@ -245,7 +245,7 @@ $ echo -e "\t\tNCBI:9606" | java -Dnomer.schema.input="[{\"column\":2,\"type\":\
 NCBI:9606	Homo sapiens	NCBI:9606
 ```
 
-To avoid escaping of double quotes (i.e. ```"``` -> ```\"```), and to keep your commands relatively short, perhaps an easier way to change the input / output schema is the save the default properties to a file using ```java -jar nomer properties > my.properties```.
+To avoid escaping of double quotes (i.e. ```"``` -> ```\"```), and to keep your commands relatively short, perhaps an easier way to change the input / output schema is the save the default properties to a file using ```java -jar nomer.jar properties > my.properties```.
 Now, edit the properties ```nomer.schema.input``` and ```nomer.schema.output``` to suit your needs. After you are done, you can use the properties by running someting like:
 
 ``` console
