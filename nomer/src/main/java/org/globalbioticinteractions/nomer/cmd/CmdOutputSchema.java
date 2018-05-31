@@ -2,7 +2,7 @@ package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameters;
 
-@Parameters(separators = "= ", commandDescription = "Show output schema.")
+@Parameters(separators = "= ", commandDescription = "Show output schema in JSON.")
 public class CmdOutputSchema extends CmdProperties {
 
     @Override

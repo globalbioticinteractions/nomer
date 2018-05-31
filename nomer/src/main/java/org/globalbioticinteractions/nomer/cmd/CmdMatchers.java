@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@Parameters(separators = "= ", commandDescription = "Lists supported matcher and descriptions in JSONT.")
+@Parameters(separators = "= ", commandDescription = "Lists supported matcher and (optionally) their descriptions.")
 public class CmdMatchers implements Runnable {
 
     @Parameter(names = {"-o", "--output-format"}, description = "tsv, json", validateWith = JsonTsvFormatValidator.class)
