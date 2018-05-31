@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -14,8 +13,7 @@ import org.eol.globi.taxon.TermResource;
 import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.annotation.Annotation;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -43,7 +41,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
 
     @Override
     public String getDescription() {
-        return "Uses GloBI's Taxon Graph to lookup terms by id or name. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information.";
+        return "Uses GloBI's Taxon Graph to lookup terms by id or name across many taxonomies / ontologies. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information.";
     }
 
     public static TaxonCacheService createCacheService(TermMatcherContext ctx) {

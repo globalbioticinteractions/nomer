@@ -2,6 +2,7 @@ package org.eol.globi.service;
 
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,13 +12,15 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
-public class PropertyEnricherFactoryTest {
+public class TermMatchEnsembleFactoryTest {
 
     private PropertyEnricher taxonEnricher;
 
     @Before
     public void init() {
-        taxonEnricher = PropertyEnricherFactory.createTaxonEnricher(null);
+        taxonEnricher = new TaxonEnricherImpl() {{
+            setServices(TermMatchEnsembleFactory.getEnrichers(null));
+        }};
     }
 
     @After

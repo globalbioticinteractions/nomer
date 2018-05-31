@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.IOUtils;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.PropertyEnricherFactory;
 import org.eol.globi.taxon.GlobalNamesService;
 import org.eol.globi.taxon.GlobalNamesSources;
 import org.eol.globi.taxon.TaxonCacheService;
@@ -26,9 +25,8 @@ public class AppendingRowHandlerTest {
     public void resolveWithEnricher() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = PropertyEnricherFactory.createTaxonMatcher(null);
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault() {
-        }));
+        final TermMatcher matcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(null);
+        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault()));
         assertThat(os.toString(), startsWith("NCBI:9606\tHomo sapiens\tSAME_AS\tNCBI:9606\tHomo sapiens\tspecies\tman @en | human @en\t"));
     }
 
@@ -79,8 +77,7 @@ public class AppendingRowHandlerTest {
     public void resolveGlobalNamesAppendFuzzyMatch() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tHomo saliens\tone");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchUtil.apply(is, new AppendingRowHandler(os, new GlobalNamesService(), new MatchTestUtil.TermMatcherContextDefault() {
-        }));
+        MatchUtil.apply(is, new AppendingRowHandler(os, new GlobalNamesService(), new MatchTestUtil.TermMatcherContextDefault()));
         assertThat(os.toString(), containsString("\tHomo saliens\tone\tSIMILAR_TO\t"));
     }
 
@@ -88,8 +85,7 @@ public class AppendingRowHandlerTest {
     public void resolveGlobalNamesBatchAppend() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens\tone");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchUtil.apply(is, new AppendingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI), new MatchTestUtil.TermMatcherContextDefault() {
-        }));
+        MatchUtil.apply(is, new AppendingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI), new MatchTestUtil.TermMatcherContextDefault()));
         assertThat(os.toString(), containsString("Mammalia"));
         assertThat(os.toString(), containsString("nih.gov"));
     }
@@ -98,8 +94,7 @@ public class AppendingRowHandlerTest {
     public void resolveGlobalNamesBatchAppendNoMatchName() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("NCBI:9606\tDonald duck\tone");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchUtil.apply(is, new AppendingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI), new MatchTestUtil.TermMatcherContextDefault() {
-        }));
+        MatchUtil.apply(is, new AppendingRowHandler(os, new GlobalNamesService(GlobalNamesSources.NCBI), new MatchTestUtil.TermMatcherContextDefault()));
         assertThat(os.toString(), startsWith("NCBI:9606\tDonald duck\tone\tNONE\t\tDonald duck"));
     }
 

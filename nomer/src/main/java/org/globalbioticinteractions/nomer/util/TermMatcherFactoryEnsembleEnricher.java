@@ -1,17 +1,18 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.eol.globi.service.PropertyEnricherFactory;
-import org.eol.globi.taxon.GlobalNamesService;
-import org.eol.globi.taxon.GlobalNamesSources;
+import org.eol.globi.service.TermMatchEnsembleFactory;
+import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
 
-import java.util.Arrays;
+import java.lang.annotation.Annotation;
 
-public class TermMatcherFactoryEnricher implements TermMatcherFactory {
+public class TermMatcherFactoryEnsembleEnricher implements TermMatcherFactory {
 
     @Override
-    public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return PropertyEnricherFactory.createTaxonMatcher(ctx);
+    public TermMatcher createTermMatcher(final TermMatcherContext ctx) {
+        return new TaxonEnricherImpl() {{
+            setServices(TermMatchEnsembleFactory.getEnrichers(ctx));
+        }};
     }
 
     @Override

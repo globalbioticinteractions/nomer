@@ -10,6 +10,7 @@ import org.eol.globi.taxon.TaxonNameCorrector;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

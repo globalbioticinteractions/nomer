@@ -26,16 +26,6 @@ public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
     private final HashMap<Class, Integer> errorCounts = new HashMap<Class, Integer>();
     private boolean hasLoggedError = false;
 
-    private Date date = null;
-
-    Date getDate() {
-        return date == null ? new Date() : date;
-    }
-
-    void setDate(Date date) {
-        this.date = date;
-    }
-
     @Override
     public Map<String, String> enrich(final Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enrichedProperties = new HashMap<String, String>(properties);

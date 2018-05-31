@@ -4,6 +4,7 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -21,7 +22,9 @@ public class TaxonEnricherImplIT {
 
     @BeforeClass
     public static void init() {
-        taxonEnricher = PropertyEnricherFactory.createTaxonEnricher(null);
+        taxonEnricher = new TaxonEnricherImpl() {{
+            setServices(TermMatchEnsembleFactory.getEnrichers(null));
+        }};
     }
 
     @AfterClass

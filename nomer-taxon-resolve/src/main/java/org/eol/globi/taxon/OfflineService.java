@@ -27,7 +27,7 @@ public abstract class OfflineService implements PropertyEnricher {
         if (enrichedProperties == null) {
             enrichedProperties = enrichByName(properties);
         }
-        return enrichedProperties == null ? new HashMap<String, String>(properties) : enrichedProperties;
+        return enrichedProperties == null ? new HashMap<>(properties) : enrichedProperties;
     }
 
     protected Map<String, String> enrichByName(Map<String, String> properties) throws PropertyEnricherException {
@@ -44,7 +44,7 @@ public abstract class OfflineService implements PropertyEnricher {
         return enrichedProperties;
     }
 
-    protected Map<String, String> enrichById(Map<String, String> properties) throws PropertyEnricherException {
+    private Map<String, String> enrichById(Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enrichedProperties = null;
         String propertyName = PropertyAndValueDictionary.EXTERNAL_ID;
         String taxonExternalId = properties.get(propertyName);
@@ -58,7 +58,7 @@ public abstract class OfflineService implements PropertyEnricher {
         return enrichedProperties;
     }
 
-    protected Map<String, String> toEnrichedProperies(String propertyValue, Taxon[] taxa) {
+    private Map<String, String> toEnrichedProperies(String propertyValue, Taxon[] taxa) {
         Map<String, String> enrichedProperties = null;
         Taxon first = taxa.length == 0 ? null : taxa[0];
         if (taxa.length > 1) {
@@ -70,7 +70,7 @@ public abstract class OfflineService implements PropertyEnricher {
         return enrichedProperties;
     }
 
-    protected String getServiceName() {
+    private String getServiceName() {
         return getClass().getSimpleName();
     }
 

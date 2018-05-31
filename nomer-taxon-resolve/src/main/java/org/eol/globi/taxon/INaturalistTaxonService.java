@@ -12,6 +12,7 @@ import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BinaryOperator;
 
+@PropertyEnricherInfo(name = "inaturalist-taxon-id", description = "Lookup taxon in iNaturalist by id with INAT_TAXON:* prefix.")
 public class INaturalistTaxonService implements PropertyEnricher {
 
     @Override

@@ -11,6 +11,7 @@ import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@PropertyEnricherInfo(name = "ncbi-taxon-id", description = "Lookup NCBI taxon by id with NCBI:* prefix.")
 public class NCBIService implements PropertyEnricher {
 
     @Override
@@ -49,7 +51,7 @@ public class NCBIService implements PropertyEnricher {
         return enriched;
     }
 
-    protected void parseAndPopulate(Map<String, String> enriched, String tsn, String fullHierarchy) throws PropertyEnricherException {
+    void parseAndPopulate(Map<String, String> enriched, String tsn, String fullHierarchy) throws PropertyEnricherException {
         enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, TaxonomyProvider.ID_PREFIX_NCBI + tsn);
 
         List<String> taxonNames = getPathElems(fullHierarchy, "ScientificName", "");
@@ -79,7 +81,7 @@ public class NCBIService implements PropertyEnricher {
         return taxonNames;
     }
 
-    protected void setPropertyToFirstValue(String propertyName, List<String> pathElems, Map<String, String> enriched) {
+    private void setPropertyToFirstValue(String propertyName, List<String> pathElems, Map<String, String> enriched) {
         if (pathElems != null && pathElems.size() > 0) {
             enriched.put(propertyName, pathElems.get(pathElems.size()-1));
         }
@@ -108,19 +110,6 @@ public class NCBIService implements PropertyEnricher {
         } catch (Exception var12) {
             throw new PropertyEnricherException("failed to handle response [" + xmlContent + "]", var12);
         }
-    }
-
-
-    protected String firstWillBeLast(String taxonNames) {
-        String transformedNames = taxonNames;
-        if (taxonNames != null) {
-            String[] split1 = CSVTSVUtil.splitPipes(taxonNames);
-            List<String> list1 = Arrays.asList(split1);
-            Collections.rotate(list1, -1);
-            transformedNames = StringUtils.join(list1, CharsetConstant.SEPARATOR);
-            transformedNames = transformedNames.replaceAll("\\s+", " ").trim();
-        }
-        return transformedNames;
     }
 
     private String getResponse(String queryString) throws PropertyEnricherException {

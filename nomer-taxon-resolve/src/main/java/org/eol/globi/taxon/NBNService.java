@@ -11,6 +11,7 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.HttpUtil;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@PropertyEnricherInfo(name= "nbn-taxon-id", description = "Lookup taxon of National Biodiversity Network by id with NBN:* prefix.")
 public class NBNService implements PropertyEnricher {
 
     private static final Log LOG = LogFactory.getLog(NBNService.class);
@@ -33,7 +35,7 @@ public class NBNService implements PropertyEnricher {
         return enriched;
     }
 
-    protected void enrichWithExternalId(Map<String, String> enriched, String externalId) throws PropertyEnricherException {
+    private void enrichWithExternalId(Map<String, String> enriched, String externalId) throws PropertyEnricherException {
         List<String> ids = new ArrayList<String>();
         List<String> names = new ArrayList<String>();
         List<String> ranks = new ArrayList<String>();
@@ -80,24 +82,6 @@ public class NBNService implements PropertyEnricher {
         enriched.put(PropertyAndValueDictionary.PATH_IDS, toString(ids));
         enriched.put(PropertyAndValueDictionary.PATH, toString(names));
         enriched.put(PropertyAndValueDictionary.PATH_NAMES, toString(ranks));
-    }
-
-    protected void addTaxonNode(Map<String, String> enriched, List<String> ids, List<String> names, List<String> ranks, JsonNode jsonNode) {
-        String externalId;
-        externalId = jsonNode.has("guid") ? (TaxonomyProvider.NBN.getIdPrefix() + jsonNode.get("guid").asText()) : "";
-        String name = jsonNode.has("scientificName") ? jsonNode.get("scientificName").asText() : "";
-        String rank = jsonNode.has("rank") ? jsonNode.get("rank").asText() : "";
-        enriched.put(PropertyAndValueDictionary.NAME, name);
-        enriched.put(PropertyAndValueDictionary.RANK, rank);
-        enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, externalId);
-
-        String commonName = jsonNode.has("commonName") ? jsonNode.get("commonName").asText() : "";
-        if (StringUtils.isNotBlank(commonName)) {
-            enriched.put(PropertyAndValueDictionary.COMMON_NAMES, commonName + " @en");
-        }
-        ids.add(externalId);
-        names.add(name);
-        ranks.add(rank);
     }
 
     protected String toString(List<String> ids) {

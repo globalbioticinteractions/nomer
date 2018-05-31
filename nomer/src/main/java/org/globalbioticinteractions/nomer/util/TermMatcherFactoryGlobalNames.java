@@ -2,9 +2,9 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.eol.globi.taxon.GlobalNamesService;
 import org.eol.globi.taxon.GlobalNamesSources;
-import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
 public class TermMatcherFactoryGlobalNames implements TermMatcherFactory {

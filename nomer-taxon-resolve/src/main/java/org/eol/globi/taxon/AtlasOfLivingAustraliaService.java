@@ -18,6 +18,7 @@ import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
 import java.io.IOException;
 import java.net.URI;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@PropertyEnricherInfo(name = "ala-taxon", description = "Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix.")
 public class AtlasOfLivingAustraliaService implements PropertyEnricher {
 
     private static final String AFD_TSN_PREFIX = "urn:lsid:biodiversity.org.au:afd.taxon:";

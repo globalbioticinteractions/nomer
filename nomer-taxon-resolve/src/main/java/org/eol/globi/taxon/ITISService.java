@@ -10,6 +10,7 @@ import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
 import java.io.IOException;
 import java.net.URI;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@PropertyEnricherInfo(name = "itis-taxon-id", description = "use itis webservice to lookup taxa by id using ITIS:* prefix")
 public class ITISService implements PropertyEnricher {
 
     @Override
@@ -25,41 +27,45 @@ public class ITISService implements PropertyEnricher {
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
         if (isNumericITISTsn(externalId)) {
-            String tsn = externalId.replace(TaxonomyProvider.ID_PREFIX_ITIS, "");
-            String acceptedResponse = getResponse("getAcceptedNamesFromTSN", "tsn=" + tsn);
-            String[] split = StringUtils.splitByWholeSeparator(acceptedResponse, "acceptedTsn>");
-            if (split != null && split.length > 1) {
-                tsn = split[1].split("<")[0];
-            }
-            String fullHierarchy = getResponse("getFullHierarchyFromTSN", "tsn=" + tsn);
-            final String taxonId = TaxonomyProvider.ID_PREFIX_ITIS + tsn;
-            enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, taxonId);
-            final List<String> pathIds = XmlUtil.extractPathNoJoin(fullHierarchy, "tsn", "ITIS:");
-            List<String> pathIdsTail = pathIds;
-            if (pathIdsTail.size() > 1) {
-                pathIdsTail = pathIds.subList(1, pathIds.size());
-            }
-            final int taxonIdIndex = pathIdsTail.lastIndexOf(taxonId);
-            enriched.put(PropertyAndValueDictionary.PATH_IDS, subJoin(taxonIdIndex, pathIdsTail));
-
-            String taxonNames = subJoin(taxonIdIndex, XmlUtil.extractPathNoJoin(fullHierarchy, "taxonName", ""));
-            enriched.put(PropertyAndValueDictionary.PATH, taxonNames);
-
-            String rankNames = subJoin(taxonIdIndex, XmlUtil.extractPathNoJoin(fullHierarchy, "rankName", ""));
-            enriched.put(PropertyAndValueDictionary.PATH_NAMES, rankNames);
-
-            setPropertyToLastValue(PropertyAndValueDictionary.NAME, taxonNames, enriched);
-            setPropertyToLastValue(PropertyAndValueDictionary.RANK, rankNames, enriched);
+            enrichWithId(enriched, externalId);
         }
         return enriched;
     }
 
-    public boolean isNumericITISTsn(String externalId) {
+    private void enrichWithId(Map<String, String> enriched, String externalId) throws PropertyEnricherException {
+        String tsn = externalId.replace(TaxonomyProvider.ID_PREFIX_ITIS, "");
+        String acceptedResponse = getResponse("getAcceptedNamesFromTSN", "tsn=" + tsn);
+        String[] split = StringUtils.splitByWholeSeparator(acceptedResponse, "acceptedTsn>");
+        if (split != null && split.length > 1) {
+            tsn = split[1].split("<")[0];
+        }
+        String fullHierarchy = getResponse("getFullHierarchyFromTSN", "tsn=" + tsn);
+        final String taxonId = TaxonomyProvider.ID_PREFIX_ITIS + tsn;
+        enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, taxonId);
+        final List<String> pathIds = XmlUtil.extractPathNoJoin(fullHierarchy, "tsn", "ITIS:");
+        List<String> pathIdsTail = pathIds;
+        if (pathIdsTail.size() > 1) {
+            pathIdsTail = pathIds.subList(1, pathIds.size());
+        }
+        final int taxonIdIndex = pathIdsTail.lastIndexOf(taxonId);
+        enriched.put(PropertyAndValueDictionary.PATH_IDS, subJoin(taxonIdIndex, pathIdsTail));
+
+        String taxonNames = subJoin(taxonIdIndex, XmlUtil.extractPathNoJoin(fullHierarchy, "taxonName", ""));
+        enriched.put(PropertyAndValueDictionary.PATH, taxonNames);
+
+        String rankNames = subJoin(taxonIdIndex, XmlUtil.extractPathNoJoin(fullHierarchy, "rankName", ""));
+        enriched.put(PropertyAndValueDictionary.PATH_NAMES, rankNames);
+
+        setPropertyToLastValue(PropertyAndValueDictionary.NAME, taxonNames, enriched);
+        setPropertyToLastValue(PropertyAndValueDictionary.RANK, rankNames, enriched);
+    }
+
+    private boolean isNumericITISTsn(String externalId) {
         return StringUtils.startsWith(externalId, TaxonomyProvider.ITIS.getIdPrefix())
                 && StringUtils.isNumeric(externalId.replace(TaxonomyProvider.ID_PREFIX_ITIS, ""));
     }
 
-    public String subJoin(int taxonIdIndex, List<String> taxonNames) {
+    private String subJoin(int taxonIdIndex, List<String> taxonNames) {
         List<String> subList = taxonNames;
         if (taxonIdIndex != -1 && taxonNames.size() > taxonIdIndex) {
             subList = taxonNames.subList(0, taxonIdIndex + 1);
@@ -67,7 +73,7 @@ public class ITISService implements PropertyEnricher {
         return StringUtils.join(subList, CharsetConstant.SEPARATOR);
     }
 
-    protected static void setPropertyToLastValue(String propertyName, String taxonNames, Map<String, String> enriched) {
+    private static void setPropertyToLastValue(String propertyName, String taxonNames, Map<String, String> enriched) {
         if (taxonNames != null) {
             String[] split1 = CSVTSVUtil.splitPipes(taxonNames);
             enriched.put(propertyName, split1[split1.length - 1].trim());

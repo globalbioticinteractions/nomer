@@ -12,6 +12,7 @@ import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
+import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@PropertyEnricherInfo(name = "worms-taxon", description = "Lookup taxon in WoRMS by name or by id with WORMS:* prefix.")
 public class WoRMSService implements PropertyEnricher {
     public static final String RESPONSE_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><SOAP-ENV:Envelope SOAP-ENV:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:SOAP-ENC=\"http://schemas.xmlsoap.org/soap/encoding/\"><SOAP-ENV:Body><ns1:getAphiaIDResponse xmlns:ns1=\"http://tempuri.org/\"><return xsi:type=\"xsd:int\">";
     public static final String RESPONSE_SUFFIX = "</return></ns1:getAphiaIDResponse></SOAP-ENV:Body></SOAP-ENV:Envelope>";
@@ -32,7 +34,7 @@ public class WoRMSService implements PropertyEnricher {
         languageLookup = new LanguageCodeLookup();
     }
 
-    public String lookupIdByName(String taxonName) throws PropertyEnricherException {
+    String lookupIdByName(String taxonName) throws PropertyEnricherException {
         String response = getResponse("getAphiaID", "scientificname", taxonName);
         String id = null;
         if (response.startsWith(RESPONSE_PREFIX) && response.endsWith(RESPONSE_SUFFIX)) {
@@ -81,7 +83,7 @@ public class WoRMSService implements PropertyEnricher {
         return response;
     }
 
-    public Map<String, String> enrichById(final String id, final Map<String, String> properties) throws PropertyEnricherException {
+    Map<String, String> enrichById(final String id, final Map<String, String> properties) throws PropertyEnricherException {
         if (isAlphiaID(id)) {
             String response = getResponse("getAphiaRecordByID", "AphiaID", id.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
             String aphiaId = id;
@@ -122,7 +124,7 @@ public class WoRMSService implements PropertyEnricher {
         return properties;
     }
 
-    protected String lookupTaxonPathById(String id) throws PropertyEnricherException {
+    String lookupTaxonPathById(String id) throws PropertyEnricherException {
         String path = null;
         if (isAlphiaID(id)) {
             String response = getResponse("getAphiaClassificationByID", "AphiaID", id.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
@@ -131,7 +133,7 @@ public class WoRMSService implements PropertyEnricher {
         return StringUtils.isBlank(path) ? null : path;
     }
 
-    protected boolean isAlphiaID(String id) {
+    private boolean isAlphiaID(String id) {
         return StringUtils.startsWith(id, TaxonomyProvider.ID_PREFIX_WORMS);
     }
 

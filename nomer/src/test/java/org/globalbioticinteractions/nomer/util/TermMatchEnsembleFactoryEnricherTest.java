@@ -22,7 +22,7 @@ import java.util.Map;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
-public class TermMatcherFactoryEnricherTest {
+public class TermMatchEnsembleFactoryEnricherTest {
 
 
     private final File cacheDir = new File("./target/nomer-cache");
@@ -72,7 +72,7 @@ public class TermMatcherFactoryEnricherTest {
             }
 
         };
-        TermMatcher termMatcher = new TermMatcherFactoryEnricher().createTermMatcher(ctx);
+        TermMatcher termMatcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(ctx);
         termMatcher.findTerms(Arrays.asList(new TermImpl("NODC:9227040101", "Mickey")), new TermMatchListener() {
             @Override
             public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
