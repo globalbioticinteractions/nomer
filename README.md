@@ -174,8 +174,8 @@ Result as of May 2018 is formatted as a table below:
  eol-taxon | Lookup taxa in Encyclopedia of Life (EOL) by name or by id using EOL:* prefix.
  gbif-taxon-id | Lookup taxon in GBIF by id using prefix GBIF:* prefix.
  globi-correct | Scrubs names using GloBI's (taxonomic) name scrubber. Scrubbing includes removing of stopwords (e.g., undefined), correcting common typos using a "crappy" names list, parse to canonical name using gnparser (see https://github.com/GlobalNamesArchitecture/gnparser), and more.
- globi-enrich | Uses GloBI's taxon enricher to find first term match by id or name. Needs internet connection to work. Uses various web apis like Encyclopedia of Life, World Registry of Marine Species (WoRMS), Integrated Taxonomic Information System (ITIS), National Biodiversity Network (NBN) and more.
- globi-globalnames | Uses https://resolver.globalnames.org to match taxon names. Searches by name only (not id). Needs internet connection to work.
+ globi-enrich | Uses GloBI's taxon enricher to find first term match by id or name. Uses various web apis like Encyclopedia of Life, World Registry of Marine Species (WoRMS), Integrated Taxonomic Information System (ITIS), National Biodiversity Network (NBN) and more.
+ globi-globalnames | Uses https://resolver.globalnames.org to match taxon names. Searches by name only (not id).
  globi-taxon-cache | Uses GloBI's Taxon Graph to lookup terms by id or name across many taxonomies / ontologies. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information.
  globi-taxon-rank | Finds taxonomic rank identifiers by rank commons name (e.g., species, order, soort). Uses Wikidata taxon rank items. Caches a copy locally on first usage to allow for subsequent offline usage.
  gulfbase-taxon | Look up taxa of https://gulfbase.org by name or id with BioGoMx:* prefix.
