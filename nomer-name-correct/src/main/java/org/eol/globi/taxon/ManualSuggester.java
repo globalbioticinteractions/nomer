@@ -42,9 +42,7 @@ public class ManualSuggester implements NameSuggester {
 
                     String existingCorrection = corrections.get(StringUtils.lowerCase(original));
                     if (StringUtils.isNotBlank(existingCorrection)) {
-                        if (StringUtils.equals(existingCorrection, correction)) {
-                            throw new RuntimeException("found duplicated mapping for term [" + original + "]. Please remove line [" + (labeledCSVParser.lastLineNumber() + 1) + "]");
-                        } else {
+                        if (!StringUtils.equalsIgnoreCase(existingCorrection, correction)) {
                             throw new RuntimeException("term [" + original + "] already mapped. Please revisit line [" + (labeledCSVParser.lastLineNumber() + 1) + "]");
                         }
                     }
