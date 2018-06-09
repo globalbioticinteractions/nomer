@@ -9,7 +9,7 @@ public class CmdInputSchema extends CmdProperties {
 
     @Override
     public void run() {
-        String property = getProperties().getProperty("nomer.schema.input in JSON.");
+        String property = getProperties().getProperty("nomer.schema.input");
         System.out.println(property);
     }
 }
