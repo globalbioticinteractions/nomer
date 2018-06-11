@@ -50,10 +50,7 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
     }
 
     private void initWith(Initializing service, String propertyName) {
-        if (null == ctx) {
-            throw new IllegalArgumentException("ctx may not be null");
-        }
-        String property = ctx.getProperty(propertyName);
+        String property = null == ctx ? null : ctx.getProperty(propertyName);
         try {
             if (StringUtils.isNotBlank(property)) {
                 service.init(ctx.getResource(property));
@@ -66,25 +63,25 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
     private String suggestCorrection(String taxonName) {
         String suggestion;
         if (suggestors == null) {
+            final ManualSuggester manualSuggestor = new ManualSuggester() {{
+                initWith(this,"nomer.taxon.name.correction.url");
+            }};
+
+            final RemoveStopWordService stopwordRemover = new RemoveStopWordService() {{
+                initWith(this, "nomer.taxon.name.stopword.url");
+            }};
+
+
             suggestors = new ArrayList<NameSuggester>() {
                 {
                     add(new UKSISuggestionService() {
                         {
-                            initWith(this,
-                                    "nomer.taxon.name.uksi.url");
+                            initWith(this,"nomer.taxon.name.uksi.url");
                         }
                     });
-                    ManualSuggester manualSuggestor = new ManualSuggester() {{
-                        {
-                            initWith(this,
-                                    "nomer.taxon.name.correction.url");
-                        }
-                    }};
                     add(manualSuggestor);
                     add(new NameScrubber());
-                    add(new RemoveStopWordService() {{
-                        initWith(this, "nomer.taxon.name.stopword.url");
-                    }});
+                    add(stopwordRemover);
                     add(new GlobalNamesCanon());
                     add(manualSuggestor);
                 }
