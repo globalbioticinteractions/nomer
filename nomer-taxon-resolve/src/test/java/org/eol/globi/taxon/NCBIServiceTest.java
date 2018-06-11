@@ -6,6 +6,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -77,6 +78,7 @@ public class NCBIServiceTest {
         assertThat(taxon.getPathIds(), containsString("NCBI:2170100"));
     }
 
+    @Ignore(value = "2018-06-11 ncbi taxon query fails with 503")
     @Test
     public void lookupPathByTaxonId2() throws PropertyEnricherException {
         PropertyEnricher enricher = new NCBIService();
