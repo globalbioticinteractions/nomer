@@ -41,7 +41,7 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
                 URL links = getClass().getResource(resourceNameRankLinks);
                 Pair<PrintStream, File> linkwriter = writerAndFileFor(links, resourceNameRankLinks, cacheDir);
                 listeners.add(WikidataTaxonRankLoader.createMapWriter(linkwriter.getLeft()));
-                taxonRankMapUrl = linkwriter.getRight().toURI().toString();
+                taxonRankMapUrl = linkwriter.getRight().toURI().toASCIIString();
             }
 
             if (listeners.size() > 0) {
