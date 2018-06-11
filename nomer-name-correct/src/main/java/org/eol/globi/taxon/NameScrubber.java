@@ -11,9 +11,8 @@ class NameScrubber implements NameSuggester {
 
     private static String clean(String name) {
         name = name.replaceAll("^\\d+$", "");
-        name = name.replaceAll("((<[a-zA-Z0-9]+>)|(</[a-zA-Z0-9]+>)|(<[a-zA-Z0-9]+/>))", "");
+        name = name.replaceAll("((<[:alpha:]+>)|(</[:alpha:]+>)|(<[:alpha:]+/>))", "");
         name = name.replaceAll("[^\\p{L}\\p{N}-\\.\\(\\)]", " ");
-        name = name.replaceAll("[^\\pL\\pN\\p{Pc}]", " ");
         return name.trim();
     }
 

@@ -34,7 +34,7 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
             suggested = collect.size() == nameParts.length ? name : StringUtils.join(collect, "");
 
         }
-        return StringUtils.length(name) == StringUtils.length(suggested) ? name : StringUtils.trim(suggested);
+        return StringUtils.length(name) == StringUtils.length(suggested) ? name : suggested;
     }
 
     private void init() {
