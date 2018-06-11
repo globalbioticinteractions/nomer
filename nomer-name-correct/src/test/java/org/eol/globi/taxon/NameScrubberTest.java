@@ -8,7 +8,7 @@ import static org.junit.Assert.assertThat;
 
 public class NameScrubberTest {
 
-    protected NameSuggester getNameSuggester() {
+    private NameSuggester getNameSuggester() {
         return new NameScrubber();
     }
 
@@ -28,11 +28,28 @@ public class NameScrubberTest {
     public void dropTag() {
         assertThat(getNameSuggester().suggest("<a>Homo sapiens</a>"), is("Homo sapiens"));
         assertThat(getNameSuggester().suggest("<p>Homo sapiens</a>"), is("Homo sapiens"));
+        assertThat(getNameSuggester().suggest("<h1>Homo sapiens</h1>"), is("Homo sapiens"));
     }
 
     @Test
     public void digitsOnly() {
         assertThat(getNameSuggester().suggest("123"), is(""));
+    }
+
+    @Test
+    public void hyphen() {
+        assertThat(getNameSuggester().suggest("amphipoda-"), is("amphipoda"));
+        assertThat(getNameSuggester().suggest("amphipoda- "), is("amphipoda"));
+    }
+
+    @Test
+    public void period() {
+        assertThat(getNameSuggester().suggest(". Object"), is("Object"));
+    }
+
+    @Test
+    public void parenthesis() {
+        assertThat(getNameSuggester().suggest("Object () ()"), is("Object"));
     }
 
 }
