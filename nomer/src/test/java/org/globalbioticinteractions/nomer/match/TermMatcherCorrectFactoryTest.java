@@ -1,15 +1,11 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.eol.globi.domain.NameType;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.match.TermMatcherCorrectFactory;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertNotNull;
@@ -27,12 +23,9 @@ public class TermMatcherCorrectFactoryTest {
     public void correctSingleTerm() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Arrays.asList("copepods"), new TermMatchListener() {
-            @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), Is.is("Copepoda"));
-                found.set(true);
-            }
+        termMatcher.findTermsForNames(Collections.singletonList("copepods"), (nodeId, name, taxon, nameType) -> {
+            assertThat(taxon.getName(), Is.is("Copepoda"));
+            found.set(true);
         });
         assertTrue(found.get());
     }
@@ -41,12 +34,30 @@ public class TermMatcherCorrectFactoryTest {
     public void correctSingleTermWithStopword() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Arrays.asList("unidentified copepod"), new TermMatchListener() {
-            @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), Is.is("Copepoda"));
-                found.set(true);
-            }
+        termMatcher.findTermsForNames(Collections.singletonList("unidentified copepod"), (nodeId, name, taxon, nameType) -> {
+            assertThat(taxon.getName(), Is.is("Copepoda"));
+            found.set(true);
+        });
+        assertTrue(found.get());
+    }
+
+    @Test
+    public void correctSingleTermWithStopwordAndDash() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.findTermsForNames(Collections.singletonList("unidentified amphipod 1.0-1.9 mm"), (nodeId, name, taxon, nameType) -> {
+            assertThat(taxon.getName(), Is.is("Amphipoda"));
+            found.set(true);
+        });
+        assertTrue(found.get());
+    }
+    @Test
+    public void correctSingleTermWithStopwordAndDash2() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.findTermsForNames(Collections.singletonList("unidentified ostracod 2.0-2.9 mm"), (nodeId, name, taxon, nameType) -> {
+            assertThat(taxon.getName(), Is.is("Ostracoda"));
+            found.set(true);
         });
         assertTrue(found.get());
     }

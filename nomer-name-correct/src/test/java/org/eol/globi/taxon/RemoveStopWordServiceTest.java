@@ -60,4 +60,12 @@ public class RemoveStopWordServiceTest {
         assertThat(suggest, is("object"));
     }
 
+    @Test
+    public void removeStopwordCasing2() throws IOException {
+        NameSuggester stopWordRemover = new RemoveStopWordService();
+
+        String suggest = stopWordRemover.suggest("Unldent. object");
+        assertThat(suggest, is("object"));
+    }
+
 }
