@@ -3,18 +3,38 @@ package org.eol.globi.taxon;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
+import org.eol.globi.service.Initializing;
 import org.eol.globi.service.NameSuggester;
+import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.UKSISuggestionService;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class TaxonNameCorrector implements CorrectionService {
+public class TaxonNameCorrector implements CorrectionService, TermMatcher {
 
     private static final Log LOG = LogFactory.getLog(TaxonNameCorrector.class);
+    private final TermMatcherContext ctx;
 
     private List<NameSuggester> suggestors = null;
+
+    public TaxonNameCorrector() {
+        this(null);
+    }
+
+    public TaxonNameCorrector(TermMatcherContext ctx) {
+        this.ctx = ctx;
+    }
 
     @Override
     public String correct(String taxonName) {
@@ -29,17 +49,44 @@ public class TaxonNameCorrector implements CorrectionService {
         return suggestion;
     }
 
+    private void initWith(Initializing service, String propertyName) {
+        if (null == ctx) {
+            throw new IllegalArgumentException("ctx may not be null");
+        }
+        String property = ctx.getProperty(propertyName);
+        try {
+            if (StringUtils.isNotBlank(property)) {
+                service.init(ctx.getResource(property));
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException("failed to instantiate name service [" + service.getClass().getSimpleName() + "]", e);
+        }
+    }
+
     private String suggestCorrection(String taxonName) {
         String suggestion;
         if (suggestors == null) {
             suggestors = new ArrayList<NameSuggester>() {
                 {
-                    add(new UKSISuggestionService());
-                    add(new ManualSuggester());
+                    add(new UKSISuggestionService() {
+                        {
+                            initWith(this,
+                                    "nomer.taxon.name.uksi.url");
+                        }
+                    });
+                    ManualSuggester manualSuggestor = new ManualSuggester() {{
+                        {
+                            initWith(this,
+                                    "nomer.taxon.name.correction.url");
+                        }
+                    }};
+                    add(manualSuggestor);
                     add(new NameScrubber());
-                    add(new RemoveStopWordService());
+                    add(new RemoveStopWordService() {{
+                        initWith(this, "nomer.taxon.name.stopword.url");
+                    }});
                     add(new GlobalNamesCanon());
-                    add(new ManualSuggester());
+                    add(manualSuggestor);
                 }
             };
         }
@@ -74,5 +121,24 @@ public class TaxonNameCorrector implements CorrectionService {
         }
         return nameSuggestion;
     }
+
+
+    @Override
+    public void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws
+            PropertyEnricherException {
+        List<Term> terms = names.stream().map(name -> new TermImpl(null, name)).collect(Collectors.toList());
+        this.findTerms(terms, termMatchListener);
+    }
+
+    @Override
+    public void findTerms(List<Term> terms, TermMatchListener listener) throws PropertyEnricherException {
+        Stream<TermImpl> correctedTerms = terms.stream()
+                .map(term -> new TermImpl(term.getId(), correct(term.getName())));
+        correctedTerms.forEach(term -> {
+            listener.foundTaxonForName(null, term.getName(), new TaxonImpl(term.getName(), term.getId()), NameType.SAME_AS);
+        });
+
+    }
+
 
 }

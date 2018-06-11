@@ -4,6 +4,7 @@ import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eol.globi.service.Initializing;
 import org.eol.globi.util.ResourceUtil;
 
 import java.io.BufferedReader;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class RemoveStopWordService implements org.eol.globi.service.NameSuggester {
+public class RemoveStopWordService implements org.eol.globi.service.NameSuggester, Initializing {
     private static final Log LOG = LogFactory.getLog(RemoveStopWordService.class);
 
     private List<String> stopwords = null;
@@ -42,14 +43,21 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
             InputStream is;
             try {
                 is = ResourceUtil.asInputStream(resource);
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charsets.UTF_8));
-                stopwords = reader.lines().map(StringUtils::lowerCase).collect(Collectors.toList());
+                init(is);
             } catch (IOException e) {
                 LOG.error("failed to read stopwords at [" + resource + "]", e);
-            } finally {
-                if (stopwords == null) {
-                    stopwords = new ArrayList<>();
-                }
+            }
+        }
+    }
+
+    @Override
+    public void init(InputStream is) throws IOException {
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is, Charsets.UTF_8));
+            stopwords = reader.lines().map(StringUtils::lowerCase).collect(Collectors.toList());
+        } finally {
+            if (stopwords == null) {
+                stopwords = new ArrayList<>();
             }
         }
     }

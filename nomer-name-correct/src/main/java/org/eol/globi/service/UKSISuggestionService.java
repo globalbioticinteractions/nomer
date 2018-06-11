@@ -3,14 +3,14 @@ package org.eol.globi.service;
 import com.healthmarketscience.jackcess.Database;
 import com.healthmarketscience.jackcess.DatabaseBuilder;
 import com.healthmarketscience.jackcess.Table;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eol.globi.taxon.TaxonLookupServiceImpl;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
-import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.taxon.TaxonLookupServiceImpl;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-public class UKSISuggestionService implements PropertyEnricher, NameSuggester {
+public class UKSISuggestionService implements PropertyEnricher, NameSuggester, Initializing {
     private static final Log LOG = LogFactory.getLog(UKSISuggestionService.class);
 
     private TaxonLookupServiceImpl service;
@@ -51,10 +51,10 @@ public class UKSISuggestionService implements PropertyEnricher, NameSuggester {
 
     private Taxon findMatch(String taxonName) throws PropertyEnricherException {
         Taxon match = null;
-        if (service == null) {
-            doInit();
-        }
         try {
+            if (service == null) {
+                init();
+            }
             Taxon[] taxonTerms = service.lookupTermsByName(taxonName);
             if (taxonTerms.length > 0) {
                 // pick the first one
@@ -74,13 +74,21 @@ public class UKSISuggestionService implements PropertyEnricher, NameSuggester {
         }
     }
 
-    private void doInit() throws PropertyEnricherException {
+    private void init() {
+        try {
+            init(getClass().getResourceAsStream("/org/eol/globi/data/uksi/NfWD.mdb.gz"));
+        } catch (IOException e) {
+            throw new IllegalArgumentException("failed to initialize [" + getClass().getSimpleName() + "]", e);
+        }
+    }
+
+    public void init(InputStream resourceStream) throws IOException {
         LOG.info("[" + UKSISuggestionService.class.getSimpleName() + "] instantiating...");
         service = new TaxonLookupServiceImpl();
         service.start();
         File tmpFile = null;
         try {
-            InputStream is = new GZIPInputStream(getClass().getResourceAsStream("/org/eol/globi/data/uksi/NfWD.mdb.gz"));
+            InputStream is = new GZIPInputStream(resourceStream);
             tmpFile = File.createTempFile("NfWD", "mdb");
             FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
             IOUtils.copy(is, fileOutputStream);
@@ -97,13 +105,8 @@ public class UKSISuggestionService implements PropertyEnricher, NameSuggester {
                 taxonTerm.setName(recommendedScientificName.toString());
                 service.addTerm(taxonName.toString(), taxonTerm);
             }
-        } catch (IOException e) {
-            LOG.warn("[" + UKSISuggestionService.class.getSimpleName() + "] instantiation failed.");
-            throw new PropertyEnricherException("failed to created link", e);
         } finally {
-            if (tmpFile != null) {
-                tmpFile.delete();
-            }
+            FileUtils.deleteQuietly(tmpFile);
         }
         service.finish();
         LOG.info("[" + UKSISuggestionService.class.getSimpleName() + "] instantiated.");

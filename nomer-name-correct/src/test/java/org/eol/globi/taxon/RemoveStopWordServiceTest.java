@@ -1,5 +1,6 @@
 package org.eol.globi.taxon;
 
+import org.apache.commons.io.IOUtils;
 import org.eol.globi.service.NameSuggester;
 import org.junit.Test;
 
@@ -53,11 +54,21 @@ public class RemoveStopWordServiceTest {
     }
 
     @Test
-    public void removeStopwordCasing() throws IOException {
+    public void removeStopWordCasing() throws IOException {
         NameSuggester stopWordRemover = new RemoveStopWordService();
 
         String suggest = stopWordRemover.suggest("Unidentified object");
         assertThat(suggest, is("object"));
+    }
+
+    @Test
+    public void init() throws IOException {
+        NameSuggester stopWordRemover = new RemoveStopWordService() {{
+            init(IOUtils.toInputStream("one\ntwo\nthree"));
+        }};
+
+        String suggest = stopWordRemover.suggest("one two three four");
+        assertThat(suggest, is("four"));
     }
 
 }

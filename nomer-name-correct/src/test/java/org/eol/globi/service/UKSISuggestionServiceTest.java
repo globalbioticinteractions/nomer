@@ -1,6 +1,7 @@
 package org.eol.globi.service;
 
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
