@@ -51,4 +51,14 @@ public class NameScrubberTest {
         assertThat(getNameSuggester().suggest("Amphipoda-"), is("Amphipoda"));
     }
 
+    @Test
+    public void sigma() {
+        assertThat(getNameSuggester().suggest("Σ Cephalopoda"), is("Cephalopoda"));
+    }
+
+    @Test
+    public void singlePrefix() {
+        assertThat(getNameSuggester().suggest("A Cephalopoda"), is("Cephalopoda"));
+    }
+
 }

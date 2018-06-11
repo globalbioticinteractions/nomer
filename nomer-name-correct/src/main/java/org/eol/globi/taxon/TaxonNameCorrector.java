@@ -8,14 +8,10 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
-import org.eol.globi.service.Initializing;
 import org.eol.globi.service.NameSuggester;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.UKSISuggestionService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,43 +45,10 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
         return suggestion;
     }
 
-    private void initWith(Initializing service, String propertyName) {
-        String property = null == ctx ? null : ctx.getProperty(propertyName);
-        try {
-            if (StringUtils.isNotBlank(property)) {
-                service.init(ctx.getResource(property));
-            }
-        } catch (IOException e) {
-            throw new IllegalArgumentException("failed to instantiate name service [" + service.getClass().getSimpleName() + "]", e);
-        }
-    }
-
     private String suggestCorrection(String taxonName) {
         String suggestion;
         if (suggestors == null) {
-            final ManualSuggester manualSuggestor = new ManualSuggester() {{
-                initWith(this,"nomer.taxon.name.correction.url");
-            }};
-
-            final RemoveStopWordService stopwordRemover = new RemoveStopWordService() {{
-                initWith(this, "nomer.taxon.name.stopword.url");
-            }};
-
-
-            suggestors = new ArrayList<NameSuggester>() {
-                {
-                    add(new UKSISuggestionService() {
-                        {
-                            initWith(this,"nomer.taxon.name.uksi.url");
-                        }
-                    });
-                    add(manualSuggestor);
-                    add(new NameScrubber());
-                    add(stopwordRemover);
-                    add(new GlobalNamesCanon());
-                    add(manualSuggestor);
-                }
-            };
+            setSuggestors(SuggesterFactory.createSuggesterEnsemble(ctx));
         }
         List<String> suggestions = new ArrayList<>();
         suggestion = taxonName;
@@ -138,4 +101,7 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
     }
 
 
+    public void setSuggestors(List<NameSuggester> suggestors) {
+        this.suggestors = suggestors;
+    }
 }

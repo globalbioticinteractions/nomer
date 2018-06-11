@@ -42,7 +42,7 @@ public class TaxonNameCorrectorTest {
     }
 
     @Test
-    public void taxonNameUSKI() {
+    public void taxonNameUKSI() {
         assertThat(CORRECTOR.correct("Scypha raphanus"), is("Sycon raphanus"));
     }
 

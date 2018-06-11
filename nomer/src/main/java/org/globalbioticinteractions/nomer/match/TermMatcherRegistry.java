@@ -19,6 +19,8 @@ public class TermMatcherRegistry {
     public static final TermMatcherCacheFactory MATCHER_FACTORY_DEFAULT = new TermMatcherCacheFactory();
     private final static List<TermMatcherFactory> matchers = Collections.unmodifiableList(new TreeList<TermMatcherFactory>(){{
         add(MATCHER_FACTORY_DEFAULT);
+        add(new TermMatcherTranslateNamesFactory());
+        add(new TermMatcherStopWordFactory());
         add(new TermMatcherCorrectFactory());
         add(new TermMatcherFactoryTaxonRanks());
         add(new TermMatcherFactoryEnsembleEnricher());
