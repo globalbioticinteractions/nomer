@@ -7,7 +7,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.GlobalNamesService;
+import org.eol.globi.taxon.GlobalNamesService2;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
@@ -199,7 +199,7 @@ public class ReplacingRowHandlerTest {
     public void resolveGlobalNamesAppendFuzzyMatch() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tHomo saliens\tone");
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchUtil.apply(is, new ReplacingRowHandler(os, new GlobalNamesService(), new MatchTestUtil.TermMatcherContextDefault() {
+        MatchUtil.apply(is, new ReplacingRowHandler(os, new GlobalNamesService2(), new MatchTestUtil.TermMatcherContextDefault() {
         }));
         assertThat(os.toString(), Is.is("\tHomo saliens\tone\n"));
     }

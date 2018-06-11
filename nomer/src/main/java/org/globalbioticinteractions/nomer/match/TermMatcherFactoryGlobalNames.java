@@ -1,7 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.eol.globi.taxon.GlobalNamesService;
-import org.eol.globi.taxon.GlobalNamesSources;
+import org.eol.globi.taxon.GlobalNamesService2;
+import org.eol.globi.taxon.GlobalNamesSources2;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -11,7 +11,7 @@ public class TermMatcherFactoryGlobalNames implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return new GlobalNamesService(Arrays.asList(GlobalNamesSources.values()));
+        return new GlobalNamesService2(Arrays.asList(GlobalNamesSources2.values()));
     }
 
     @Override
