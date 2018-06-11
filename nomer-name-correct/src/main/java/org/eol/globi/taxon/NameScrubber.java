@@ -2,7 +2,7 @@ package org.eol.globi.taxon;
 
 import org.eol.globi.service.NameSuggester;
 
-class NameScrubber implements NameSuggester {
+public class NameScrubber implements NameSuggester {
 
     @Override
     public String suggest(final String name) {

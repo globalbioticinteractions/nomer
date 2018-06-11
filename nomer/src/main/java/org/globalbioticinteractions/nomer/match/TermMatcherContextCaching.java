@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +33,7 @@ public abstract class TermMatcherContextCaching extends CmdDefaultParams impleme
             md.update( uri.getBytes( StandardCharsets.UTF_8 ) );
             byte[] digest = md.digest();
             String hex = String.format( "%064x", new BigInteger( 1, digest ) );
+            FileUtils.forceMkdir(new File(getCacheDir()));
             File cachedFile = new File(getCacheDir(), hex + ".gz");
             String location = "[" + uri + "] at [" + cachedFile.getAbsolutePath() + "]";
             if (!cachedFile.exists()) {
