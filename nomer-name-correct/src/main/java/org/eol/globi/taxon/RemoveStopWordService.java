@@ -21,26 +21,27 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
 
     private List<String> stopwords = null;
 
-    private String resource = "classpath:/org/eol/globi/service/non-taxa-words.tsv";
-
     @Override
     public String suggest(String name) {
         String suggested = name;
         if (StringUtils.isNotBlank(name)) {
             init();
-            String[] nameParts = StringUtils.split(name, " ()-");
+            String[] nameParts = StringUtils.splitByCharacterTypeCamelCase(name);
             Stream<String> suggestedParts = Stream.of(nameParts)
                     .filter(w -> !stopwords.contains(StringUtils.trim(StringUtils.lowerCase(w))));
             List<String> collect = suggestedParts.collect(Collectors.toList());
-            suggested = collect.size() == nameParts.length ? name : StringUtils.join(collect, " ");
+            suggested = collect.size() == nameParts.length ? name : StringUtils.join(collect, "");
 
         }
-        return StringUtils.length(name) == StringUtils.length(suggested) ? name : suggested;
+        return StringUtils.length(name) == StringUtils.length(suggested)
+                ? name
+                : StringUtils.trim(suggested);
     }
 
     private void init() {
         if (stopwords == null) {
             InputStream is;
+            String resource = "classpath:/org/eol/globi/service/non-taxa-words.tsv";
             try {
                 is = ResourceUtil.asInputStream(resource);
                 init(is);

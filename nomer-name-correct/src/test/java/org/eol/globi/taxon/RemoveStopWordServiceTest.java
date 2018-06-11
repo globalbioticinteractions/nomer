@@ -32,13 +32,13 @@ public class RemoveStopWordServiceTest {
         NameSuggester stopWordRemover = new RemoveStopWordService();
 
         String suggest = stopWordRemover.suggest("COLEOPTERA (unidentified) (FRGAMENT)");
-        assertThat(suggest, is("COLEOPTERA"));
+        assertThat(suggest, is("COLEOPTERA () ()"));
     }
 
     @Test
     public void removeStopword4() throws IOException {
         String suggest = new RemoveStopWordService().suggest("Amphipoda-unidentified");
-        assertThat(suggest, is("Amphipoda"));
+        assertThat(suggest, is("Amphipoda-"));
     }
 
     @Test
@@ -69,6 +69,16 @@ public class RemoveStopWordServiceTest {
 
         String suggest = stopWordRemover.suggest("one two three four");
         assertThat(suggest, is("four"));
+    }
+
+    @Test
+    public void delimiters() throws IOException {
+        NameSuggester stopWordRemover = new RemoveStopWordService() {{
+            init(IOUtils.toInputStream("one\ntwo\nthree"));
+        }};
+
+        String suggest = stopWordRemover.suggest("one-two-three four");
+        assertThat(suggest, is("-- four"));
     }
 
 }

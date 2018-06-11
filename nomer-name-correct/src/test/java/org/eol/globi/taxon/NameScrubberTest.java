@@ -28,11 +28,27 @@ public class NameScrubberTest {
     public void dropTag() {
         assertThat(getNameSuggester().suggest("<a>Homo sapiens</a>"), is("Homo sapiens"));
         assertThat(getNameSuggester().suggest("<p>Homo sapiens</a>"), is("Homo sapiens"));
+        assertThat(getNameSuggester().suggest("<h1>Homo sapiens</h1>"), is("Homo sapiens"));
     }
 
     @Test
     public void digitsOnly() {
         assertThat(getNameSuggester().suggest("123"), is(""));
+    }
+
+    @Test
+    public void hyphens() {
+        assertThat(getNameSuggester().suggest("-- four"), is("four"));
+    }
+
+    @Test
+    public void parenthesis() {
+        assertThat(getNameSuggester().suggest("COLEOPTERA () ()"), is("COLEOPTERA"));
+    }
+
+    @Test
+    public void moreHyphen() {
+        assertThat(getNameSuggester().suggest("Amphipoda-"), is("Amphipoda"));
     }
 
 }
