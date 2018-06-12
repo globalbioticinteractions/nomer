@@ -203,7 +203,7 @@ public class GlobalNamesService2Test {
         String[] idsNames = CSVTSVUtil.splitPipes(response);
         GlobalNamesService2 service = new GlobalNamesService2(sources);
 
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (int i = 0; i < idsNames.length; i += 2) {
             names.add(idsNames[i] + "|" + idsNames[i + 1]);
         }
