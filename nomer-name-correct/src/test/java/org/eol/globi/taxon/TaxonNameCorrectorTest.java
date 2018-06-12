@@ -34,16 +34,13 @@ public class TaxonNameCorrectorTest {
         assertThat(CORRECTOR.correct("H"), is("no name"));
         assertThat(CORRECTOR.correct("HH"), is("HH"));
     }
-    
+
     @Test
     public void circularSuggestions() {
         TaxonNameCorrector corrector = new TaxonNameCorrector() {{
-            setSuggestors(Arrays.asList(new NameSuggester() {
-                @Override
-                public String suggest(String name) {
-                    return "Mimesa bicolor".equals(name) ? "Mimesa equestris" : "Mimesa bicolor";
-                }
-            }));
+            setSuggestors(Collections.singletonList(
+                    name -> "Mimesa bicolor".equals(name) ? "Mimesa equestris" : "Mimesa bicolor")
+            );
         }};
         assertThat(corrector.correct("Mimesa bicolor"), is("Mimesa bicolor"));
     }
