@@ -1,28 +1,26 @@
 package org.eol.globi.taxon;
 
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.service.NameSuggester;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class TaxonNameCorrectorTest {
 
-    private final static CorrectionService CORRECTOR = new TaxonNameCorrector();
+    private final static CorrectionService CORRECTOR = new TaxonNameCorrector() {{
+        setSuggestors(Collections.singletonList((NameSuggester) name -> name));
+    }};
 
     @Test
     public void cleanName() {
         assertThat(CORRECTOR.correct(""), is("no name"));
         assertThat(CORRECTOR.correct("a"), is("no name"));
-
-        assertThat(CORRECTOR.correct("Aneugmenus fürstenbergensis"), is("Aneugmenus fuerstenbergensis"));
-        assertThat(CORRECTOR.correct("Xanthorhoë"), is("Xanthorhoe"));
-
-        assertThat(CORRECTOR.correct("Bivalvia Genus A"), is("Bivalvia"));
-        assertThat(CORRECTOR.correct("EOL:123"), is("EOL 123"));
-        assertThat(CORRECTOR.correct("Pegoscapus cf. obscurus (Kirby, 1890)"), is("Pegoscapus obscurus"));
-
-
     }
 
     @Test
@@ -36,37 +34,18 @@ public class TaxonNameCorrectorTest {
         assertThat(CORRECTOR.correct("H"), is("no name"));
         assertThat(CORRECTOR.correct("HH"), is("HH"));
     }
-
-    @Test
-    public void taxonNameUKSI() {
-        assertThat(CORRECTOR.correct("Scypha raphanus"), is("Sycon raphanus"));
-    }
-
-    @Test
-    public void taxonManualCorrectionInAdditionToPreferredNameSelection() {
-        assertThat(CORRECTOR.correct("S enflata"), is("enflata"));
-    }
-
-    @Test
-    public void taxonNameWrast() {
-        assertThat(CORRECTOR.correct("Pleocyemata spp."), is("Pleocyemata"));
-        assertThat(CORRECTOR.correct("Aegathoa oculata "), is("Aegathoa oculata"));
-    }
-
-    @Test
-    public void longSpineSwimmingCrab() {
-        assertThat(CORRECTOR.correct("Acheloüs spinicarpus"), is("Achelous spinicarpus"));
-    }
-
+    
     @Test
     public void circularSuggestions() {
-        assertThat(CORRECTOR.correct("Mimesa bicolor"), is("Mimesa bicolor"));
-        assertThat(CORRECTOR.correct("Mimesa equestris"), is("Mimesa equestris"));
-        assertThat(CORRECTOR.correct("Excalfactoria chinensis"), is("Coturnix chinensis"));
+        TaxonNameCorrector corrector = new TaxonNameCorrector() {{
+            setSuggestors(Arrays.asList(new NameSuggester() {
+                @Override
+                public String suggest(String name) {
+                    return "Mimesa bicolor".equals(name) ? "Mimesa equestris" : "Mimesa bicolor";
+                }
+            }));
+        }};
+        assertThat(corrector.correct("Mimesa bicolor"), is("Mimesa bicolor"));
     }
 
-    @Test
-    public void stopWord() {
-        assertThat(CORRECTOR.correct("one two Octopodidae"), is("Octopodidae"));
-    }
 }

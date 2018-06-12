@@ -40,14 +40,7 @@ public class RemoveStopWordService implements org.eol.globi.service.NameSuggeste
 
     private void init() {
         if (stopwords == null) {
-            InputStream is;
-            String resource = "classpath:/org/eol/globi/service/non-taxa-words.tsv";
-            try {
-                is = ResourceUtil.asInputStream(resource);
-                init(is);
-            } catch (IOException e) {
-                LOG.error("failed to read stopwords at [" + resource + "]", e);
-            }
+            throw new IllegalStateException("not yet initialized");
         }
     }
 
