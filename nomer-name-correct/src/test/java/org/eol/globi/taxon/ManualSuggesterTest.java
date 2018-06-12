@@ -10,21 +10,23 @@ import static org.junit.Assert.assertThat;
 
 public class ManualSuggesterTest {
 
-    @Test
-    public void throwOnDuplicates() {
+    @Test(expected = IllegalStateException.class)
+    public void throwOnUninitialized() {
         new ManualSuggester().suggest("bla");
     }
 
     @Test
-    public void match() {
-        String copepods = new ManualSuggester().suggest("some name");
-        assertThat(copepods, Is.is("corrected name"));
-    }
-
-    @Test
-    public void init() throws IOException {
+    public void match() throws IOException {
         String suggested = new ManualSuggester() {{
             init(IOUtils.toInputStream("provided,corrected\nHolo grapiens,Homo sapiens"));
+        }}.suggest("Holo grapiens");
+        assertThat(suggested, Is.is("Homo sapiens"));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void throwOnDuplicateMapping() throws IOException {
+        String suggested = new ManualSuggester() {{
+            init(IOUtils.toInputStream("provided,corrected\nHolo grapiens,Homo sapiens\nprovided,corrected2\n"));
         }}.suggest("Holo grapiens");
         assertThat(suggested, Is.is("Homo sapiens"));
     }
