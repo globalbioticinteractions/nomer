@@ -17,8 +17,8 @@ public class ManualSuggesterTest {
 
     @Test
     public void match() {
-        String copepods = new ManualSuggester().suggest("copepods");
-        assertThat(copepods, Is.is("Copepoda"));
+        String copepods = new ManualSuggester().suggest("some name");
+        assertThat(copepods, Is.is("corrected name"));
     }
 
     @Test

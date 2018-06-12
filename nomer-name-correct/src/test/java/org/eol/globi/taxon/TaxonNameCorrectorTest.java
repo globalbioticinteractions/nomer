@@ -14,13 +14,9 @@ public class TaxonNameCorrectorTest {
     public void cleanName() {
         assertThat(CORRECTOR.correct(""), is("no name"));
         assertThat(CORRECTOR.correct("a"), is("no name"));
-        assertThat(CORRECTOR.correct("NA"), is("no name"));
-        assertThat(CORRECTOR.correct("NE"), is("no name"));
 
         assertThat(CORRECTOR.correct("Aneugmenus fürstenbergensis"), is("Aneugmenus fuerstenbergensis"));
         assertThat(CORRECTOR.correct("Xanthorhoë"), is("Xanthorhoe"));
-
-        assertThat(CORRECTOR.correct("Cal sapidus"), is("Callinectes sapidus"));
 
         assertThat(CORRECTOR.correct("Bivalvia Genus A"), is("Bivalvia"));
         assertThat(CORRECTOR.correct("EOL:123"), is("EOL 123"));
@@ -48,7 +44,7 @@ public class TaxonNameCorrectorTest {
 
     @Test
     public void taxonManualCorrectionInAdditionToPreferredNameSelection() {
-        assertThat(CORRECTOR.correct("S enflata"), is("Flaccisagitta enflata"));
+        assertThat(CORRECTOR.correct("S enflata"), is("enflata"));
     }
 
     @Test
@@ -63,15 +59,14 @@ public class TaxonNameCorrectorTest {
     }
 
     @Test
-    public void longHayden() {
-        assertThat(new ManualSuggester().suggest("Cetacean blubber"), is("Cetacea"));
-        assertThat(new ManualSuggester().suggest("cetacean blubber"), is("Cetacea"));
-    }
-
-    @Test
     public void circularSuggestions() {
         assertThat(CORRECTOR.correct("Mimesa bicolor"), is("Mimesa bicolor"));
         assertThat(CORRECTOR.correct("Mimesa equestris"), is("Mimesa equestris"));
         assertThat(CORRECTOR.correct("Excalfactoria chinensis"), is("Coturnix chinensis"));
+    }
+
+    @Test
+    public void stopWord() {
+        assertThat(CORRECTOR.correct("one two Octopodidae"), is("Octopodidae"));
     }
 }

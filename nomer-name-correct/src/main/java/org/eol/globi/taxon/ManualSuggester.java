@@ -1,5 +1,7 @@
 package org.eol.globi.taxon;
 
+import com.Ostermiller.util.CSVParse;
+import com.Ostermiller.util.CSVParser;
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
@@ -37,22 +39,22 @@ public class ManualSuggester implements NameSuggester, Initializing {
     @Override
     public void init(InputStream resourceAsStream) throws IOException {
         BufferedReader is = org.eol.globi.data.FileUtils.getUncompressedBufferedReader(resourceAsStream, CharsetConstant.UTF8);
-        LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(is);
+        CSVParse parser = CSVTSVUtil.createCSVParse(is);
         String[] line;
 
         corrections = new HashMap<>();
-        while ((line = labeledCSVParser.getLine()) != null) {
+        while ((line = parser.getLine()) != null) {
             if (line.length > 1) {
                 String original = line[0];
                 String correction = line[1];
                 if (StringUtils.isBlank(correction) || correction.trim().length() < 2) {
-                    throw new RuntimeException("found invalid blank or single character conversion for [" + original + "], on line [" + labeledCSVParser.lastLineNumber() + 1 + "]");
+                    throw new RuntimeException("found invalid blank or single character conversion for [" + original + "], on line [" + parser.lastLineNumber() + 1 + "]");
                 }
 
                 String existingCorrection = corrections.get(StringUtils.lowerCase(original));
                 if (StringUtils.isNotBlank(existingCorrection)) {
                     if (!StringUtils.equalsIgnoreCase(existingCorrection, correction)) {
-                        throw new RuntimeException("term [" + original + "] already mapped. Please revisit line [" + (labeledCSVParser.lastLineNumber() + 1) + "]");
+                        throw new RuntimeException("term [" + original + "] already mapped. Please revisit line [" + (parser.lastLineNumber() + 1) + "]");
                     }
                 }
                 corrections.put(StringUtils.lowerCase(original), correction);

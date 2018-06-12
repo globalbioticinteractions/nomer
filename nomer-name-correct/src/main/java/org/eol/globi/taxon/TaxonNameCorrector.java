@@ -64,7 +64,9 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
                 LOG.warn("found circular suggestion path " + suggestions + ": choosing original [" + taxonName + "] instead");
             } else {
                 suggestions.add(newSuggestion);
+                System.out.println("was: [" + suggestion + "], now: [" + newSuggestion + "]");
                 suggestion = newSuggestion;
+
             }
         }
         suggestion = isCircular ? suggestions.get(0) : suggestions.get(suggestions.size() - 1);
