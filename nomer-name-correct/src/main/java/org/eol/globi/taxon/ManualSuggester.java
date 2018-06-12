@@ -21,25 +21,16 @@ public class ManualSuggester implements NameSuggester, Initializing {
     @Override
     public String suggest(final String name) {
         if (!isInitialized()) {
-            doInit();
+            throw new IllegalStateException("not yet initialized");
         }
         String suggestedReplacement = corrections.get(StringUtils.lowerCase(name));
         return StringUtils.isBlank(suggestedReplacement) ? name : suggestedReplacement;
     }
 
-    private void doInit() {
-        InputStream resourceAsStream = getClass().getResourceAsStream("/org/eol/globi/service/taxon-name-mapping.csv");
-        try {
-            init(resourceAsStream);
-        } catch (IOException e) {
-            throw new RuntimeException("failed to initialize taxon name normalizer", e);
-        }
-    }
-
     @Override
     public void init(InputStream resourceAsStream) throws IOException {
         BufferedReader is = org.eol.globi.data.FileUtils.getUncompressedBufferedReader(resourceAsStream, CharsetConstant.UTF8);
-        CSVParse parser = CSVTSVUtil.createCSVParse(is);
+        CSVParse parser = new CSVParser(is);
         String[] line;
 
         corrections = new HashMap<>();
