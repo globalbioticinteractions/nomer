@@ -1,6 +1,8 @@
 package org.globalbioticinteractions.nomer.util;
 
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
@@ -11,7 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 public class MatchUtil {
@@ -47,4 +51,14 @@ public class MatchUtil {
         }
     }
 
+    public static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
+        Map<String, String> taxonMap = new TreeMap<>();
+        for (Map.Entry<Integer, String> indexType : schema.entrySet()) {
+            Integer key = indexType.getKey();
+            if (row.length > key) {
+                taxonMap.put(indexType.getValue(), row[key]);
+            }
+        }
+        return TaxonUtil.mapToTaxon(taxonMap);
+    }
 }

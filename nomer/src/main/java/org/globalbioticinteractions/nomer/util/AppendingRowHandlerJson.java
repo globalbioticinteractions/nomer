@@ -30,7 +30,7 @@ public class AppendingRowHandlerJson implements RowHandler {
 
     @Override
     public void onRow(String[] row) throws PropertyEnricherException {
-        final Taxon taxonProvided = AppendingRowHandler.asTaxon(row, ctx.getInputSchema());
+        final Taxon taxonProvided = MatchUtil.asTaxon(row, ctx.getInputSchema());
         matcher.findTerms(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
             ObjectMapper obj = new ObjectMapper();
             ObjectNode resolved = obj.createObjectNode();
