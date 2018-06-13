@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.Appender;
@@ -20,9 +21,17 @@ public class CmdAppend extends CmdMatcherParams {
     public void run() {
         TermMatcher matcher = MatchUtil.getTermMatcher(getMatchers(), this);
 
-        Appender appender = "json".equalsIgnoreCase(outputFormat)
-                ? new AppenderJSON()
-                : new AppenderTSV();
+        Appender appender;
+        if ("json".equalsIgnoreCase(outputFormat)) {
+            appender = new AppenderJSON();
+        } else {
+            String property = getProperty("nomer.append.schema.output");
+            if (StringUtils.isNotBlank(property)) {
+                appender = new AppenderTSV(parseSchema(property));
+            } else {
+                appender = new AppenderTSV();
+            }
+        }
 
         RowHandler handler = new AppendingRowHandler(System.out, matcher, this, appender);
 

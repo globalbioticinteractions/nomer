@@ -38,7 +38,7 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
         return parseSchema(getProperty("nomer.schema.output"));
     }
 
-    static Map<Integer, String> parseSchema(String schema) {
+    public static Map<Integer, String> parseSchema(String schema) {
         Map<Integer, String> schemaMap = new TreeMap<>();
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(schema);
