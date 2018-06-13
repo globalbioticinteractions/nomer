@@ -15,6 +15,6 @@ import java.util.stream.Stream;
 
 public interface Appender  {
 
-    void appendLinesForRow(String[] row, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf);
+    void appendLinesForRow(String[] row, Taxon providedTaxon, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf);
 
 }

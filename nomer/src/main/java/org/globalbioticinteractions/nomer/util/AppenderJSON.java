@@ -8,33 +8,19 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.RowHandler;
-import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
 
-import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Collections;
+import java.util.stream.Stream;
 
-public class AppendingRowHandlerJson implements RowHandler {
-    private final TermMatcherContext ctx;
-    private final TermMatcher matcher;
-    private PrintStream out;
-
-    public AppendingRowHandlerJson(OutputStream os, TermMatcher matcher, TermMatcherContext ctx) {
-        this.ctx = ctx;
-        this.matcher = matcher;
-        this.out = new PrintStream(os);
-    }
+public class AppenderJSON implements Appender {
 
     @Override
-    public void onRow(String[] row) throws PropertyEnricherException {
-        final Taxon taxonProvided = MatchUtil.asTaxon(row, ctx.getInputSchema());
-        matcher.findTerms(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
-            ObjectMapper obj = new ObjectMapper();
-            ObjectNode resolved = obj.createObjectNode();
-            appendPrimaryTerm(taxonProvided, taxon, nameType, obj, resolved);
+    public void appendLinesForRow(String[] row, Taxon taxonProvided, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf) {
+        ObjectMapper obj = new ObjectMapper();
+        ObjectNode resolved = obj.createObjectNode();
+        resolvedTaxa.forEach(taxon -> {
+            appendPrimaryTerm(taxonProvided, taxon, nameTypeOf.nameTypeOf(taxon), obj, resolved);
             appendSecondaryTerms(resolved, taxon, obj);
             if (StringUtils.isNotBlank(taxon.getPath())) {
                 ObjectNode pathNode = obj.createObjectNode();
@@ -47,8 +33,9 @@ public class AppendingRowHandlerJson implements RowHandler {
                 }
             }
 
-            out.println(resolved.toString());
+            p.println(resolved.toString());
         });
+
     }
 
     private ArrayNode addArray(ObjectNode pathNode, String names1, String path) {

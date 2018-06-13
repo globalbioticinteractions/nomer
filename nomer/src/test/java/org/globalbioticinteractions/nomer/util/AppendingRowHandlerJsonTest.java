@@ -103,7 +103,7 @@ public class AppendingRowHandlerJsonTest {
 
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();
         TermMatcher matcher = new MappingTermMatcher(termMapper);
-        RowHandler rowHandler = new AppendingRowHandlerJson(os, matcher, ctx);
+        RowHandler rowHandler = new AppendingRowHandler(os, matcher, ctx, new AppenderJSON());
         MatchUtil.apply(is, rowHandler);
         JsonNode jsonNode = new ObjectMapper().readTree(os.toString());
         JsonNode expectedJson = new ObjectMapper().readTree(expectedOutput);
