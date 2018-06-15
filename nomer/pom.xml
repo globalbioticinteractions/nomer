@@ -21,6 +21,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.eol</groupId>
+            <artifactId>eol-globi-doi-resolver</artifactId>
+            <version>${globi.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-vfs2</artifactId>
             <version>2.2</version>

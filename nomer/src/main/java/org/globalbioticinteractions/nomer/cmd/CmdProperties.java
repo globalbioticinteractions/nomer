@@ -16,11 +16,9 @@ public class CmdProperties extends CmdDefaultParams implements Runnable {
     protected void printOnlyWithPrefix(String prefixFilter) {
         Properties properties = getProperties();
         properties.stringPropertyNames().stream()
-                .filter(key -> {
-                    return key.startsWith(prefixFilter);
-                })
-                .sorted()
+                .filter(key -> key.startsWith(prefixFilter))
                 .map(key -> key + "=" + properties.getProperty(key))
+                .sorted()
                 .forEach(System.out::println);
     }
 }

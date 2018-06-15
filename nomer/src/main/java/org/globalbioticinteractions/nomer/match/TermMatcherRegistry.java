@@ -25,6 +25,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherFactoryTaxonRanks());
         add(new TermMatcherFactoryEnsembleEnricher());
         add(new TermMatcherFactoryGlobalNames());
+        add(new TermMatcherDOIFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
