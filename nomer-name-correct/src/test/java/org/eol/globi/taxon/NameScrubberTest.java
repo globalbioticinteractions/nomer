@@ -61,4 +61,19 @@ public class NameScrubberTest {
         assertThat(getNameSuggester().suggest("A Cephalopoda"), is("Cephalopoda"));
     }
 
+    @Test
+    public void singleNumbers() {
+        assertThat(getNameSuggester().suggest("ostracod 1 0 1 4"), is("ostracod"));
+    }
+
+    @Test
+    public void singleNumbers2() {
+        assertThat(getNameSuggester().suggest("234 ostracod 1 0 1 4"), is("ostracod"));
+    }
+
+    @Test
+    public void singleNumbers3() {
+        assertThat(getNameSuggester().suggest("234 ostrac234od 1 0 1 4"), is("ostrac234od"));
+    }
+
 }

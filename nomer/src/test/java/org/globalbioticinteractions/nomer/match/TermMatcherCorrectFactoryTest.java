@@ -37,10 +37,7 @@ public class TermMatcherCorrectFactoryTest {
     @Test(expected = IllegalStateException.class)
     public void notInitialized() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
-        termMatcher.findTermsForNames(Arrays.asList("copepods"), new TermMatchListener() {
-            @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
-            }
+        termMatcher.findTermsForNames(Arrays.asList("copepods"), (nodeId, name, taxon, nameType) -> {
         });
     }
 

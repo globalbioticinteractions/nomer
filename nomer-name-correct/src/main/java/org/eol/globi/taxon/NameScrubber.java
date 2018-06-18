@@ -15,6 +15,7 @@ public class NameScrubber implements NameSuggester {
         name = name.replaceAll("((<[a-z0-9]+>)|(</[a-z0-9]+>)|(<[a-z0-9]+/>))", "");
         name = name.replaceAll("[^\\p{L}\\p{N}-\\.\\(\\)]", " ");
         name = name.replaceAll("[^\\pL\\pN\\p{Pc}]", " ");
+        name = name.replaceAll("(^|\\s+)\\d+", " ");
         return name.trim();
     }
 

@@ -51,6 +51,7 @@ public class SuggesterFactory {
                 add(new NameScrubber());
                 add(gnCanon);
                 add(manualSuggestor);
+                add(new NameScrubber());
             }
         };
     }
