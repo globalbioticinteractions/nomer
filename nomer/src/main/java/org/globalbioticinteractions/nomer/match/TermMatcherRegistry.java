@@ -26,6 +26,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherFactoryEnsembleEnricher());
         add(new TermMatcherFactoryGlobalNames());
         add(new TermMatcherDOIFactory());
+        add(new TermMatcherPMDID2DOIFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
