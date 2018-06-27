@@ -220,7 +220,7 @@ public class TaxonEnricherImplIT {
 
     @Test
     public void noNameButExternalId() throws PropertyEnricherException {
-        TaxonImpl taxon = new TaxonImpl(PropertyAndValueDictionary.NO_NAME, "EOL:223038");
+        TaxonImpl taxon = new TaxonImpl(null, "EOL:223038");
         Taxon taxonNode = enrich(taxon);
 
         assertThat(taxonNode.getExternalId(), is("EOL:223038"));

@@ -1,12 +1,9 @@
 package org.eol.globi.taxon;
 
 import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.service.NameSuggester;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -14,13 +11,13 @@ import static org.junit.Assert.assertThat;
 public class TaxonNameCorrectorTest {
 
     private final static CorrectionService CORRECTOR = new TaxonNameCorrector() {{
-        setSuggestors(Collections.singletonList((NameSuggester) name -> name));
+        setSuggestors(Collections.singletonList(name -> name));
     }};
 
     @Test
     public void cleanName() {
-        assertThat(CORRECTOR.correct(""), is("no name"));
-        assertThat(CORRECTOR.correct("a"), is("no name"));
+        assertThat(CORRECTOR.correct(""), is(""));
+        assertThat(CORRECTOR.correct("a"), is(""));
     }
 
     @Test
@@ -30,8 +27,8 @@ public class TaxonNameCorrectorTest {
 
     @Test
     public void taxonNameTooShort() {
-        assertThat(CORRECTOR.correct("G"), is("no name"));
-        assertThat(CORRECTOR.correct("H"), is("no name"));
+        assertThat(CORRECTOR.correct("G"), is(""));
+        assertThat(CORRECTOR.correct("H"), is(""));
         assertThat(CORRECTOR.correct("HH"), is("HH"));
     }
 

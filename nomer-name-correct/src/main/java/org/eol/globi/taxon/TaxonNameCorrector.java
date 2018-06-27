@@ -13,6 +13,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,12 +35,8 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
 
     @Override
     public String correct(String taxonName) {
-        String suggestion;
-        if (StringUtils.isBlank(taxonName)) {
-            suggestion = PropertyAndValueDictionary.NO_NAME;
-        } else if (StringUtils.equals(taxonName, PropertyAndValueDictionary.NO_MATCH)) {
-            suggestion = PropertyAndValueDictionary.NO_MATCH;
-        } else {
+        String suggestion = "";
+        if (StringUtils.isNotBlank(taxonName)) {
             suggestion = suggestCorrection(taxonName);
         }
         return suggestion;
@@ -76,7 +73,7 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
         for (NameSuggester suggestor : suggestors) {
             nameSuggestion = StringUtils.trim(suggestor.suggest(nameSuggestion));
             if (StringUtils.length(nameSuggestion) < 2) {
-                nameSuggestion = PropertyAndValueDictionary.NO_NAME;
+                nameSuggestion = "";
                 break;
             }
         }
