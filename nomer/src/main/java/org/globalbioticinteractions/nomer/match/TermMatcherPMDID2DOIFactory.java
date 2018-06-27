@@ -37,7 +37,7 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
 
     @Override
     public String getName() {
-        return "pmid2doi";
+        return "pmid-doi";
     }
 
     @Override
