@@ -105,6 +105,8 @@ public class AppenderTSV implements Appender {
     }
 
     private List<String> splitAndTrim(String pathNames) {
-        return Arrays.stream(CSVTSVUtil.splitPipes(pathNames)).map(String::trim).collect(Collectors.toList());
+        return StringUtils.isBlank(pathNames)
+                ? Collections.emptyList()
+                : Arrays.stream(CSVTSVUtil.splitPipes(pathNames)).map(String::trim).collect(Collectors.toList());
     }
 }

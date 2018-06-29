@@ -38,7 +38,6 @@ public class AppenderTSVTest {
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\t\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
     }
 
-
     @Test
     public void appendWithSeparateRanksWithSchema() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -49,6 +48,24 @@ public class AppenderTSVTest {
             put(3, "path.pathName2.id");
         }}), out);
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1\tpathId1\tpath2\tpathId2\n"));
+    }
+
+    @Test
+    public void appendWithSeparateRanksWithSchemaWithNullPathNames() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        String[] row = {"col1", "col2"};
+        TaxonImpl provided = new TaxonImpl("providedName", "providedId");
+        TaxonImpl resolved = new TaxonImpl("resolvedName", "resolvedId");
+        resolved.setPath(null);
+        resolved.setPathIds(null);
+        resolved.setPathNames(null);
+        new AppenderTSV(new HashMap<Integer, String>() {{
+            put(0, "path.pathName1.name");
+            put(1, "path.pathName1.id");
+            put(2, "path.pathName2.name");
+            put(3, "path.pathName2.id");
+        }}).appendLinesForRow(row, provided, Stream.of(resolved), new PrintStream(out), taxon1 -> NameType.SAME_AS);
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\t\t\t\t\n"));
     }
 
     @Test
