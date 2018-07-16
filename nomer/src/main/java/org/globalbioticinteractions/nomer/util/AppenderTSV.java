@@ -73,7 +73,13 @@ public class AppenderTSV implements Appender {
                         && ranks.size() == ids.size()
                         && names.size() == ids.size()) {
                     String colName = outputSchema.get(i);
-                    if (StringUtils.startsWith(colName, "path.")) {
+                    if (StringUtils.equalsIgnoreCase(colName, "id")) {
+                        colValue = taxon.getExternalId();
+                    } else if (StringUtils.equalsIgnoreCase(colName, "name")) {
+                        colValue = taxon.getName();
+                    } else if (StringUtils.equalsIgnoreCase(colName, "rank")) {
+                        colValue = taxon.getRank();
+                    } else if (StringUtils.startsWith(colName, "path.")) {
                         String[] split = StringUtils.split(colName, '.');
                         if (split != null && split.length > 1) {
                             String rank = split[1];
