@@ -28,14 +28,14 @@ public class AppenderTSVTest {
     public void appendWithPath() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         appendTo(new AppenderTSV(), out);
-        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\t\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\tresolvedRank\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
     }
 
     @Test
     public void appendWithSeparateRanks() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         appendTo(new AppenderTSV(), out);
-        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\t\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\tresolvedRank\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
     }
 
     @Test
