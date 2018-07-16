@@ -69,30 +69,29 @@ public class AppenderTSV implements Appender {
             List<String> names = splitAndTrim(taxon.getPath());
             for (int i = 0; i <= maxColumns; i++) {
                 String colValue = "";
-                if (ranks.size() > 0
+                String colName = outputSchema.get(i);
+                if (StringUtils.equalsIgnoreCase(colName, "id")) {
+                    colValue = taxon.getExternalId();
+                } else if (StringUtils.equalsIgnoreCase(colName, "name")) {
+                    colValue = taxon.getName();
+                } else if (StringUtils.equalsIgnoreCase(colName, "rank")) {
+                    colValue = taxon.getRank();
+                } else if (StringUtils.startsWith(colName, "path.")
+                        && ranks.size() > 0
                         && ranks.size() == ids.size()
                         && names.size() == ids.size()) {
-                    String colName = outputSchema.get(i);
-                    if (StringUtils.equalsIgnoreCase(colName, "id")) {
-                        colValue = taxon.getExternalId();
-                    } else if (StringUtils.equalsIgnoreCase(colName, "name")) {
-                        colValue = taxon.getName();
-                    } else if (StringUtils.equalsIgnoreCase(colName, "rank")) {
-                        colValue = taxon.getRank();
-                    } else if (StringUtils.startsWith(colName, "path.")) {
-                        String[] split = StringUtils.split(colName, '.');
-                        if (split != null && split.length > 1) {
-                            String rank = split[1];
-                            int i1 = ranks.indexOf(rank);
-                            if (i1 > -1) {
-                                if (split.length > 2) {
-                                    boolean shouldUseId = "id".equalsIgnoreCase(split[2]);
-                                    colValue = shouldUseId
-                                            ? ids.get(i1)
-                                            : names.get(i1);
-                                } else {
-                                    colValue = rank;
-                                }
+                    String[] split = StringUtils.split(colName, '.');
+                    if (split != null && split.length > 1) {
+                        String rank = split[1];
+                        int i1 = ranks.indexOf(rank);
+                        if (i1 > -1) {
+                            if (split.length > 2) {
+                                boolean shouldUseId = "id".equalsIgnoreCase(split[2]);
+                                colValue = shouldUseId
+                                        ? ids.get(i1)
+                                        : names.get(i1);
+                            } else {
+                                colValue = rank;
                             }
                         }
                     }
