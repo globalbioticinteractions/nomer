@@ -10,6 +10,7 @@ import org.eol.globi.taxon.GlobalNamesService2;
 import org.eol.globi.taxon.GlobalNamesSources2;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.util.CSVTSVUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -234,6 +235,7 @@ public class GlobalNamesService2Test {
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ITIS:108477"));
     }
 
+    @Ignore(value = "see bug report ")
     @Test
     public void lookupOTT() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.OTT);
