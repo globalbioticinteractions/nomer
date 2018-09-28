@@ -30,13 +30,12 @@ Nomer needs Java 8+.
 
 Nomer is a stand-alone java application, packaged in a jarfile. You can build you own (see [building](#building)) or download a prebuilt jar at [releases](https://github.com/globalbioticinteractions/nomer/releases).
 
-On linux (and Mac) it is recommended to make an alias by appending the following to ~/.bash_aliases :
-
+On linux and mac, you can use the following script to install nomer:
+```console
+sudo sh -c '(echo "#!/usr/bin/env sh" && curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.1.3/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer' && nomer version
 ```
-alias nomer='java -Xmx4G -jar [some dir]/nomer.jar'
-```
 
-where [some dir] is the location where nomer.jar lives. With this alias, you can now do ```nomer version``` instead of ```java -jar nomer.jar version```.
+With this, you can now run things like ```nomer version``` instead of ```java -jar [some long dir path]/nomer.jar version``` . 
 
 ### Maven, Gradle, SBT
 Nomer is made available through a [maven](https://maven.apache.org) repository.
