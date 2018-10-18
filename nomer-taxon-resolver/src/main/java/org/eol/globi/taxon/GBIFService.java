@@ -11,6 +11,7 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.LanguageCodeLookup;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
@@ -24,12 +25,15 @@ import java.util.Map;
 @PropertyEnricherInfo(name = "gbif-taxon-id", description = "Lookup taxon in GBIF by id using prefix GBIF:* prefix.")
 public class GBIFService implements PropertyEnricher {
 
+    public static final String GBIF_LONG_PREFIX = "https://www.gbif.org/species/";
+
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         // see http://www.gbif.org/developer/species
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.GBIF.getIdPrefix())) {
+        if (StringUtils.startsWith(externalId, TaxonomyProvider.GBIF.getIdPrefix())
+                || StringUtils.startsWith(externalId, GBIF_LONG_PREFIX)) {
             enrichWithExternalId(enriched, externalId);
         }
         return enriched;
@@ -38,6 +42,7 @@ public class GBIFService implements PropertyEnricher {
     private void enrichWithExternalId(Map<String, String> enriched, String externalId) throws PropertyEnricherException {
         try {
             String gbifSpeciesId = StringUtils.replace(externalId, TaxonomyProvider.GBIF.getIdPrefix(), "");
+            gbifSpeciesId = StringUtils.replace(gbifSpeciesId, GBIF_LONG_PREFIX, "");
             JsonNode jsonNode = getSpeciesInfo(gbifSpeciesId);
             if (jsonNode.has("acceptedKey")) {
                 jsonNode = getSpeciesInfo(jsonNode.get("acceptedKey").asText());

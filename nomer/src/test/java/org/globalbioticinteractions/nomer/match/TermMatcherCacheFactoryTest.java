@@ -37,13 +37,10 @@ public class TermMatcherCacheFactoryTest {
         TermMatcher termMatcher = new TermMatcherCacheFactory().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
         AtomicBoolean hasMatch = new AtomicBoolean(false);
-        termMatcher.findTerms(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), new TermMatchListener() {
-            @Override
-            public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), is(not("bla")));
-
-                hasMatch.set(true);
-            }
+        termMatcher.findTerms(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), (Long id, String name, Taxon taxon, NameType nameType) -> {
+            assertThat(taxon.getId(), is("EOL:1276240"));
+            assertThat(taxon.getName(), is(not("bla")));
+            hasMatch.set(true);
         });
 
         assertThat(hasMatch.get(), is(true));
