@@ -23,7 +23,7 @@ Matchers can be added by writing some java code that implements an interface.
   - [`match by (taxon) id`](#match-term-by-id-with-default-matcher)
     - [`ITIS API`](#itis)
     - [`NCBI API`](#ncbi)
-    - [`json output`](#match-term-by-id-json-output)
+    - [`json output`](#match-term-by-id-with-json-output)
   - [`match by (taxon) name`](#match-term-by-name-with-default-matcher)
     - [`match by name using specific matcher`](#match-term-by-name-with-selected-matcher)
   - [`replacing term matches`](#replacing-term-matches)
