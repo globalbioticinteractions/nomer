@@ -18,6 +18,16 @@ Matchers can be added by writing some java code that implements an interface.
 - [Install](#install)
 - [Usage](#usage)
 - [Examples](#examples)
+  - [`show version`](#show-version)
+  - [`show supported matchers`](#show-supported-matchers)
+  - [`match by (taxon) id`](#match-term-by-id-with-default-matcher)
+    - [`ITIS API`](#itis)
+    - [`NCBI API`](#ncbi)
+    - [`json output`](#match-term-by-id-json-output)
+  - [`match by (taxon) name`](#match-term-by-name-with-default-matcher)
+    - [`match by name using specific matcher`](#match-term-by-name-with-selected-matcher)
+  - [`replacing term matches`](#replacing-term-matches)
+  - [`validation`](#validate-taxoncache-and-taxonmap)
 - [Building](#building)
 - [Contribute](#contribute)
 - [License](#license)
@@ -160,7 +170,7 @@ $ nomer version
 0.0.7
 ```
 
-### Show supported matches
+### Show supported matchers
 ``` console
 $ nomer matcher -v
 ```
@@ -206,6 +216,49 @@ $ cat matches.tsv
 	Homo sapiens	SAME_AS	EOL:327955	Homo sapiens	Species	إنسان @ar | Insan @az | човешки @bg | মানবীয় @bn | Ljudsko biće @bs | Humà @ca | Muž @cs | Menneske @da | Mensch @de | ανθρώπινο ον @el | Humans @en | Humano @es | Gizakiaren @eu | Ihminen @fi | Homme @fr | Mutum @ha | אנושי @he | մարդու @hy | Umano @it | ადამიანის @ka | Homo @la | žmogaus @lt | Om @mo | Mens @nl | Òme @oc | Om @ro | Человек разумный современный @ru | Qenie Njerëzore @sq | மனிதன் @ta | మానవుడు @te | Aadmi @ur | umuntu @zu |	Animalia | Bilateria | Deuterostomia | Chordata | Vertebrata | Gnathostomata | Tetrapoda | Mammalia | Theria | Eutheria | Primates | Haplorrhini | Simiiformes | Hominoidea | Hominidae | Homininae | Homo | Homo sapiens	EOL:1 | EOL:3014411 | EOL:8814528 | EOL:694 | EOL:2774383 | EOL:12094272 | EOL:4712200 | EOL:1642 | EOL:57446 | EOL:2844801 | EOL:1645 | EOL:10487985 | EOL:10509493 | EOL:4529848 | EOL:1653 | EOL:10551052 | EOL:42268 | EOL:327955	kingdom | subkingdom | infrakingdom | division | subdivision | infraphylum | superclass | class | subclass | infraclass | order | suborder | infraorder | superfamily | family | subfamily | genus | species	http://eol.org/pages/327955	http://media.eol.org/content/2014/08/07/23/02836_98_68.jpg
 ```
 
+### Match term by id with JSON output
+Similarly, you can match terms by id and produce JSON output, instead of tab-separated values using:
+
+```
+$ echo -e "NCBI:9606\tHomo sapiens" | nomer append ncbi-taxon-id -o json > matches.json
+```
+
+Now matches.json looks something like:
+
+```json
+{
+  "species": {
+    "@id": "NCBITaxon:9606",
+    "name": "Homo sapiens",
+    "equivalent_to": {
+      "@id": "NCBITaxon:9606",
+      "name": "Homo sapiens"
+    }
+  },
+  "norank": {
+    "@id": "NCBITaxon:131567",
+    "name": "cellular organisms"
+  },
+  "superkingdom": {
+    "@id": "NCBITaxon:2759",
+    "name": "Eukaryota"
+  },
+  "kingdom": {
+    "@id": "NCBITaxon:33208",
+    "name": "Metazoa"
+  },
+...
+}
+```
+
+Using tools like [jq](https://stedolan.github.io/jq/), you can now do things like:
+
+```console
+$ echo -e "NCBI:9606\tHomo sapiens" | nomer append -o json | jq .family
+```
+to list all the family taxa associated with the term.
+
+
 ### Match term by id with selected matcher
 
 ### ITIS
@@ -236,7 +289,7 @@ $ echo -e "\tCanis lupus" | nomer append globi-globalnames
 The expected output includes tab separated lines like, where the first two columns are the input and the following columns are match results.
 
 
-### replace term matches
+### Replacing term matches
 
 In addition to appending the found matches to a provided input row, Nomer also supports replacing the matched values.
 
