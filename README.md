@@ -200,13 +200,13 @@ If you'd like to add new matchers, please open [a new issue](https://github.com/
 ### Match term by id with default matcher
 
 ``` console
-$ echo -e "NCBI:9606\t" | java -Xmx4G -jar nomer.jar append > matches.tsv
+$ echo -e "NCBI:9606\t" | nomer append > matches.tsv
 ```
 
 ### Match term by name with default matcher
 
 ``` console
-$ echo -e "\tHomo sapiens" | java -Xmx4G -jar nomer.jar append > matches.tsv
+$ echo -e "\tHomo sapiens" | nomer append > matches.tsv
 ```
 
 matches.tsv should now include entries like
