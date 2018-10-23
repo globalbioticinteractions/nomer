@@ -40,8 +40,11 @@ public class NCBIService implements PropertyEnricher {
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
 
         if (PREFIXES.stream().anyMatch(x -> StringUtils.startsWith(externalId, x))) {
-            String tsn = PREFIXES.stream().reduce(externalId, (x, y) -> StringUtils.replace(x, y, ""));
-            if (tsn.matches("\\d+")) {
+            String tsn = PREFIXES
+                    .stream()
+                    .reduce(externalId, (x, y) -> StringUtils.trim(StringUtils.replace(x, y, "")));
+            
+            if (tsn.matches("^\\d+$")) {
                 String fullHierarchy = getResponse("db=taxonomy&id=" + tsn);
                 if (fullHierarchy.contains("<Taxon>")) {
                     parseAndPopulate(enriched, tsn, fullHierarchy);

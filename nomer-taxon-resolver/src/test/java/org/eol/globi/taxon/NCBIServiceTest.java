@@ -59,6 +59,17 @@ public class NCBIServiceTest {
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
     }
 
+    @Test
+    public void lookupPathByTaxonIdNCBIPurlWhitespaces() throws PropertyEnricherException {
+        PropertyEnricher enricher = new NCBIService();
+        HashMap<String, String> props = new HashMap<String, String>() {{
+            put(PropertyAndValueDictionary.EXTERNAL_ID, "http://purl.obolibrary.org/obo/NCBITaxon_9606 ");
+        }};
+        Map<String, String> enrich = enricher.enrich(props);
+        assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
+        assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
+    }
+
 
     @Test
     public void parseInconsistentWithAltNCBI191217() throws PropertyEnricherException {
