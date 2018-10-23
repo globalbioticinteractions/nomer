@@ -20,24 +20,27 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @PropertyEnricherInfo(name = "ncbi-taxon-id", description = "Lookup NCBI taxon by id with NCBI:* prefix.")
 public class NCBIService implements PropertyEnricher {
+
+    private static final List<String> PREFIXES = Arrays.asList(TaxonomyProvider.NCBI.getIdPrefix(),
+            TaxonomyProvider.NCBITaxon.getIdPrefix(),
+            "http://purl.obolibrary.org/obo/NCBITaxon_");
 
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         // see http://www.ncbi.nlm.nih.gov/books/NBK25500/
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        String prefixAlt = TaxonomyProvider.NCBITaxon.getIdPrefix();
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.NCBI.getIdPrefix())
-                || StringUtils.startsWith(externalId, prefixAlt)) {
-            String tsn = externalId
-                    .replace(prefixAlt, "")
-                    .replace(TaxonomyProvider.ID_PREFIX_NCBI, "");
+
+        if (PREFIXES.stream().anyMatch(x -> StringUtils.startsWith(externalId, x))) {
+            String tsn = PREFIXES.stream().reduce(externalId, (x, y) -> StringUtils.replace(x, y, ""));
             if (tsn.matches("\\d+")) {
                 String fullHierarchy = getResponse("db=taxonomy&id=" + tsn);
                 if (fullHierarchy.contains("<Taxon>")) {
@@ -80,7 +83,7 @@ public class NCBIService implements PropertyEnricher {
 
     private void setPropertyToFirstValue(String propertyName, List<String> pathElems, Map<String, String> enriched) {
         if (pathElems != null && pathElems.size() > 0) {
-            enriched.put(propertyName, pathElems.get(pathElems.size()-1));
+            enriched.put(propertyName, pathElems.get(pathElems.size() - 1));
         }
     }
 
