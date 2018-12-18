@@ -165,6 +165,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
     }
 
     private void parseResultNode(TermMatchListener termMatchListener, JsonNode jsonNode) {
+
         JsonNode dataList = jsonNode.get("data");
         if (dataList != null && dataList.isArray()) {
             for (JsonNode data : dataList) {
@@ -287,7 +288,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
             }
 
             // related to https://github.com/GlobalNamesArchitecture/gni/issues/48
-            if (!pathTailRepetitions(taxon)) {
+            if (!pathTailRepetitions(taxon) && !speciesNoGenus(taxon)) {
                 termMatchListener.foundTaxonForName(requestId(data), suppliedNameString, taxon, nameType);
             }
         }
@@ -308,6 +309,11 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
                 taxon.setCommonNames(StringUtils.join(commonNames, CharsetConstant.SEPARATOR));
             }
         }
+    }
+
+    private boolean speciesNoGenus(Taxon taxon) {
+        return taxon.getPathNames().contains("species")
+                && !taxon.getPathNames().contains("genus");
     }
 
     private String getSuppliedNameString(JsonNode data) {

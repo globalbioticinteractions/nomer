@@ -438,4 +438,34 @@ public class GlobalNamesService2Test {
 
     }
 
+    @Test
+    public void lookupNCBIIgnoreCanonicalMatchOnExactMatch() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(Arrays.asList(GlobalNamesSources2.NCBI));
+        final List<Taxon> taxa = new ArrayList<>();
+        service.findTermsForNames(Collections.singletonList("Amphipoda"), (nodeId, name, taxon, nameType) -> {
+            taxa.add(taxon);
+            assertThat(nameType, is(NameType.SAME_AS));
+        });
+
+        assertThat(taxa.size(), is(1));
+        assertThat(taxa.get(0).getPath(), endsWith("Amphipoda"));
+        assertThat(taxa.get(0).getPathNames(), endsWith("order"));
+
+    }
+
+    @Test
+    public void lookupNCBIIgnoreCanonicalMatchSingleWordSpecies() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(Collections.singletonList(GlobalNamesSources2.NCBI));
+        final List<Taxon> taxa = new ArrayList<>();
+        service.findTermsForNames(Collections.singletonList("Procladius sp1 M_PL_014"), (nodeId, name, taxon, nameType) -> {
+            taxa.add(taxon);
+            assertThat(nameType, is(NameType.SAME_AS));
+        });
+
+        assertThat(taxa.size(), is(1));
+        assertThat(taxa.get(0).getPath(), endsWith("Procladius"));
+        assertThat(taxa.get(0).getPathNames(), endsWith("genus"));
+
+    }
+
 }
