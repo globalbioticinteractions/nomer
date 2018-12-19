@@ -108,6 +108,17 @@ public class AppenderTSVTest {
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\t\t\t\n"));
     }
 
+    @Test
+    public void appendWithFullPath() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        appendTo(new AppenderTSV(new HashMap<Integer, String>() {{
+            put(0, "path.name");
+            put(1, "path.id");
+            put(2, "path.rank");
+        }}), out);
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\n"));
+    }
+
     private void appendTo(Appender appender, ByteArrayOutputStream out) {
         String[] row = {"col1", "col2"};
         TaxonImpl provided = new TaxonImpl("providedName", "providedId");

@@ -76,6 +76,12 @@ public class AppenderTSV implements Appender {
                     colValue = taxon.getName();
                 } else if (StringUtils.equalsIgnoreCase(colName, "rank")) {
                     colValue = taxon.getRank();
+                } else if (StringUtils.equalsIgnoreCase(colName, "path.id")) {
+                    colValue = taxon.getPathIds();
+                } else if (StringUtils.equalsIgnoreCase(colName, "path.name")) {
+                    colValue = taxon.getPath();
+                } else if (StringUtils.equalsIgnoreCase(colName, "path.rank")) {
+                    colValue = taxon.getPathNames();
                 } else if (StringUtils.startsWith(colName, "path.")
                         && ranks.size() > 0
                         && ranks.size() == ids.size()
