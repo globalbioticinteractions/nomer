@@ -79,7 +79,7 @@ public class NCBIServiceTest {
         }};
         Map<String, String> enrich = enricher.enrich(props);
         Taxon taxon = TaxonUtil.mapToTaxon(enrich);
-        int expectedLength = 6;
+        int expectedLength = 5;
         assertThat(taxon.getPath().split("\\|").length, is(expectedLength));
         assertThat(taxon.getPathNames().split("\\|").length, is(expectedLength));
         assertThat(taxon.getPathIds().split("\\|").length, is(expectedLength));
