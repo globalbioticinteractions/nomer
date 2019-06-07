@@ -1,7 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -10,7 +9,6 @@ import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TaxonMapParser;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.TermResource;
-import org.eol.globi.util.CSVTSVUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.globalbioticinteractions.nomer.util.TermValidatorPredicates;
 
@@ -73,12 +71,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
 
             @Override
             public Function<String, Triple<Taxon, NameType, Taxon>> getParser() {
-                return line -> {
-                    String[] strings = CSVTSVUtil.splitTSV(line);
-                    Taxon provided = TaxonMapParser.parseProvidedTaxon(strings);
-                    Taxon resolved = TaxonMapParser.parseResolvedTaxon(strings);
-                    return new ImmutableTriple<>(provided, NameType.SAME_AS, resolved);
-                };
+                return TaxonMapParser::parse;
             }
 
             @Override
