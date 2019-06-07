@@ -32,11 +32,12 @@ public class SuggesterFactory {
         final NameSuggester stopwordRemover = createStopwordRemover(ctx);
         final GlobalNamesCanon gnCanon = new GlobalNamesCanon();
 
-
         return new ArrayList<NameSuggester>() {
             {
                 // give manual suggestions first try
                 add(manualSuggestor);
+                add(stopwordRemover);
+
                 // map using UK species inventory
                 add(new UKSISuggestionService() {
                     {

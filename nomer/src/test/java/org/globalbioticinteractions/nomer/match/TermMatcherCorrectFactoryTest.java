@@ -106,4 +106,18 @@ public class TermMatcherCorrectFactoryTest {
         assertTrue(found.get());
     }
 
+    @Test
+    public void correctSingleTermWithCapitalizedStopword() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.findTermsForNames(Arrays.asList("Unidentified Copepods"), new TermMatchListener() {
+            @Override
+            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+                assertThat(taxon.getName(), Is.is("Copepoda"));
+                found.set(true);
+            }
+        });
+        assertTrue(found.get());
+    }
+
 }
