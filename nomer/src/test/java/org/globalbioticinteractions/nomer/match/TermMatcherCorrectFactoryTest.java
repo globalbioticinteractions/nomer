@@ -120,4 +120,18 @@ public class TermMatcherCorrectFactoryTest {
         assertTrue(found.get());
     }
 
+    @Test
+    public void correctSnakeCase() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.findTermsForNames(Arrays.asList("homo_sapiens"), new TermMatchListener() {
+            @Override
+            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+                assertThat(taxon.getName(), Is.is("Homo sapiens"));
+                found.set(true);
+            }
+        });
+        assertTrue(found.get());
+    }
+
 }

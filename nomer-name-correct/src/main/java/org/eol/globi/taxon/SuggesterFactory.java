@@ -37,6 +37,7 @@ public class SuggesterFactory {
                 // give manual suggestions first try
                 add(manualSuggestor);
                 add(stopwordRemover);
+                add(new SnakeCaseUndoer());
 
                 // map using UK species inventory
                 add(new UKSISuggestionService() {
