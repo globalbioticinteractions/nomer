@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public class TermMatcherDOIFactoryTest {
             @Override
             public InputStream getResource(String uri) throws IOException {
                 if ("map".equals(uri)) {
-                    return IOUtils.toInputStream("uri\treference\nhttps://doi.org/10.123/456\tsome citation");
+                    return IOUtils.toInputStream("uri\treference\nhttps://doi.org/10.123/456\tsome citation", StandardCharsets.UTF_8);
                 } else {
                     throw new IOException("[" + uri + "] not found");
                 }

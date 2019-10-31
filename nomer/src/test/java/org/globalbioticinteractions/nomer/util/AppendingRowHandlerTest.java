@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -24,7 +25,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveWithEnricher() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens");
+        InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(null);
         applyMatcher(is, os, matcher);
@@ -37,7 +38,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveTaxonCache() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens");
+        InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
         applyMatcher(is, os, matcher);
@@ -50,7 +51,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveTaxonCacheMatchFirstLine() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens");
+        InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
         applyMatcher(is, os, matcher);
@@ -61,7 +62,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveTaxonCacheMatchFirstLineWithNonDefaultSchema() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone");
+        InputStream is = IOUtils.toInputStream("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
         MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault() {
@@ -80,7 +81,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveGlobalNamesAppendFuzzyMatch() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("\tHomo saliens\tone");
+        InputStream is = IOUtils.toInputStream("\tHomo saliens\tone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         applyMatcher(is, os, new GlobalNamesService2());
         assertThat(os.toString(), containsString("\tHomo saliens\tone\tSIMILAR_TO\t"));
@@ -88,7 +89,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveGlobalNamesBatchAppend() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens\tone");
+        InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens\tone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         applyMatcher(is, os, new GlobalNamesService2(GlobalNamesSources2.NCBI));
         assertThat(os.toString(), containsString("Mammalia"));
@@ -97,7 +98,7 @@ public class AppendingRowHandlerTest {
 
     @Test
     public void resolveGlobalNamesBatchAppendNoMatchName() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("NCBI:9606\tDonald duck\tone");
+        InputStream is = IOUtils.toInputStream("NCBI:9606\tDonald duck\tone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         applyMatcher(is, os, new GlobalNamesService2(GlobalNamesSources2.NCBI));
         assertThat(os.toString(), startsWith("NCBI:9606\tDonald duck\tone\tNONE\t\tDonald duck"));

@@ -44,13 +44,13 @@ public abstract class TermMatcherContextCaching extends CmdDefaultParams impleme
                 FileSystemManager fsManager = VFS.getManager();
                 FileObject fileObj = fsManager.resolveFile(uri);
 
-                OutputStream output = StringUtils.endsWith(uri, ".gz") ?
+                try (OutputStream output = StringUtils.endsWith(uri, ".gz") ?
                         new FileOutputStream(cachedFile) :
-                        new GZIPOutputStream(new FileOutputStream(cachedFile));
+                        new GZIPOutputStream(new FileOutputStream(cachedFile))) {
+                    IOUtils.copyLarge(fileObj.getContent().getInputStream(), output);
+                    output.flush();
+                }
 
-                IOUtils.copyLarge(fileObj.getContent().getInputStream(), output);
-                output.flush();
-                IOUtils.closeQuietly(output);
                 LOG.info(msg + " done.");
             }
             LOG.info("using cached " + location);

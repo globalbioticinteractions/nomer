@@ -22,6 +22,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,7 +87,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         try {
             InputStream resource = ctx.getResource(taxonRankCacheUrl);
             DOIResolverCache doiResolverCache = new DOIResolverCache();
-            doiResolverCache.init(new InputStreamReader(resource, Charsets.UTF_8));
+            doiResolverCache.init(new InputStreamReader(resource, StandardCharsets.UTF_8));
             doiResolver = doiResolverCache;
         } catch (IOException | PropertyEnricherException e) {
             throw new RuntimeException("failed to create doi resolver cache", e);

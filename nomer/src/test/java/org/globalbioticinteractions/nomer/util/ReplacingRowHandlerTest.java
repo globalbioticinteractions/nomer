@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -29,7 +30,7 @@ public class ReplacingRowHandlerTest {
 
     @Test
     public void resolveTaxonCache() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens");
+        InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
         MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault()));
@@ -40,14 +41,14 @@ public class ReplacingRowHandlerTest {
 
     @Test
     public void noReplaceOnMissingSchemas() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens");
+        InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault());
         assertThat(os.toString(), Is.is("EOL:1276240\tHomo sapiens\n"));
     }
 
     @Test
     public void resolveTaxonCacheMatchFirstLineByNameOnly() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("\tGreen-winged teal");
+        InputStream is = IOUtils.toInputStream("\tGreen-winged teal", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
@@ -61,7 +62,7 @@ public class ReplacingRowHandlerTest {
 
     @Test
     public void replacePipedValues() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("\tGreen-winged teal | Anas crecca carolinensis");
+        InputStream is = IOUtils.toInputStream("\tGreen-winged teal | Anas crecca carolinensis", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
@@ -75,7 +76,7 @@ public class ReplacingRowHandlerTest {
 
     @Test
     public void replaceOnlyMatchingPipedValues() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("\tJohnny Bravo | Anas crecca carolinensis");
+        InputStream is = IOUtils.toInputStream("\tJohnny Bravo | Anas crecca carolinensis", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
@@ -89,7 +90,7 @@ public class ReplacingRowHandlerTest {
 
     @Test
     public void resolveTaxonCacheMatchFirstLineByIdOnly() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("EOL:1276240\tJohnny Bravo");
+        InputStream is = IOUtils.toInputStream("EOL:1276240\tJohnny Bravo", StandardCharsets.UTF_8);
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
@@ -113,14 +114,14 @@ public class ReplacingRowHandlerTest {
     @Test
     public void resolveSomeMatchWithNullExternalId() throws IOException, PropertyEnricherException {
         TaxonImpl taxon = new TaxonImpl("some match", null);
-        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.SAME_AS, IOUtils.toInputStream("\tJohnny Bravo"));
+        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.SAME_AS, IOUtils.toInputStream("\tJohnny Bravo", StandardCharsets.UTF_8));
         assertThat(os.toString(), Is.is("\tsome match\n"));
     }
 
     @Test
     public void resolveNoMatch() throws IOException, PropertyEnricherException {
         TaxonImpl taxon = new TaxonImpl("some match", null);
-        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.NONE, IOUtils.toInputStream("\tJohnny Bravo"));
+        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.NONE, IOUtils.toInputStream("\tJohnny Bravo", StandardCharsets.UTF_8));
         assertThat(os.toString(), Is.is("\tJohnny Bravo\n"));
     }
 
@@ -132,7 +133,7 @@ public class ReplacingRowHandlerTest {
             put(1, PropertyAndValueDictionary.NAME);
             put(2, "matchType");
         }};
-        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.NONE, IOUtils.toInputStream("\tJohnny Bravo\t"), outputSchema);
+        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.NONE, IOUtils.toInputStream("\tJohnny Bravo\t", StandardCharsets.UTF_8), outputSchema);
         assertThat(os.toString(), Is.is("\tJohnny Bravo\tNONE\n"));
     }
 
@@ -144,7 +145,7 @@ public class ReplacingRowHandlerTest {
             put(1, PropertyAndValueDictionary.NAME);
             put(2, "matchType");
         }};
-        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.SAME_AS, IOUtils.toInputStream("\tJohnny Bravo | Mickey Mouse\t"), outputSchema);
+        ByteArrayOutputStream os = applyWithMatch(taxon, NameType.SAME_AS, IOUtils.toInputStream("\tJohnny Bravo | Mickey Mouse\t", StandardCharsets.UTF_8), outputSchema);
         assertThat(os.toString(), Is.is("some:123 | some:123\tmatching | matching\tSAME_AS | SAME_AS\n"));
     }
 
@@ -197,7 +198,7 @@ public class ReplacingRowHandlerTest {
 
     @Test
     public void resolveGlobalNamesAppendFuzzyMatch() throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream("\tHomo saliens\tone");
+        InputStream is = IOUtils.toInputStream("\tHomo saliens\tone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         MatchUtil.apply(is, new ReplacingRowHandler(os, new GlobalNamesService2(), new MatchTestUtil.TermMatcherContextDefault() {
         }));

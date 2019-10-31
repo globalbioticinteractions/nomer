@@ -1,7 +1,6 @@
 package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameter;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.PropertyContext;
@@ -38,13 +37,13 @@ public abstract class CmdDefaultParams implements PropertyContext {
             if (StringUtils.isNotBlank(getPropertiesResource())) {
                 File propertiesFile = new File(getPropertiesResource());
                 if (propertiesFile.exists() && propertiesFile.isFile()) {
-                    FileInputStream inStream = new FileInputStream(propertiesFile);
-                    props.load(inStream);
-                    IOUtils.closeQuietly(inStream);
+                    try (FileInputStream inStream = new FileInputStream(propertiesFile)) {
+                        props.load(inStream);
+                    }
                 } else {
-                    InputStream inStream = ResourceUtil.asInputStream(getPropertiesResource());
-                    props.load(inStream);
-                    IOUtils.closeQuietly(inStream);
+                    try (InputStream inStream = ResourceUtil.asInputStream(getPropertiesResource())) {
+                        props.load(inStream);
+                    }
                 }
             }
             properties = props;

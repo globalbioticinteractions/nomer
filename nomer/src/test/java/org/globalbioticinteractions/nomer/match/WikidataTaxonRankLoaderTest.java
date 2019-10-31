@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -43,7 +44,7 @@ public class WikidataTaxonRankLoaderTest {
                 mapWriter.onTerm(taxon);
             }
         };
-        WikidataTaxonRankLoader.handleWikidataTaxonRanks(proxy, IOUtils.toString(getClass().getResourceAsStream("wikidata_taxon_ranks.json")));
+        WikidataTaxonRankLoader.handleWikidataTaxonRanks(proxy, IOUtils.toString(getClass().getResourceAsStream("wikidata_taxon_ranks.json"), StandardCharsets.UTF_8));
 
         assertThat(out1.toString(CharsetConstant.UTF8), startsWith("WD:Q2455704\tsubfamily\t\tonderfamilie @nl"));
         assertThat(out2.toString(CharsetConstant.UTF8), startsWith("\tonderfamilie\tWD:Q2455704\tsubfamily"));

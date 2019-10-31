@@ -18,6 +18,7 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,7 +99,7 @@ public class AppendingRowHandlerJsonTest {
     }
 
     private void resolveAndAssert(String inputString, String expectedOutput, TermMapper termMapper) throws IOException, PropertyEnricherException {
-        InputStream is = IOUtils.toInputStream(inputString);
+        InputStream is = IOUtils.toInputStream(inputString, StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();

@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -60,7 +61,7 @@ public class RemoveStopWordServiceTest {
     @Test
     public void init() throws IOException {
         NameSuggester stopWordRemover = new RemoveStopWordService() {{
-            init(IOUtils.toInputStream("one\ntwo\nthree"));
+            init(IOUtils.toInputStream("one\ntwo\nthree", StandardCharsets.UTF_8));
         }};
 
         String suggest = stopWordRemover.suggest("one two three four");
@@ -70,7 +71,7 @@ public class RemoveStopWordServiceTest {
     @Test
     public void delimiters() throws IOException {
         NameSuggester stopWordRemover = new RemoveStopWordService() {{
-            init(IOUtils.toInputStream("one\ntwo\nthree"));
+            init(IOUtils.toInputStream("one\ntwo\nthree", StandardCharsets.UTF_8));
         }};
 
         String suggest = stopWordRemover.suggest("one-two-three four");

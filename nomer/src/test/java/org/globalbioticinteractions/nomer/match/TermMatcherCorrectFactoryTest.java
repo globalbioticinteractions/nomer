@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,7 @@ public class TermMatcherCorrectFactoryTest {
 
             @Override
             public InputStream getResource(String uri) throws IOException {
-                return IOUtils.toInputStream("map".equals(uri) ? "copepods,Copepoda" : "unidentified");
+                return IOUtils.toInputStream("map".equals(uri) ? "copepods,Copepoda" : "unidentified", StandardCharsets.UTF_8);
             }
 
             @Override

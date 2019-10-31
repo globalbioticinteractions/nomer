@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +94,7 @@ public class WikidataTaxonRankLoader {
             EntityUtils.consume(entity);
             throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
         } else {
-            return entity == null ? null : EntityUtils.toString(entity, Charsets.UTF_8);
+            return entity == null ? null : EntityUtils.toString(entity, StandardCharsets.UTF_8);
         }
     }
 

@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +70,7 @@ public class TermMatcherPMDID2DOIFactoryTest {
 
             @Override
             public InputStream getResource(String uri) throws IOException {
-                return IOUtils.toInputStream(first10Lines, Charsets.UTF_8);
+                return IOUtils.toInputStream(first10Lines, StandardCharsets.UTF_8);
             }
 
             @Override

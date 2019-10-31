@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -88,7 +89,7 @@ public class NCBIServiceTest {
 
     @Test
     public void parseInconsistentPathWithAltNCBI191217() throws IOException, PropertyEnricherException {
-        String data = IOUtils.toString(getClass().getResourceAsStream("ncbi191217.xml"));
+        String data = IOUtils.toString(getClass().getResourceAsStream("ncbi191217.xml"), StandardCharsets.UTF_8);
         HashMap<String, String> enriched = new HashMap<>();
         new NCBIService().parseAndPopulate(enriched, "bla", data);
 
