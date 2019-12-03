@@ -275,7 +275,8 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
         String taxonIdValue = aResult.get(taxonIdLabel).asText();
         // see https://github.com/GlobalNamesArchitecture/gni/issues/35
         if (!StringUtils.startsWith(taxonIdValue, "gn:")) {
-            String externalId = provider.getIdPrefix() + taxonIdValue;
+            String scrubbedId = StringUtils.replace(taxonIdValue, "urn:lsid:marinespecies.org:taxname:", "");
+            String externalId = provider.getIdPrefix() + scrubbedId;
             taxon.setExternalId(externalId);
             String suppliedNameString = getSuppliedNameString(data);
 
