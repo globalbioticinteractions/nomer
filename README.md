@@ -4,13 +4,16 @@
 
 Maps identifiers and names to taxonomic names and ontological terms. 
 
-Standard out (stdout) is used for results, and standard error (stderr) is used for logging (e.g., progress reporting). Designed to work with [*nix pipes](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29) or as simple commandline tool.
+Standard out (stdout) is used for results, and standard error (stderr) is used for logging (e.g., progress reporting). Designed to work with [*nix pipes](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29) or as simple commandline tool. 
+
 
 ```Nomer``` expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema.*``` properties. See ```properties``` command to list available properties.
 
 Different kind of matchers can be select to do the term matching. Offline matching is supported by some matchers like ```globi-cache```. Note that ```globi-cache``` will download a taxon map/cache archive initially, and re-uses the indexes until the cache in cleaned up. The cache itself can be archived so that results can be reproduced in a different environment without need to rebuild the term match index.` 
 
 Matchers can be added by writing some java code that implements an interface.
+
+Note that a python wrapper was made available by [nleguillarme](https://github.com/nleguillarme) at [https://github.com/nleguillarme/pynomer](https://github.com/nleguillarme/pynomer) . 
 
 ## Table of Contents
 
@@ -34,7 +37,9 @@ Matchers can be added by writing some java code that implements an interface.
 
 ## Prerequisites
 
-Nomer needs Java 8+.
+Nomer needs Java 8+. 
+
+Please see [https://github.com/nleguillarme/pynomer](https://github.com/nleguillarme/pynomer) for a python wrapper.
 
 ## Install
 
