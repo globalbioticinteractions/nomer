@@ -21,7 +21,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.junit.Assert.assertThat;
@@ -174,13 +173,10 @@ public class ReplacingRowHandlerTest {
         };
         return replace(is, ctx, new TermMatcher() {
             @Override
-            public void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                termMatchListener.foundTaxonForName(null, null, taxon, sameAs);
-            }
-
-            @Override
-            public void findTerms(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                findTermsForNames(terms.stream().map(Term::getName).collect(Collectors.toList()), termMatchListener);
+            public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                for (Term term : terms) {
+                    termMatchListener.foundTaxonForTerm(null, term, taxon, sameAs);
+                }
             }
         });
     }

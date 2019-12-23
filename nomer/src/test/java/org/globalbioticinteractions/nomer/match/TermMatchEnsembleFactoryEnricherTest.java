@@ -4,12 +4,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.match.TermMatcherContextCaching;
-import org.globalbioticinteractions.nomer.match.TermMatcherFactoryEnsembleEnricher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Before;
@@ -52,9 +51,8 @@ public class TermMatchEnsembleFactoryEnricherTest {
             @Override
             public String getProperty(String key) {
                 if (StringUtils.equals("nomer.nodc.url", key)) {
-                    String urlString = "zip:" + nodcTestArchive.toString()
+                    return "zip:" + nodcTestArchive.toString()
                             + "!/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
-                    return urlString;
                 }
                 return null;
             }
@@ -76,10 +74,11 @@ public class TermMatchEnsembleFactoryEnricherTest {
 
         };
         TermMatcher termMatcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(ctx);
-        termMatcher.findTerms(Arrays.asList(new TermImpl("NODC:9227040101", "Mickey")), new TermMatchListener() {
+        termMatcher.match(Arrays.asList(new TermImpl("NODC:9227040101", "Mickey")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long id, String name, Taxon taxon, NameType nameType) {
-                assertThat(name, Is.is("Mickey"));
+            public void foundTaxonForTerm(Long id, Term name, Taxon taxon, NameType nameType) {
+                assertThat(name.getName(), Is.is("Mickey"));
+                assertThat(name.getId(), Is.is("NODC:9227040101"));
                 // note that the NODC taxonomy maps to ITIS:180725 and online itis maps ITIS:180725 to ITIS:552761
                 assertThat(taxon.getExternalId(), Is.is("ITIS:552761"));
             }

@@ -3,6 +3,8 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.io.IOUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
@@ -15,7 +17,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -40,9 +40,9 @@ public class TermMatcherDOIFactoryTest {
 
         TermMatcher termMatcher = new TermMatcherDOIFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Collections.singletonList("some citation"), new TermMatchListener() {
+        termMatcher.match(Collections.singletonList(new TermImpl(null, "some citation")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertThat(taxon.getExternalId(), Is.is("https://doi.org/10.123/456"));
                 found.set(true);
             }
@@ -111,9 +111,9 @@ public class TermMatcherDOIFactoryTest {
     private AtomicBoolean resolveDOI(final DOI expectedDOI) throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherDOIFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Collections.singletonList("Kalka, Margareta, and Elisabeth K. V. Kalko. Gleaning Bats as Underestimated Predators of Herbivorous Insects: Diet of Micronycteris Microtis (Phyllostomidae) in Panama. Journal of Tropical Ecology 1 (2006): 1-10."), new TermMatchListener() {
+        termMatcher.match(Collections.singletonList(new TermImpl(null, "Kalka, Margareta, and Elisabeth K. V. Kalko. Gleaning Bats as Underestimated Predators of Herbivorous Insects: Diet of Micronycteris Microtis (Phyllostomidae) in Panama. Journal of Tropical Ecology 1 (2006): 1-10.")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term term, Taxon taxon, NameType nameType) {
                 try {
                     if (null != expectedDOI) {
                         assertThat(DOI.create(taxon.getId()), Is.is(expectedDOI));

@@ -48,13 +48,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
 
         return new TermMatcher() {
             @Override
-            public void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                List<Term> terms = names.stream().map(name -> new TermImpl(null, name)).collect(Collectors.toList());
-                findTerms(terms, termMatchListener);
-            }
-
-            @Override
-            public void findTerms(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+            public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
                 for (Term term : terms) {
                     try {
                         if (StringUtils.isNotBlank(term.getName())) {
@@ -65,7 +59,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
                             NameType matchType = null == doi
                                     ? NameType.NONE
                                     : NameType.SAME_AS;
-                            termMatchListener.foundTaxonForName(null, term.getName(), found, matchType);
+                            termMatchListener.foundTaxonForTerm(null, term, found, matchType);
                         }
                     } catch (IOException e) {
                         throw new PropertyEnricherException("failed to resolver doi for [" + term.getName() + "]", e);

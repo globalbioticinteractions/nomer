@@ -43,7 +43,7 @@ import static org.junit.Assert.assertTrue;
 public class RelationsOntologyLoaderTest {
 
     @Test
-    public void importFromRO() throws IOException, URISyntaxException {
+    public void importFromRO() throws IOException {
         OntModel m = ModelFactory.createOntologyModel();
         URL uri = new URL("https://raw.githubusercontent.com/oborel/obo-relations/master/ro.owl");
         m.read(uri.openStream(), "RDF/XML");

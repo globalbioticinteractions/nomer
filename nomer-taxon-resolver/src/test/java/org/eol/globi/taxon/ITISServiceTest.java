@@ -34,5 +34,16 @@ public class ITISServiceTest {
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
     }
 
+    @Test
+    public void lookupPathByName2() throws PropertyEnricherException {
+        ITISService itisService = new ITISService();
+        HashMap<String, String> props = new HashMap<String, String>() {{
+            put(PropertyAndValueDictionary.NAME, "Anura");
+        }};
+        Map<String, String> enrich = itisService.enrich(props);
+        assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is(nullValue()));
+        assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
+    }
+
 
 }

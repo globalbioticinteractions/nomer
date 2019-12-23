@@ -98,7 +98,7 @@ public class ReplacingRowHandler implements RowHandler {
             Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMapEntry.getValue());
             List<Term> terms = Collections.singletonList(providedTaxon);
             AtomicBoolean replacedOne = new AtomicBoolean(false);
-            termMatcher.findTerms(terms, (id, name, resolvedTaxon, nameType) -> {
+            termMatcher.match(terms, (id, name, resolvedTaxon, nameType) -> {
                 if (!replacedOne.get()) {
                     replacedOne.set(true);
                     taxonReplaced.put(taxonMapEntry.getKey(), mergeTaxon(providedTaxon, resolvedTaxon, nameType));

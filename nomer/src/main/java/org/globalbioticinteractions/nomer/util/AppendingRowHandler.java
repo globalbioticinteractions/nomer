@@ -27,7 +27,7 @@ public class AppendingRowHandler implements RowHandler {
     @Override
     public void onRow(final String[] row) throws PropertyEnricherException {
         Taxon taxonProvided = MatchUtil.asTaxon(row, ctx.getInputSchema());
-        termMatcher.findTerms(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
+        termMatcher.match(Collections.singletonList(taxonProvided), (id, name, taxon, nameType) -> {
             Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxon));
             appender.appendLinesForRow(row, taxonProvided, Stream.of(taxonWithServiceInfo), p, taxon1 -> nameType);
         });

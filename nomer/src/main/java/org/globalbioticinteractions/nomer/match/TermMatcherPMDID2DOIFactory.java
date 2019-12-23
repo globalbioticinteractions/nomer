@@ -1,8 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
 import com.Ostermiller.util.LabeledCSVParser;
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -11,7 +9,6 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
@@ -24,12 +21,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
 
@@ -72,12 +67,7 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
                 return new TermMatcher() {
 
                     @Override
-                    public void findTermsForNames(List<String> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                        findTerms(list.stream().map(x -> new TermImpl(null, x)).collect(Collectors.toList()), termMatchListener);
-                    }
-
-                    @Override
-                    public void findTerms(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                    public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
                         for (Term term : list) {
                             String id = term.getId();
                             DOI doi = null;
@@ -87,7 +77,7 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
                             Taxon found = doi == null
                                     ? new TaxonImpl(term.getName(), term.getId())
                                     : new TaxonImpl(null, doi.toString());
-                            termMatchListener.foundTaxonForName(null, term.getName(), found, doi == null ? NameType.NONE : NameType.SAME_AS);
+                            termMatchListener.foundTaxonForTerm(null, term, found, doi == null ? NameType.NONE : NameType.SAME_AS);
                         }
                     }
                 };

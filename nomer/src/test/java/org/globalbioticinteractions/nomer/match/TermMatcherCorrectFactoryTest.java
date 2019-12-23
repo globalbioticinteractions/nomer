@@ -4,6 +4,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.ManualSuggester;
 import org.eol.globi.taxon.SuggesterFactory;
@@ -38,7 +41,7 @@ public class TermMatcherCorrectFactoryTest {
     @Test(expected = IllegalStateException.class)
     public void notInitialized() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
-        termMatcher.findTermsForNames(Arrays.asList("copepods"), (nodeId, name, taxon, nameType) -> {
+        termMatcher.match(Arrays.asList(new TermImpl(null, "copepods")), (nodeId, name, taxon, nameType) -> {
         });
     }
 
@@ -46,9 +49,9 @@ public class TermMatcherCorrectFactoryTest {
     public void correct() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Arrays.asList("copepods"), new TermMatchListener() {
+        termMatcher.match(Arrays.asList(new TermImpl(null, "copepods")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertThat(taxon.getName(), Is.is("Copepoda"));
                 found.set(true);
             }
@@ -97,9 +100,9 @@ public class TermMatcherCorrectFactoryTest {
     public void correctSingleTermWithStopword() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Arrays.asList("unidentified copepods"), new TermMatchListener() {
+        termMatcher.match(Arrays.asList(new TermImpl(null, "unidentified copepods")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertThat(taxon.getName(), Is.is("Copepoda"));
                 found.set(true);
             }
@@ -111,9 +114,9 @@ public class TermMatcherCorrectFactoryTest {
     public void correctSingleTermWithCapitalizedStopword() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Arrays.asList("Unidentified Copepods"), new TermMatchListener() {
+        termMatcher.match(Arrays.asList(new TaxonImpl(null,"Unidentified Copepods")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertThat(taxon.getName(), Is.is("Copepoda"));
                 found.set(true);
             }
@@ -125,9 +128,9 @@ public class TermMatcherCorrectFactoryTest {
     public void correctSnakeCase() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTermsForNames(Arrays.asList("homo_sapiens"), new TermMatchListener() {
+        termMatcher.match(Arrays.asList(new TermImpl(null, "homo_sapiens")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertThat(taxon.getName(), Is.is("Homo sapiens"));
                 found.set(true);
             }

@@ -1,9 +1,9 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
@@ -27,14 +27,14 @@ import static org.junit.Assert.assertTrue;
 public class TermMatcherPMDID2DOIFactoryTest {
 
     @Test
-    public void findDOIforPMID() throws IOException, MalformedDOIException, PropertyEnricherException {
+    public void findDOIforPMID() throws PropertyEnricherException {
 
         TermMatcher termMatcher = new TermMatcherPMDID2DOIFactory().createTermMatcher(createTestMatchContext());
 
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTerms(Collections.singletonList(new TermImpl("11056684", "")), new TermMatchListener() {
+        termMatcher.match(Collections.singletonList(new TermImpl("11056684", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long aLong, String s, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term s, Taxon taxon, NameType nameType) {
                 assertThat(nameType, is(NameType.SAME_AS));
                 assertThat(taxon.getId(), is("10.1186/bcr29"));
                 found.set(true);
@@ -50,9 +50,9 @@ public class TermMatcherPMDID2DOIFactoryTest {
         TermMatcher termMatcher = new TermMatcherPMDID2DOIFactory().createTermMatcher(createTestMatchContext());
 
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.findTerms(Collections.singletonList(new TermImpl("this is not valid", "")), new TermMatchListener() {
+        termMatcher.match(Collections.singletonList(new TermImpl("this is not valid", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long aLong, String s, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term s, Taxon taxon, NameType nameType) {
                 assertThat(nameType, is(NameType.NONE));
                 found.set(true);
             }

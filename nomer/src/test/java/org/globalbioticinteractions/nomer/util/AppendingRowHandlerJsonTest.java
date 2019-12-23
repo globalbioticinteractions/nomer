@@ -7,7 +7,6 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatchListener;
@@ -20,9 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class AppendingRowHandlerJsonTest {
@@ -120,16 +117,11 @@ public class AppendingRowHandlerJsonTest {
         }
 
         @Override
-        public void findTermsForNames(List<String> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
-            findTerms(list.stream().map(name -> new TermImpl(null, name)).collect(Collectors.toList()), termMatchListener);
-        }
-
-        @Override
-        public void findTerms(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+        public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
             for (Term term : list) {
                 Taxon taxon = mapper.mapTerm(term);
                 taxon.setRank("species");
-                termMatchListener.foundTaxonForName(null, term.getName(), taxon, NameType.SAME_AS);
+                termMatchListener.foundTaxonForTerm(null, term, taxon, NameType.SAME_AS);
             }
         }
 

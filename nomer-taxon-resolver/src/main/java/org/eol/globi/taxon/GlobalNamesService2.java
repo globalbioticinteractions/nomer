@@ -18,6 +18,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
@@ -70,7 +71,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
         final List<Taxon> synonyms = new ArrayList<Taxon>();
         findTermsForNames(Collections.singletonList(properties.get(PropertyAndValueDictionary.NAME)), new TermMatchListener() {
             @Override
-            public void foundTaxonForName(Long nodeId, String name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 if (NameType.SAME_AS.equals(nameType)) {
                     exactMatches.add(taxon);
                 } else if (NameType.SYNONYM_OF.equals(nameType)) {
@@ -89,15 +90,14 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
     }
 
     @Override
-    public void findTerms(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+    public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
         if (terms.size() == 0) {
             throw new IllegalArgumentException("need non-empty list of names");
         }
         findTermsForNames(terms.stream().map(Term::getName).collect(Collectors.toList()), termMatchListener);
     }
 
-    @Override
-    public void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws PropertyEnricherException {
+    private void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws PropertyEnricherException {
         if (names.size() == 0) {
             throw new IllegalArgumentException("need non-empty list of names");
         }
@@ -201,7 +201,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
 
     private void noMatch(TermMatchListener termMatchListener, JsonNode data) {
         String suppliedNameString = getSuppliedNameString(data);
-        termMatchListener.foundTaxonForName(requestId(data), suppliedNameString, new TaxonImpl(suppliedNameString), NameType.NONE);
+        termMatchListener.foundTaxonForTerm(requestId(data), new TermImpl(null, suppliedNameString), new TaxonImpl(suppliedNameString), NameType.NONE);
     }
 
     private String parseList(String list) {
@@ -290,7 +290,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
 
             // related to https://github.com/GlobalNamesArchitecture/gni/issues/48
             if (!pathTailRepetitions(taxon) && !speciesNoGenus(taxon)) {
-                termMatchListener.foundTaxonForName(requestId(data), suppliedNameString, taxon, nameType);
+                termMatchListener.foundTaxonForTerm(requestId(data), new TermImpl(null, suppliedNameString), taxon, nameType);
             }
         }
 

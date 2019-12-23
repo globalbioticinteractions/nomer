@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eol.globi.domain.NameType;
-import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
@@ -13,9 +12,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class TaxonNameCorrector implements CorrectionService, TermMatcher {
@@ -82,18 +79,11 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
 
 
     @Override
-    public void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws
-            PropertyEnricherException {
-        List<Term> terms = names.stream().map(name -> new TermImpl(null, name)).collect(Collectors.toList());
-        this.findTerms(terms, termMatchListener);
-    }
-
-    @Override
-    public void findTerms(List<Term> terms, TermMatchListener listener) throws PropertyEnricherException {
+    public void match(List<Term> terms, TermMatchListener listener) throws PropertyEnricherException {
         Stream<TermImpl> correctedTerms = terms.stream()
                 .map(term -> new TermImpl(term.getId(), correct(term.getName())));
         correctedTerms.forEach(term -> {
-            listener.foundTaxonForName(null, term.getName(), new TaxonImpl(term.getName(), term.getId()), NameType.SAME_AS);
+            listener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.SAME_AS);
         });
 
     }

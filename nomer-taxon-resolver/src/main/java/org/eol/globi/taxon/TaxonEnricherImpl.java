@@ -5,19 +5,16 @@ import org.apache.commons.logging.LogFactory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
     private static final Log LOG = LogFactory.getLog(TaxonEnricherImpl.class);
@@ -98,14 +95,8 @@ public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
         this.services.addAll(services);
     }
 
-
     @Override
-    public void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws PropertyEnricherException {
-        findTerms(names.stream().map(name -> new TermImpl(null, name)).collect(Collectors.toList()), termMatchListener);
-    }
-
-    @Override
-    public void findTerms(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+    public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
         for (Term name : terms) {
             Map<String, String> enriched = enrich(new TreeMap<String, String>() {{
                 put(PropertyAndValueDictionary.NAME, name.getName());
@@ -113,7 +104,7 @@ public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
             }});
             if (enriched != null) {
                 NameType nameMatchType = TaxonUtil.isResolved(enriched) ? NameType.SAME_AS : NameType.NONE;
-                termMatchListener.foundTaxonForName(null, name.getName(), TaxonUtil.mapToTaxon(enriched), nameMatchType);
+                termMatchListener.foundTaxonForTerm(null, name, TaxonUtil.mapToTaxon(enriched), nameMatchType);
             }
         }
     }

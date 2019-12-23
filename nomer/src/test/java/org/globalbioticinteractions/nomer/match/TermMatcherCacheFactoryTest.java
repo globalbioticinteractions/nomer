@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
@@ -37,7 +38,7 @@ public class TermMatcherCacheFactoryTest {
         TermMatcher termMatcher = new TermMatcherCacheFactory().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
         AtomicBoolean hasMatch = new AtomicBoolean(false);
-        termMatcher.findTerms(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), (Long id, String name, Taxon taxon, NameType nameType) -> {
+        termMatcher.match(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), (Long id, Term name, Taxon taxon, NameType nameType) -> {
             assertThat(taxon.getId(), is("EOL:1276240"));
             assertThat(taxon.getName(), is(not("bla")));
             hasMatch.set(true);
@@ -78,7 +79,7 @@ public class TermMatcherCacheFactoryTest {
         });
 
         AtomicInteger numberOfResults = new AtomicInteger(0);
-        termMatcher.findTerms(Collections.singletonList(new TermImpl("", "Homo sapiens")), (id, name, taxon, nameType) -> {
+        termMatcher.match(Collections.singletonList(new TermImpl("", "Homo sapiens")), (id, name, taxon, nameType) -> {
             assertThat(taxon.getName(), is("Homo sapiens"));
             numberOfResults.incrementAndGet();
             assertThat(Arrays.asList("EOL:327955", "NCBI:9606").contains(taxon.getId()), is(true));

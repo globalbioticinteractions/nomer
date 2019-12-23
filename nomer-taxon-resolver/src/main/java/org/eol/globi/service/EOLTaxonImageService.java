@@ -15,6 +15,12 @@ import java.util.Map;
 
 public class EOLTaxonImageService implements ImageSearch {
 
+    @Override
+    public TaxonImage lookupImageForExternalId(String externalId, SearchContext context) throws IOException {
+        return lookupImageForExternalId(externalId);
+    }
+
+    @Override
     public TaxonImage lookupImageForExternalId(String externalId) throws IOException {
         try {
             return ExternalIdUtil.isSupported(externalId) ? lookupImage(externalId) : null;
