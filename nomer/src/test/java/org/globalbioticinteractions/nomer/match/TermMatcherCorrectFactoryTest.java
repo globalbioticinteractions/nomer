@@ -114,7 +114,7 @@ public class TermMatcherCorrectFactoryTest {
     public void correctSingleTermWithCapitalizedStopword() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Arrays.asList(new TaxonImpl(null,"Unidentified Copepods")), new TermMatchListener() {
+        termMatcher.match(Arrays.asList(new TaxonImpl("Unidentified Copepods", null)), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertThat(taxon.getName(), Is.is("Copepoda"));
