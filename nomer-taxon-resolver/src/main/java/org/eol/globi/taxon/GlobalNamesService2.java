@@ -22,6 +22,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.tool.TermRequestImpl;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
 
@@ -35,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
     private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
@@ -69,7 +71,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
         Map<String, String> enrichedProperties = new HashMap<String, String>();
         final List<Taxon> exactMatches = new ArrayList<Taxon>();
         final List<Taxon> synonyms = new ArrayList<Taxon>();
-        findTermsForNames(Collections.singletonList(properties.get(PropertyAndValueDictionary.NAME)), new TermMatchListener() {
+        findTermsForNames(Collections.singletonList(new TermImpl(null, properties.get(PropertyAndValueDictionary.NAME))), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 if (NameType.SAME_AS.equals(nameType)) {
@@ -94,27 +96,27 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
         if (terms.size() == 0) {
             throw new IllegalArgumentException("need non-empty list of names");
         }
-        findTermsForNames(terms.stream().map(Term::getName).collect(Collectors.toList()), termMatchListener);
+        findTermsForNames(terms, termMatchListener);
     }
 
-    private void findTermsForNames(List<String> names, TermMatchListener termMatchListener) throws PropertyEnricherException {
-        if (names.size() == 0) {
+    private void findTermsForNames(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+        if (terms.size() == 0) {
             throw new IllegalArgumentException("need non-empty list of names");
         }
 
         try {
             URI uri = buildPostRequestURI(sources);
             try {
-                parseResult(termMatchListener, executeQuery(names, uri));
+                parseResult(termMatchListener, executeQuery(terms, uri));
             } catch (IOException e) {
-                if (names.size() > 1) {
+                if (terms.size() > 1) {
                     LOG.warn("retrying names query one name at a time: failed to perform batch query", e);
                     List<String> namesFailed = new ArrayList<>();
-                    for (String name : names) {
+                    for (Term term : terms) {
                         try {
-                            parseResult(termMatchListener, executeQuery(Collections.singletonList(name), uri));
+                            parseResult(termMatchListener, executeQuery(Collections.singletonList(term), uri));
                         } catch (IOException e1) {
-                            namesFailed.add(name);
+                            namesFailed.add(term.getName());
                         }
                     }
                     if (namesFailed.size() > 0) {
@@ -128,12 +130,18 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
 
     }
 
-    private String executeQuery(List<String> names, URI uri) throws IOException {
+    private String executeQuery(List<Term> terms, URI uri) throws IOException {
         HttpClient httpClient = HttpUtil.getHttpClient();
         HttpPost post = new HttpPost(uri);
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("data", StringUtils.join(names, "\n")));
+        String requestIdNamePairs = terms
+                .stream()
+                .map(x -> x instanceof TermRequestImpl
+                        ? String.format("%d|%s", ((TermRequestImpl) x).getNodeId(), x.getName())
+                        : x.getName()
+                ).collect(Collectors.joining("\n"));
+        params.add(new BasicNameValuePair("data", requestIdNamePairs));
         post.setEntity(new UrlEncodedFormEntity(params, CharsetConstant.UTF8));
 
         return httpClient.execute(post, new BasicResponseHandler());
