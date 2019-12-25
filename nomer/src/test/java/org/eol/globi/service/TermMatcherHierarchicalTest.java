@@ -276,4 +276,42 @@ public class TermMatcherHierarchicalTest {
         assertThat(countMatches.get(), Is.is(1L));
     }
 
+    @Test
+    public void hierarchySameHierarchySynonym() throws PropertyEnricherException {
+
+
+        TermMatcher matcherBasic = new TermMatcher() {
+
+            @Override
+            public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                for (Term term : list) {
+                    if ("Anura".equals(term.getName())) {
+                        TaxonImpl someTaxon = new TaxonImpl("Anura", "FOO:123");
+                        someTaxon.setPath("Amphibia | SomeAlternateAnuraName");
+                        someTaxon.setPathIds("FOO:1 | FOO:123");
+                        termMatchListener.foundTaxonForTerm(null, term, someTaxon, NameType.SAME_AS);
+                    }
+                }
+            }
+        };
+
+        TermMatcher matcher = new TermMatcherHierarchical(matcherBasic);
+
+
+        AtomicLong countTotal = new AtomicLong(0);
+        AtomicLong countMatches = new AtomicLong(0);
+        matcher.match(Arrays.asList(new TermImpl("", "Amphibia | Anura")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                countTotal.incrementAndGet();
+                if (!NameType.NONE.equals(nameType)) {
+                    countMatches.incrementAndGet();
+                }
+            }
+        });
+
+        assertThat(countTotal.get(), Is.is(1L));
+        assertThat(countMatches.get(), Is.is(1L));
+    }
+
 }
