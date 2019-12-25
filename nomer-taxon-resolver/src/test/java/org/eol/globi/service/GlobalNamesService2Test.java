@@ -328,6 +328,16 @@ public class GlobalNamesService2Test {
     }
 
     @Test
+    public void lookupWoRMS2() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.WORMS);
+        HashMap<String, String> props1 = new HashMap<>();
+        props1.put(PropertyAndValueDictionary.NAME, "Anura");
+        Map<String, String> enrich = service.enrich(props1);
+        assertThat(enrich.get(PropertyAndValueDictionary.PATH_IDS), is("WORMS:1 | WORMS:2 | WORMS:1821 | WORMS:146419 | WORMS:1828 | WORMS:1831 | WORMS:178701 | WORMS:448306"));
+        assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Anura"));
+    }
+
+    @Test
     public void lookupWoRMSCod() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.WORMS);
         HashMap<String, String> props1 = new HashMap<>();

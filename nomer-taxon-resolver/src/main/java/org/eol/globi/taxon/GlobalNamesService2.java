@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
     private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
@@ -212,28 +211,32 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
         termMatchListener.foundTaxonForTerm(requestId(data), new TermImpl(null, suppliedNameString), new TaxonImpl(suppliedNameString), NameType.NONE);
     }
 
-    private String parseList(String list) {
-        return parseList(list, null);
+    private String parsePathIds(String list) {
+        return parsePathIds(list, null);
     }
 
-    private String parseList(String list, String prefix) {
+    private String parsePathIds(String list, String prefix) {
         String[] split = StringUtils.splitPreserveAllTokens(list, "|");
-        List<String> parsedList = Collections.emptyList();
+        List<String> ids = Collections.emptyList();
         if (split != null) {
-            parsedList = Arrays.asList(split);
+            ids = Arrays.asList(split);
         }
         if (StringUtils.isNotBlank(prefix)) {
             List<String> prefixed = new ArrayList<String>();
-            for (String s : parsedList) {
-                if (StringUtils.startsWith(s, "gn:")) {
+            for (String id : ids) {
+                if (StringUtils.startsWith(id, "gn:")) {
                     prefixed.add("");
                 } else {
-                    prefixed.add(prefix + s);
+                    prefixed.add(prefix + scrubIds(id));
                 }
             }
-            parsedList = prefixed;
+            ids = prefixed;
         }
-        return StringUtils.join(parsedList, CharsetConstant.SEPARATOR);
+        return StringUtils.join(ids, CharsetConstant.SEPARATOR);
+    }
+
+    private String scrubIds(String s) {
+        return StringUtils.replace(s, "urn:lsid:marinespecies.org:taxname:", "");
     }
 
     public static boolean pathTailRepetitions(Taxon taxon) {
@@ -258,14 +261,14 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
     protected void parseClassification(TermMatchListener termMatchListener, JsonNode data, JsonNode aResult, TaxonomyProvider provider) {
         Taxon taxon = new TaxonImpl();
         String classificationPath = aResult.get("classification_path").asText();
-        taxon.setPath(parseList(classificationPath));
+        taxon.setPath(parsePathIds(classificationPath));
 
         if (aResult.has("classification_path_ids")) {
             String classificationPathIds = aResult.get("classification_path_ids").asText();
-            taxon.setPathIds(parseList(classificationPathIds, provider.getIdPrefix()));
+            taxon.setPathIds(parsePathIds(classificationPathIds, provider.getIdPrefix()));
         }
         String pathRanks = aResult.get("classification_path_ranks").asText();
-        taxon.setPathNames(parseList(pathRanks));
+        taxon.setPathNames(parsePathIds(pathRanks));
         String[] ranks = CSVTSVUtil.splitPipes(pathRanks);
         if (ranks.length > 0) {
             String rank = ranks[ranks.length - 1];
@@ -283,8 +286,7 @@ public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
         String taxonIdValue = aResult.get(taxonIdLabel).asText();
         // see https://github.com/GlobalNamesArchitecture/gni/issues/35
         if (!StringUtils.startsWith(taxonIdValue, "gn:")) {
-            String scrubbedId = StringUtils.replace(taxonIdValue, "urn:lsid:marinespecies.org:taxname:", "");
-            String externalId = provider.getIdPrefix() + scrubbedId;
+            String externalId = provider.getIdPrefix() + scrubIds(taxonIdValue);
             taxon.setExternalId(externalId);
             String suppliedNameString = getSuppliedNameString(data);
 
