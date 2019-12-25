@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.util;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.service.TermMatcherHierarchical;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
@@ -39,7 +40,8 @@ public class MatchUtil {
                         .map(Optional::get);
 
         Optional<TermMatcher> firstMatcher = matchers.findFirst();
-        return firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
+        TermMatcher termMatcher = firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
+        return new TermMatcherHierarchical(termMatcher);
     }
 
     public static void apply(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
