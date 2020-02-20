@@ -48,20 +48,22 @@ public class RelationsOntologyLoaderTest {
         URL uri = new URL("https://raw.githubusercontent.com/oborel/obo-relations/master/ro.owl");
         m.read(uri.openStream(), "RDF/XML");
 
-        String queryString = "SELECT * WHERE {{SELECT ?uri ?label " +
+        String queryString = "SELECT * WHERE {{SELECT ?uri ?label ?definition " +
                 "WHERE { " +
                 //"?uri <http://www.geneontology.org/formats/oboInOwl#inSubset> <http://purl.obolibrary.org/obo/ro/subsets#ro-eco> . " +
                 "?uri <http://www.w3.org/2000/01/rdf-schema#label> ?label . " +
                 "?uri <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>* <http://purl.obolibrary.org/obo/RO_0002437> . " +
                 "?uri <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> ?parentUri . " +
+                "OPTIONAL { ?uri <http://purl.obolibrary.org/obo/IAO_0000115> ?definition . }" +
                 "}} UNION {" +
-        "SELECT ?uri ?label ?altLabel " +
+        "SELECT ?uri ?label ?definition ?altLabel " +
                 "WHERE { " +
                 "?uri <http://www.geneontology.org/formats/oboInOwl#inSubset> <http://purl.obolibrary.org/obo/ro/subsets#ro-eco> . " +
                 "?uri <http://www.w3.org/2000/01/rdf-schema#label> ?label . " +
                 "?inverseUri <http://www.w3.org/2000/01/rdf-schema#subPropertyOf>* <http://purl.obolibrary.org/obo/RO_0002437> . " +
                 "?inverseUri <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> ?parentUri . " +
                 "?uri <http://www.w3.org/2002/07/owl#inverseOf> ?inverseUri . " +
+                "OPTIONAL { ?uri <http://purl.obolibrary.org/obo/IAO_0000115> ?definition . }" +
                 "}}}";
         Query query = QueryFactory.create(queryString);
         QueryExecution qexec = QueryExecutionFactory.create(query, m);
@@ -71,18 +73,21 @@ public class RelationsOntologyLoaderTest {
             QuerySolution next = rs.next();
             RDFNode uri1 = next.get("uri");
             RDFNode label = next.get("label");
-            interactionMap.add(uri1.toString() + "\t" + label.toString());
+            RDFNode definition = next.get("definition");
+            interactionMap.add(uri1.toString() +
+                    "\t" + label.toString() +
+                    "\t" + (definition == null ? "needs definition" : definition.toString()));
         }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintStream writer = new PrintStream(out, true, StandardCharsets.UTF_8.name());
-        writer.println("IRI\tlabel");
+        writer.println("IRI\tlabel\tdefinition");
 
         interactionMap.forEach(writer::println);
         writer.flush();
         writer.close();
 
-        String actual = out.toString(StandardCharsets.UTF_8.name());
+        String actual = StringUtils.trim(out.toString(StandardCharsets.UTF_8.name()));
         assertThat(actual, is(IOUtils.toString(getClass().getResourceAsStream("ro.tsv"), StandardCharsets.UTF_8)));
     }
 
