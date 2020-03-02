@@ -56,4 +56,4 @@ http://purl.obolibrary.org/obo/RO_0008502	has epiphyte	inverse of epiphyte of
 http://purl.obolibrary.org/obo/RO_0008503	kleptoparasite of	A sub-relation of parasite of in which a parasite steals resources from another organism, usually food or nest material
 http://purl.obolibrary.org/obo/RO_0008504	kleptoparasitized by	inverse of kleptoparasite of
 http://purl.obolibrary.org/obo/RO_0008507	lays eggs on	An interaction relationship in which organism a lays eggs on the outside surface of organism b. Organism b is neither helped nor harmed in the process of egg laying or incubation.
-http://purl.obolibrary.org/obo/RO_0008508	has eggs laid on by	An interaction relationship in which organism a lays eggs on the outside surface of organism b. Organism b is neither helped nor harmed in the process of egg laying or incubation.
+http://purl.obolibrary.org/obo/RO_0008508	has eggs laid on by	inverse of lays eggs on

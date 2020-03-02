@@ -88,6 +88,9 @@ public class RelationsOntologyLoaderTest {
         writer.close();
 
         String actual = StringUtils.trim(out.toString(StandardCharsets.UTF_8.name()));
+
+        System.out.println(actual);
+
         assertThat(actual, is(IOUtils.toString(getClass().getResourceAsStream("ro.tsv"), StandardCharsets.UTF_8)));
     }
 
