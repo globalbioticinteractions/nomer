@@ -202,6 +202,7 @@ public class NCBITaxonService implements PropertyEnricher {
         DB db = DBMaker
                 .newFileDB(ncbiTaxonomyDir)
                 .mmapFileEnableIfSupported()
+                .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
                 .make();
