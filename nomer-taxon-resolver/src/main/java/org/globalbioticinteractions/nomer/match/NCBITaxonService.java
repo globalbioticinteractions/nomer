@@ -51,7 +51,6 @@ public class NCBITaxonService implements PropertyEnricher {
         this.ctx = ctx;
     }
 
-
     static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
 

@@ -8,6 +8,7 @@ import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.TermMatcherFactoryEnsembleEnricher;
 import org.hamcrest.core.Is;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertThat;
 
 public class AppendingRowHandlerTest {
 
+    @Ignore
     @Test
     public void resolveWithEnricher() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("NCBI:9606\tHomo sapiens", StandardCharsets.UTF_8);
