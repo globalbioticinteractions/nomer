@@ -10,7 +10,6 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.HttpUtil;
-import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -24,9 +23,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
-@PropertyEnricherInfo(name = "ncbi-taxon-id", description = "Lookup NCBI taxon by id with NCBI:* prefix.")
 public class NCBIService implements PropertyEnricher {
 
     private static final List<String> PREFIXES = Arrays.asList(TaxonomyProvider.NCBI.getIdPrefix(),
@@ -37,22 +34,30 @@ public class NCBIService implements PropertyEnricher {
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         // see http://www.ncbi.nlm.nih.gov/books/NBK25500/
         Map<String, String> enriched = new HashMap<String, String>(properties);
-        String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
 
-        if (PREFIXES.stream().anyMatch(x -> StringUtils.startsWith(externalId, x))) {
-            String tsn = PREFIXES
-                    .stream()
-                    .reduce(externalId, (x, y) -> StringUtils.trim(StringUtils.replace(x, y, "")));
-            
-            if (tsn.matches("^\\d+$")) {
-                String fullHierarchy = getResponse("db=taxonomy&id=" + tsn);
-                if (fullHierarchy.contains("<Taxon>")) {
-                    parseAndPopulate(enriched, tsn, fullHierarchy);
-                }
+        String tsn = getNCBITaxonId(properties);
+
+        if (StringUtils.isNotBlank(tsn) && tsn.matches("^\\d+$")) {
+            String fullHierarchy = getResponse("db=taxonomy&id=" + tsn);
+            if (fullHierarchy.contains("<Taxon>")) {
+                parseAndPopulate(enriched, tsn, fullHierarchy);
             }
         }
         return enriched;
     }
+
+
+    public static String getNCBITaxonId(Map<String, String> properties) {
+        String tsn = null;
+        String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
+        if (PREFIXES.stream().anyMatch(x -> StringUtils.startsWith(externalId, x))) {
+            tsn = PREFIXES
+                    .stream()
+                    .reduce(externalId, (x, y) -> StringUtils.trim(StringUtils.replace(x, y, "")));
+        }
+        return tsn;
+    }
+
 
     void parseAndPopulate(Map<String, String> enriched, String tsn, String fullHierarchy) throws PropertyEnricherException {
         enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, TaxonomyProvider.ID_PREFIX_NCBI + tsn);
