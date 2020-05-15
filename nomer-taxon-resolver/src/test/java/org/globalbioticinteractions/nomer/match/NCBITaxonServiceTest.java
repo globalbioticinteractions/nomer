@@ -128,12 +128,14 @@ public class NCBITaxonServiceTest {
 
     @Test
     public void parseNodes() throws PropertyEnricherException {
+        Map<String, Map<String,String>> node = new TreeMap<>();
         Map<String, String> childParent = new TreeMap<>();
 
         InputStream nodesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/ncbi/nodes.dmp");
-        NCBITaxonService.parseNodes(childParent, nodesStream);
+        NCBITaxonService.parseNodes(node, childParent, nodesStream);
 
         assertThat(childParent.get("NCBI:2"), is("NCBI:131567"));
+        assertThat(TaxonUtil.mapToTaxon(node.get("NCBI:2")).getRank(), is("superkingdom"));
 
     }
 

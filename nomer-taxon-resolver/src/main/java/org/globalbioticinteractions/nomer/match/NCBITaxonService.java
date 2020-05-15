@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.CacheService;
 import org.eol.globi.service.PropertyEnricher;
@@ -51,7 +52,7 @@ public class NCBITaxonService implements PropertyEnricher {
     }
 
 
-    static void parseNodes(Map<String, String> childParent, InputStream resourceAsStream) throws PropertyEnricherException {
+    static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
 
         String line;
@@ -60,10 +61,13 @@ public class NCBITaxonService implements PropertyEnricher {
                 String[] rowValues = StringUtils.splitByWholeSeparator(line, "\t|\t");
                 String taxId = rowValues[0];
                 String parentTaxId = rowValues[1];
-                childParent.put(
-                        TaxonomyProvider.ID_PREFIX_NCBI + taxId,
-                        TaxonomyProvider.ID_PREFIX_NCBI + parentTaxId
-                );
+                String rank = rowValues[2];
+
+                String externalId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
+                TaxonImpl taxon = new TaxonImpl(null, externalId);
+                taxon.setRank(rank);
+                taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
+                childParent.put(TaxonomyProvider.ID_PREFIX_NCBI + taxId, TaxonomyProvider.ID_PREFIX_NCBI + parentTaxId);
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse NCBI taxon dump", e);
@@ -96,12 +100,14 @@ public class NCBITaxonService implements PropertyEnricher {
         pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
 
         String parent = childParent.get(taxon.getKey());
-        while (StringUtils.isNotBlank(parent)) {
+        while (StringUtils.isNotBlank(parent) && !pathIds.contains(parent)) {
             Map<String, String> stringStringMap = taxonMap.get(parent);
-            Taxon parentTaxon = TaxonUtil.mapToTaxon(stringStringMap);
-            pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
-            pathIds.add(StringUtils.defaultIfBlank(parentTaxon.getExternalId(), ""));
-            path.add(StringUtils.defaultIfBlank(names.get(parentTaxon.getExternalId()), ""));
+            if (stringStringMap != null) {
+                Taxon parentTaxon = TaxonUtil.mapToTaxon(stringStringMap);
+                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
+                pathIds.add(StringUtils.defaultIfBlank(parentTaxon.getExternalId(), ""));
+                path.add(StringUtils.defaultIfBlank(names.get(parentTaxon.getExternalId()), ""));
+            }
             parent = childParent.get(parent);
         }
 
@@ -220,7 +226,7 @@ public class NCBITaxonService implements PropertyEnricher {
                     .make();
 
             try {
-                parseNodes(childParent, ctx.getResource(getNodesUrl()));
+                parseNodes(ncbiNodes, childParent, ctx.getResource(getNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -253,7 +259,6 @@ public class NCBITaxonService implements PropertyEnricher {
                     .createTreeMap(DENORMALIZED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
                     .make();
-
             denormalizeTaxa(ncbiNodes, ncbiDenormalizedNodes, childParent, ncbiNames);
 
             watch.stop();

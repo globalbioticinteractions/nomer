@@ -5,6 +5,7 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Map;
@@ -29,6 +30,7 @@ public class TermMatchEnsembleFactoryTest {
     }
 
     @Test
+    @Ignore
     public void zikaVirus() throws PropertyEnricherException {
         Taxon taxon = new TaxonImpl("Zika virus (ZIKV)", "NCBI:64320");
         final Map<String, String> enriched = taxonEnricher.enrich(TaxonUtil.taxonToMap(taxon));
