@@ -38,8 +38,8 @@ import java.util.stream.Stream;
 public class NCBITaxonService implements PropertyEnricher {
 
     private static final Log LOG = LogFactory.getLog(NCBITaxonService.class);
-    public static final String DENORMALIZED_NODES = "denormalizedNodes";
-    public static final String MERGED_NODES = "mergedNodes";
+    private static final String DENORMALIZED_NODES = "denormalizedNodes";
+    private static final String MERGED_NODES = "mergedNodes";
 
 
     private final TermMatcherContext ctx;
@@ -65,7 +65,7 @@ public class NCBITaxonService implements PropertyEnricher {
 
                 String externalId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
                 TaxonImpl taxon = new TaxonImpl(null, externalId);
-                taxon.setRank(rank);
+                taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
                 taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
                 childParent.put(TaxonomyProvider.ID_PREFIX_NCBI + taxId, TaxonomyProvider.ID_PREFIX_NCBI + parentTaxId);
             }
