@@ -181,7 +181,7 @@ public class NCBITaxonService implements PropertyEnricher {
 
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-        Map<String, String> enriched = new TreeMap<String, String>(properties);
+        Map<String, String> enriched = new TreeMap<>(properties);
         String ncbiTaxonId = NCBIService.getNCBITaxonId(properties);
         if (StringUtils.isNotBlank(ncbiTaxonId)) {
             if (needsInit()) {
@@ -196,7 +196,12 @@ public class NCBITaxonService implements PropertyEnricher {
     }
 
     private void lazyInit() throws PropertyEnricherException {
-        CacheService.createCacheDir(getCacheDir());
+        File cacheDir = getCacheDir();
+        if (!cacheDir.exists()) {
+            if (!cacheDir.mkdirs()) {
+                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
+            }
+        }
         File ncbiTaxonomyDir = new File(getCacheDir(), "ncbi");
         DB db = DBMaker
                 .newFileDB(ncbiTaxonomyDir)
