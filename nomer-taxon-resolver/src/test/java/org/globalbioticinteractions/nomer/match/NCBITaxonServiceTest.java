@@ -87,43 +87,45 @@ public class NCBITaxonServiceTest {
     }
 
     private NCBITaxonService createService() {
-        return new NCBITaxonService(new TermMatcherContext() {
-                @Override
-                public String getCacheDir() {
-                    return null;
-                }
+        NCBITaxonService ncbiTaxonService = new NCBITaxonService(new TermMatcherContext() {
+            @Override
+            public String getCacheDir() {
+                return null;
+            }
 
-                @Override
-                public InputStream getResource(String uri) throws IOException {
-                    return getClass().getResourceAsStream(uri);
-                }
+            @Override
+            public InputStream getResource(String uri) throws IOException {
+                return getClass().getResourceAsStream(uri);
+            }
 
-                @Override
-                public List<String> getMatchers() {
-                    return null;
-                }
+            @Override
+            public List<String> getMatchers() {
+                return null;
+            }
 
-                @Override
-                public Map<Integer, String> getInputSchema() {
-                    return null;
-                }
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return null;
+            }
 
-                @Override
-                public Map<Integer, String> getOutputSchema() {
-                    return null;
-                }
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
 
-                @Override
-                public String getProperty(String key) {
-                    return new TreeMap<String, String>() {
-                        {
-                            put("nomer.ncbi.nodes", "/org/globalbioticinteractions/nomer/match/ncbi/nodes.dmp");
-                            put("nomer.ncbi.names", "/org/globalbioticinteractions/nomer/match/ncbi/names.dmp");
-                            put("nomer.ncbi.merged", "/org/globalbioticinteractions/nomer/match/ncbi/merged.dmp");
-                        }
-                    }.get(key);
-                }
-            });
+            @Override
+            public String getProperty(String key) {
+                return new TreeMap<String, String>() {
+                    {
+                        put("nomer.ncbi.nodes", "/org/globalbioticinteractions/nomer/match/ncbi/nodes.dmp");
+                        put("nomer.ncbi.names", "/org/globalbioticinteractions/nomer/match/ncbi/names.dmp");
+                        put("nomer.ncbi.merged", "/org/globalbioticinteractions/nomer/match/ncbi/merged.dmp");
+                    }
+                }.get(key);
+            }
+        });
+        ncbiTaxonService.setTemporaryCache(true);
+        return ncbiTaxonService;
     }
 
     @Test

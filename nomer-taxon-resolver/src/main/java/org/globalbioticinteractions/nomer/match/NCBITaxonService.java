@@ -46,6 +46,7 @@ public class NCBITaxonService implements PropertyEnricher {
 
     private BTreeMap<String, String> mergedNodes = null;
     private BTreeMap<String, Map<String, String>> ncbiDenormalizedNodes = null;
+    private boolean temporaryCache = false;
 
     public NCBITaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -197,11 +198,16 @@ public class NCBITaxonService implements PropertyEnricher {
 
     private void lazyInit() throws PropertyEnricherException {
         File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
+        if (temporaryCache) {
+            CacheService.createCacheDir(cacheDir);
+        } else {
+            if (!cacheDir.exists()) {
+                if (!cacheDir.mkdirs()) {
+                    throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
+                }
             }
         }
+
         File ncbiTaxonomyDir = new File(getCacheDir(), "ncbi");
         DB db = DBMaker
                 .newFileDB(ncbiTaxonomyDir)
@@ -300,4 +306,7 @@ public class NCBITaxonService implements PropertyEnricher {
     }
 
 
+    public void setTemporaryCache(boolean temporaryCache) {
+        this.temporaryCache = temporaryCache;
+    }
 }
