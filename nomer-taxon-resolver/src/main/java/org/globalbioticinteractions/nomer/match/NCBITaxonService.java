@@ -58,7 +58,7 @@ public class NCBITaxonService implements PropertyEnricher {
         String line;
         try {
             while ((line = reader.readLine()) != null) {
-                String[] rowValues = StringUtils.splitByWholeSeparator(line, "\t|\t");
+                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t|\t");
                 String taxId = rowValues[0];
                 String parentTaxId = rowValues[1];
                 String rank = rowValues[2];
