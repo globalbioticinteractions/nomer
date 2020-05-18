@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -30,7 +31,7 @@ public class AtlasOfLivingAustraliaServiceIT {
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), is("Animalia | Chordata | Mammalia | Marsupialia | Diprotodontia | Phalangerida | Macropodoidea | Macropodidae | Macropodinae | Osphranter | Osphranter rufus"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_NAMES), is("kingdom | phylum | class | subclass | order | suborder | superfamily | family | subfamily | genus | species"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ALATaxon:urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff"));
-        assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), is("Red Kangaroo @en"));
+        assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), containsString("Red Kangaroo @en"));
     }
 
     @Test
@@ -46,7 +47,7 @@ public class AtlasOfLivingAustraliaServiceIT {
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), is("Animalia | Chordata | Mammalia | Marsupialia | Diprotodontia | Phalangerida | Macropodoidea | Macropodidae | Macropodinae | Osphranter | Osphranter rufus"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_NAMES), is("kingdom | phylum | class | subclass | order | suborder | superfamily | family | subfamily | genus | species"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ALATaxon:urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff"));
-        assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), is("Red Kangaroo @en"));
+        assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), containsString("Red Kangaroo @en"));
     }
 
 
@@ -73,7 +74,7 @@ public class AtlasOfLivingAustraliaServiceIT {
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ALATaxon:urn:lsid:biodiversity.org.au:afd.taxon:e6aff6af-ff36-4ad5-95f2-2dfdcca8caff"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), is("Animalia | Chordata | Mammalia | Marsupialia | Diprotodontia | Phalangerida | Macropodoidea | Macropodidae | Macropodinae | Osphranter | Osphranter rufus"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_NAMES), is("kingdom | phylum | class | subclass | order | suborder | superfamily | family | subfamily | genus | species"));
-        assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), is("Red Kangaroo @en"));
+        assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), containsString("Red Kangaroo @en"));
     }
 
     @Test
