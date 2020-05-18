@@ -21,7 +21,7 @@ public class TermMatcherRegistryTest {
 
     @Test
     public void createTermMatcher() throws PropertyEnricherException {
-        TermMatcher itisService = TermMatcherRegistry.termMatcherFor("itis-taxon-id", null);
+        TermMatcher itisService = TermMatcherRegistry.termMatcherFor("itis-taxon-id-web", null);
         AtomicBoolean found = new AtomicBoolean(false);
         itisService.match(Collections.singletonList(new TermImpl("ITIS:180547", null)), new TermMatchListener() {
 

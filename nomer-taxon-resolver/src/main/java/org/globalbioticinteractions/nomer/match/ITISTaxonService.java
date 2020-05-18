@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-@PropertyEnricherInfo(name = "itis-taxon-id", description = "Lookup ITIS taxon by id with ITIS:* prefix.")
+@PropertyEnricherInfo(name = "itis-taxon-id", description = "Lookup ITIS taxon by id with ITIS:* prefix using offline-enabled database dump")
 public class ITISTaxonService implements PropertyEnricher {
 
     private static final Log LOG = LogFactory.getLog(ITISTaxonService.class);
@@ -57,6 +57,9 @@ public class ITISTaxonService implements PropertyEnricher {
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
         if (StringUtils.startsWith(externalId, TaxonomyProvider.ID_PREFIX_ITIS)) {
             if (needsInit()) {
+                if (ctx == null) {
+                    throw new PropertyEnricherException("context needed to initialize");
+                }
                 lazyInit();
             }
             String idForLookup = mergedNodes.getOrDefault(externalId, externalId);
@@ -193,7 +196,7 @@ public class ITISTaxonService implements PropertyEnricher {
 
 
     private void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir();
+        File cacheDir = getCacheDir(ctx);
         if (temporaryCache) {
             CacheService.createCacheDir(cacheDir);
         } else {
@@ -204,7 +207,7 @@ public class ITISTaxonService implements PropertyEnricher {
             }
         }
 
-        File taxonomyDir = new File(getCacheDir(), "itis");
+        File taxonomyDir = new File(cacheDir, "itis");
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
@@ -282,7 +285,7 @@ public class ITISTaxonService implements PropertyEnricher {
 
     }
 
-    private File getCacheDir() {
+    private File getCacheDir(TermMatcherContext ctx) {
         File cacheDir = new File(ctx.getCacheDir(), "itis");
         cacheDir.mkdirs();
         return cacheDir;
