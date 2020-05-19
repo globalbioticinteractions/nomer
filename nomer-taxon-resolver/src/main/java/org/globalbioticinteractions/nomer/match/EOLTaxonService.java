@@ -85,7 +85,10 @@ public class EOLTaxonService implements PropertyEnricher {
                     String canonicalName = rowValues[11];
                     String pageId = rowValues[12];
 
-                    String externalId = TaxonomyProvider.ID_PREFIX_EOL + pageId;
+                    String externalId = StringUtils.isBlank(pageId)
+                            ? ""
+                            : (TaxonomyProvider.ID_PREFIX_EOL + pageId);
+
                     TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
                     taxon.setRank(rank);
                     taxon.setExternalId(externalId);
@@ -229,11 +232,7 @@ public class EOLTaxonService implements PropertyEnricher {
         return cacheDir;
     }
 
-    private String getTaxonUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.eol.taxon");
-    }
-
-    public void setTemporaryCache(boolean temporaryCache) {
+    void setTemporaryCache(boolean temporaryCache) {
         this.temporaryCache = temporaryCache;
     }
 }
