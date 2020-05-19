@@ -12,6 +12,7 @@ import org.eol.globi.taxon.NODCTaxonService;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.WoRMSService;
+import org.globalbioticinteractions.nomer.match.EOLTaxonService;
 import org.globalbioticinteractions.nomer.match.ITISTaxonService;
 import org.globalbioticinteractions.nomer.match.NCBITaxonService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -36,6 +37,7 @@ public class TermMatchEnsembleFactory {
                 add(new NODCTaxonService(ctx));
                 add(new ITISTaxonService(ctx));
                 add(new NCBITaxonService(ctx));
+                add(new EOLTaxonService(ctx));
                 add(new GBIFService());
                 add(new INaturalistTaxonService());
 //                add(new EOLService2());

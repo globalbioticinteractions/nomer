@@ -99,7 +99,7 @@ public class EOLTaxonService implements PropertyEnricher {
                 }
             }
         } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS taxon dump", e);
+            throw new PropertyEnricherException("failed to parse EOL taxon dump", e);
         }
     }
 
@@ -192,9 +192,14 @@ public class EOLTaxonService implements PropertyEnricher {
                     .make();
 
             try {
-                parseNodes(eolNodes, childParent, ctx.getResource(getTaxonUrl()));
+                String taxonUrl = ctx.getProperty("nomer.eol.taxon");
+                if (taxonUrl == null) {
+                    throw new PropertyEnricherException("no url for taxon resource [nomer.eol.taxon] found");
+                }
+                InputStream resource = ctx.getResource(taxonUrl);
+                parseNodes(eolNodes, childParent, resource);
             } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse NCBI nodes", e);
+                throw new PropertyEnricherException("failed to parse EOL nodes", e);
             }
 
             eolDenormalizedNodes = db
