@@ -8,7 +8,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @PropertyEnricherInfo(name= "nbn-taxon-id", description = "Lookup taxon of National Biodiversity Network by id with NBN:* prefix.")
-public class NBNService implements PropertyEnricher {
+public class NBNService extends PropertyEnricherSimple {
 
     private static final Log LOG = LogFactory.getLog(NBNService.class);
 

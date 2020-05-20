@@ -4,7 +4,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eol.globi.data.StudyImporterException;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.domain.PropertyAndValueDictionary;
@@ -14,7 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class OfflineService implements PropertyEnricher {
+public abstract class OfflineService extends PropertyEnricherSimple {
     private static final Log LOG = LogFactory.getLog(OfflineService.class);
     private TaxonLookupService taxonLookupService;
 

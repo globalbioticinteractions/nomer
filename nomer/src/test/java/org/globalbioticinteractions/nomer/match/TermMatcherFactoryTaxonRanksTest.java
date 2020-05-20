@@ -73,7 +73,6 @@ public class TermMatcherFactoryTaxonRanksTest {
         termMatcher = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
         TermMatcher termMatcher2 = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
-
         assertFoundById(termMatcher);
         assertFoundById(termMatcher2);
     }

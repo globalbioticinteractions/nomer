@@ -2,7 +2,6 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -12,9 +11,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
@@ -30,7 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 @PropertyEnricherInfo(name = "ala-taxon", description = "Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix.")
-public class AtlasOfLivingAustraliaService implements PropertyEnricher {
+public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
 
     private static final String AFD_TSN_PREFIX = "urn:lsid:biodiversity.org.au:afd.taxon:";
     private static final String ATLAS_OF_LIVING_AUSTRALIA_TAXON = TaxonomyProvider.ATLAS_OF_LIVING_AUSTRALIA.getIdPrefix();

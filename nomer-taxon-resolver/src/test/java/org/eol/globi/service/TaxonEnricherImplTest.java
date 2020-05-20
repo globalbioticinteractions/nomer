@@ -3,6 +3,7 @@ package org.eol.globi.service;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -54,28 +55,28 @@ public class TaxonEnricherImplTest {
         PropertyEnricher serviceA = Mockito.mock(PropertyEnricher.class);
         PropertyEnricher serviceB = Mockito.mock(PropertyEnricher.class);
         enrich("Homo sapiens", serviceA, serviceB);
-        verify(serviceA).enrich(anyMap());
-        verify(serviceB).enrich(anyMap());
+        verify(serviceA).enrichFirstMatch(anyMap());
+        verify(serviceB).enrichFirstMatch(anyMap());
     }
 
     @Test
     public void enrichTwoServiceOneBlowsUp() throws PropertyEnricherException {
         PropertyEnricher serviceA = Mockito.mock(PropertyEnricher.class);
         PropertyEnricher serviceB = Mockito.mock(PropertyEnricher.class);
-        when(serviceB.enrich(anyMap())).thenThrow(PropertyEnricherException.class);
+        when(serviceB.enrichFirstMatch(anyMap())).thenThrow(PropertyEnricherException.class);
 
         PropertyEnricher enricher = createEnricher(serviceA, serviceB);
 
         enrich("Homo sapiens", enricher);
         enrich("Homo sapiens", enricher);
-        verify(serviceA, times(2)).enrich(anyMap());
-        verify(serviceB, times(2)).enrich(anyMap());
+        verify(serviceA, times(2)).enrichFirstMatch(anyMap());
+        verify(serviceB, times(2)).enrichFirstMatch(anyMap());
 
     }
 
     @Test
     public void enrichTwoServiceFirstComplete() throws PropertyEnricherException {
-        PropertyEnricher serviceA = new PropertyEnricher() {
+        PropertyEnricher serviceA = new PropertyEnricherSimple() {
 
             @Override
             public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
@@ -113,7 +114,7 @@ public class TaxonEnricherImplTest {
             }
         };
         Taxon enrichedTaxon = new TaxonImpl();
-        TaxonUtil.mapToTaxon(enricher.enrich(properties), enrichedTaxon);
+        TaxonUtil.mapToTaxon(enricher.enrichFirstMatch(properties), enrichedTaxon);
         return enrichedTaxon;
     }
 

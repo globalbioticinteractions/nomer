@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonLookupServiceImpl;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-public class UKSISuggestionService implements PropertyEnricher, NameSuggester, Initializing {
+public class UKSISuggestionService extends PropertyEnricherSimple implements NameSuggester, Initializing {
     private static final Log LOG = LogFactory.getLog(UKSISuggestionService.class);
 
     private TaxonLookupServiceImpl service;

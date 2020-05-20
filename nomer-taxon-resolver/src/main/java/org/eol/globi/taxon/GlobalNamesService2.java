@@ -19,7 +19,6 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.tool.TermRequestImpl;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GlobalNamesService2 implements PropertyEnricher, TermMatcher {
+public class GlobalNamesService2 extends PropertyEnricherSimple implements TermMatcher {
     private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
     public static final List<Integer> MATCH_TYPES_EXACT = Arrays.asList(1, 2, 6);
 

@@ -91,7 +91,7 @@ public class GBIFServiceTest {
             put(PropertyAndValueDictionary.EXTERNAL_ID, TaxonomyProvider.GBIF.getIdPrefix() + gbifId);
         }});
         PropertyEnricher propertyEnricher = new GBIFService();
-        return propertyEnricher.enrich(props);
+        return propertyEnricher.enrichFirstMatch(props);
     }
 
 }

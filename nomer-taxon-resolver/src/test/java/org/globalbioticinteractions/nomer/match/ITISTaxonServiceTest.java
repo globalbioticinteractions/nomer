@@ -10,12 +10,14 @@ import org.eol.globi.taxon.EnvoService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -28,7 +30,7 @@ public class ITISTaxonServiceTest {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl(null, "ITIS:57");
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:57"));
@@ -43,7 +45,7 @@ public class ITISTaxonServiceTest {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl(null, "ITIS:57");
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:57"));
@@ -57,7 +59,7 @@ public class ITISTaxonServiceTest {
     public void enrichNoMatch() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "ITIS:999999999")));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "ITIS:999999999")));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
@@ -66,16 +68,17 @@ public class ITISTaxonServiceTest {
     public void enrichPrefixMismatch() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:2")));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:2")));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
 
     private PropertyEnricher createService() {
-        ITISTaxonService itisTaxonService = new ITISTaxonService(new TermMatcherContext() {
+        File file = new File("target/cache" + UUID.randomUUID());
+        return new ITISTaxonService(new TermMatcherContext() {
             @Override
             public String getCacheDir() {
-                return null;
+                return file.getAbsolutePath();
             }
 
             @Override
@@ -109,8 +112,6 @@ public class ITISTaxonServiceTest {
                 }.get(key);
             }
         });
-        itisTaxonService.setTemporaryCache(true);
-        return itisTaxonService;
     }
 
     @Test

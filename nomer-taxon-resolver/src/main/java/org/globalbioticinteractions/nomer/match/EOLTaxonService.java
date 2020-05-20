@@ -9,10 +9,10 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.CacheService;
-import org.eol.globi.service.PropertyEnricher;
+import org.eol.globi.service.CacheServiceUtil;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 @PropertyEnricherInfo(name = "eol-taxon-id", description = "Lookup EOL pages by id with EOL:* prefix using offline-enabled database dump")
-public class EOLTaxonService implements PropertyEnricher {
+public class EOLTaxonService extends PropertyEnricherSimple {
 
     private static final Log LOG = LogFactory.getLog(EOLTaxonService.class);
     private static final String DENORMALIZED_NODES = "denormalizedNodes";
@@ -44,7 +44,6 @@ public class EOLTaxonService implements PropertyEnricher {
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, Map<String, String>> eolDenormalizedNodes = null;
-    private boolean temporaryCache = false;
 
     public EOLTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -157,13 +156,9 @@ public class EOLTaxonService implements PropertyEnricher {
 
     private void lazyInit() throws PropertyEnricherException {
         File cacheDir = getCacheDir(ctx);
-        if (temporaryCache) {
-            CacheService.createCacheDir(cacheDir);
-        } else {
-            if (!cacheDir.exists()) {
-                if (!cacheDir.mkdirs()) {
-                    throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-                }
+        if (!cacheDir.exists()) {
+            if (!cacheDir.mkdirs()) {
+                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
             }
         }
 
@@ -232,7 +227,4 @@ public class EOLTaxonService implements PropertyEnricher {
         return cacheDir;
     }
 
-    void setTemporaryCache(boolean temporaryCache) {
-        this.temporaryCache = temporaryCache;
-    }
 }

@@ -3,7 +3,6 @@ package org.eol.globi.taxon;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.CSVTSVUtil;
@@ -15,7 +14,7 @@ import java.util.Map;
 import static org.eol.globi.domain.TaxonomyProvider.ID_PREFIX_ENVO;
 
 @PropertyEnricherInfo(name = "envo-term", description = "Lookup envo terms by name or by id using ENVO:* prefix.")
-public class EnvoService implements PropertyEnricher {
+public class EnvoService extends PropertyEnricherSimple {
 
     public static final String SEDIMENT = ID_PREFIX_ENVO + "00002007";
     public static final String SOIL = ID_PREFIX_ENVO + "00001998";

@@ -1,17 +1,13 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.LanguageCodeLookup;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
@@ -23,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @PropertyEnricherInfo(name = "gbif-taxon-id", description = "Lookup taxon in GBIF by id using prefix GBIF:* prefix.")
-public class GBIFService implements PropertyEnricher {
+public class GBIFService extends PropertyEnricherSimple {
 
     public static final String GBIF_LONG_PREFIX = "https://www.gbif.org/species/";
 

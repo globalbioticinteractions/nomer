@@ -23,7 +23,7 @@ public class INaturalistTaxonServiceTest {
             put(PropertyAndValueDictionary.EXTERNAL_ID, TaxonomyProvider.INATURALIST_TAXON.getIdPrefix() + "406089");
         }});
         PropertyEnricher propertyEnricher = new INaturalistTaxonService();
-        Map<String, String> enriched = propertyEnricher.enrich(props);
+        Map<String, String> enriched = propertyEnricher.enrichFirstMatch(props);
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Sophora prostrata"));
         assertThat(enriched.get(PropertyAndValueDictionary.RANK), is("species"));
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("INAT_TAXON:406089"));
@@ -38,7 +38,7 @@ public class INaturalistTaxonServiceTest {
             put(PropertyAndValueDictionary.EXTERNAL_ID, "INAT_TAXON:379688");
         }});
         PropertyEnricher propertyEnricher = new INaturalistTaxonService();
-        Map<String, String> enriched = propertyEnricher.enrich(props);
+        Map<String, String> enriched = propertyEnricher.enrichFirstMatch(props);
         assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Bacteria | Firmicutes | Mollicutes | \"candidatus phytoplasma\""));
     }
 

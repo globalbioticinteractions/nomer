@@ -9,12 +9,14 @@ import org.eol.globi.taxon.EnvoService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -90,7 +92,7 @@ public class NCBITaxonServiceTest {
         NCBITaxonService ncbiTaxonService = new NCBITaxonService(new TermMatcherContext() {
             @Override
             public String getCacheDir() {
-                return null;
+                return new File("target/ncbiCache" + UUID.randomUUID()).getAbsolutePath();
             }
 
             @Override
@@ -124,7 +126,6 @@ public class NCBITaxonServiceTest {
                 }.get(key);
             }
         });
-        ncbiTaxonService.setTemporaryCache(true);
         return ncbiTaxonService;
     }
 

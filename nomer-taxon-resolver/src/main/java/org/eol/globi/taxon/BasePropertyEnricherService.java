@@ -2,14 +2,13 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class BasePropertyEnricherService implements PropertyEnricher {
+public abstract class BasePropertyEnricherService extends PropertyEnricherSimple {
 
     protected String lookupPropertyValueByTaxonName(String taxonName, String propertyName) throws PropertyEnricherException {
         String propertyValue = null;

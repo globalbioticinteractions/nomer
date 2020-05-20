@@ -8,7 +8,6 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
@@ -22,7 +21,7 @@ import java.util.Map;
 import java.util.function.BinaryOperator;
 
 @PropertyEnricherInfo(name = "inaturalist-taxon-id", description = "Lookup taxon in iNaturalist by id with INAT_TAXON:* prefix.")
-public class INaturalistTaxonService implements PropertyEnricher {
+public class INaturalistTaxonService extends PropertyEnricherSimple {
 
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {

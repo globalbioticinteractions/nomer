@@ -34,7 +34,7 @@ public class TaxonEnricherImplIT {
 
 
     private Taxon enrich(Taxon taxon) throws PropertyEnricherException {
-        return TaxonUtil.mapToTaxon(taxonEnricher.enrich(TaxonUtil.taxonToMap(taxon)));
+        return TaxonUtil.mapToTaxon(taxonEnricher.enrichFirstMatch(TaxonUtil.taxonToMap(taxon)));
     }
 
     @Test

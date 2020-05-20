@@ -8,11 +8,13 @@ import org.eol.globi.service.TaxonUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -25,7 +27,7 @@ public class EOLTaxonServiceTest {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl(null, "EOL:327955");
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Homo | Homo sapiens"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("EOL:327955"));
@@ -40,7 +42,7 @@ public class EOLTaxonServiceTest {
     public void enrichNoMatch() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "ITIS:999999999")));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "ITIS:999999999")));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
@@ -49,7 +51,7 @@ public class EOLTaxonServiceTest {
     public void enrichPrefixMismatch() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:2")));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:2")));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
@@ -58,7 +60,7 @@ public class EOLTaxonServiceTest {
         EOLTaxonService taxonService = new EOLTaxonService(new TermMatcherContext() {
             @Override
             public String getCacheDir() {
-                return null;
+                return new File("target/eolCache" + UUID.randomUUID()).getAbsolutePath();
             }
 
             @Override
@@ -90,7 +92,6 @@ public class EOLTaxonServiceTest {
                 }.get(key);
             }
         });
-        taxonService.setTemporaryCache(true);
         return taxonService;
     }
 

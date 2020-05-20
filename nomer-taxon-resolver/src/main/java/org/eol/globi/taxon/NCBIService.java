@@ -7,7 +7,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
@@ -27,7 +26,7 @@ import java.util.Map;
 
 
 @PropertyEnricherInfo(name = "ncbi-taxon-id-web", description = "Lookup NCBI taxon by id with NCBI:* prefix using web apis.")
-public class NCBIService implements PropertyEnricher {
+public class NCBIService extends PropertyEnricherSimple {
 
     private static final List<String> PREFIXES = Arrays.asList(TaxonomyProvider.NCBI.getIdPrefix(),
             TaxonomyProvider.NCBITaxon.getIdPrefix(),

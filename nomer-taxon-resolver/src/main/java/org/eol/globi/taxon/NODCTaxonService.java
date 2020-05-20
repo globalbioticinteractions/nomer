@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.CacheService;
+import org.eol.globi.service.CacheServiceUtil;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @PropertyEnricherInfo(name = "nodc-taxon-id", description = "Lookup taxon in the Taxonomic Code of the National Oceanographic Data Center (NODC) by id with prefix NODC: . Maps to ITIS terms if possible.")
-public class NODCTaxonService implements PropertyEnricher {
+public class NODCTaxonService extends PropertyEnricherSimple {
     private static final Log LOG = LogFactory.getLog(NODCTaxonService.class);
     private final TermMatcherContext ctx;
 
@@ -50,7 +50,7 @@ public class NODCTaxonService implements PropertyEnricher {
 
             if (StringUtils.isNotBlank(tsn)) {
                 enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, tsn);
-                enriched = itisService.enrich(enriched);
+                enriched = itisService.enrichFirstMatch(enriched);
             }
         }
         return enriched;
@@ -78,7 +78,7 @@ public class NODCTaxonService implements PropertyEnricher {
     }
 
     protected void init(NODCTaxonParser parser) throws PropertyEnricherException {
-        CacheService.createCacheDir(getCacheDir());
+        CacheServiceUtil.createCacheDir(getCacheDir());
 
         LOG.info("NODC taxonomy importing...");
         StopWatch watch = new StopWatch();

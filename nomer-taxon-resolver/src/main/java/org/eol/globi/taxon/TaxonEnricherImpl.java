@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
+public class TaxonEnricherImpl extends PropertyEnricherSimple implements TermMatcher {
     private static final Log LOG = LogFactory.getLog(TaxonEnricherImpl.class);
 
     private final List<PropertyEnricher> services = new ArrayList<PropertyEnricher>();
@@ -67,7 +67,7 @@ public class TaxonEnricherImpl implements PropertyEnricher, TermMatcher {
     private Map<String, String> enrichTaxon(Map<Class, Integer> errorCounts, PropertyEnricher
             service, Integer errorCount, Map<String, String> properties) throws PropertyEnricherException {
         try {
-            Map<String, String> enrichedProperties = service.enrich(properties);
+            Map<String, String> enrichedProperties = service.enrichFirstMatch(properties);
             resetErrorCount(errorCounts, service);
             return enrichedProperties;
         } catch (PropertyEnricherException ex) {

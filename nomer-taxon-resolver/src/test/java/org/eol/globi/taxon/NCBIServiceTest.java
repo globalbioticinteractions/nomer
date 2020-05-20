@@ -10,7 +10,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:9606");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), is("cellular organisms | Eukaryota | Opisthokonta | Metazoa | Eumetazoa | Bilateria | Deuterostomia | Chordata | Craniata | Vertebrata | Gnathostomata | Teleostomi | Euteleostomi | Sarcopterygii | Dipnotetrapodomorpha | Tetrapoda | Amniota | Mammalia | Theria | Eutheria | Boreoeutheria | Euarchontoglires | Primates | Haplorrhini | Simiiformes | Catarrhini | Hominoidea | Hominidae | Homininae | Homo | Homo sapiens"));
@@ -44,7 +43,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBITaxon:9606");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
     }
@@ -55,7 +54,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "http://purl.obolibrary.org/obo/NCBITaxon_9606");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
     }
@@ -66,7 +65,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "http://purl.obolibrary.org/obo/NCBITaxon_9606 ");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
     }
@@ -78,7 +77,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:191217");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         Taxon taxon = TaxonUtil.mapToTaxon(enrich);
         int expectedLength = 9;
         assertThat(taxon.getPath().split("\\|").length, is(expectedLength));
@@ -108,7 +107,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:54642");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         String expectedPathNames = " | superkingdom |  | kingdom |  |  |  |  |  | phylum |  |  | subphylum | class |  | subclass | infraclass | cohort | order | suborder | infraorder | superfamily | family | genus | species";
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_NAMES), is(expectedPathNames));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:54642"));
@@ -122,7 +121,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:donaldduck");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:donaldduck"));
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is(nullValue()));
     }
@@ -134,7 +133,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, nonExistentId);
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is(nonExistentId));
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is(nullValue()));
     }
@@ -146,7 +145,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, nonExistentId);
         }};
-        enricher.enrich(props);
+        enricher.enrichFirstMatch(props);
     }
 
     @Test
@@ -155,7 +154,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.NAME, "Homo sapiens");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is(nullValue()));
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
     }
@@ -166,7 +165,7 @@ public class NCBIServiceTest {
         HashMap<String, String> props = new HashMap<String, String>() {{
             put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:235106");
         }};
-        Map<String, String> enrich = enricher.enrich(props);
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Influenza A virus (A/Taiwan/0562/1995(H1N1))"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), containsString("Influenza A virus"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:235106"));

@@ -58,7 +58,7 @@ public class NBNServiceTest {
             put(PropertyAndValueDictionary.EXTERNAL_ID, TaxonomyProvider.NBN.getIdPrefix() + nbnCode);
         }});
         PropertyEnricher propertyEnricher = new NBNService();
-        return propertyEnricher.enrich(props);
+        return propertyEnricher.enrichFirstMatch(props);
     }
 
 }

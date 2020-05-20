@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
@@ -9,10 +10,9 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.CacheService;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -34,7 +34,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 @PropertyEnricherInfo(name = "itis-taxon-id", description = "Lookup ITIS taxon by id with ITIS:* prefix using offline-enabled database dump")
-public class ITISTaxonService implements PropertyEnricher {
+public class ITISTaxonService extends PropertyEnricherSimple {
 
     private static final Log LOG = LogFactory.getLog(ITISTaxonService.class);
     private static final String DENORMALIZED_NODES = "denormalizedNodes";
@@ -45,7 +45,6 @@ public class ITISTaxonService implements PropertyEnricher {
 
     private BTreeMap<String, String> mergedNodes = null;
     private BTreeMap<String, Map<String, String>> itisDenormalizedNodes = null;
-    private boolean temporaryCache = false;
 
     public ITISTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -196,14 +195,10 @@ public class ITISTaxonService implements PropertyEnricher {
 
 
     private void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir(ctx);
-        if (temporaryCache) {
-            CacheService.createCacheDir(cacheDir);
-        } else {
-            if (!cacheDir.exists()) {
-                if (!cacheDir.mkdirs()) {
-                    throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-                }
+        File cacheDir = getCacheDir(this.ctx);
+        if (!cacheDir.exists()) {
+            if (!cacheDir.mkdirs()) {
+                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
             }
         }
 
@@ -231,7 +226,7 @@ public class ITISTaxonService implements PropertyEnricher {
                     .make();
 
             try {
-                parseTaxonUnitTypes(rankIdNameMap, ctx.getResource(getTaxonUnitTypes()));
+                parseTaxonUnitTypes(rankIdNameMap, this.ctx.getResource(getTaxonUnitTypes()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI taxon unit types", e);
             }
@@ -247,7 +242,7 @@ public class ITISTaxonService implements PropertyEnricher {
                     .make();
 
             try {
-                parseNodes(ncbiNodes, childParent, rankIdNameMap, ctx.getResource(getNodesUrl()));
+                parseNodes(ncbiNodes, childParent, rankIdNameMap, this.ctx.getResource(getNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -259,7 +254,7 @@ public class ITISTaxonService implements PropertyEnricher {
 
 
             try {
-                parseMerged(mergedNodes, ctx.getResource(getMergedNodesUrl()));
+                parseMerged(mergedNodes, this.ctx.getResource(getMergedNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -303,7 +298,4 @@ public class ITISTaxonService implements PropertyEnricher {
         return ctx.getProperty("nomer.itis.synonym_links");
     }
 
-    public void setTemporaryCache(boolean temporaryCache) {
-        this.temporaryCache = temporaryCache;
-    }
 }

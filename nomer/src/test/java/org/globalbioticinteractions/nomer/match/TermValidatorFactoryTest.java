@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.service.CacheService;
+import org.eol.globi.service.CacheServiceUtil;
 import org.eol.globi.service.PropertyEnricherException;
 import org.globalbioticinteractions.nomer.match.TermMatcherCacheFactory;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertThat;
 public class TermValidatorFactoryTest {
 
     @Test
-    public void validateCache() throws PropertyEnricherException, IOException {
+    public void validateCache() throws IOException {
         String termCacheUrl = TermMatcherCacheFactory.getTermCacheUrl(MatchTestUtil.getLocalTermMatcherCache());
 
         String expectedResult = "OK\tno id\tid\tname\trank\tcommonNames\tpath\tpathIds\tpathNames\texternalUrl\tthumbnailUrl\n" +
@@ -35,7 +36,7 @@ public class TermValidatorFactoryTest {
     }
 
     @Test
-    public void validateMap() throws PropertyEnricherException, IOException {
+    public void validateMap() throws IOException {
         String termCacheUrl = TermMatcherCacheFactory.getTermMapUrl(MatchTestUtil.getLocalTermMatcherCache());
 
         String expectedResult = "OK\tno id\tprovidedTaxonId\tprovidedTaxonName\tresolvedTaxonId\tresolvedTaxonName\n" +
@@ -50,7 +51,7 @@ public class TermValidatorFactoryTest {
 
     private void assertValidation(String termCacheUrl, String expectedResult) throws IOException {
         TermValidator cacheService = new TermValidatorFactory()
-                .createTermValidator(CacheService.createBufferedReader(termCacheUrl).lines());
+                .createTermValidator(CacheServiceUtil.createBufferedReader(termCacheUrl).lines());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Predicate<String> one = s -> true;

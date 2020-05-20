@@ -15,7 +15,6 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PageInfo;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.PropertyEnrichmentFilter;
 import org.eol.globi.util.ExternalIdUtil;
@@ -32,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EOLService implements PropertyEnricher {
+public class EOLService extends PropertyEnricherSimple {
 
     private static final Map<TaxonomyProvider, Integer> EOL_TAXON_PROVIDER_MAP = Collections.unmodifiableMap(new HashMap<TaxonomyProvider, Integer>() {{
         put(TaxonomyProvider.ITIS, 903);

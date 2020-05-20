@@ -8,11 +8,10 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.CacheService;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.NCBIService;
+import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -35,7 +34,7 @@ import java.util.TreeMap;
 import java.util.stream.Stream;
 
 @PropertyEnricherInfo(name = "ncbi-taxon-id", description = "Lookup NCBI taxon by id with NCBI:* prefix.")
-public class NCBITaxonService implements PropertyEnricher {
+public class NCBITaxonService extends PropertyEnricherSimple {
 
     private static final Log LOG = LogFactory.getLog(NCBITaxonService.class);
     private static final String DENORMALIZED_NODES = "denormalizedNodes";
@@ -46,7 +45,6 @@ public class NCBITaxonService implements PropertyEnricher {
 
     private BTreeMap<String, String> mergedNodes = null;
     private BTreeMap<String, Map<String, String>> ncbiDenormalizedNodes = null;
-    private boolean temporaryCache = false;
 
     public NCBITaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -198,13 +196,9 @@ public class NCBITaxonService implements PropertyEnricher {
 
     private void lazyInit() throws PropertyEnricherException {
         File cacheDir = getCacheDir();
-        if (temporaryCache) {
-            CacheService.createCacheDir(cacheDir);
-        } else {
-            if (!cacheDir.exists()) {
-                if (!cacheDir.mkdirs()) {
-                    throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-                }
+        if (!cacheDir.exists()) {
+            if (!cacheDir.mkdirs()) {
+                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
             }
         }
 
@@ -305,8 +299,4 @@ public class NCBITaxonService implements PropertyEnricher {
         return ctx.getProperty("nomer.ncbi.names");
     }
 
-
-    public void setTemporaryCache(boolean temporaryCache) {
-        this.temporaryCache = temporaryCache;
-    }
 }
