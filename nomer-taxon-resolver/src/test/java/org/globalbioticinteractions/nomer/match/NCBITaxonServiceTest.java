@@ -89,7 +89,7 @@ public class NCBITaxonServiceTest {
     }
 
     private NCBITaxonService createService() {
-        NCBITaxonService ncbiTaxonService = new NCBITaxonService(new TermMatcherContext() {
+        return new NCBITaxonService(new TermMatcherContext() {
             @Override
             public String getCacheDir() {
                 return new File("target/ncbiCache" + UUID.randomUUID()).getAbsolutePath();
@@ -126,7 +126,6 @@ public class NCBITaxonServiceTest {
                 }.get(key);
             }
         });
-        return ncbiTaxonService;
     }
 
     @Test

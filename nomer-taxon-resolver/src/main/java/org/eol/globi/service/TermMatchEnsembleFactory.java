@@ -8,6 +8,7 @@ import org.eol.globi.taxon.GulfBaseService;
 import org.eol.globi.taxon.INaturalistTaxonService;
 import org.eol.globi.taxon.ITISService;
 import org.eol.globi.taxon.NBNService;
+import org.eol.globi.taxon.NCBIService;
 import org.eol.globi.taxon.NODCTaxonService;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
@@ -36,7 +37,9 @@ public class TermMatchEnsembleFactory {
                 add(new NBNService());
                 add(new NODCTaxonService(ctx));
                 add(new ITISTaxonService(ctx));
+                add(new ITISService());
                 add(new NCBITaxonService(ctx));
+                add(new NCBIService());
                 add(new EOLTaxonService(ctx));
                 add(new GBIFService());
                 add(new INaturalistTaxonService());
