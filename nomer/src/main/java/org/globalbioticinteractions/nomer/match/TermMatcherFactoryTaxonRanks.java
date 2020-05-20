@@ -61,7 +61,6 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
     private TaxonCacheService createTermCache(File cacheDir, String taxonRankCacheUrl, String taxonRankMapUrl) {
         TaxonCacheService taxonCacheService = new TaxonCacheService(taxonRankCacheUrl, taxonRankMapUrl);
         taxonCacheService.setCacheDir(new File(cacheDir, "wikidata-taxon-ranks"));
-        taxonCacheService.setTemporary(false);
         return taxonCacheService;
     }
 

@@ -28,7 +28,6 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
         TaxonCacheService cacheService = createCacheService(ctx);
         cacheService.setCacheDir(new File(ctx.getCacheDir(), "term-cache"));
-        cacheService.setTemporary(false);
         cacheService.setMaxTaxonLinks(getMaxTermLinks(ctx));
         return cacheService;
     }
