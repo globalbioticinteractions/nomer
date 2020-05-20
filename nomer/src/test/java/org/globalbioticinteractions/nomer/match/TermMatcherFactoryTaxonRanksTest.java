@@ -5,7 +5,6 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.match.TermMatcherFactoryTaxonRanks;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +54,10 @@ public class TermMatcherFactoryTaxonRanksTest {
 
     @Test
     public void byId() throws PropertyEnricherException {
+        assertFoundById(termMatcher);
+    }
+
+    private void assertFoundById(TermMatcher termMatcher) throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("WD:Q7432", ""));
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
@@ -63,6 +66,16 @@ public class TermMatcherFactoryTaxonRanksTest {
             found.set(true);
         });
         assertTrue(found.get());
+    }
+
+    @Test
+    public void twoMatchersSameCacheDir() throws PropertyEnricherException {
+        termMatcher = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+        TermMatcher termMatcher2 = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+
+
+        assertFoundById(termMatcher);
+        assertFoundById(termMatcher2);
     }
 
 
