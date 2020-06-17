@@ -40,7 +40,7 @@ public class NCBIService extends PropertyEnricherSimple {
         String tsn = getNCBITaxonId(properties);
 
         if (StringUtils.isNotBlank(tsn) && tsn.matches("^\\d+$")) {
-            String fullHierarchy = getResponse("db=taxonomy&id=" + tsn);
+            String fullHierarchy = getResponse("db=taxonomy&id=" + tsn + "&email=info%40globalbioticinteractions.org&tool=10.5281%2Fzenodo.1145474");
             if (fullHierarchy.contains("<Taxon>")) {
                 parseAndPopulate(enriched, tsn, fullHierarchy);
             }
