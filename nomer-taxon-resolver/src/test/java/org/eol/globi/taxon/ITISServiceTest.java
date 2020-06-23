@@ -34,4 +34,18 @@ public class ITISServiceTest {
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
     }
 
+    @Test
+    public void setPropertyToLastName() throws PropertyEnricherException {
+        HashMap<String, String> properties = new HashMap<>();
+        ITISService.setPropertyToLastValue("someName", "first | last", properties);
+        assertThat(properties.get("someName"), is("last"));
+    }
+
+    @Test
+    public void setPropertyToLastNameMissing() throws PropertyEnricherException {
+        HashMap<String, String> properties = new HashMap<>();
+        ITISService.setPropertyToLastValue("someName", "", properties);
+        assertThat(properties.get("someName"), is(nullValue()));
+    }
+
 }

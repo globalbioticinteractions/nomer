@@ -72,10 +72,12 @@ public class ITISService extends PropertyEnricherSimple {
         return StringUtils.join(subList, CharsetConstant.SEPARATOR);
     }
 
-    private static void setPropertyToLastValue(String propertyName, String taxonNames, Map<String, String> enriched) {
+    static void setPropertyToLastValue(String propertyName, String taxonNames, Map<String, String> enriched) {
         if (taxonNames != null) {
             String[] split1 = CSVTSVUtil.splitPipes(taxonNames);
-            enriched.put(propertyName, split1[split1.length - 1].trim());
+            if (split1.length > 0) {
+                enriched.put(propertyName, StringUtils.trim(split1[split1.length - 1]));
+            }
         }
     }
 
