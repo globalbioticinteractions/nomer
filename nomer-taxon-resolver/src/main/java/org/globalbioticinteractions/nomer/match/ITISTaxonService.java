@@ -228,7 +228,7 @@ public class ITISTaxonService extends PropertyEnricherSimple {
             try {
                 parseTaxonUnitTypes(rankIdNameMap, this.ctx.getResource(getTaxonUnitTypes()));
             } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse NCBI taxon unit types", e);
+                throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
             }
 
             BTreeMap<String, Map<String, String>> ncbiNodes = db
@@ -244,7 +244,7 @@ public class ITISTaxonService extends PropertyEnricherSimple {
             try {
                 parseNodes(ncbiNodes, childParent, rankIdNameMap, this.ctx.getResource(getNodesUrl()));
             } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse NCBI nodes", e);
+                throw new PropertyEnricherException("failed to parse ITIS nodes", e);
             }
 
             mergedNodes = db
@@ -256,7 +256,7 @@ public class ITISTaxonService extends PropertyEnricherSimple {
             try {
                 parseMerged(mergedNodes, this.ctx.getResource(getMergedNodesUrl()));
             } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse NCBI nodes", e);
+                throw new PropertyEnricherException("failed to parse ITIS nodes", e);
             }
 
             itisDenormalizedNodes = db

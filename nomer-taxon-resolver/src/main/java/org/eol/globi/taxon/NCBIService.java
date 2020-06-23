@@ -28,7 +28,9 @@ import java.util.Map;
 @PropertyEnricherInfo(name = "ncbi-taxon-id-web", description = "Lookup NCBI taxon by id with NCBI:* prefix using web apis.")
 public class NCBIService extends PropertyEnricherSimple {
 
-    private static final List<String> PREFIXES = Arrays.asList(TaxonomyProvider.NCBI.getIdPrefix(),
+    private static final List<String> PREFIXES = Arrays.asList(
+            "NCBI:txid",
+            TaxonomyProvider.NCBI.getIdPrefix(),
             TaxonomyProvider.NCBITaxon.getIdPrefix(),
             "http://purl.obolibrary.org/obo/NCBITaxon_");
 

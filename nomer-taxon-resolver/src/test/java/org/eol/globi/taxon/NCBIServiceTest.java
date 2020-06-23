@@ -38,6 +38,17 @@ public class NCBIServiceTest {
     }
 
     @Test
+    public void lookupPathByTaxonIdPrefix() throws PropertyEnricherException {
+        PropertyEnricher enricher = new NCBIService();
+        HashMap<String, String> props = new HashMap<String, String>() {{
+            put(PropertyAndValueDictionary.EXTERNAL_ID, "NCBI:txid9606");
+        }};
+        Map<String, String> enrich = enricher.enrichFirstMatch(props);
+        assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NCBI:9606"));
+        assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
+    }
+
+    @Test
     public void lookupPathByTaxonIdNCBITaxon() throws PropertyEnricherException {
         PropertyEnricher enricher = new NCBIService();
         HashMap<String, String> props = new HashMap<String, String>() {{

@@ -28,7 +28,23 @@ public class NCBITaxonServiceTest {
     public void enrich() throws PropertyEnricherException {
         NCBITaxonService service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "NCBI:2")));
+        String externalId = "NCBI:2";
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, externalId)));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bacteria"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:2"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Bacteria"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("superkingdom"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:2"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("superkingdom"));
+    }
+
+    @Test
+    public void enrichNCBIPreferredPrefix() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        String externalId = "NCBI:txid2";
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, externalId)));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bacteria"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:2"));
@@ -60,7 +76,8 @@ public class NCBITaxonServiceTest {
     public void enrichMerged() throws PropertyEnricherException {
         NCBITaxonService service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "NCBI:666")));
+        String taxonId = "NCBI:666";
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, taxonId)));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bacteria"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:2"));
