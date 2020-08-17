@@ -17,7 +17,7 @@ http://purl.obolibrary.org/obo/RO_0002444	parasite of	needs definition
 http://purl.obolibrary.org/obo/RO_0002445	parasitized by	needs definition
 http://purl.obolibrary.org/obo/RO_0002446	participates in a abiotic-biotic interaction with	A biotic interaction relationship in which one partner is an organism and the other partner is inorganic. For example, the relationship between a sponge and the substrate to which is it anchored.
 http://purl.obolibrary.org/obo/RO_0002453	host of	needs definition
-http://purl.obolibrary.org/obo/RO_0002454	has host	needs definition
+http://purl.obolibrary.org/obo/RO_0002454	has host	X 'has host' y if and only if: x is an organism, y is an organism, and x can live on the surface of or within the body of y
 http://purl.obolibrary.org/obo/RO_0002455	pollinates	needs definition
 http://purl.obolibrary.org/obo/RO_0002456	pollinated by	needs definition
 http://purl.obolibrary.org/obo/RO_0002457	acquires nutrients from	needs definition
