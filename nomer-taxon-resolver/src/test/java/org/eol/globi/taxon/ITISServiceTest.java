@@ -35,14 +35,14 @@ public class ITISServiceTest {
     }
 
     @Test
-    public void setPropertyToLastName() throws PropertyEnricherException {
+    public void setPropertyToLastName() {
         HashMap<String, String> properties = new HashMap<>();
         ITISService.setPropertyToLastValue("someName", "first | last", properties);
         assertThat(properties.get("someName"), is("last"));
     }
 
     @Test
-    public void setPropertyToLastNameMissing() throws PropertyEnricherException {
+    public void setPropertyToLastNameMissing() {
         HashMap<String, String> properties = new HashMap<>();
         ITISService.setPropertyToLastValue("someName", "", properties);
         assertThat(properties.get("someName"), is(nullValue()));
