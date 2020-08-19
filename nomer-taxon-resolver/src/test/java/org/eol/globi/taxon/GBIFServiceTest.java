@@ -1,6 +1,5 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricher;
@@ -9,47 +8,20 @@ import org.eol.globi.util.ExternalIdUtil;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class GBIFServiceTest {
 
-    private Map<String, TaxonomyProvider> prefixForTaxonProvider = new HashMap<String, TaxonomyProvider>() {{
-       put("https://www.gbif.org/species/", TaxonomyProvider.GBIF);
-    }};
-
     @Test
     public void providerForExternalId() {
-        String id = "http://www.gbif.org/species/110462373";
-        TaxonomyProvider provider = null;
-
-        List<String> keys = new ArrayList<>();
-        TaxonomyProvider[] values = TaxonomyProvider.values();
-        for (TaxonomyProvider value : values) {
-            keys.add(value.getIdPrefix());
-        }
-
-        Map<String, String> urlPrefixMap = ExternalIdUtil.getURLPrefixMap();
-        for (Map.Entry<String, String> entry : urlPrefixMap.entrySet()) {
-            if (StringUtils.startsWith(id, entry.getValue())) {
-                if (keys.contains(entry.getKey())) {
-                    provider = TaxonomyProvider.valueOf(entry.getKey().substring(0, entry.getKey().length() - 1));
-                    break;
-                }
-            }
-        }
-        assertThat(provider, is(TaxonomyProvider.GBIF));
+        String id = "https://www.gbif.org/species/110462373";
+        assertThat(ExternalIdUtil.taxonomyProviderFor(id), is(TaxonomyProvider.GBIF));
     }
 
     @Test
