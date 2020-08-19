@@ -8,6 +8,7 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
+import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
@@ -21,18 +22,19 @@ import java.util.Map;
 @PropertyEnricherInfo(name = "itis-taxon-id-web", description = "Use itis webservice to lookup taxa by id using ITIS:* prefix.")
 public class ITISService extends PropertyEnricherSimple {
 
+    private static final String ITIS_PREFIX_LONG = "https://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=";
+
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
         if (isNumericITISTsn(externalId)) {
-            enrichWithId(enriched, externalId);
+            enrichWithId(enriched, stripPrefix(externalId));
         }
         return enriched;
     }
 
-    private void enrichWithId(Map<String, String> enriched, String externalId) throws PropertyEnricherException {
-        String tsn = externalId.replace(TaxonomyProvider.ID_PREFIX_ITIS, "");
+    private void enrichWithId(Map<String, String> enriched, String tsn) throws PropertyEnricherException {
         String acceptedResponse = getResponse("getAcceptedNamesFromTSN", "tsn=" + tsn);
         String[] split = StringUtils.splitByWholeSeparator(acceptedResponse, "acceptedTsn>");
         if (split != null && split.length > 1) {
@@ -60,8 +62,14 @@ public class ITISService extends PropertyEnricherSimple {
     }
 
     private boolean isNumericITISTsn(String externalId) {
-        return StringUtils.startsWith(externalId, TaxonomyProvider.ITIS.getIdPrefix())
-                && StringUtils.isNumeric(externalId.replace(TaxonomyProvider.ID_PREFIX_ITIS, ""));
+        return (TaxonomyProvider.ITIS.equals(ExternalIdUtil.taxonomyProviderFor(externalId)))
+                && StringUtils.isNumeric(stripPrefix(externalId))
+                || (StringUtils.startsWith(externalId, ITIS_PREFIX_LONG)
+                && StringUtils.isNumeric(stripPrefix(externalId)));
+    }
+
+    private String stripPrefix(String externalId) {
+        return StringUtils.replace(ExternalIdUtil.stripPrefix(TaxonomyProvider.ITIS, externalId), ITIS_PREFIX_LONG, "");
     }
 
     private String subJoin(int taxonIdIndex, List<String> taxonNames) {
