@@ -23,8 +23,6 @@ import java.util.Map;
 @PropertyEnricherInfo(name = "gbif-taxon-id", description = "Lookup taxon in GBIF by id using prefix GBIF:* prefix.")
 public class GBIFService extends PropertyEnricherSimple {
 
-    public static final String GBIF_LONG_PREFIX = "https://www.gbif.org/species/";
-
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         // see http://www.gbif.org/developer/species
