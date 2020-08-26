@@ -16,7 +16,8 @@ import java.util.TreeMap;
 public class TermMatcherRegistry {
     private static final Log LOG = LogFactory.getLog(TermMatcherRegistry.class);
 
-    public static final TermMatcherCacheFactory MATCHER_FACTORY_DEFAULT = new TermMatcherCacheFactory();
+    private static final TermMatcherCacheFactory MATCHER_FACTORY_DEFAULT = new TermMatcherCacheFactory();
+
     private final static List<TermMatcherFactory> matchers = Collections.unmodifiableList(new TreeList<TermMatcherFactory>(){{
         add(MATCHER_FACTORY_DEFAULT);
         add(new TermMatcherTranslateNamesFactory());
@@ -27,6 +28,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherFactoryGlobalNames());
         add(new TermMatcherDOIFactory());
         add(new TermMatcherPMDID2DOIFactory());
+        add(new TermMatcherWikidataFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

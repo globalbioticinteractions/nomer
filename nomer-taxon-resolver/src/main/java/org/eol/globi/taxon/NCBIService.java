@@ -8,6 +8,7 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.w3c.dom.Node;
@@ -28,12 +29,6 @@ import java.util.Map;
 @PropertyEnricherInfo(name = "ncbi-taxon-id-web", description = "Lookup NCBI taxon by id with NCBI:* prefix using web apis.")
 public class NCBIService extends PropertyEnricherSimple {
 
-    private static final List<String> PREFIXES = Arrays.asList(
-            "NCBI:txid",
-            TaxonomyProvider.NCBI.getIdPrefix(),
-            TaxonomyProvider.NCBITaxon.getIdPrefix(),
-            "http://purl.obolibrary.org/obo/NCBITaxon_");
-
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         // see http://www.ncbi.nlm.nih.gov/books/NBK25500/
@@ -52,14 +47,11 @@ public class NCBIService extends PropertyEnricherSimple {
 
 
     public static String getNCBITaxonId(Map<String, String> properties) {
-        String tsn = null;
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (PREFIXES.stream().anyMatch(x -> StringUtils.startsWith(externalId, x))) {
-            tsn = PREFIXES
-                    .stream()
-                    .reduce(externalId, (x, y) -> StringUtils.trim(StringUtils.replace(x, y, "")));
-        }
-        return tsn;
+        final TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(externalId);
+        return TaxonomyProvider.NCBI.equals(taxonomyProvider)
+                ? ExternalIdUtil.stripPrefix(TaxonomyProvider.NCBI, externalId)
+                : null;
     }
 
 

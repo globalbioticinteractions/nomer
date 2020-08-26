@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
@@ -9,7 +8,6 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.DOIResolver;
 import org.eol.globi.service.DOIResolverCache;
 import org.eol.globi.service.DOIResolverImpl;
@@ -24,7 +22,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TermMatcherDOIFactory implements TermMatcherFactory {
 

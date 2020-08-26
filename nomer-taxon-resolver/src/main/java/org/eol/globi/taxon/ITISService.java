@@ -22,8 +22,6 @@ import java.util.Map;
 @PropertyEnricherInfo(name = "itis-taxon-id-web", description = "Use itis webservice to lookup taxa by id using ITIS:* prefix.")
 public class ITISService extends PropertyEnricherSimple {
 
-    private static final String ITIS_PREFIX_LONG = "https://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=";
-
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enriched = new HashMap<String, String>(properties);
@@ -63,13 +61,11 @@ public class ITISService extends PropertyEnricherSimple {
 
     private boolean isNumericITISTsn(String externalId) {
         return (TaxonomyProvider.ITIS.equals(ExternalIdUtil.taxonomyProviderFor(externalId)))
-                && StringUtils.isNumeric(stripPrefix(externalId))
-                || (StringUtils.startsWith(externalId, ITIS_PREFIX_LONG)
-                && StringUtils.isNumeric(stripPrefix(externalId)));
+                && StringUtils.isNumeric(stripPrefix(externalId));
     }
 
     private String stripPrefix(String externalId) {
-        return StringUtils.replace(ExternalIdUtil.stripPrefix(TaxonomyProvider.ITIS, externalId), ITIS_PREFIX_LONG, "");
+        return ExternalIdUtil.stripPrefix(TaxonomyProvider.ITIS, externalId);
     }
 
     private String subJoin(int taxonIdIndex, List<String> taxonNames) {
