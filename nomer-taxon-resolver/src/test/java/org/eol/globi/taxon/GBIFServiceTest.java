@@ -25,7 +25,7 @@ public class GBIFServiceTest {
     }
 
     @Test
-    public void lookupByCode() throws IOException, PropertyEnricherException {
+    public void lookupByCode() throws PropertyEnricherException {
         Map<String, String> enriched = getTaxonInfo("2882753");
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Gaultheria procumbens"));
         assertThat(enriched.get(PropertyAndValueDictionary.RANK), is("species"));
@@ -39,7 +39,7 @@ public class GBIFServiceTest {
     }
 
     @Test
-    public void lookupByCodeSynonym() throws IOException, PropertyEnricherException {
+    public void lookupByCodeSynonym() throws PropertyEnricherException {
         Map<String, String> enriched = getTaxonInfo("2344811");
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("GBIF:5202927"));
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Ariopsis felis"));
@@ -47,7 +47,7 @@ public class GBIFServiceTest {
     }
 
     @Test
-    public void lookupByCodeSubspecies() throws IOException, PropertyEnricherException {
+    public void lookupByCodeSubspecies() throws PropertyEnricherException {
         Map<String, String> enriched = getTaxonInfo("6163936");
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Enhydra lutris nereis"));
         assertThat(enriched.get(PropertyAndValueDictionary.RANK), is("subspecies"));
