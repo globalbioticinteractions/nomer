@@ -10,6 +10,7 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
@@ -27,7 +28,8 @@ public class INaturalistTaxonService extends PropertyEnricherSimple {
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.INATURALIST_TAXON.getIdPrefix())) {
+        if (TaxonomyProvider.INATURALIST_TAXON
+                .equals(ExternalIdUtil.taxonomyProviderFor(externalId))) {
             enrichWithExternalId(enriched, externalId);
         }
         return enriched;
@@ -35,7 +37,7 @@ public class INaturalistTaxonService extends PropertyEnricherSimple {
 
     protected void enrichWithExternalId(Map<String, String> enriched, String externalId) throws PropertyEnricherException {
         try {
-            String taxonId = StringUtils.replace(externalId, TaxonomyProvider.INATURALIST_TAXON.getIdPrefix(), "");
+            String taxonId = ExternalIdUtil.stripPrefix(TaxonomyProvider.INATURALIST_TAXON, externalId);
             JsonNode jsonNode = getSpeciesInfo(taxonId);
             if (jsonNode.has("results")) {
                 JsonNode results = jsonNode.get("results");
@@ -69,13 +71,13 @@ public class INaturalistTaxonService extends PropertyEnricherSimple {
         if (result.has("name")) {
             taxon.setName(result.get("name").asText());
         }
-        if (result.has("rank")){
+        if (result.has("rank")) {
             taxon.setRank(result.get("rank").asText());
         }
-        if (result.has("id")){
+        if (result.has("id")) {
             taxon.setExternalId(TaxonomyProvider.INATURALIST_TAXON.getIdPrefix() + result.get("id").asText());
         }
-        if (result.has("preferred_common_name")){
+        if (result.has("preferred_common_name")) {
             taxon.setCommonNames(result.get("preferred_common_name").asText() + " @en");
         }
         return taxon;

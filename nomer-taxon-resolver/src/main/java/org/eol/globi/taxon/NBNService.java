@@ -9,6 +9,7 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.eol.globi.util.ExternalIdUtil.taxonomyProviderFor;
 
 @PropertyEnricherInfo(name= "nbn-taxon-id", description = "Lookup taxon of National Biodiversity Network by id with NBN:* prefix.")
 public class NBNService extends PropertyEnricherSimple {
@@ -28,7 +31,7 @@ public class NBNService extends PropertyEnricherSimple {
         // see https://data.nbn.org.uk/Documentation/Web_Services/Web_Services-REST/Getting_Records/
         Map<String, String> enriched = new HashMap<String, String>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.NBN.getIdPrefix())) {
+        if (TaxonomyProvider.NBN.equals(taxonomyProviderFor(externalId))) {
             enrichWithExternalId(enriched, externalId);
         }
         return enriched;
@@ -40,7 +43,7 @@ public class NBNService extends PropertyEnricherSimple {
         List<String> ranks = new ArrayList<String>();
 
         try {
-            String nbnId = StringUtils.replace(externalId, TaxonomyProvider.NBN.getIdPrefix(), "");
+            String nbnId = ExternalIdUtil.stripPrefix(TaxonomyProvider.NBN, externalId);
             String response = HttpUtil.getContent("https://species-ws.nbnatlas.org/classification/" + nbnId);
             JsonNode taxa = new ObjectMapper().readTree(response);
             for (JsonNode jsonNode : taxa) {
