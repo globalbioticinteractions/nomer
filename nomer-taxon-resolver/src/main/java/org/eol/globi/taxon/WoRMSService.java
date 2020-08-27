@@ -10,6 +10,7 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.LanguageCodeLookup;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
+import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
@@ -84,7 +85,7 @@ public class WoRMSService extends PropertyEnricherSimple {
 
     Map<String, String> enrichById(final String id, final Map<String, String> properties) throws PropertyEnricherException {
         if (isAlphiaID(id)) {
-            String response = getResponse("getAphiaRecordByID", "AphiaID", id.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
+            String response = getResponse("getAphiaRecordByID", "AphiaID", parseAphiaId(id));
             String aphiaId = id;
             String validAphiaId = XmlUtil.extractName(response, "valid_AphiaID");
             if (StringUtils.isNotBlank(validAphiaId)) {
@@ -93,7 +94,7 @@ public class WoRMSService extends PropertyEnricherSimple {
                 properties.put(PropertyAndValueDictionary.NAME, XmlUtil.extractName(response, "valid_name"));
             }
             if (isAlphiaID(aphiaId)) {
-                String response1 = getResponse("getAphiaClassificationByID", "AphiaID", aphiaId.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
+                String response1 = getResponse("getAphiaClassificationByID", "AphiaID", parseAphiaId(aphiaId));
                 String value = XmlUtil.extractPath(response1, "scientificname", "");
                 properties.put(PropertyAndValueDictionary.PATH, StringUtils.isBlank(value) ? null : value);
                 value = XmlUtil.extractPath(response1, "AphiaID", TaxonomyProvider.ID_PREFIX_WORMS);
@@ -106,7 +107,7 @@ public class WoRMSService extends PropertyEnricherSimple {
 
                 properties.put(PropertyAndValueDictionary.PATH_NAMES, StringUtils.isBlank(value) ? null : StringUtils.lowerCase(value));
 
-                response1 = getResponse("getAphiaVernacularsByID", "AphiaID", aphiaId.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
+                response1 = getResponse("getAphiaVernacularsByID", "AphiaID", parseAphiaId(aphiaId));
                 String vernaculars = XmlUtil.extractPath(response1, "vernacular", "");
                 String languageCodes = XmlUtil.extractPath(response1, "language_code", "");
                 String[] commonNames = CSVTSVUtil.splitPipes(vernaculars);
@@ -126,14 +127,19 @@ public class WoRMSService extends PropertyEnricherSimple {
     String lookupTaxonPathById(String id) throws PropertyEnricherException {
         String path = null;
         if (isAlphiaID(id)) {
-            String response = getResponse("getAphiaClassificationByID", "AphiaID", id.replace(TaxonomyProvider.ID_PREFIX_WORMS, ""));
+            final String alphiaId = parseAphiaId(id);
+            String response = getResponse("getAphiaClassificationByID", "AphiaID", alphiaId);
             path = XmlUtil.extractPath(response, "scientificname", "");
         }
         return StringUtils.isBlank(path) ? null : path;
     }
 
+    private String parseAphiaId(String id) {
+        return ExternalIdUtil.stripPrefix(TaxonomyProvider.WORMS, id);
+    }
+
     private boolean isAlphiaID(String id) {
-        return StringUtils.startsWith(id, TaxonomyProvider.ID_PREFIX_WORMS);
+        return TaxonomyProvider.WORMS.equals(ExternalIdUtil.taxonomyProviderFor(id));
     }
 
     @Override
