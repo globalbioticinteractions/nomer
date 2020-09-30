@@ -29,6 +29,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherDOIFactory());
         add(new TermMatcherPMDID2DOIFactory());
         add(new TermMatcherWikidataFactory());
+        add(new TermMatcherPlaziFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

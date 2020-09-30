@@ -49,7 +49,6 @@ public class TermMatchEnsembleFactory {
                 add(new GulfBaseService());
                 add(new AtlasOfLivingAustraliaService());
                 add(new ITISService());
-                add(new PlaziService(ctx));
             }
         };
     }
