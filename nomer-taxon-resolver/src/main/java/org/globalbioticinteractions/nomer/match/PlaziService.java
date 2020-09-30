@@ -4,6 +4,9 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.io.input.CloseShieldInputStream;
+import org.apache.commons.io.input.ProxyInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
@@ -26,6 +29,7 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,20 +122,18 @@ public class PlaziService extends PropertyEnricherSimple {
 
                     }
                 };
-                ArchiveInputStream archiveInputStream = new ArchiveStreamFactory()
-                        .createArchiveInputStream(resource);
+                ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(resource);
 
                 ArchiveEntry nextEntry;
                 while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
                     if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
-                        PlaziTreatmentsLoader.importTreatment(archiveInputStream, listener);
+                        CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
+                        PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
                     }
                 }
 
 
             } catch (IOException e) {
-                throw new PropertyEnricherException("failed to load archive", e);
-            } catch (ArchiveException e) {
                 throw new PropertyEnricherException("failed to load archive", e);
             }
 

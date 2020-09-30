@@ -9,6 +9,7 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -36,10 +37,12 @@ public class PlaziTreatmentsLoader {
                         "PREFIX dwc: <http://rs.tdwg.org/dwc/terms/>\n" +
                         "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n" +
                         "SELECT * WHERE { \n" +
-                        "  ?treatment (trt:augmentsTaxonConcept|trt:definesTaxonConcept|trt:deprecates) ?tc .\n" +
+                        "  ?treatment (trt:augmentsTaxonConcept|trt:definesTaxonConcept) ?tc .\n" +
+//                        "  ?treatment (trt:augmentsTaxonConcept|trt:definesTaxonConcept|trt:deprecates) ?tc .\n" +
                         "  ?tc trt:hasTaxonName ?tn .\n" +
                         "  ?tc a fp:TaxonConcept .\n" +
-                        "  OPTIONAL { ?tc dwc:species ?species . }\n" +
+                        "  ?treatment trt:publishedIn ?publication .\n" +
+                        "  OPTIONAL { ?tc dwc:species ?specificEpithet . }\n" +
                         "  OPTIONAL { ?tc dwc:genus ?genus . }\n" +
                         "  OPTIONAL { ?tc dwc:family ?family . }\n" +
                         "  OPTIONAL { ?tc dwc:class ?class . }\n" +
@@ -53,7 +56,7 @@ public class PlaziTreatmentsLoader {
         ResultSet rs = qexec.execSelect();
         while (rs.hasNext()) {
             final QuerySolution next = rs.next();
-            List<String> taxonRanks = Arrays.asList("?species", "?genus", "?family", "?order", "?class", "?phylum", "?kingdom");
+            List<String> taxonRanks = Arrays.asList("?specificEpithet", "?genus", "?family", "?order", "?class", "?phylum", "?kingdom");
             Map<String, String> taxonMap =
                     taxonRanks
                             .stream()
@@ -67,7 +70,7 @@ public class PlaziTreatmentsLoader {
                             .filter(x -> org.apache.commons.lang3.StringUtils.isNoneBlank(x.getValue()))
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            RDFNode rdfNode = next.get("?tc");
+            RDFNode rdfNode = next.get("?treatment");
             if (rdfNode != null && rdfNode.isURIResource()) {
                 taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, rdfNode.asResource().getURI());
             }
@@ -75,9 +78,12 @@ public class PlaziTreatmentsLoader {
             String path = TaxonUtil.generateTaxonPath(taxonMap);
             taxonMap.put(PropertyAndValueDictionary.PATH, path);
 
-            String[] pathSplit = org.apache.commons.lang3.StringUtils.split(path, CharsetConstant.SEPARATOR);
-
-            taxonMap.put(PropertyAndValueDictionary.NAME, pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "");
+            String value = TaxonUtil.generateTaxonName(taxonMap, taxonRanks, "genus", "specificEpithet", "subspecificEpithet", "species");
+            if (StringUtils.isBlank(value)) {
+                String[] pathSplit = org.apache.commons.lang3.StringUtils.split(path, CharsetConstant.SEPARATOR);
+                value = pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "";
+            }
+            taxonMap.put(PropertyAndValueDictionary.NAME, value);
 
             String pathNames = TaxonUtil.generateTaxonPathNames(taxonMap);
             taxonMap.put(PropertyAndValueDictionary.PATH_NAMES, pathNames);

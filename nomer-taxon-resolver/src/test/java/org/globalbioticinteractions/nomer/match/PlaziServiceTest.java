@@ -30,7 +30,7 @@ public class PlaziServiceTest {
         Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
