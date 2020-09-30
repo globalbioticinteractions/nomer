@@ -37,7 +37,8 @@ public class PlaziTreatmentsLoader {
                         "PREFIX dwc: <http://rs.tdwg.org/dwc/terms/>\n" +
                         "PREFIX dc: <http://purl.org/dc/elements/1.1/>\n" +
                         "SELECT * WHERE { \n" +
-                        "  ?treatment (trt:augmentsTaxonConcept|trt:definesTaxonConcept|trt:deprecates) ?tc .\n" +
+                        "  ?treatment (trt:augmentsTaxonConcept|trt:definesTaxonConcept) ?tc .\n" +
+//                        "  ?treatment (trt:augmentsTaxonConcept|trt:definesTaxonConcept|trt:deprecates) ?tc .\n" +
                         "  ?tc trt:hasTaxonName ?tn .\n" +
                         "  ?tc a fp:TaxonConcept .\n" +
                         "  ?treatment trt:publishedIn ?publication .\n" +
