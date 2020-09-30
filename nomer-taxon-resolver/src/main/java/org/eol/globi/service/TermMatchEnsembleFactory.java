@@ -16,6 +16,7 @@ import org.eol.globi.taxon.WoRMSService;
 import org.globalbioticinteractions.nomer.match.EOLTaxonService;
 import org.globalbioticinteractions.nomer.match.ITISTaxonService;
 import org.globalbioticinteractions.nomer.match.NCBITaxonService;
+import org.globalbioticinteractions.nomer.match.PlaziService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class TermMatchEnsembleFactory {
                 add(new GulfBaseService());
                 add(new AtlasOfLivingAustraliaService());
                 add(new ITISService());
+                add(new PlaziService(ctx));
             }
         };
     }

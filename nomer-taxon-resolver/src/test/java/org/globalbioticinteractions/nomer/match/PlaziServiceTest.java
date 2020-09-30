@@ -89,7 +89,7 @@ public class PlaziServiceTest {
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {
-                        put("plazi.treatments.archive", "/org/globalbioticinteractions/nomer/match/plazi/treatments.zip");
+                        put("nomer.plazi.treatments.archive", "/org/globalbioticinteractions/nomer/match/plazi/treatments.zip");
                     }
                 }.get(key);
             }

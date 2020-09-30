@@ -69,43 +69,6 @@ public class PlaziService extends PropertyEnricherSimple {
         return enriched;
     }
 
-
-    static void parseNodes(Map<String, Map<String, String>> taxonMap,
-                           Map<String, String> childParent,
-                           Map<String, String> rankIdNameMap,
-                           InputStream resourceAsStream) throws PropertyEnricherException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
-
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "|");
-                if (rowValues.length > 24) {
-                    String taxId = rowValues[0];
-                    String parentTaxId = rowValues[17];
-                    String rankKingdomId = rowValues[20];
-                    String rankId = rowValues[21];
-                    String rankKey = rankKingdomId + "-" + rankId;
-                    String rank = rankIdNameMap.getOrDefault(rankKey, rankKey);
-
-                    String completeName = rowValues[25];
-
-                    String externalId = TaxonomyProvider.ID_PREFIX_ITIS + taxId;
-                    TaxonImpl taxon = new TaxonImpl(completeName, externalId);
-                    taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
-                    taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
-                    childParent.put(
-                            TaxonomyProvider.ID_PREFIX_ITIS + taxId,
-                            TaxonomyProvider.ID_PREFIX_ITIS + parentTaxId
-                    );
-                }
-            }
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS taxon dump", e);
-        }
-    }
-
-
     private void lazyInit() throws PropertyEnricherException {
         File cacheDir = getCacheDir(this.ctx);
         if (!cacheDir.exists()) {
