@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.taxon.TaxonCacheListener;
-import org.eol.globi.taxon.TaxonImportListener;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -14,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class PlaziTreatmentsLoaderTest {
 

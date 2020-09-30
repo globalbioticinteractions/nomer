@@ -21,7 +21,7 @@ public class TermMatcherPlaziFactory implements TermMatcherFactory {
 
     @Override
     public String getDescription() {
-        return "uses plazi.org to links names to their treatments";
+        return "Lookup Plazi taxon treatment by name or id using offline-enabled database dump";
     }
 
     @Override

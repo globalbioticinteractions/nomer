@@ -9,7 +9,6 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.service.CacheServiceUtil;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
@@ -38,8 +37,6 @@ public class EOLTaxonService extends PropertyEnricherSimple {
 
     private static final Log LOG = LogFactory.getLog(EOLTaxonService.class);
     private static final String DENORMALIZED_NODES = "denormalizedNodes";
-    private static final String MERGED_NODES = "mergedNodes";
-
 
     private final TermMatcherContext ctx;
 
