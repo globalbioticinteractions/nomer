@@ -44,6 +44,7 @@ public class PlaziTreatmentsLoader {
                         "  ?tc trt:hasTaxonName ?tn .\n" +
                         "  ?tc a fp:TaxonConcept .\n" +
                         "  ?treatment trt:publishedIn ?publication .\n" +
+                        "  OPTIONAL { ?tc dwc:subSpecies ?subspecificEpithet . }\n" +
                         "  OPTIONAL { ?tc dwc:species ?specificEpithet . }\n" +
                         "  OPTIONAL { ?tc dwc:genus ?genus . }\n" +
                         "  OPTIONAL { ?tc dwc:family ?family . }\n" +
@@ -58,7 +59,15 @@ public class PlaziTreatmentsLoader {
         ResultSet rs = qexec.execSelect();
         while (rs.hasNext()) {
             final QuerySolution next = rs.next();
-            List<String> taxonRanks = Arrays.asList("?specificEpithet", "?genus", "?family", "?order", "?class", "?phylum", "?kingdom");
+            List<String> taxonRanks = Arrays.asList(
+                    "?subspecificEpithet",
+                    "?specificEpithet",
+                    "?genus",
+                    "?family",
+                    "?order",
+                    "?class",
+                    "?phylum",
+                    "?kingdom");
             Map<String, String> taxonMap =
                     taxonRanks
                             .stream()
@@ -104,11 +113,14 @@ public class PlaziTreatmentsLoader {
         String path = TaxonUtil.generateTaxonPath(taxonMap);
         taxonMap.put(PropertyAndValueDictionary.PATH, path);
 
-        String value = TaxonUtil.generateTaxonName(taxonMap, taxonRanks, "genus", "specificEpithet", "subspecificEpithet", "species");
+        String value = TaxonUtil.generateTaxonName(taxonMap, taxonRanks, "genus",
+                "specificEpithet", "subspecificEpithet", "species");
+
         if (StringUtils.isBlank(value)) {
             String[] pathSplit = StringUtils.split(path, CharsetConstant.SEPARATOR);
             value = pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "";
         }
+
         taxonMap.put(PropertyAndValueDictionary.NAME, value);
 
         String pathNames = TaxonUtil.generateTaxonPathNames(taxonMap);

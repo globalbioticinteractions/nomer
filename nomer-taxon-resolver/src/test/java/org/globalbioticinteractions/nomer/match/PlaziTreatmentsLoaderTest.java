@@ -108,5 +108,43 @@ public class PlaziTreatmentsLoaderTest {
 
     }
 
+    @Test
+    public void importWithSubspecies() throws URISyntaxException {
+        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/0B6AC9BA1E03488CE06DCAA62DC4AA02.ttl");
+        AtomicInteger counter = new AtomicInteger(0);
+
+        assertNotNull(treatmentGraph);
+
+        List<Taxon> taxa = new ArrayList<>();
+        TaxonCacheListener listener = new TaxonCacheListener() {
+
+            @Override
+            public void addTaxon(Taxon term) {
+                taxa.add(term);
+                counter.getAndIncrement();
+            }
+
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void finish() {
+
+            }
+        };
+
+        PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
+        assertThat(counter.get(), Is.is(2));
+
+        Taxon taxon = taxa.get(0);
+        assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/0B6AC9BA1E03488CE06DCAA62DC4AA02"));
+        assertThat(taxon.getName(), Is.is("Homo sapiens ferus"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Primates | Hominidae | Homo | Homo sapiens ferus"));
+        assertThat(taxon.getRank(), Is.is("species"));
+
+    }
+
 
 }
