@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.taxon.TaxonCacheListener;
 import org.eol.globi.taxon.TaxonImportListener;
 import org.hamcrest.core.Is;
 import org.junit.Test;
@@ -26,17 +27,12 @@ public class PlaziTreatmentsLoaderTest {
         assertNotNull(treatmentGraph);
 
         List<Taxon> taxa = new ArrayList<>();
-        TaxonImportListener listener = new TaxonImportListener() {
+        TaxonCacheListener listener = new TaxonCacheListener() {
 
             @Override
-            public void addTerm(Taxon term) {
+            public void addTaxon(Taxon term) {
                 taxa.add(term);
                 counter.getAndIncrement();
-            }
-
-            @Override
-            public void addTerm(String key, Taxon term) {
-
             }
 
             @Override
@@ -60,7 +56,6 @@ public class PlaziTreatmentsLoaderTest {
 
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
-
 
     }
 
