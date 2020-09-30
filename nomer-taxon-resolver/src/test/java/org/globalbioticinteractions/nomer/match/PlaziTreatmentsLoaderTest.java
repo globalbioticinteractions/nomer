@@ -50,7 +50,7 @@ public class PlaziTreatmentsLoaderTest {
         assertThat(counter.get(), Is.is(1));
 
         Taxon taxon = taxa.get(0);
-        assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977"));
+        assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
         assertThat(taxon.getName(), Is.is("Carvalhoma"));
         assertThat(taxon.getRank(), Is.is("genus"));
 
