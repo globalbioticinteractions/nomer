@@ -1,56 +1,40 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.io.input.CloseShieldInputStream;
-import org.apache.commons.io.input.ProxyInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eol.globi.data.CharsetConstant;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.TaxonImpl;
-import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.taxon.TaxonLookupServiceImpl;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
-import org.mapdb.BTreeKeySerializer;
-import org.mapdb.BTreeMap;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
 
-import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 @PropertyEnricherInfo(name = "plazi", description = "Lookup Plazi taxon treatment by name or id using offline-enabled database dump")
 public class PlaziService extends PropertyEnricherSimple {
 
     private static final Log LOG = LogFactory.getLog(PlaziService.class);
-    private static final String TREATMENTS = "treatments";
-
 
     private final TermMatcherContext ctx;
 
-    private BTreeMap<String, Map<String, String>> treatments = null;
+    private TaxonLookupServiceImpl taxonLookupService = null;
 
     public PlaziService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -67,7 +51,15 @@ public class PlaziService extends PropertyEnricherSimple {
                 }
                 lazyInit();
             }
-            Map<String, String> enrichedProperties = treatments.get(name);
+            Map<String, String> enrichedProperties;
+            try {
+                Taxon[] taxons = taxonLookupService.lookupTermsByName(name);
+                enrichedProperties = taxons != null && taxons.length > 0
+                        ? TaxonUtil.taxonToMap(taxons[0])
+                        : null;
+            } catch (IOException e) {
+                throw new PropertyEnricherException("failed to lookup [" + name + "]", e);
+            }
             enriched = enrichedProperties == null ? enriched : new TreeMap<>(enrichedProperties);
         }
         return enriched;
@@ -75,77 +67,74 @@ public class PlaziService extends PropertyEnricherSimple {
 
     private void lazyInit() throws PropertyEnricherException {
         File cacheDir = getCacheDir(this.ctx);
-        if (!cacheDir.exists()) {
+        boolean preExistingCacheDir = cacheDir.exists();
+        if (!preExistingCacheDir) {
             if (!cacheDir.mkdirs()) {
                 throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
             }
         }
 
-        File taxonomyDir = new File(cacheDir, "plazi");
-        DB db = DBMaker
-                .newFileDB(taxonomyDir)
-                .mmapFileEnableIfSupported()
-                .compressionEnable()
-                .closeOnJvmShutdown()
-                .transactionDisable()
-                .make();
+        try {
+            taxonLookupService = new TaxonLookupServiceImpl(new SimpleFSDirectory(cacheDir));
+            taxonLookupService.start();
+            if (preExistingCacheDir) {
+                LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
+            } else {
+                LOG.info("Plazi treatments importing...");
+                StopWatch watch = new StopWatch();
+                watch.start();
+                AtomicLong counter = new AtomicLong();
 
-        if (db.exists(TREATMENTS)) {
-            LOG.info("Plazi taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            treatments = db.getTreeMap(TREATMENTS);
-        } else {
-            LOG.info("Plazi treatments importing...");
-            StopWatch watch = new StopWatch();
-            watch.start();
+                try {
+                    InputStream resource = this.ctx.getResource(getArchiveUrl());
+                    TaxonCacheListener listener = new TaxonCacheListener() {
 
-            treatments = db
-                    .createTreeMap(TREATMENTS)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
+                        @Override
+                        public void start() {
 
-            try {
-                InputStream resource = this.ctx.getResource(getArchiveUrl());
-                TaxonCacheListener listener = new TaxonCacheListener() {
+                        }
 
-                    @Override
-                    public void start() {
+                        @Override
+                        public void addTaxon(Taxon taxon) {
+                            counter.incrementAndGet();
+                            taxonLookupService.addTerm(taxon);
+                        }
 
+                        @Override
+                        public void finish() {
+
+                        }
+                    };
+                    ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(resource);
+
+                    ArchiveEntry nextEntry;
+                    while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
+                        if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
+                            CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
+                            PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
+                        }
                     }
 
-                    @Override
-                    public void addTaxon(Taxon taxon) {
-                        treatments.put(taxon.getName(), TaxonUtil.taxonToMap(taxon));
-                    }
 
-                    @Override
-                    public void finish() {
-
-                    }
-                };
-                ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(resource);
-
-                ArchiveEntry nextEntry;
-                while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
-                    if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
-                        CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
-                        PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
-                    }
+                } catch (IOException e) {
+                    throw new PropertyEnricherException("failed to load archive", e);
                 }
 
 
-            } catch (IOException e) {
-                throw new PropertyEnricherException("failed to load archive", e);
+                watch.stop();
+                TaxonCacheService.logCacheLoadStats(watch.getTime(), counter.intValue(), LOG);
+                LOG.info("Plazi treatments imported.");
             }
+            taxonLookupService.finish();
 
-
-            watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), treatments.size(), LOG);
-            LOG.info("Plazi treatments imported.");
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to init enricher", e);
         }
+
     }
 
     private boolean needsInit() {
-        return treatments == null;
+        return taxonLookupService == null;
     }
 
     @Override
@@ -154,9 +143,7 @@ public class PlaziService extends PropertyEnricherSimple {
     }
 
     private File getCacheDir(TermMatcherContext ctx) {
-        File cacheDir = new File(ctx.getCacheDir(), "plazi");
-        cacheDir.mkdirs();
-        return cacheDir;
+        return new File(ctx.getCacheDir(), "plazi");
     }
 
     private String getArchiveUrl() throws PropertyEnricherException {

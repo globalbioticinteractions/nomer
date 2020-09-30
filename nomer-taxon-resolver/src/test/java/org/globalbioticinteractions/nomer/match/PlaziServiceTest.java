@@ -31,9 +31,8 @@ public class PlaziServiceTest {
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
     }
 
 
