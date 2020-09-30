@@ -66,5 +66,47 @@ public class PlaziTreatmentsLoaderTest {
 
     }
 
+    @Test
+    public void importFromRhinolophusSinicus() throws URISyntaxException {
+        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/03AF87D3C435B542FF728049FB55BB1B.ttl");
+        AtomicInteger counter = new AtomicInteger(0);
+
+        assertNotNull(treatmentGraph);
+
+        List<Taxon> taxa = new ArrayList<>();
+        TaxonCacheListener listener = new TaxonCacheListener() {
+
+            @Override
+            public void addTaxon(Taxon term) {
+                taxa.add(term);
+                counter.getAndIncrement();
+            }
+
+            @Override
+            public void start() {
+
+            }
+
+            @Override
+            public void finish() {
+
+            }
+        };
+
+        PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
+        assertThat(counter.get(), Is.is(2));
+
+        Taxon taxon = taxa.get(0);
+        assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/03AF87D3C435B542FF728049FB55BB1B"));
+        assertThat(taxon.getName(), Is.is("Rhinolophus sinicus"));
+        assertThat(taxon.getRank(), Is.is("species"));
+
+        Taxon secondTaxon = taxa.get(1);
+        assertThat(secondTaxon.getExternalId(), Is.is("doi:10.3161/150811009X465703"));
+        assertThat(secondTaxon.getName(), Is.is("Rhinolophus sinicus"));
+        assertThat(secondTaxon.getRank(), Is.is("species"));
+
+    }
+
 
 }
