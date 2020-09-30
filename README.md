@@ -47,8 +47,9 @@ Nomer is a stand-alone java application, packaged in a jarfile. You can build yo
 
 On linux and mac, you can use the following script to install nomer:
 ```console
-sudo sh -c '(echo "#!/usr/bin/env sh" && curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.1.15/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer' && nomer version
+sudo sh -c '(echo "#!/usr/bin/env sh" && curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.1.16/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer' && nomer version
 ```
+:warning: Please review the script before running it.
 
 With this, you can now run things like ```nomer version``` instead of ```java -jar [some long dir path]/nomer.jar version``` . 
 
