@@ -12,11 +12,13 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheListener;
+import org.globalbioticinteractions.doi.DOI;
+import org.globalbioticinteractions.doi.MalformedDOIException;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -70,32 +72,50 @@ public class PlaziTreatmentsLoader {
                             .filter(x -> org.apache.commons.lang3.StringUtils.isNoneBlank(x.getValue()))
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-            RDFNode rdfNode = next.get("?treatment");
-            if (rdfNode != null && rdfNode.isURIResource()) {
-                taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, rdfNode.asResource().getURI());
-            }
-
-            String path = TaxonUtil.generateTaxonPath(taxonMap);
-            taxonMap.put(PropertyAndValueDictionary.PATH, path);
-
-            String value = TaxonUtil.generateTaxonName(taxonMap, taxonRanks, "genus", "specificEpithet", "subspecificEpithet", "species");
-            if (StringUtils.isBlank(value)) {
-                String[] pathSplit = org.apache.commons.lang3.StringUtils.split(path, CharsetConstant.SEPARATOR);
-                value = pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "";
-            }
-            taxonMap.put(PropertyAndValueDictionary.NAME, value);
-
-            String pathNames = TaxonUtil.generateTaxonPathNames(taxonMap);
-            taxonMap.put(PropertyAndValueDictionary.PATH_NAMES, pathNames);
-
-            String[] split = org.apache.commons.lang3.StringUtils.split(pathNames, CharsetConstant.SEPARATOR);
-            taxonMap.put(PropertyAndValueDictionary.RANK, split.length > 0 ? split[split.length - 1] : "");
-
-
-            Taxon taxon = TaxonUtil.mapToTaxon(taxonMap);
-            listener.addTaxon(taxon);
-
+            populateTaxa(taxonRanks, taxonMap);
+            addTaxonByPlaziId(listener, next, taxonMap);
+            addTaxonByPublicationDoi(listener, next, taxonMap);
         }
+    }
+
+    private static void addTaxonByPublicationDoi(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+        RDFNode pubNode = next.get("?publication");
+        if (pubNode != null && pubNode.isURIResource()) {
+            try {
+                DOI pubDoi = DOI.create(URI.create(pubNode.asResource().getURI()));
+                taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, pubDoi.toPrintableDOI());
+                listener.addTaxon(TaxonUtil.mapToTaxon(taxonMap));
+            } catch (MalformedDOIException e) {
+                // ignore non-DOIs
+            }
+        }
+    }
+
+    private static void addTaxonByPlaziId(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+        RDFNode pubNode1 = next.get("?treatment");
+        if (pubNode1 != null && pubNode1.isURIResource()) {
+            String externalId1 = pubNode1.asResource().getURI();
+            taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, externalId1);
+            listener.addTaxon(TaxonUtil.mapToTaxon(taxonMap));
+        }
+    }
+
+    private static void populateTaxa(List<String> taxonRanks, Map<String, String> taxonMap) {
+        String path = TaxonUtil.generateTaxonPath(taxonMap);
+        taxonMap.put(PropertyAndValueDictionary.PATH, path);
+
+        String value = TaxonUtil.generateTaxonName(taxonMap, taxonRanks, "genus", "specificEpithet", "subspecificEpithet", "species");
+        if (StringUtils.isBlank(value)) {
+            String[] pathSplit = StringUtils.split(path, CharsetConstant.SEPARATOR);
+            value = pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "";
+        }
+        taxonMap.put(PropertyAndValueDictionary.NAME, value);
+
+        String pathNames = TaxonUtil.generateTaxonPathNames(taxonMap);
+        taxonMap.put(PropertyAndValueDictionary.PATH_NAMES, pathNames);
+
+        String[] split = StringUtils.split(pathNames, CharsetConstant.SEPARATOR);
+        taxonMap.put(PropertyAndValueDictionary.RANK, split.length > 0 ? split[split.length - 1] : "");
     }
 
 }

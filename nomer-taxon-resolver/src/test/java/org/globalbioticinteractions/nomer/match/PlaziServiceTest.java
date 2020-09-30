@@ -4,12 +4,15 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.globalbioticinteractions.doi.DOI;
+import org.globalbioticinteractions.doi.MalformedDOIException;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,6 +30,62 @@ public class PlaziServiceTest {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl("Carvalhoma", null);
+        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+    }
+
+
+    @Test
+    public void enrichById() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl(null, "http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B");
+        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+    }
+
+    @Test
+    public void enrichByDOI() throws PropertyEnricherException, MalformedDOIException {
+        PropertyEnricher service = createService();
+
+        DOI doi = DOI.create(URI.create("http://doi.org/10.5281/zenodo.3854772"));
+        String externalId = doi.toPrintableDOI();
+        assertThat(externalId, is("doi:10.5281/zenodo.3854772"));
+        TaxonImpl taxon = new TaxonImpl(null, externalId);
+        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("doi:10.5281/zenodo.3854772"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+    }
+
+    @Test
+    public void enrichByShortId() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl(null, "PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B");
+        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+    }
+
+    @Test
+    public void enrichByDoi() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl(null, "PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B");
         Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));

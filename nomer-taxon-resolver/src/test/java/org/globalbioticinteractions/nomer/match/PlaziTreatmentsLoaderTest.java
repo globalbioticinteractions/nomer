@@ -20,8 +20,7 @@ public class PlaziTreatmentsLoaderTest {
 
     @Test
     public void importFromFile() throws URISyntaxException {
-        InputStream resourceAsStream = getClass().getResourceAsStream("plazi/000087F6E320FF95FF7EFDC1FAE4FA7B.ttl");
-        InputStream treatmentGraph = resourceAsStream;
+        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/000087F6E320FF95FF7EFDC1FAE4FA7B.ttl");
         AtomicInteger counter = new AtomicInteger(0);
 
         assertNotNull(treatmentGraph);
@@ -47,7 +46,7 @@ public class PlaziTreatmentsLoaderTest {
         };
 
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
-        assertThat(counter.get(), Is.is(1));
+        assertThat(counter.get(), Is.is(2));
 
         Taxon taxon = taxa.get(0);
         assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
@@ -56,6 +55,14 @@ public class PlaziTreatmentsLoaderTest {
 
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
+
+        Taxon secondTaxon = taxa.get(1);
+        assertThat(secondTaxon.getExternalId(), Is.is("doi:10.5281/zenodo.3854772"));
+        assertThat(secondTaxon.getName(), Is.is("Carvalhoma"));
+        assertThat(secondTaxon.getRank(), Is.is("genus"));
+
+        assertThat(secondTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
+        assertThat(secondTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
 
     }
 
