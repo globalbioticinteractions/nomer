@@ -112,50 +112,7 @@ public class PlaziService implements PropertyEnricher {
             if (preExistingCacheDir) {
                 LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
             } else {
-                LOG.info("Plazi treatments importing...");
-                StopWatch watch = new StopWatch();
-                watch.start();
-                AtomicLong counter = new AtomicLong();
-
-                try {
-                    InputStream resource = this.ctx.getResource(getArchiveUrl());
-                    TaxonCacheListener listener = new TaxonCacheListener() {
-
-                        @Override
-                        public void start() {
-
-                        }
-
-                        @Override
-                        public void addTaxon(Taxon taxon) {
-                            counter.incrementAndGet();
-                            taxonLookupService.addTerm(taxon);
-                        }
-
-                        @Override
-                        public void finish() {
-
-                        }
-                    };
-                    ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(resource);
-
-                    ArchiveEntry nextEntry;
-                    while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
-                        if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
-                            CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
-                            PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
-                        }
-                    }
-
-
-                } catch (IOException e) {
-                    throw new PropertyEnricherException("failed to load archive", e);
-                }
-
-
-                watch.stop();
-                TaxonCacheService.logCacheLoadStats(watch.getTime(), counter.intValue(), LOG);
-                LOG.info("Plazi treatments imported.");
+                indexTreatments();
             }
             taxonLookupService.finish();
 
@@ -163,6 +120,53 @@ public class PlaziService implements PropertyEnricher {
             throw new PropertyEnricherException("failed to init enricher", e);
         }
 
+    }
+
+    private void indexTreatments() throws PropertyEnricherException {
+        LOG.info("Indexing Plazi treatments ...");
+        StopWatch watch = new StopWatch();
+        watch.start();
+        AtomicLong counter = new AtomicLong();
+
+        try {
+            InputStream resource = this.ctx.getResource(getArchiveUrl());
+            TaxonCacheListener listener = new TaxonCacheListener() {
+
+                @Override
+                public void start() {
+
+                }
+
+                @Override
+                public void addTaxon(Taxon taxon) {
+                    counter.incrementAndGet();
+                    taxonLookupService.addTerm(taxon);
+                }
+
+                @Override
+                public void finish() {
+
+                }
+            };
+            ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(resource);
+
+            ArchiveEntry nextEntry;
+            while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
+                if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
+                    CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
+                    PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
+                }
+            }
+
+
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to load archive", e);
+        }
+
+
+        watch.stop();
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), counter.intValue(), LOG);
+        LOG.info("Indexing Plazi treatments complete.");
     }
 
     private boolean needsInit() {
