@@ -9,16 +9,20 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.store.SimpleFSDirectory;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TaxonLookupServiceImpl;
-import org.eol.globi.util.ExternalIdUtil;
+import org.eol.globi.taxon.TermMatchListener;
+import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -26,14 +30,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @PropertyEnricherInfo(name = "plazi", description = "Lookup Plazi taxon treatment by name or id using offline-enabled database dump")
-public class PlaziService implements PropertyEnricher {
+public class PlaziService implements TermMatcher {
 
     private static final Log LOG = LogFactory.getLog(PlaziService.class);
 
@@ -46,32 +49,33 @@ public class PlaziService implements PropertyEnricher {
     }
 
     @Override
-    public Map<String, String> enrichFirstMatch(Map<String, String> properties) throws PropertyEnricherException {
-        List<Map<String, String>> enrichedList = enrichAllMatches(properties);
-        return enrichedList.get(0);
-    }
-
-    @Override
-    public List<Map<String, String>> enrichAllMatches(Map<String, String> properties) throws PropertyEnricherException {
-        Map<String, String> enriched = new TreeMap<>(properties);
-        Taxon[] taxa = lookupByName(properties);
-
-        List<Map<String, String>> enrichedList = new ArrayList<>();
-        if (taxa == null || taxa.length == 0) {
-            enrichedList.add(enriched);
-        } else {
-            for (Taxon taxon : taxa) {
-                enrichedList.add(new TreeMap<>(TaxonUtil.taxonToMap(taxon)));
+    public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+        for (Term term : terms) {
+            Taxon[] taxons = lookupLinkedTerms(term);
+            if (taxons == null || taxons.length == 0) {
+                termMatchListener.foundTaxonForTerm(
+                        null,
+                        term,
+                        new TaxonImpl(term.getName(), term.getId()),
+                        NameType.NONE
+                );
+            } else {
+                for (Taxon taxon : taxons) {
+                    Taxon taxonToBeSubmitted = taxon;
+                    if (StringUtils.startsWith(taxon.getExternalId(), "doi:")
+                            || StringUtils.startsWith(taxon.getExternalId(), "http://treatment.plazi.org/id/")) {
+                        taxonToBeSubmitted = new TaxonImpl(taxon.getExternalId(), taxon.getExternalId());
+                        taxonToBeSubmitted.setPath(taxon.getExternalId());
+                    }
+                    termMatchListener.foundTaxonForTerm(null, term, taxonToBeSubmitted, NameType.SAME_AS);
+                }
             }
         }
-        return enrichedList;
     }
 
-    private Taxon[] lookupByName(Map<String, String> properties) throws PropertyEnricherException {
+    private Taxon[] lookupLinkedTerms(Term term) throws PropertyEnricherException {
         Taxon[] taxa = null;
-        String name = properties.get(PropertyAndValueDictionary.NAME);
-        String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.isNotBlank(name) || StringUtils.isNotBlank(externalId)) {
+        if (StringUtils.isNotBlank(term.getName()) || StringUtils.isNotBlank(term.getId())) {
             if (needsInit()) {
                 if (ctx == null) {
                     throw new PropertyEnricherException("context needed to initialize");
@@ -80,17 +84,18 @@ public class PlaziService implements PropertyEnricher {
             }
 
             try {
-                if (StringUtils.isNotBlank(externalId)) {
-                    if (StringUtils.startsWith(externalId, "PLAZI:")) {
-                        externalId = StringUtils.replace(externalId, "PLAZI:", "http://treatment.plazi.org/id/");
+                String externalId = term.getId();
+                if (StringUtils.isNotBlank(term.getId())) {
+                    if (StringUtils.startsWith(term.getId(), "PLAZI:")) {
+                        externalId = StringUtils.replace(term.getId(), "PLAZI:", "http://treatment.plazi.org/id/");
                     }
                     taxa = taxonLookupService.lookupTermsById(externalId);
                 }
-                if ((taxa == null || taxa.length == 0) && StringUtils.isNotBlank(name)) {
-                    taxa = taxonLookupService.lookupTermsByName(name);
+                if ((taxa == null || taxa.length == 0) && StringUtils.isNotBlank(term.getName())) {
+                    taxa = taxonLookupService.lookupTermsByName(term.getName());
                 }
             } catch (IOException e) {
-                throw new PropertyEnricherException("failed to lookup [" + name + "]", e);
+                throw new PropertyEnricherException("failed to lookup [" + term.getName() + "]", e);
             }
         }
         return taxa;
@@ -171,12 +176,6 @@ public class PlaziService implements PropertyEnricher {
 
     private boolean needsInit() {
         return taxonLookupService == null;
-    }
-
-
-    @Override
-    public void shutdown() {
-
     }
 
     private File getCacheDir(TermMatcherContext ctx) {

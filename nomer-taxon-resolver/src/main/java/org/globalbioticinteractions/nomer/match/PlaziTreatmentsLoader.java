@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.globalbioticinteractions.doi.DOI;
@@ -60,13 +60,15 @@ public class PlaziTreatmentsLoader {
         ResultSet rs = qexec.execSelect();
         while (rs.hasNext()) {
             final QuerySolution next = rs.next();
-            addTaxonByPlaziId(listener, next);
-            addTaxonByPublicationDoi(listener, next);
-            addTaxonConcept(listener, next);
+            Taxon addedTaxon = addTaxonConcept(listener, next);
+            if (addedTaxon != null) {
+                addTaxonByPlaziId(listener, next, addedTaxon);
+                addTaxonByPublicationDoi(listener, next, addedTaxon);
+            }
         }
     }
 
-    private static void addTaxonConcept(TaxonCacheListener listener, QuerySolution next) {
+    private static Taxon addTaxonConcept(TaxonCacheListener listener, QuerySolution next) {
         List<String> taxonRanks = Arrays.asList(
                 "?subspecificEpithet",
                 "?specificEpithet",
@@ -90,41 +92,46 @@ public class PlaziTreatmentsLoader {
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         populateTaxa(taxonRanks, taxonMap);
-        addTaxonByTaxonConcept(listener, next, taxonMap);
+        return addTaxonByTaxonConcept(listener, next, taxonMap);
     }
 
-    private static void addTaxonByPublicationDoi(TaxonCacheListener listener, QuerySolution next) {
+    private static void addTaxonByPublicationDoi(TaxonCacheListener listener, QuerySolution next, Taxon some_name) {
         RDFNode pubNode = next.get("?publication");
         if (pubNode != null && pubNode.isURIResource()) {
             try {
                 DOI pubDoi = DOI.create(URI.create(pubNode.asResource().getURI()));
                 String doiString = pubDoi.toPrintableDOI();
-                addTermForPubId(listener, doiString);
+                Taxon copy = TaxonUtil.copy(some_name);
+                copy.setExternalId(doiString);
+                addTermForPubId(listener, copy);
             } catch (MalformedDOIException e) {
                 // ignore non-DOIs
             }
         }
     }
 
-    private static void addTermForPubId(TaxonCacheListener listener, String doiString) {
-        TaxonImpl taxon = new TaxonImpl(doiString, doiString);
-        taxon.setPath(doiString);
-        listener.addTaxon(taxon);
+    private static void addTermForPubId(TaxonCacheListener listener, Taxon term) {
+        listener.addTaxon(term);
     }
 
-    private static void addTaxonByTaxonConcept(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+    private static Taxon addTaxonByTaxonConcept(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+        Taxon taxonToBeAdded = null;
         RDFNode pubNode = next.get("?tc");
         if (pubNode != null && pubNode.isURIResource()) {
             taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, pubNode.asResource().getURI());
-            listener.addTaxon(TaxonUtil.mapToTaxon(taxonMap));
+            taxonToBeAdded = TaxonUtil.mapToTaxon(taxonMap);
+            listener.addTaxon(taxonToBeAdded);
         }
+        return taxonToBeAdded;
     }
 
-    private static void addTaxonByPlaziId(TaxonCacheListener listener, QuerySolution next) {
+    private static void addTaxonByPlaziId(TaxonCacheListener listener, QuerySolution next, Taxon name) {
         RDFNode pubNode1 = next.get("?treatment");
         if (pubNode1 != null && pubNode1.isURIResource()) {
             String externalId = pubNode1.asResource().getURI();
-            addTermForPubId(listener, externalId);
+            Taxon copy = TaxonUtil.copy(name);
+            copy.setExternalId(externalId);
+            addTermForPubId(listener, copy);
         }
     }
 

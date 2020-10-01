@@ -1,9 +1,15 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.TermMatchListener;
+import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.doi.DOI;
 import org.globalbioticinteractions.doi.MalformedDOIException;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -13,10 +19,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.eol.globi.service.TaxonUtil.taxonToMap;
 import static org.hamcrest.core.Is.is;
@@ -26,96 +36,128 @@ import static org.junit.Assert.assertThat;
 public class PlaziServiceTest {
 
     @Test
-    public void enrich() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
+    public void match() throws PropertyEnricherException {
 
-        TaxonImpl taxon = new TaxonImpl("Carvalhoma", null);
-        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+        TermMatcher service = createService();
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+        List<Taxon> found = new ArrayList<>();
+        service.match(
+                Collections.singletonList(new TermImpl(null, "Carvalhoma")), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                        found.add(taxon);
+                    }
+                });
+
+
+        assertThat(found.size(), is(3));
+        Taxon taxon = found.get(0);
+        assertThat(taxon.getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
+        assertThat(taxon.getExternalId(), is("http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977"));
+        assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family | genus"));
+        assertThat(taxon.getName(), is("Carvalhoma"));
     }
 
 
     @Test
     public void enrichById() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
+        TermMatcher service = createService();
 
-        TaxonImpl taxon = new TaxonImpl(null, "http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B");
-        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+        List<Taxon> found = new ArrayList<>();
+        service.match(
+                Collections.singletonList(new TermImpl("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B", null)), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                        found.add(taxon);
+                    }
+                });
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
-    }
 
-    @Test
-    public void enrichByDOI() throws PropertyEnricherException, MalformedDOIException {
-        PropertyEnricher service = createService();
-
-        DOI doi = DOI.create(URI.create("http://doi.org/10.5281/zenodo.3854772"));
-        String externalId = doi.toPrintableDOI();
-        assertThat(externalId, is("doi:10.5281/zenodo.3854772"));
-        TaxonImpl taxon = new TaxonImpl(null, externalId);
-        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
-
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("doi:10.5281/zenodo.3854772"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+        assertThat(found.size(), is(1));
+        Taxon taxon = found.get(0);
+        String expectedTreatment = "http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B";
+        assertThat(taxon.getExternalId(), is(expectedTreatment));
+        assertThat(taxon.getPath(), is(expectedTreatment));
+        assertThat(taxon.getName(), is(expectedTreatment));
     }
 
     @Test
     public void enrichByShortId() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
 
-        TaxonImpl taxon = new TaxonImpl(null, "PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B");
-        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+        TermMatcher service = createService();
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+        List<Taxon> found = new ArrayList<>();
+        service.match(
+                Collections.singletonList(new TermImpl("PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B", null)), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                        found.add(taxon);
+                    }
+                });
+
+
+        Taxon taxon1 = found.get(0);
+        String expectedTreatmentId = "http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B";
+        assertThat(taxon1.getExternalId(), is(expectedTreatmentId));
+        assertThat(taxon1.getPath(), is(expectedTreatmentId));
+        assertThat(taxon1.getName(), is(expectedTreatmentId));
+        assertThat(taxon1.getPathNames(), is(nullValue()));
     }
 
     @Test
     public void enrichByDoi() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
+        TermMatcher service = createService();
 
-        TaxonImpl taxon = new TaxonImpl(null, "PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B");
-        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+        List<Taxon> found = new ArrayList<>();
+        service.match(
+                Collections.singletonList(new TermImpl("doi:10.5281/zenodo.3854772", null)),
+                (aLong, term, taxon, nameType) -> found.add(taxon));
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Carvalhoma"));
+
+        assertThat(found.size(), is(1));
+        Taxon taxon1 = found.get(0);
+        assertThat(taxon1.getPath(), is("doi:10.5281/zenodo.3854772"));
+        assertThat(taxon1.getExternalId(), is("doi:10.5281/zenodo.3854772"));
+        assertThat(taxon1.getPathNames(), is(nullValue()));
+        assertThat(taxon1.getName(), is("doi:10.5281/zenodo.3854772"));
     }
 
 
     @Test
     public void enrichNoMatch() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
+        TermMatcher service = createService();
 
-        Map<String, String> enriched = service.enrichFirstMatch(
-                taxonToMap(new TaxonImpl(null, "ITIS:999999999")));
+        AtomicInteger counter = new AtomicInteger();
+        service.match(
+                Collections.singletonList(new TermImpl("ITIS:999999999", null)), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                        counter.getAndIncrement();
+                        assertThat(nameType, is(NameType.NONE));
+                    }
+                });
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
+        assertThat(counter.get(), is(1));
     }
 
     @Test
     public void enrichPrefixMismatch() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
+        TermMatcher service = createService();
 
-        Map<String, String> enriched = service.enrichFirstMatch(
-                taxonToMap(new TaxonImpl(null, "FOO:2")));
+        AtomicInteger counter = new AtomicInteger();
+        service.match(
+                Collections.singletonList(new TermImpl("FOO:2", null)), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                        counter.getAndIncrement();
+                        assertThat(nameType, is(NameType.NONE));
+                    }
+                });
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
+        assertThat(counter.get(), is(1));
     }
 
-    private PropertyEnricher createService() {
+    private TermMatcher createService() {
         File file = new File("target/cache" + UUID.randomUUID());
         return new PlaziService(new TermMatcherContext() {
             @Override

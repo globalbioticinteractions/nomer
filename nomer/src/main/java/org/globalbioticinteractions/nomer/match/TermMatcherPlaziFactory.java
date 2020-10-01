@@ -26,25 +26,6 @@ public class TermMatcherPlaziFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        final PlaziService plaziService = new PlaziService(ctx);
-
-        return new TermMatcher() {
-            @Override
-            public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                for (Term term : terms) {
-                    List<Map<String, String>> linkedTreatments = plaziService
-                            .enrichAllMatches(TaxonUtil.taxonToMap(new TaxonImpl(term.getName(), term.getId())));
-
-                    for (Map<String, String> linkedTreatment : linkedTreatments) {
-                        termMatchListener.foundTaxonForTerm(
-                                null,
-                                term,
-                                TaxonUtil.mapToTaxon(linkedTreatment),
-                                NameType.SAME_AS);
-
-                    }
-                }
-            }
-        };
+        return new PlaziService(ctx);
     }
 }

@@ -46,17 +46,15 @@ public class PlaziTreatmentsLoaderTest {
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
         assertThat(counter.get(), Is.is(3));
 
-        Taxon taxon = taxa.get(0);
+        Taxon taxon = taxa.get(1);
         assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(taxon.getPath(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-        assertThat(taxon.getName(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
-
-        taxon = taxa.get(1);
-        assertThat(taxon.getExternalId(), Is.is("doi:10.5281/zenodo.3854772"));
-        assertThat(taxon.getName(), Is.is("doi:10.5281/zenodo.3854772"));
-        assertThat(taxon.getPath(), Is.is("doi:10.5281/zenodo.3854772"));
+        assertThat(taxon.getName(), Is.is("Carvalhoma"));
 
         taxon = taxa.get(2);
+        assertThat(taxon.getExternalId(), Is.is("doi:10.5281/zenodo.3854772"));
+        assertThat(taxon.getName(), Is.is("Carvalhoma"));
+
+        taxon = taxa.get(0);
         assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977"));
         assertThat(taxon.getName(), Is.is("Carvalhoma"));
         assertThat(taxon.getRank(), Is.is("genus"));
@@ -97,15 +95,13 @@ public class PlaziTreatmentsLoaderTest {
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
         assertThat(counter.get(), Is.is(3));
 
-        Taxon taxon = taxa.get(0);
+        Taxon taxon = taxa.get(1);
         assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/03AF87D3C435B542FF728049FB55BB1B"));
         assertThat(taxon.getName(), Is.is("Rhinolophus sinicus"));
-        assertThat(taxon.getRank(), Is.is("species"));
 
-        Taxon secondTaxon = taxa.get(1);
+        Taxon secondTaxon = taxa.get(2);
         assertThat(secondTaxon.getExternalId(), Is.is("doi:10.3161/150811009X465703"));
         assertThat(secondTaxon.getName(), Is.is("Rhinolophus sinicus"));
-        assertThat(secondTaxon.getRank(), Is.is("species"));
 
     }
 
@@ -139,7 +135,7 @@ public class PlaziTreatmentsLoaderTest {
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
         assertThat(counter.get(), Is.is(3));
 
-        Taxon taxon = taxa.get(2);
+        Taxon taxon = taxa.get(0);
         assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Homo_sapiens_ferus_Linnaeus_1758"));
         assertThat(taxon.getName(), Is.is("Homo sapiens ferus"));
         assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Primates | Hominidae | Homo | Homo sapiens ferus"));
