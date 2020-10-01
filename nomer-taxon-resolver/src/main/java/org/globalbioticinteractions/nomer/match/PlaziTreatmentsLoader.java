@@ -12,6 +12,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.globalbioticinteractions.doi.DOI;
@@ -59,53 +60,71 @@ public class PlaziTreatmentsLoader {
         ResultSet rs = qexec.execSelect();
         while (rs.hasNext()) {
             final QuerySolution next = rs.next();
-            List<String> taxonRanks = Arrays.asList(
-                    "?subspecificEpithet",
-                    "?specificEpithet",
-                    "?genus",
-                    "?family",
-                    "?order",
-                    "?class",
-                    "?phylum",
-                    "?kingdom");
-            Map<String, String> taxonMap =
-                    taxonRanks
-                            .stream()
-                            .map(key -> {
-                                RDFNode value = next.get(key);
-                                String valueString = value != null && value.isLiteral()
-                                        ? value.asLiteral().getLexicalForm()
-                                        : "";
-                                return new AbstractMap.SimpleEntry<>(key.substring(1), valueString);
-                            })
-                            .filter(x -> org.apache.commons.lang3.StringUtils.isNoneBlank(x.getValue()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-            populateTaxa(taxonRanks, taxonMap);
-            addTaxonByPlaziId(listener, next, taxonMap);
-            addTaxonByPublicationDoi(listener, next, taxonMap);
+            addTaxonByPlaziId(listener, next);
+            addTaxonByPublicationDoi(listener, next);
+            addTaxonConcept(listener, next);
         }
     }
 
-    private static void addTaxonByPublicationDoi(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+    private static void addTaxonConcept(TaxonCacheListener listener, QuerySolution next) {
+        List<String> taxonRanks = Arrays.asList(
+                "?subspecificEpithet",
+                "?specificEpithet",
+                "?genus",
+                "?family",
+                "?order",
+                "?class",
+                "?phylum",
+                "?kingdom");
+        Map<String, String> taxonMap =
+                taxonRanks
+                        .stream()
+                        .map(key -> {
+                            RDFNode value = next.get(key);
+                            String valueString = value != null && value.isLiteral()
+                                    ? value.asLiteral().getLexicalForm()
+                                    : "";
+                            return new AbstractMap.SimpleEntry<>(key.substring(1), valueString);
+                        })
+                        .filter(x -> StringUtils.isNoneBlank(x.getValue()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        populateTaxa(taxonRanks, taxonMap);
+        addTaxonByTaxonConcept(listener, next, taxonMap);
+    }
+
+    private static void addTaxonByPublicationDoi(TaxonCacheListener listener, QuerySolution next) {
         RDFNode pubNode = next.get("?publication");
         if (pubNode != null && pubNode.isURIResource()) {
             try {
                 DOI pubDoi = DOI.create(URI.create(pubNode.asResource().getURI()));
-                taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, pubDoi.toPrintableDOI());
-                listener.addTaxon(TaxonUtil.mapToTaxon(taxonMap));
+                String doiString = pubDoi.toPrintableDOI();
+                addTermForPubId(listener, doiString);
             } catch (MalformedDOIException e) {
                 // ignore non-DOIs
             }
         }
     }
 
-    private static void addTaxonByPlaziId(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+    private static void addTermForPubId(TaxonCacheListener listener, String doiString) {
+        TaxonImpl taxon = new TaxonImpl(doiString, doiString);
+        taxon.setPath(doiString);
+        listener.addTaxon(taxon);
+    }
+
+    private static void addTaxonByTaxonConcept(TaxonCacheListener listener, QuerySolution next, Map<String, String> taxonMap) {
+        RDFNode pubNode = next.get("?tc");
+        if (pubNode != null && pubNode.isURIResource()) {
+            taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, pubNode.asResource().getURI());
+            listener.addTaxon(TaxonUtil.mapToTaxon(taxonMap));
+        }
+    }
+
+    private static void addTaxonByPlaziId(TaxonCacheListener listener, QuerySolution next) {
         RDFNode pubNode1 = next.get("?treatment");
         if (pubNode1 != null && pubNode1.isURIResource()) {
-            String externalId1 = pubNode1.asResource().getURI();
-            taxonMap.put(PropertyAndValueDictionary.EXTERNAL_ID, externalId1);
-            listener.addTaxon(TaxonUtil.mapToTaxon(taxonMap));
+            String externalId = pubNode1.asResource().getURI();
+            addTermForPubId(listener, externalId);
         }
     }
 

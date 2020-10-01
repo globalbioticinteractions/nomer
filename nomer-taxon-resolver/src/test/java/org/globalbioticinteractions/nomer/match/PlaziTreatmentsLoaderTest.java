@@ -44,23 +44,26 @@ public class PlaziTreatmentsLoaderTest {
         };
 
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
-        assertThat(counter.get(), Is.is(2));
+        assertThat(counter.get(), Is.is(3));
 
         Taxon taxon = taxa.get(0);
         assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
+        assertThat(taxon.getPath(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
+        assertThat(taxon.getName(), Is.is("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B"));
+
+        taxon = taxa.get(1);
+        assertThat(taxon.getExternalId(), Is.is("doi:10.5281/zenodo.3854772"));
+        assertThat(taxon.getName(), Is.is("doi:10.5281/zenodo.3854772"));
+        assertThat(taxon.getPath(), Is.is("doi:10.5281/zenodo.3854772"));
+
+        taxon = taxa.get(2);
+        assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977"));
         assertThat(taxon.getName(), Is.is("Carvalhoma"));
         assertThat(taxon.getRank(), Is.is("genus"));
 
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
 
-        Taxon secondTaxon = taxa.get(1);
-        assertThat(secondTaxon.getExternalId(), Is.is("doi:10.5281/zenodo.3854772"));
-        assertThat(secondTaxon.getName(), Is.is("Carvalhoma"));
-        assertThat(secondTaxon.getRank(), Is.is("genus"));
-
-        assertThat(secondTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hemiptera | Miridae | Carvalhoma"));
-        assertThat(secondTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
 
     }
 
@@ -92,7 +95,7 @@ public class PlaziTreatmentsLoaderTest {
         };
 
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
-        assertThat(counter.get(), Is.is(2));
+        assertThat(counter.get(), Is.is(3));
 
         Taxon taxon = taxa.get(0);
         assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/03AF87D3C435B542FF728049FB55BB1B"));
@@ -134,10 +137,10 @@ public class PlaziTreatmentsLoaderTest {
         };
 
         PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
-        assertThat(counter.get(), Is.is(2));
+        assertThat(counter.get(), Is.is(3));
 
-        Taxon taxon = taxa.get(0);
-        assertThat(taxon.getExternalId(), Is.is("http://treatment.plazi.org/id/0B6AC9BA1E03488CE06DCAA62DC4AA02"));
+        Taxon taxon = taxa.get(2);
+        assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Homo_sapiens_ferus_Linnaeus_1758"));
         assertThat(taxon.getName(), Is.is("Homo sapiens ferus"));
         assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Primates | Hominidae | Homo | Homo sapiens ferus"));
         assertThat(taxon.getRank(), Is.is("species"));
