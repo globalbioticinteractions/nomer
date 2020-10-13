@@ -18,13 +18,13 @@ import static org.junit.Assert.assertThat;
 public class NBNServiceTest {
 
     @Test
-    public void lookupByCode() throws IOException, PropertyEnricherException {
+    public void lookupByCode() throws PropertyEnricherException {
         Map<String, String> enriched = getTaxonInfo("NHMSYS0020190380");
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Abacarus hystrix"));
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("NBN:NHMSYS0020190380"));
-        assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Biota | Animalia | Arthropoda | Chelicerata | Arachnida | Prostigmata | Eriophyidae | Abacarus | Abacarus hystrix"));
-        assertThat(enriched.get(PropertyAndValueDictionary.PATH_NAMES), is("unranked | kingdom | phylum | subphylum | class | order | family | genus | species"));
-        assertThat(enriched.get(PropertyAndValueDictionary.PATH_IDS), is("NBN:NHMSYS0021048735 | NBN:NBNSYS0100001342 | NBN:NHMSYS0020470198 | NBN:NHMSYS0000842068 | NBN:NHMSYS0021049469 | NBN:NBNSYS0000160799 | NBN:NBNSYS0000159970 | NBN:NHMSYS0020190379 | NBN:NHMSYS0020190380"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Biota | Animalia | Arthropoda | Chelicerata | Arachnida | Acari | Acariformes | Trombidiformes | Prostigmata | Eupodides | Eriophyoidea | Eriophyidae | Abacarus | Abacarus hystrix"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH_NAMES), is("unranked | kingdom | phylum | subphylum | class | subclass | superorder | order | suborder | supercohort | superfamily | family | genus | species"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH_IDS), is("NBN:NHMSYS0021048735 | NBN:NBNSYS0100001342 | NBN:NHMSYS0020470198 | NBN:NHMSYS0000842068 | NBN:NHMSYS0021049469 | NBN:NHMSYS0021049470 | NBN:NHMSYS0021036320 | NBN:NHMSYS0000066851 | NBN:NHMSYS0000841382 | NBN:NHMSYS0021284239 | NBN:NHMSYS0020190562 | NBN:NBNSYS0000159970 | NBN:NHMSYS0020190379 | NBN:NHMSYS0020190380"));
     }
 
     @Test
