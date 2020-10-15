@@ -30,6 +30,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherPMDID2DOIFactory());
         add(new TermMatcherWikidataFactory());
         add(new TermMatcherPlaziFactory());
+        add(new TermMatcherOpenBiodivFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

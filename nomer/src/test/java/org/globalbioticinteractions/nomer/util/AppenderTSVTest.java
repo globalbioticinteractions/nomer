@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.TaxonImpl;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.stream.Stream;
 
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class AppenderTSVTest {
 
