@@ -85,7 +85,7 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
 
     public void init(InputStream resourceStream) throws IOException {
         LOG.info("[" + UKSISuggestionService.class.getSimpleName() + "] instantiating...");
-        service = new TaxonLookupServiceImpl();
+        service = new TaxonLookupServiceImpl(null);
         service.start();
         File tmpFile = null;
         try {

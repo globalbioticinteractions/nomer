@@ -28,7 +28,7 @@ public class TaxonomyImporter {
     public TaxonomyImporter(TaxonParser taxonParser, TaxonReaderFactory taxonReaderFactory) {
         this.parser = taxonParser;
         this.taxonReaderFactory = taxonReaderFactory;
-        TaxonLookupServiceImpl service = new TaxonLookupServiceImpl();
+        TaxonLookupServiceImpl service = new TaxonLookupServiceImpl(null);
         this.taxonLookupService = service;
         this.taxonImportListener = service;
         stopwatch = new StopWatch();
