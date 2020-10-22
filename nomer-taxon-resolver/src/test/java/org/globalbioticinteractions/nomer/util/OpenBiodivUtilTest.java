@@ -65,6 +65,12 @@ public class OpenBiodivUtilTest {
         };
     }
 
+    @Test
+    public void retrieveNonOpenBioDivId() throws IOException {
+        Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("Acerat evaneR",
+                getSparqlClient());
+        assertThat(taxon, is(nullValue()));
+    }
 
 
 }

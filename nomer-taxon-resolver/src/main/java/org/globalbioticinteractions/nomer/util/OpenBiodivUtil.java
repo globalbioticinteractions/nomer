@@ -12,10 +12,17 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class OpenBiodivUtil {
 
     public static Taxon retrieveTaxonHierarchyById(String taxonId, SparqlClient sparqlClient) throws IOException {
+        return UUIDUtil.isaUUID(taxonId)
+                ? doLookup(taxonId, sparqlClient)
+                : null;
+    }
+
+    private static Taxon doLookup(String taxonId, SparqlClient sparqlClient) throws IOException {
         final String normalizedTaxonId = StringUtils.replace(taxonId, TaxonomyProvider.OPEN_BIODIV.getIdPrefix(), "");
         String sparql = "PREFIX fabio: <http://purl.org/spar/fabio/>\n" +
                 "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>\n" +
@@ -47,8 +54,8 @@ public class OpenBiodivUtil {
                 "  } " +
                 "}";
 
-        final LabeledCSVParser parser = sparqlClient.query(sparql);
         Taxon taxon = null;
+        final LabeledCSVParser parser = sparqlClient.query(sparql);
         while ((taxon == null
                 || StringUtils.isBlank(taxon.getPathNames()))
                 && parser.getLine() != null) {
