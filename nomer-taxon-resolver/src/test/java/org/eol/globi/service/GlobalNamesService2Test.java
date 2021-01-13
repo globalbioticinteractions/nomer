@@ -28,6 +28,8 @@ import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -85,8 +87,66 @@ public class GlobalNamesService2Test {
             }
         });
 
-        assertThat(foundTaxa.size()> 0, is(true));
+        assertThat(foundTaxa.size() > 0, is(true));
         assertThat(foundTaxa.get(0).getExternalId(), is(TaxonomyProvider.NCBI.getIdPrefix() + "3760"));
+    }
+
+    @Test
+    public void virusWithMismatchingNCBITaxonIds() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<Taxon>();
+        TermRequestImpl o = new TermRequestImpl("NCBI:28875", "Bat wt CMR BatLy03 2014 G25P43 I15", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                assertThat(name.getId(), is("NCBI:28875"));
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(0));
+    }
+
+    @Test
+    public void matchNCBIVirusMismatchSuspectedChoppedVirusName() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<>();
+        TermRequestImpl o = new TermRequestImpl("NCBI:28875", "Rotavirus A", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                assertThat(name.getId(), is("NCBI:28875"));
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(0));
+    }
+
+    @Test
+    public void matchNCBIVirusExactWithId() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<>();
+        TermRequestImpl o = new TermRequestImpl("NCBI:10912", "Rotavirus", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                assertThat(name.getId(), is("NCBI:10912"));
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(1));
+        assertThat(foundTaxa.get(0).getExternalId(), is(TaxonomyProvider.NCBI.getIdPrefix() + "10912"));
     }
 
     private TermRequestImpl requestFor(String s, long l) {
@@ -105,7 +165,7 @@ public class GlobalNamesService2Test {
             }
         });
 
-        assertThat(foundTaxa.size(), is(1));
+        assertThat(foundTaxa.size(), is(2));
     }
 
     @Test
@@ -433,7 +493,7 @@ public class GlobalNamesService2Test {
     public void lookupSimilar() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(Arrays.asList(GlobalNamesSources2.GBIF, GlobalNamesSources2.ITIS));
         final List<Taxon> taxa = new ArrayList<>();
-        service.match(Collections.singletonList(new TermImpl(null,"Zyziphus mauritiana")), new TermMatchListener() {
+        service.match(Collections.singletonList(new TermImpl(null, "Zyziphus mauritiana")), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 taxa.add(taxon);

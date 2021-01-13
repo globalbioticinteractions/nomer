@@ -23,6 +23,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.tool.TermRequestImpl;
 import org.eol.globi.util.CSVTSVUtil;
+import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class GlobalNamesService2 extends PropertyEnricherSimple implements TermMatcher {
@@ -69,9 +71,14 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
         Map<String, String> enrichedProperties = new HashMap<String, String>();
         final List<Taxon> exactMatches = new ArrayList<Taxon>();
         final List<Taxon> synonyms = new ArrayList<Taxon>();
-        findTermsForNames(Collections.singletonList(new TermImpl(null, properties.get(PropertyAndValueDictionary.NAME))), new TermMatchListener() {
+        TermImpl termRequested = new TermImpl(
+                properties.get(PropertyAndValueDictionary.EXTERNAL_ID),
+                properties.get(PropertyAndValueDictionary.NAME)
+        );
+
+        findTermsForNames(Collections.singletonList(termRequested), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term termRequested, Taxon taxon, NameType nameType) {
                 if (NameType.SAME_AS.equals(nameType)) {
                     exactMatches.add(taxon);
                 } else if (NameType.SYNONYM_OF.equals(nameType)) {
@@ -105,14 +112,39 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
         try {
             URI uri = buildPostRequestURI(sources);
             try {
-                parseResult(termMatchListener, executeQuery(terms, uri));
+                parseResult(termMatchListener, executeQuery(terms, uri), new RequestedTermService() {
+                    private Map<Long, TermRequestImpl> requestMap = null;
+
+                    @Override
+                    public Term termForRequestId(Long requestId) {
+                        if (requestMap == null) {
+                            final Map<Long, TermRequestImpl> tmpRequestMap = new TreeMap<>();
+                            terms.stream().filter(x -> x instanceof TermRequestImpl)
+                                    .map(x -> (TermRequestImpl) x)
+                                    .forEach(x -> tmpRequestMap.put(x.getNodeId(), x));
+                            requestMap = new TreeMap<>(tmpRequestMap);
+                        }
+
+                        return requestMap.get(requestId);
+                    }
+                });
             } catch (IOException e) {
                 if (terms.size() > 1) {
                     LOG.warn("retrying names query one name at a time: failed to perform batch query", e);
                     List<String> namesFailed = new ArrayList<>();
                     for (Term term : terms) {
                         try {
-                            parseResult(termMatchListener, executeQuery(Collections.singletonList(term), uri));
+                            final List<Term> singleTermRequest = Collections.singletonList(term);
+                            parseResult(termMatchListener, executeQuery(singleTermRequest, uri), new RequestedTermService() {
+                                private Term term1 = singleTermRequest.get(0);
+
+                                @Override
+                                public Term termForRequestId(Long requestId) {
+                                    return term1 instanceof TermRequestImpl
+                                            ? ((TermRequestImpl) term1).getNodeId().equals(requestId) ? term1 : null
+                                            : null;
+                                }
+                            });
                         } catch (IOException e1) {
                             namesFailed.add(term.getName());
                         }
@@ -162,15 +194,19 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                 , null);
     }
 
-    private void parseResult(TermMatchListener termMatchListener, String result) throws PropertyEnricherException {
+    private void parseResult(TermMatchListener termMatchListener, String result, RequestedTermService termService) throws PropertyEnricherException {
         try {
-            parseResultNode(termMatchListener, new ObjectMapper().readTree(result));
+            parseResultNode(termMatchListener, new ObjectMapper().readTree(result), termService);
         } catch (IOException ex) {
             throw new PropertyEnricherException("failed to parse json string [" + result + "]", ex);
         }
     }
 
-    private void parseResultNode(TermMatchListener termMatchListener, JsonNode jsonNode) {
+    interface RequestedTermService {
+        Term termForRequestId(Long requestId);
+    }
+
+    private void parseResultNode(TermMatchListener termMatchListener, JsonNode jsonNode, RequestedTermService termService) {
 
         JsonNode dataList = jsonNode.get("data");
         if (dataList != null && dataList.isArray()) {
@@ -183,7 +219,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                         if (firstDataElement.has("is_known_name")
                                 && firstDataElement.has("supplied_name_string")
                                 && !firstDataElement.get("is_known_name").asBoolean(false)) {
-                            noMatch(termMatchListener, data);
+                            noMatch(termMatchListener, data, termService);
                         }
                     }
                 } else if (results.isArray()) {
@@ -194,9 +230,9 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                         } else {
                             if (aResult.has("classification_path")
                                     && aResult.has("classification_path_ranks")) {
-                                parseClassification(termMatchListener, data, aResult, provider);
+                                parseClassification(termMatchListener, data, aResult, provider, termService);
                             } else {
-                                noMatch(termMatchListener, data);
+                                noMatch(termMatchListener, data, termService);
                             }
                         }
                     }
@@ -205,9 +241,25 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
         }
     }
 
-    private void noMatch(TermMatchListener termMatchListener, JsonNode data) {
+    private void noMatch(TermMatchListener termMatchListener, JsonNode data, RequestedTermService termService) {
         String suppliedNameString = getSuppliedNameString(data);
-        termMatchListener.foundTaxonForTerm(requestId(data), new TermImpl(null, suppliedNameString), new TaxonImpl(suppliedNameString), NameType.NONE);
+        Long requestId = requestId(data);
+        Term termRequested = createTermRequested(termService, suppliedNameString, requestId);
+        termMatchListener.foundTaxonForTerm(requestId,
+                termRequested,
+                new TaxonImpl(suppliedNameString),
+                NameType.NONE);
+    }
+
+    private Term createTermRequested(RequestedTermService termService, String suppliedNameString, Long requestId) {
+        TermImpl termRequested = new TermImpl(null, suppliedNameString);
+        if (requestId != null) {
+            Term term = termService.termForRequestId(requestId);
+            if (term != null) {
+                termRequested.setId(term.getId());
+            }
+        }
+        return termRequested;
     }
 
     private String parsePathIds(String list) {
@@ -257,7 +309,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
     }
 
 
-    protected void parseClassification(TermMatchListener termMatchListener, JsonNode data, JsonNode aResult, TaxonomyProvider provider) {
+    private void parseClassification(TermMatchListener termMatchListener, JsonNode data, JsonNode aResult, TaxonomyProvider provider, RequestedTermService termService) {
         Taxon taxon = new TaxonImpl();
         String classificationPath = aResult.get("classification_path").asText();
         taxon.setPath(parsePathIds(classificationPath));
@@ -299,7 +351,22 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
             // related to https://github.com/GlobalNamesArchitecture/gni/issues/48
             if (!pathTailRepetitions(taxon) && !speciesNoGenus(taxon)) {
-                termMatchListener.foundTaxonForTerm(requestId(data), new TermImpl(null, suppliedNameString), taxon, nameType);
+                Long requestId = requestId(data);
+                Term termRequested = createTermRequested(termService, suppliedNameString, requestId);
+                TaxonomyProvider taxonomyProviderRequested = ExternalIdUtil.taxonomyProviderFor(termRequested.getId());
+                if (NameType.SAME_AS.equals(nameType)
+                        && TaxonomyProvider.NCBI.equals(provider)
+                        && TaxonomyProvider.NCBI.equals(taxonomyProviderRequested)
+                        && !StringUtils.equals(termRequested.getId(), taxon.getExternalId())
+                ) {
+                    noMatch(termMatchListener, data, termService);
+                } else {
+                    termMatchListener.foundTaxonForTerm(
+                            requestId,
+                            termRequested,
+                            taxon,
+                            nameType);
+                }
             }
         }
 
