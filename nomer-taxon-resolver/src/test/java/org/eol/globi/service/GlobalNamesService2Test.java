@@ -348,7 +348,7 @@ public class GlobalNamesService2Test {
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ITIS:108477"));
     }
 
-    @Ignore(value = "see bug report ")
+    @Ignore(value = "see bug report https://github.com/GlobalNamesArchitecture/gni/issues/60")
     @Test
     public void lookupOTT() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.OTT);
