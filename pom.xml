@@ -15,6 +15,16 @@
         <module>nomer</module>
     </modules>
 
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.globalbioticinteractions</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>0.0.3</version>
+            </extension>
+        </extensions>
+    </build>
+
     <distributionManagement>
         <repository>
             <id>globi-release</id>
