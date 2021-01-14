@@ -599,10 +599,10 @@ public class GlobalNamesService2Test {
         service.match(Collections.singletonList(new TermImpl(null, "Bat")),
                 (nodeId, name, taxon, nameType) -> {
                     taxa.add(taxon);
-                    assertThat(nameType, is(NameType.SAME_AS));
+                    assertThat(nameType, is(NameType.NONE));
                 });
 
-        assertThat(taxa.size(), is(0));
+        assertThat(taxa.size(), is(202));
 
     }
 
