@@ -18,7 +18,7 @@
     <distributionManagement>
         <repository>
             <id>globi-release</id>
-            <name>AWS Release Repository</name>
+            <name>Release Repository</name>
             <url>s3://globi/release</url>
         </repository>
     </distributionManagement>
