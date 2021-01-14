@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 public class GlobalNamesService2 extends PropertyEnricherSimple implements TermMatcher {
     private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
     public static final List<Integer> MATCH_TYPES_EXACT = Arrays.asList(1, 2, 6);
+    public static final List<Integer> MATCH_TYPES_EXACT_BY_CANONICAL_FORM = Arrays.asList(1);
 
     private final List<GlobalNamesSources2> sources;
     private boolean includeCommonNames = false;
@@ -228,8 +229,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                         if (provider == null) {
                             LOG.warn("found unsupported data_source_id");
                         } else {
-                            if (aResult.has("classification_path")
-                                    && aResult.has("classification_path_ranks")) {
+                            if (isPromisingResult(aResult)) {
                                 parseClassification(termMatchListener, data, aResult, provider, termService);
                             } else {
                                 noMatch(termMatchListener, data, termService);
@@ -239,6 +239,11 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                 }
             }
         }
+    }
+
+    private static boolean isPromisingResult(JsonNode nameResolvingResult) {
+        return nameResolvingResult.has("classification_path")
+                && nameResolvingResult.has("classification_path_ranks");
     }
 
     private void noMatch(TermMatchListener termMatchListener, JsonNode data, RequestedTermService termService) {
@@ -309,16 +314,16 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
     }
 
 
-    private void parseClassification(TermMatchListener termMatchListener, JsonNode data, JsonNode aResult, TaxonomyProvider provider, RequestedTermService termService) {
+    private void parseClassification(TermMatchListener termMatchListener, JsonNode data, JsonNode matchResult, TaxonomyProvider providerMatched, RequestedTermService termService) {
         Taxon taxon = new TaxonImpl();
-        String classificationPath = aResult.get("classification_path").asText();
+        String classificationPath = matchResult.get("classification_path").asText();
         taxon.setPath(parsePathIds(classificationPath));
 
-        if (aResult.has("classification_path_ids")) {
-            String classificationPathIds = aResult.get("classification_path_ids").asText();
-            taxon.setPathIds(parsePathIds(classificationPathIds, provider.getIdPrefix()));
+        if (matchResult.has("classification_path_ids")) {
+            String classificationPathIds = matchResult.get("classification_path_ids").asText();
+            taxon.setPathIds(parsePathIds(classificationPathIds, providerMatched.getIdPrefix()));
         }
-        String pathRanks = aResult.get("classification_path_ranks").asText();
+        String pathRanks = matchResult.get("classification_path_ranks").asText();
         taxon.setPathNames(parsePathIds(pathRanks));
         String[] ranks = CSVTSVUtil.splitPipes(pathRanks);
         if (ranks.length > 0) {
@@ -330,35 +335,35 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
             String taxonName = taxonNames[taxonNames.length - 1];
             taxon.setName(taxonName);
         } else {
-            taxon.setName(aResult.get("canonical_form").asText());
+            taxon.setName(matchResult.get("canonical_form").asText());
         }
 
-        String taxonIdLabel = aResult.has("current_taxon_id") ? "current_taxon_id" : "taxon_id";
-        String taxonIdValue = aResult.get(taxonIdLabel).asText();
+        String taxonIdLabel = matchResult.has("current_taxon_id") ? "current_taxon_id" : "taxon_id";
+        String taxonIdValue = matchResult.get(taxonIdLabel).asText();
         // see https://github.com/GlobalNamesArchitecture/gni/issues/35
         if (!StringUtils.startsWith(taxonIdValue, "gn:")) {
-            String externalId = provider.getIdPrefix() + scrubIds(taxonIdValue);
+            String externalId = providerMatched.getIdPrefix() + scrubIds(taxonIdValue);
             taxon.setExternalId(externalId);
             String suppliedNameString = getSuppliedNameString(data);
 
-            boolean isExactMatch = aResult.has("match_type")
-                    && MATCH_TYPES_EXACT.contains(aResult.get("match_type").getIntValue());
+            boolean isExactMatch = matchResult.has("match_type")
+                    && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
 
             NameType nameType = isExactMatch ? NameType.SAME_AS : NameType.SIMILAR_TO;
-            if (isExactMatch && aResult.has("current_name_string")) {
+            if (isExactMatch && matchResult.has("current_name_string")) {
                 nameType = NameType.SYNONYM_OF;
             }
 
             // related to https://github.com/GlobalNamesArchitecture/gni/issues/48
-            if (!pathTailRepetitions(taxon) && !speciesNoGenus(taxon)) {
+            if (!pathTailRepetitions(taxon)
+                    && !speciesNoGenus(taxon)
+            ) {
                 Long requestId = requestId(data);
                 Term termRequested = createTermRequested(termService, suppliedNameString, requestId);
-                TaxonomyProvider taxonomyProviderRequested = ExternalIdUtil.taxonomyProviderFor(termRequested.getId());
-                if (NameType.SAME_AS.equals(nameType)
-                        && TaxonomyProvider.NCBI.equals(provider)
-                        && TaxonomyProvider.NCBI.equals(taxonomyProviderRequested)
-                        && !StringUtils.equals(termRequested.getId(), taxon.getExternalId())
-                ) {
+                TaxonomyProvider providerRequested = ExternalIdUtil.taxonomyProviderFor(termRequested.getId());
+
+                if (mismatchingNCBITaxonIds(nameType, providerMatched, providerRequested, termRequested, taxon)
+                        || (!canonicalMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon))) {
                     noMatch(termMatchListener, data, termService);
                 } else {
                     termMatchListener.foundTaxonForTerm(
@@ -370,9 +375,9 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
             }
         }
 
-        if (aResult.has("vernaculars")) {
+        if (matchResult.has("vernaculars")) {
             List<String> commonNames = new ArrayList<String>();
-            JsonNode vernaculars = aResult.get("vernaculars");
+            JsonNode vernaculars = matchResult.get("vernaculars");
             for (JsonNode vernacular : vernaculars) {
                 if (vernacular.has("name") && vernacular.has("language")) {
                     String name = vernacular.get("name").asText();
@@ -386,6 +391,28 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                 taxon.setCommonNames(StringUtils.join(commonNames, CharsetConstant.SEPARATOR));
             }
         }
+    }
+
+    private static boolean canonicalMatchForNCBIVirusSpeciesOrStrain(JsonNode matchResult, TaxonomyProvider providerMatched, Taxon matchedTaxon) {
+        boolean isCanonicalMatch = matchResult.has("match_type")
+                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM.contains(matchResult.get("match_type").getIntValue());
+
+        return isCanonicalMatch
+                && TaxonomyProvider.NCBI.equals(providerMatched)
+                && StringUtils.startsWith(matchedTaxon.getPathIds(), "10239|")
+                && StringUtils.contains(matchedTaxon.getPathNames(), "species");
+    }
+
+    private boolean mismatchingNCBITaxonIds(
+            NameType nameType,
+            TaxonomyProvider providerMatched,
+            TaxonomyProvider providerRequested,
+            Term termRequested,
+            Taxon taxon) {
+        return NameType.SAME_AS.equals(nameType)
+                && TaxonomyProvider.NCBI.equals(providerMatched)
+                && TaxonomyProvider.NCBI.equals(providerRequested)
+                && !StringUtils.equals(termRequested.getId(), taxon.getExternalId());
     }
 
     private boolean speciesNoGenus(Taxon taxon) {

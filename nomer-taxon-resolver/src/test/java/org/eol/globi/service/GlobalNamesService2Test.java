@@ -5,6 +5,7 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
@@ -23,12 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -92,6 +95,22 @@ public class GlobalNamesService2Test {
     }
 
     @Test
+    public void overlyGreedyGlobalNamesNCBIMatches() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<>();
+        service.match(Collections.singletonList(requestFor("Homo sapiens", 1L)), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                foundTaxa.add(taxon);
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(1));
+        assertThat(foundTaxa.get(0).getExternalId(), is(TaxonomyProvider.NCBI.getIdPrefix() + "9606"));
+    }
+
+    @Test
     public void virusWithMismatchingNCBITaxonIds() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
         final List<Taxon> foundTaxa = new ArrayList<Taxon>();
@@ -101,6 +120,25 @@ public class GlobalNamesService2Test {
             public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
                 assertNotNull(nodeId);
                 assertThat(name.getId(), is("NCBI:28875"));
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(0));
+    }
+
+    @Test
+    public void ignoreCanonicalNCBIVirusMatches() throws PropertyEnricherException {
+        // see https://github.com/globalbioticinteractions/globi-taxon-names/issues/6
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<Taxon>();
+        TermRequestImpl o = new TermRequestImpl(null, "Bat", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -552,5 +590,35 @@ public class GlobalNamesService2Test {
         assertThat(taxa.get(0).getPathNames(), endsWith("genus"));
 
     }
+
+    @Test
+    public void lookupBatInNCBI() throws PropertyEnricherException {
+        // see https://github.com/globalbioticinteractions/globi-taxon-names/issues/6
+        GlobalNamesService2 service = new GlobalNamesService2(Collections.singletonList(GlobalNamesSources2.NCBI));
+        final List<Taxon> taxa = new ArrayList<>();
+        service.match(Collections.singletonList(new TermImpl(null, "Bat")),
+                (nodeId, name, taxon, nameType) -> {
+                    taxa.add(taxon);
+                    assertThat(nameType, is(NameType.SAME_AS));
+                });
+
+        assertThat(taxa.size(), is(0));
+
+    }
+
+    @Test
+    public void hasTaxonPathTailRepetitions() {
+        TaxonImpl taxon = new TaxonImpl("foo:1");
+        taxon.setPath("|Eukaryota|Opisthokonta|Metazoa|Eumetazoa|Bilateria|Deuterostomia|Chordata|Craniata|Vertebrata|Gnathostomata|Teleostomi|Euteleostomi|Sarcopterygii|Dipnotetrapodomorpha|Tetrapoda|Amniota|Mammalia|Theria|Eutheria|Boreoeutheria|Euarchontoglires|Primates|Haplorrhini|Simiiformes|Catarrhini|Hominoidea|Hominidae|Homininae|Homo|Homo sapiens|Homo sapiens");
+        assertTrue(GlobalNamesService2.pathTailRepetitions(taxon));
+    }
+
+    @Test
+    public void doesNotHaveTaxonPathTailRepetitions() {
+        TaxonImpl taxon = new TaxonImpl("foo:1");
+        taxon.setPath("|Eukaryota|Opisthokonta|Metazoa|Eumetazoa|Bilateria|Deuterostomia|Chordata|Craniata|Vertebrata|Gnathostomata|Teleostomi|Euteleostomi|Sarcopterygii|Dipnotetrapodomorpha|Tetrapoda|Amniota|Mammalia|Theria|Eutheria|Boreoeutheria|Euarchontoglires|Primates|Haplorrhini|Simiiformes|Catarrhini|Hominoidea|Hominidae|Homininae|Homo|Homo sapiens");
+        assertFalse(GlobalNamesService2.pathTailRepetitions(taxon));
+    }
+
 
 }
