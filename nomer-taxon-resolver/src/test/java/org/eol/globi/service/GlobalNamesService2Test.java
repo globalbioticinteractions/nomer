@@ -29,12 +29,10 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public class GlobalNamesService2Test {
@@ -545,7 +543,7 @@ public class GlobalNamesService2Test {
 
     @Test
     public void lookupNCBIPrune() throws PropertyEnricherException {
-        GlobalNamesService2 service = new GlobalNamesService2(Arrays.asList(GlobalNamesSources2.NCBI));
+        GlobalNamesService2 service = new GlobalNamesService2(Collections.singletonList(GlobalNamesSources2.NCBI));
         final List<Taxon> taxa = new ArrayList<>();
         service.match(Collections.singletonList(new TermImpl(null, "Klebsiella pneumoniae")), new TermMatchListener() {
             @Override

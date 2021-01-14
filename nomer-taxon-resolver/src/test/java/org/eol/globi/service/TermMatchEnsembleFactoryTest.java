@@ -39,7 +39,7 @@ public class TermMatchEnsembleFactoryTest {
 
     @Test
     public void gbifLongUrl() throws PropertyEnricherException {
-        Taxon taxon = new TaxonImpl("Mickey", "https://www.gbif.org/species/110462373");
+        Taxon taxon = new TaxonImpl("Mickey", "https://www.gbif.org/species/1777631");
         final Map<String, String> enriched = taxonEnricher.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), containsString("Calyptra thalictri"));
     }

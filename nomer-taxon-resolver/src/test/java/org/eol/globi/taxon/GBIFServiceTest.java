@@ -52,7 +52,7 @@ public class GBIFServiceTest {
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Enhydra lutris nereis"));
         assertThat(enriched.get(PropertyAndValueDictionary.RANK), is("subspecies"));
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("GBIF:6163936"));
-        assertThat(enriched.get(PropertyAndValueDictionary.COMMON_NAMES), is("southern sea otter @en"));
+        assertThat(enriched.get(PropertyAndValueDictionary.COMMON_NAMES), containsString("southern sea otter @en"));
         assertThat(enriched.get(PropertyAndValueDictionary.PATH_IDS), is("GBIF:1 | GBIF:44 | GBIF:359 | GBIF:732 | GBIF:5307 | GBIF:2433669 | GBIF:2433670"));
         assertThat(enriched.get(PropertyAndValueDictionary.PATH_NAMES), is("kingdom | phylum | class | order | family | genus | species"));
         assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Animalia | Chordata | Mammalia | Carnivora | Mustelidae | Enhydra | Enhydra lutris"));
