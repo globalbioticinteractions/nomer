@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 public class GlobalNamesService2 extends PropertyEnricherSimple implements TermMatcher {
     private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
     public static final List<Integer> MATCH_TYPES_EXACT = Arrays.asList(1, 2, 6);
-    public static final List<Integer> MATCH_TYPES_EXACT_BY_CANONICAL_FORM = Arrays.asList(1);
+    public static final List<Integer> MATCH_TYPES_EXACT_BY_CANONICAL_FORM = Collections.singletonList(2);
 
     private final List<GlobalNamesSources2> sources;
     private boolean includeCommonNames = false;
@@ -363,7 +363,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                 TaxonomyProvider providerRequested = ExternalIdUtil.taxonomyProviderFor(termRequested.getId());
 
                 if (mismatchingNCBITaxonIds(nameType, providerMatched, providerRequested, termRequested, taxon)
-                        || (!canonicalMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon))) {
+                        || (canonicalMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon))) {
                     noMatch(termMatchListener, data, termService);
                 } else {
                     termMatchListener.foundTaxonForTerm(
@@ -399,7 +399,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
         return isCanonicalMatch
                 && TaxonomyProvider.NCBI.equals(providerMatched)
-                && StringUtils.startsWith(matchedTaxon.getPathIds(), "10239|")
+                && StringUtils.startsWith(StringUtils.trim(matchedTaxon.getPathIds()), "NCBI:10239 |")
                 && StringUtils.contains(matchedTaxon.getPathNames(), "species");
     }
 
