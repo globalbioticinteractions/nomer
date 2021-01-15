@@ -166,6 +166,26 @@ public class GlobalNamesService2Test {
     }
 
     @Test
+    public void matchExactNCBIVirusNameMatch() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<>();
+        TermRequestImpl o = new TermRequestImpl(null, "Bat mastadenovirus A", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(1));
+        assertThat(foundTaxa.get(0).getName(), is("Bat mastadenovirus A"));
+        assertThat(foundTaxa.get(0).getExternalId(), is("NCBI:1146877"));
+    }
+
+    @Test
     public void matchNCBIVirusExactWithId() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
         final List<Taxon> foundTaxa = new ArrayList<>();
