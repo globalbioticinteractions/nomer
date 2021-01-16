@@ -9,6 +9,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Ignore(value = "https://github.com/globalbioticinteractions/nomer/issues/28")
 public class TermMatcherOpenBiodivFactoryTest {
 
     @Test

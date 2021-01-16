@@ -8,6 +8,7 @@ import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.util.SparqlClient;
 import org.globalbioticinteractions.util.SparqlClientImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
+@Ignore(value = "https://github.com/globalbioticinteractions/nomer/issues/28")
 public class OpenBiodivUtilTest {
 
     @Test
