@@ -40,8 +40,8 @@ import java.util.stream.Collectors;
 
 public class GlobalNamesService2 extends PropertyEnricherSimple implements TermMatcher {
     private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
-    public static final List<Integer> MATCH_TYPES_EXACT = Arrays.asList(1, 2, 6);
-    public static final List<Integer> MATCH_TYPES_EXACT_BY_CANONICAL_FORM = Collections.singletonList(2);
+    public static final List<Integer> MATCH_TYPES_EXACT = Arrays.asList(1, 2);
+    public static final List<Integer> MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS = Arrays.asList(2, 6);
 
     private final List<GlobalNamesSources2> sources;
     private boolean includeCommonNames = false;
@@ -346,8 +346,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
             taxon.setExternalId(externalId);
             String suppliedNameString = getSuppliedNameString(data);
 
-            boolean isExactMatch = matchResult.has("match_type")
-                    && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
+            boolean isExactMatch = isExactMatch(matchResult);
 
             NameType nameType = isExactMatch ? NameType.SAME_AS : NameType.SIMILAR_TO;
             if (isExactMatch && matchResult.has("current_name_string")) {
@@ -369,6 +368,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                     if (exactMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon)) {
                         taxon.setName(matchResult.get("name_string").asText());
                     }
+
 
                     termMatchListener.foundTaxonForTerm(
                             requestId,
@@ -399,7 +399,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
     private static boolean canonicalMatchForNCBIVirusSpeciesOrStrain(JsonNode matchResult, TaxonomyProvider providerMatched, Taxon matchedTaxon) {
         boolean isCanonicalMatch = matchResult.has("match_type")
-                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM.contains(matchResult.get("match_type").getIntValue());
+                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS.contains(matchResult.get("match_type").getIntValue());
 
         return isCanonicalMatch
                 && isNCBIVirusOrStream(providerMatched, matchedTaxon);
@@ -412,11 +412,15 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
     }
 
     private static boolean exactMatchForNCBIVirusSpeciesOrStrain(JsonNode matchResult, TaxonomyProvider providerMatched, Taxon matchedTaxon) {
-        boolean isExactMatch = matchResult.has("match_type")
-                && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
+        boolean isExactMatch = isExactMatch(matchResult);
 
         return isExactMatch
                 && isNCBIVirusOrStream(providerMatched, matchedTaxon);
+    }
+
+    private static boolean isExactMatch(JsonNode matchResult) {
+        return matchResult.has("match_type")
+                    && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
     }
 
     private boolean mismatchingNCBITaxonIds(
