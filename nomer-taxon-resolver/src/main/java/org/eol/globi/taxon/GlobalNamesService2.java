@@ -362,7 +362,8 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                 TaxonomyProvider providerRequested = ExternalIdUtil.taxonomyProviderFor(termRequested.getId());
 
                 if (mismatchingNCBITaxonIds(nameType, providerMatched, providerRequested, termRequested, taxon)
-                        || (canonicalMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon))) {
+                        || (canonicalMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon))
+                        || (singleWorldNCBISpeciesName(matchResult, providerMatched, taxon))) {
                     noMatch(termMatchListener, data, termService);
                 } else {
                     if (exactMatchForNCBIVirusSpeciesOrStrain(matchResult, providerMatched, taxon)) {
@@ -405,6 +406,19 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                 && isNCBIVirusOrStream(providerMatched, matchedTaxon);
     }
 
+    private static boolean singleWorldNCBISpeciesName(JsonNode matchResult,
+                                                      TaxonomyProvider providerMatched,
+                                                      Taxon matchedTaxon) {
+        boolean isCanonicalMatch = matchResult.has("match_type")
+                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS.contains(matchResult.get("match_type").getIntValue());
+
+        String[] split = StringUtils.split(matchedTaxon.getName());
+        return isCanonicalMatch
+                && TaxonomyProvider.NCBI.equals(providerMatched)
+                && (split == null || split.length == 1)
+                && StringUtils.contains(matchedTaxon.getPathNames(), "species");
+    }
+
     private static boolean isNCBIVirusOrStream(TaxonomyProvider providerMatched, Taxon matchedTaxon) {
         return TaxonomyProvider.NCBI.equals(providerMatched)
                 && StringUtils.startsWith(StringUtils.trim(matchedTaxon.getPathIds()), "NCBI:10239 |")
@@ -420,7 +434,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
     private static boolean isExactMatch(JsonNode matchResult) {
         return matchResult.has("match_type")
-                    && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
+                && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
     }
 
     private boolean mismatchingNCBITaxonIds(

@@ -203,6 +203,44 @@ public class GlobalNamesService2Test {
         assertThat(foundTaxa.size(), is(0));
     }
 
+   @Test
+    public void matchExactNCBIPlantSpeciesMatch() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<>();
+        TermRequestImpl o = new TermRequestImpl(null, "Rubus parviflorus", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(1));
+    }
+
+   @Test
+    public void matchExactNCBIPlantSpeciesMatchWithTrailingDot() throws PropertyEnricherException {
+        GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
+        final List<Taxon> foundTaxa = new ArrayList<>();
+        TermRequestImpl o = new TermRequestImpl(null, "Rubus parviflorus.", 1L);
+        service.match(Collections.singletonList(o), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+                assertNotNull(nodeId);
+                if (!NameType.NONE.equals(nameType)) {
+                    foundTaxa.add(taxon);
+                }
+            }
+        });
+
+        assertThat(foundTaxa.size(), is(1));
+        assertThat(foundTaxa.get(0).getName(), is("Rubus"));
+        assertThat(foundTaxa.get(0).getRank(), is("genus"));
+    }
+
     @Test
     public void matchNCBIVirusExactWithId() throws PropertyEnricherException {
         GlobalNamesService2 service = new GlobalNamesService2(GlobalNamesSources2.NCBI);
