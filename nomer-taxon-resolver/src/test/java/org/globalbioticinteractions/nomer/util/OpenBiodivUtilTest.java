@@ -18,7 +18,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@Ignore(value = "https://github.com/globalbioticinteractions/nomer/issues/28")
 public class OpenBiodivUtilTest {
 
     @Test
