@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.lucene.store.Directory;
 import org.eol.globi.taxon.TaxonLookupBuilder;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.lucene.store.SimpleFSDirectory;
@@ -98,22 +99,19 @@ public class PlaziService implements TermMatcher {
 
 
     private void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir(this.ctx);
-        boolean preExistingCacheDir = cacheDir.exists();
-        if (!preExistingCacheDir) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
+        File cacheDir = CacheUtil.getCacheDir(this.ctx, "plazi");
+        boolean preExistingCacheDir = CacheUtil.mkdir(cacheDir);
 
         try {
-            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir);
-            taxonLookupService = new TaxonLookupServiceImpl(indexDir);
             if (preExistingCacheDir) {
                 LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
             } else {
-                indexTreatments(indexDir);
+                try (SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir)) {
+                    indexTreatments(indexDir);
+                }
             }
+            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir);
+            taxonLookupService = new TaxonLookupServiceImpl(indexDir);
 
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to init enricher", e);
@@ -128,6 +126,7 @@ public class PlaziService implements TermMatcher {
         AtomicLong counter = new AtomicLong();
 
         try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(indexDir)) {
+            taxonLookupBuilder.start();
             InputStream resource = this.ctx.getResource(getArchiveUrl());
             TaxonCacheListener listener = new TaxonCacheListener() {
 
@@ -157,7 +156,7 @@ public class PlaziService implements TermMatcher {
                 }
             }
 
-
+            taxonLookupBuilder.finish();
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to load archive", e);
         }
@@ -169,10 +168,6 @@ public class PlaziService implements TermMatcher {
 
     private boolean needsInit() {
         return taxonLookupService == null;
-    }
-
-    private File getCacheDir(TermMatcherContext ctx) {
-        return new File(ctx.getCacheDir(), "plazi");
     }
 
     private String getArchiveUrl() throws PropertyEnricherException {
