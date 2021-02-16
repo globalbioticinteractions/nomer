@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
@@ -40,12 +41,9 @@ public class TermMatcherDOIFactoryTest {
 
         TermMatcher termMatcher = new TermMatcherDOIFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Collections.singletonList(new TermImpl(null, "some citation")), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getExternalId(), Is.is("https://doi.org/10.123/456"));
-                found.set(true);
-            }
+        termMatcher.match(Collections.singletonList(new TermImpl(null, "some citation")), (nodeId, name, taxon, nameType) -> {
+            assertThat(taxon.getExternalId(), Is.is("https://doi.org/10.123/456"));
+            found.set(true);
         });
         assertTrue(found.get());
     }
@@ -59,7 +57,7 @@ public class TermMatcherDOIFactoryTest {
 
             @Override
             public InputStream getResource(String uri) throws IOException {
-                if ("map".equals(uri)) {
+                if (StringUtils.equals("map", uri)) {
                     return IOUtils.toInputStream("uri\treference\nhttps://doi.org/10.123/456\tsome citation", StandardCharsets.UTF_8);
                 } else {
                     throw new IOException("[" + uri + "] not found");

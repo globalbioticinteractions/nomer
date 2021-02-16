@@ -5,8 +5,11 @@ import com.healthmarketscience.jackcess.DatabaseBuilder;
 import com.healthmarketscience.jackcess.Table;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.taxon.TaxonLookupBuilder;
 import org.eol.globi.taxon.TaxonLookupService;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
@@ -88,7 +91,11 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
         LOG.info("[" + UKSISuggestionService.class.getSimpleName() + "] instantiating...");
 
         File tmpFile = null;
-        try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(null)) {
+
+        File indexPath = CacheUtil.createTmpCacheDir();
+        Directory directory = CacheUtil.luceneDirectoryFor(indexPath);
+
+        try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(directory)) {
             taxonLookupBuilder.start();
             InputStream is = new GZIPInputStream(resourceStream);
             tmpFile = File.createTempFile("NfWD", "mdb");
@@ -108,7 +115,7 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
                 taxonLookupBuilder.addTerm(taxonName.toString(), taxonTerm);
             }
             taxonLookupBuilder.finish();
-            service = new TaxonLookupServiceImpl(null);
+            service = new TaxonLookupServiceImpl(CacheUtil.luceneDirectoryFor(indexPath));
         } finally {
             FileUtils.deleteQuietly(tmpFile);
         }

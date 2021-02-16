@@ -69,7 +69,7 @@ public abstract class OfflineService extends PropertyEnricherSimple {
         return enrichedProperties;
     }
 
-    private String getServiceName() {
+    public String getServiceName() {
         return getClass().getSimpleName();
     }
 
@@ -77,11 +77,10 @@ public abstract class OfflineService extends PropertyEnricherSimple {
         LOG.info("lazy init of taxonomy index [" + getServiceName() + "] started...");
         TaxonomyImporter importer = createTaxonomyImporter();
         try {
-            importer.doImport();
+            taxonLookupService = importer.createLookupService();
         } catch (StudyImporterException e) {
             throw new PropertyEnricherException("failed to build index for [" + getServiceName() + "]", e);
         }
-        taxonLookupService = importer.getTaxonLookupService();
         LOG.info("lazy init of taxonomy index [" + getServiceName() + "] done.");
     }
 

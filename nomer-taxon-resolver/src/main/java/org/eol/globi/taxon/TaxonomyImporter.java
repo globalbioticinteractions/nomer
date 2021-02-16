@@ -1,12 +1,16 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.data.StudyImporterException;
 import org.eol.globi.domain.Taxon;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -21,20 +25,10 @@ public class TaxonomyImporter {
 
     private TaxonReaderFactory taxonReaderFactory;
 
-    private final TaxonLookupService taxonLookupService;
-
-    private final TaxonImportListener taxonImportListener;
-
     public TaxonomyImporter(TaxonParser taxonParser, TaxonReaderFactory taxonReaderFactory) {
         this.parser = taxonParser;
         this.taxonReaderFactory = taxonReaderFactory;
-        this.taxonLookupService = new TaxonLookupServiceImpl(null);
-        this.taxonImportListener = new TaxonLookupBuilder(null);
         stopwatch = new StopWatch();
-    }
-
-    public TaxonLookupService getTaxonLookupService() {
-        return taxonLookupService;
     }
 
     public TaxonParser getParser() {
@@ -49,25 +43,41 @@ public class TaxonomyImporter {
         this.counter++;
     }
 
-    public void doImport() throws StudyImporterException {
+    public TaxonLookupService createLookupService() throws StudyImporterException {
         getStopwatch().reset();
         getStopwatch().start();
+
+        File indexPath = CacheUtil.createTmpCacheDir();
+        LOG.info("index directory at [" + indexPath + "] created.");
+
+
         setCounter(0);
-        try {
+        try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexPath);
+             TaxonLookupBuilder taxonImportListener = new TaxonLookupBuilder(cacheDir)) {
             Map<String, BufferedReader> allReaders = taxonReaderFactory.getAllReaders();
             for (Map.Entry<String, BufferedReader> entry : allReaders.entrySet()) {
                 try {
-                    parse(entry.getValue());
+                    parse(entry.getValue(), taxonImportListener);
                 } catch (IOException ex) {
                     throw new IOException("failed to read from [" + entry.getKey() + "]");
                 }
             }
+            return new TaxonLookupServiceImpl(new SimpleFSDirectory(indexPath));
         } catch (IOException e) {
             throw new StudyImporterException("failed to import taxonomy", e);
         }
     }
 
-    private void parse(BufferedReader reader) throws IOException {
+    private Directory initCacheDir() throws StudyImporterException {
+        File indexPath = CacheUtil.createTmpCacheDir();
+        try {
+            return new SimpleFSDirectory(indexPath);
+        } catch (IOException e) {
+            throw new StudyImporterException("failed to create index dir [" + indexPath.getAbsolutePath() + "]");
+        }
+    }
+
+    private void parse(BufferedReader reader, TaxonLookupBuilder taxonImportListener) throws IOException {
         getParser().parse(reader, new TaxonImportListener() {
             @Override
             public void addTerm(Taxon term) {

@@ -20,21 +20,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TermMatcherRegistryTest {
 
     @Test
-    public void createTermMatcher() throws PropertyEnricherException {
-        TermMatcher itisService = TermMatcherRegistry.termMatcherFor("itis-taxon-id-web", null);
-        AtomicBoolean found = new AtomicBoolean(false);
-        itisService.match(Collections.singletonList(new TermImpl("ITIS:180547", null)), new TermMatchListener() {
-
-            @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), is("Enhydra lutris"));
-                found.set(true);
-            }
-        });
-        assertThat(found.get(), is(true));
-    }
-
-    @Test
     public void createDefaultTermMatcher() {
         TermMatcher matcher = TermMatcherRegistry.termMatcherFor("this doesn't exist", new MatchTestUtil.TermMatcherContextDefault());
         assertThat(matcher.getClass().getName(), is(TaxonCacheService.class.getName()));

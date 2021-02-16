@@ -24,7 +24,7 @@ import java.util.Map;
 import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TermMatchEnsembleFactoryEnricherTest {
+public class TermMatchEnsembleFactoryEnricherIT {
 
 
     private final File cacheDir = new File("./target/nomer-cache");

@@ -2,12 +2,11 @@ package org.eol.globi.taxon;
 
 import com.Ostermiller.util.CSVParse;
 import com.Ostermiller.util.CSVParser;
-import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.store.Directory;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.service.Initializing;
 import org.eol.globi.service.NameSuggester;
-import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;

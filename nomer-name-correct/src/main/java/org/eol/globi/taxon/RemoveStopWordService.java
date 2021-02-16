@@ -1,11 +1,10 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.store.Directory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.service.Initializing;
-import org.eol.globi.util.ResourceUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
