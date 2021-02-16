@@ -18,7 +18,6 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-@Ignore
 public class OpenBiodivUtilTest {
 
     @Test
