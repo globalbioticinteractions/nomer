@@ -1,19 +1,19 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eol.globi.data.StudyImporterException;
 import org.eol.globi.domain.Taxon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
 
 public class TaxonomyImporter {
-    private static final Log LOG = LogFactory.getLog(TaxonomyImporter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaxonomyImporter.class);
 
-    public static final int BATCH_TRANSACTION_SIZE = 250000;
+    private static final int BATCH_TRANSACTION_SIZE = 250000;
     private int counter;
     private StopWatch stopwatch;
 
@@ -28,9 +28,8 @@ public class TaxonomyImporter {
     public TaxonomyImporter(TaxonParser taxonParser, TaxonReaderFactory taxonReaderFactory) {
         this.parser = taxonParser;
         this.taxonReaderFactory = taxonReaderFactory;
-        TaxonLookupServiceImpl service = new TaxonLookupServiceImpl(null);
-        this.taxonLookupService = service;
-        this.taxonImportListener = service;
+        this.taxonLookupService = new TaxonLookupServiceImpl(null);
+        this.taxonImportListener = new TaxonLookupBuilder(null);
         stopwatch = new StopWatch();
     }
 

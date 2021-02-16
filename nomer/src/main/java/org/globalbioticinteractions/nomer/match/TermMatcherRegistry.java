@@ -2,8 +2,8 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.list.TreeList;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class TermMatcherRegistry {
-    private static final Log LOG = LogFactory.getLog(TermMatcherRegistry.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TermMatcherRegistry.class);
 
     private static final TermMatcherCacheFactory MATCHER_FACTORY_DEFAULT = new TermMatcherCacheFactory();
 

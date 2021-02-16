@@ -5,8 +5,10 @@ import com.healthmarketscience.jackcess.DatabaseBuilder;
 import com.healthmarketscience.jackcess.Table;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.eol.globi.taxon.TaxonLookupBuilder;
+import org.eol.globi.taxon.TaxonLookupService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -23,9 +25,9 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public class UKSISuggestionService extends PropertyEnricherSimple implements NameSuggester, Initializing {
-    private static final Log LOG = LogFactory.getLog(UKSISuggestionService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UKSISuggestionService.class);
 
-    private TaxonLookupServiceImpl service;
+    private TaxonLookupService service;
 
     @Override
     public String suggest(String name) {
@@ -70,7 +72,6 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
     @Override
     public void shutdown() {
         if (null != service) {
-            service.destroy();
             service = null;
         }
     }
@@ -85,10 +86,10 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
 
     public void init(InputStream resourceStream) throws IOException {
         LOG.info("[" + UKSISuggestionService.class.getSimpleName() + "] instantiating...");
-        service = new TaxonLookupServiceImpl(null);
-        service.start();
+
         File tmpFile = null;
-        try {
+        try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(null)) {
+            taxonLookupBuilder.start();
             InputStream is = new GZIPInputStream(resourceStream);
             tmpFile = File.createTempFile("NfWD", "mdb");
             FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
@@ -104,12 +105,14 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
                 Taxon taxonTerm = new TaxonImpl();
                 taxonTerm.setExternalId("UKSI:" + externalId);
                 taxonTerm.setName(recommendedScientificName.toString());
-                service.addTerm(taxonName.toString(), taxonTerm);
+                taxonLookupBuilder.addTerm(taxonName.toString(), taxonTerm);
             }
+            taxonLookupBuilder.finish();
+            service = new TaxonLookupServiceImpl(null);
         } finally {
             FileUtils.deleteQuietly(tmpFile);
         }
-        service.finish();
+
         LOG.info("[" + UKSISuggestionService.class.getSimpleName() + "] instantiated.");
     }
 

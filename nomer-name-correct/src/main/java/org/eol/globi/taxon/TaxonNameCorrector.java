@@ -1,8 +1,8 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 
 public class TaxonNameCorrector implements CorrectionService, TermMatcher {
 
-    private static final Log LOG = LogFactory.getLog(TaxonNameCorrector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaxonNameCorrector.class);
     private final TermMatcherContext ctx;
 
     private List<NameSuggester> suggestors = null;

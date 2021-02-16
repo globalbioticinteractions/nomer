@@ -2,8 +2,8 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.service.Initializing;
 import org.eol.globi.util.ResourceUtil;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RemoveStopWordService implements org.eol.globi.service.NameSuggester, Initializing {
-    private static final Log LOG = LogFactory.getLog(RemoveStopWordService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RemoveStopWordService.class);
 
     private List<String> stopwords = null;
 

@@ -1,8 +1,8 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.data.StudyImporterException;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class OfflineService extends PropertyEnricherSimple {
-    private static final Log LOG = LogFactory.getLog(OfflineService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OfflineService.class);
     private TaxonLookupService taxonLookupService;
 
     @Override
@@ -87,10 +87,4 @@ public abstract class OfflineService extends PropertyEnricherSimple {
 
     protected abstract TaxonomyImporter createTaxonomyImporter();
 
-    @Override
-    public void shutdown() {
-        if (taxonLookupService != null) {
-            taxonLookupService.destroy();
-        }
-    }
 }

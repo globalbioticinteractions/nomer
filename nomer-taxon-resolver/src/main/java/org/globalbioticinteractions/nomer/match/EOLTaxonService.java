@@ -2,8 +2,8 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -35,7 +35,7 @@ import java.util.TreeMap;
 @PropertyEnricherInfo(name = "eol-taxon-id", description = "Lookup EOL pages by id with EOL:* prefix using offline-enabled database dump")
 public class EOLTaxonService extends PropertyEnricherSimple {
 
-    private static final Log LOG = LogFactory.getLog(EOLTaxonService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EOLTaxonService.class);
     private static final String DENORMALIZED_NODES = "denormalizedNodes";
 
     private final TermMatcherContext ctx;

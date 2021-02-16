@@ -2,8 +2,8 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -27,7 +27,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
 
     public static final String NOMER_DOI_CACHE_URL = "nomer.doi.cache.url";
     public static final String NOMER_DOI_CROSSREF_MIN_SCORE = "nomer.doi.min.match.score";
-    private static final Log LOG = LogFactory.getLog(TermMatcherDOIFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TermMatcherDOIFactory.class);
 
     @Override
     public String getName() {

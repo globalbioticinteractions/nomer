@@ -6,18 +6,16 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.store.Directory;
+import org.eol.globi.taxon.TaxonLookupBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.domain.NameType;
-import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
-import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TaxonLookupServiceImpl;
@@ -29,16 +27,13 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @PropertyEnricherInfo(name = "plazi", description = "Lookup Plazi taxon treatment by name or id using offline-enabled database dump")
 public class PlaziService implements TermMatcher {
 
-    private static final Log LOG = LogFactory.getLog(PlaziService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PlaziService.class);
 
     private final TermMatcherContext ctx;
 
@@ -112,14 +107,13 @@ public class PlaziService implements TermMatcher {
         }
 
         try {
-            taxonLookupService = new TaxonLookupServiceImpl(new SimpleFSDirectory(cacheDir));
-            taxonLookupService.start();
+            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir);
+            taxonLookupService = new TaxonLookupServiceImpl(indexDir);
             if (preExistingCacheDir) {
                 LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
             } else {
-                indexTreatments();
+                indexTreatments(indexDir);
             }
-            taxonLookupService.finish();
 
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to init enricher", e);
@@ -127,30 +121,30 @@ public class PlaziService implements TermMatcher {
 
     }
 
-    private void indexTreatments() throws PropertyEnricherException {
+    private void indexTreatments(Directory indexDir) throws PropertyEnricherException {
         LOG.info("Indexing Plazi treatments ...");
         StopWatch watch = new StopWatch();
         watch.start();
         AtomicLong counter = new AtomicLong();
 
-        try {
+        try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(indexDir)) {
             InputStream resource = this.ctx.getResource(getArchiveUrl());
             TaxonCacheListener listener = new TaxonCacheListener() {
 
                 @Override
                 public void start() {
-
+                    taxonLookupBuilder.start();
                 }
 
                 @Override
                 public void addTaxon(Taxon taxon) {
                     counter.incrementAndGet();
-                    taxonLookupService.addTerm(taxon);
+                    taxonLookupBuilder.addTerm(taxon);
                 }
 
                 @Override
                 public void finish() {
-
+                    taxonLookupBuilder.finish();
                 }
             };
             ArchiveInputStream archiveInputStream = new ZipArchiveInputStream(resource);
@@ -167,7 +161,6 @@ public class PlaziService implements TermMatcher {
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to load archive", e);
         }
-
 
         watch.stop();
         TaxonCacheService.logCacheLoadStats(watch.getTime(), counter.intValue(), LOG);

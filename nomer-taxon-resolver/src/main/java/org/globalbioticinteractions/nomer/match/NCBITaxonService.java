@@ -2,8 +2,8 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @PropertyEnricherInfo(name = "ncbi-taxon-id", description = "Lookup NCBI taxon by id with NCBI:* prefix.")
 public class NCBITaxonService extends PropertyEnricherSimple {
 
-    private static final Log LOG = LogFactory.getLog(NCBITaxonService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NCBITaxonService.class);
     private static final String DENORMALIZED_NODES = "denormalizedNodes";
     private static final String MERGED_NODES = "mergedNodes";
 

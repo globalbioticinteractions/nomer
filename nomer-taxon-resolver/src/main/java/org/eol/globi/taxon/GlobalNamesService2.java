@@ -1,8 +1,8 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -39,7 +39,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class GlobalNamesService2 extends PropertyEnricherSimple implements TermMatcher {
-    private static final Log LOG = LogFactory.getLog(GlobalNamesService2.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GlobalNamesService2.class);
     public static final List<Integer> MATCH_TYPES_EXACT = Arrays.asList(1, 2);
     public static final List<Integer> MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS = Arrays.asList(2, 6);
 

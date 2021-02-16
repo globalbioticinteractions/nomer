@@ -3,8 +3,8 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
@@ -25,7 +25,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public abstract class TermMatcherContextCaching extends CmdDefaultParams implements TermMatcherContext {
-    private final static Log LOG = LogFactory.getLog(TermMatcherContextCaching.class);
+    private final static Logger LOG = LoggerFactory.getLogger(TermMatcherContextCaching.class);
 
     @Override
     public InputStream getResource(String uri) throws IOException {

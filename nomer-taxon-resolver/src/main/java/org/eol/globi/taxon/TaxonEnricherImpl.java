@@ -1,7 +1,7 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Term;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class TaxonEnricherImpl extends PropertyEnricherSimple implements TermMatcher {
-    private static final Log LOG = LogFactory.getLog(TaxonEnricherImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaxonEnricherImpl.class);
 
     private final List<PropertyEnricher> services = new ArrayList<PropertyEnricher>();
     private final HashMap<Class, Integer> errorCounts = new HashMap<Class, Integer>();

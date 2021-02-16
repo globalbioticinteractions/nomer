@@ -1,8 +1,8 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.mapdb.Fun;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 public class NODCTaxonParser implements Iterator<Fun.Tuple2<String, String>> {
-    private static final Log LOG = LogFactory.getLog(NODCTaxonParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NODCTaxonParser.class);
 
     private String currentLine = null;
     private BufferedReader reader = null;

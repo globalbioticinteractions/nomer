@@ -3,8 +3,8 @@ package org.eol.globi.taxon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.CacheServiceUtil;
@@ -26,7 +26,7 @@ import java.util.TreeMap;
 
 @PropertyEnricherInfo(name = "nodc-taxon-id", description = "Lookup taxon in the Taxonomic Code of the National Oceanographic Data Center (NODC) by id with prefix NODC: . Maps to ITIS terms if possible.")
 public class NODCTaxonService extends PropertyEnricherSimple {
-    private static final Log LOG = LogFactory.getLog(NODCTaxonService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(NODCTaxonService.class);
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, String> nodc2itis = null;

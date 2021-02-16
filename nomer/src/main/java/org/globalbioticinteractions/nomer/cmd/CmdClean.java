@@ -2,14 +2,14 @@ package org.globalbioticinteractions.nomer.cmd;
 
 import com.beust.jcommander.Parameters;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
 @Parameters(separators = "= ", commandDescription = "Cleans term matcher cache.")
 public class CmdClean extends CmdMatcherParams {
-    private final static Log LOG = LogFactory.getLog(CmdClean.class);
+    private final static Logger LOG = LoggerFactory.getLogger(CmdClean.class);
 
     @Override
     public void run() {

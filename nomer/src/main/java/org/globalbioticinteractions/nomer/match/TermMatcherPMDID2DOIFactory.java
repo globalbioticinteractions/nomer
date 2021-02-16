@@ -3,8 +3,8 @@ package org.globalbioticinteractions.nomer.match;
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -29,7 +29,7 @@ import java.util.TreeMap;
 public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
 
     private static final String NOMER_PMID_CACHE = "nomer.pmid2doi.cache.url";
-    private static final Log LOG = LogFactory.getLog(TermMatcherPMDID2DOIFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TermMatcherPMDID2DOIFactory.class);
 
     @Override
     public String getName() {
