@@ -3,20 +3,20 @@ package org.globalbioticinteractions.nomer.match;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
-public class TermMatcherPlaziFactory implements TermMatcherFactory {
+public class TermMatcherNCBITaxonFactory implements TermMatcherFactory {
 
     @Override
     public String getName() {
-        return "plazi";
+        return "ncbi-taxon";
     }
 
     @Override
     public String getDescription() {
-        return "Lookup Plazi taxon treatment by name or id using offline-enabled database dump";
+        return "Lookup NCBI taxa by name, synonym or id using offline-enabled database dump";
     }
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return new PlaziService(ctx);
+        return new NCBITaxonService(ctx);
     }
 }

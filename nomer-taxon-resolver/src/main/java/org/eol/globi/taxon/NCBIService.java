@@ -48,6 +48,10 @@ public class NCBIService extends PropertyEnricherSimple {
 
     public static String getNCBITaxonId(Map<String, String> properties) {
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
+        return getNCBIId(externalId);
+    }
+
+    public static String getNCBIId(String externalId) {
         final TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(externalId);
         return TaxonomyProvider.NCBI.equals(taxonomyProvider)
                 ? ExternalIdUtil.stripPrefix(TaxonomyProvider.NCBI, externalId)

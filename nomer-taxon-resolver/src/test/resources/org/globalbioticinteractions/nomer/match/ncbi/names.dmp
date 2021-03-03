@@ -8,3 +8,7 @@
 2	|	bacteria	|		|	blast name	|
 2	|	eubacteria	|		|	genbank common name	|
 2	|	prokaryote	|	prokaryote <bacteria>	|	in-part	|
+385028	|	Anteholosticha manca (Kahl, 1932) Berger, 2003	|		|	authority	|
+385028	|	Anteholosticha manca	|		|	scientific name	|
+385028	|	Holosticha manca Kahl, 1932	|		|	authority	|
+385028	|	Holosticha manca	|		|	synonym	|

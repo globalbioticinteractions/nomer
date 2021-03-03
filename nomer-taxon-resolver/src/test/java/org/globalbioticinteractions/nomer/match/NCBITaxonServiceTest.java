@@ -1,26 +1,34 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.EnvoService;
+import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
+import static org.hamcrest.core.IsNull.nullValue;
 
 public class NCBITaxonServiceTest {
 
@@ -37,6 +45,81 @@ public class NCBITaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("superkingdom"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:2"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("superkingdom"));
+    }
+
+    @Test
+    public void matchById() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        AtomicBoolean gotReply = new AtomicBoolean(false);
+        String externalId = "NCBI:2";
+        service.match(Arrays.asList(new TaxonImpl(null, externalId)), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                assertThat(nameType, is(NameType.SAME_AS));
+                assertThat(resolvedTaxon.getName(), is("Bacteria"));
+                gotReply.set(true);
+            }
+        });
+
+        assertTrue(gotReply.get());
+    }
+
+    @Test
+    public void matchByName() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        AtomicBoolean gotReply = new AtomicBoolean(false);
+        service.match(Arrays.asList(new TaxonImpl("Anteholosticha manca")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                assertThat(nameType, is(NameType.SAME_AS));
+                assertThat(resolvedTaxon.getName(), is("Anteholosticha manca"));
+                assertThat(resolvedTaxon.getId(), is("NCBI:385028"));
+                gotReply.set(true);
+            }
+        });
+
+        assertTrue(gotReply.get());
+    }
+
+    @Test
+    public void matchBySynonym() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        AtomicBoolean gotReply = new AtomicBoolean(false);
+        service.match(Arrays.asList(new TaxonImpl("Holosticha manca")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                assertThat(nameType, is(NameType.SYNONYM_OF));
+                assertThat(providedTerm.getName(), is("Holosticha manca"));
+                assertThat(resolvedTaxon.getName(), is("Anteholosticha manca"));
+                assertThat(resolvedTaxon.getId(), is("NCBI:385028"));
+                gotReply.set(true);
+            }
+        });
+
+        assertTrue(gotReply.get());
+    }
+
+
+    @Test
+    public void matchBySynonymAndId() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+        final List<String> resolvedNames = new ArrayList<>();
+        service.match(Arrays.asList(
+                new TaxonImpl("Holosticha manca"),
+                new TaxonImpl(null, "NCBI:2")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                resolvedNames.add(resolvedTaxon.getName());
+            }
+        });
+
+        assertThat(resolvedNames.size(), is(2));
+        assertThat(resolvedNames, hasItem("Bacteria"));
+        assertThat(resolvedNames, hasItem("Anteholosticha manca"));
+
     }
 
     @Test
@@ -91,7 +174,9 @@ public class NCBITaxonServiceTest {
     public void enrichNoMatch() throws PropertyEnricherException {
         NCBITaxonService service = createService();
 
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, "NCBI:999999999")));
+        Map<String, String> enriched = service.enrich
+                (TaxonUtil.taxonToMap(new TaxonImpl(null, "NCBI:999999999"))
+                );
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
@@ -218,15 +303,20 @@ public class NCBITaxonServiceTest {
     @Test
     public void parseNames() throws PropertyEnricherException {
         Map<String, String> nameMap = new TreeMap<>();
+        Map<String, List<String>> nameIds = new TreeMap<>();
+        Map<String, List<String>> synonymIds = new TreeMap<>();
 
         InputStream namesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/ncbi/names.dmp");
 
-        NCBITaxonService.parseNames(nameMap, namesStream);
+        NCBITaxonService.parseNames(namesStream, nameMap, nameIds, synonymIds);
 
-        assertThat(nameMap.size(), is(2));
+        assertThat(nameMap.size(), is(3));
         assertThat(nameMap.get("NCBI:1"), is("root"));
         assertThat(nameMap.get("NCBI:2"), is("Bacteria"));
+        assertThat(nameMap.get("NCBI:385028"), is("Anteholosticha manca"));
 
+        assertThat(nameIds.get("Anteholosticha manca"), hasItem("NCBI:385028"));
+        assertThat(synonymIds.get("Holosticha manca"), hasItem("NCBI:385028"));
     }
 
 
@@ -234,7 +324,8 @@ public class NCBITaxonServiceTest {
     public void findIdByName() throws PropertyEnricherException {
         TaxonImpl taxon = new TaxonImpl();
         taxon.setName("detritus");
-        assertThat(new EnvoService().enrich(TaxonUtil.taxonToMap(taxon)).get(PropertyAndValueDictionary.EXTERNAL_ID), is("ENVO:01001103"));
+        assertThat(new EnvoService().enrich(TaxonUtil.taxonToMap(taxon)).get(PropertyAndValueDictionary.EXTERNAL_ID),
+                is("ENVO:01001103"));
     }
 
     @Test
