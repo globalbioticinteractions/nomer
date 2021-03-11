@@ -1,13 +1,11 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.domain.NameType;
-import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.taxon.EnvoService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
@@ -17,7 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -95,6 +93,41 @@ public class NCBITaxonServiceTest {
                 assertThat(providedTerm.getName(), is("Holosticha manca"));
                 assertThat(resolvedTaxon.getName(), is("Anteholosticha manca"));
                 assertThat(resolvedTaxon.getId(), is("NCBI:385028"));
+                gotReply.set(true);
+            }
+        });
+
+        assertTrue(gotReply.get());
+    }
+
+    @Test
+    public void matchByCommonName() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        AtomicBoolean gotReply = new AtomicBoolean(false);
+        service.match(Arrays.asList(new TaxonImpl("eubacteria")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                assertThat(nameType, is(NameType.COMMON_NAME_OF));
+                assertThat(providedTerm.getName(), is("eubacteria"));
+                assertThat(resolvedTaxon.getName(), is("Bacteria"));
+                assertThat(resolvedTaxon.getId(), is("NCBI:2"));
+                gotReply.set(true);
+            }
+        });
+
+        assertTrue(gotReply.get());
+    }
+
+    @Test
+    public void matchByCommonNameDifferentCase() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        AtomicBoolean gotReply = new AtomicBoolean(false);
+        service.match(Collections.singletonList(new TaxonImpl("Eubacteria")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                assertThat(nameType, is(NameType.NONE));
                 gotReply.set(true);
             }
         });
@@ -232,7 +265,7 @@ public class NCBITaxonServiceTest {
 
     @Test
     public void parseNodes() throws PropertyEnricherException {
-        Map<String, Map<String,String>> node = new TreeMap<>();
+        Map<String, Map<String, String>> node = new TreeMap<>();
         Map<String, String> childParent = new TreeMap<>();
 
         InputStream nodesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/ncbi/nodes.dmp");
@@ -304,11 +337,12 @@ public class NCBITaxonServiceTest {
     public void parseNames() throws PropertyEnricherException {
         Map<String, String> nameMap = new TreeMap<>();
         Map<String, List<String>> nameIds = new TreeMap<>();
+        Map<String, List<String>> commonNameIds = new TreeMap<>();
         Map<String, List<String>> synonymIds = new TreeMap<>();
 
         InputStream namesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/ncbi/names.dmp");
 
-        NCBITaxonService.parseNames(namesStream, nameMap, nameIds, synonymIds);
+        NCBITaxonService.parseNames(namesStream, nameMap, nameIds, commonNameIds, synonymIds);
 
         assertThat(nameMap.size(), is(3));
         assertThat(nameMap.get("NCBI:1"), is("root"));
@@ -317,30 +351,8 @@ public class NCBITaxonServiceTest {
 
         assertThat(nameIds.get("Anteholosticha manca"), hasItem("NCBI:385028"));
         assertThat(synonymIds.get("Holosticha manca"), hasItem("NCBI:385028"));
+        assertThat(commonNameIds.get("eubacteria"), hasItem("NCBI:2"));
     }
 
-
-    @Test
-    public void findIdByName() throws PropertyEnricherException {
-        TaxonImpl taxon = new TaxonImpl();
-        taxon.setName("detritus");
-        assertThat(new EnvoService().enrich(TaxonUtil.taxonToMap(taxon)).get(PropertyAndValueDictionary.EXTERNAL_ID),
-                is("ENVO:01001103"));
-    }
-
-    @Test
-    public void findPathById() throws PropertyEnricherException {
-        Map<String, String> properties = new HashMap<String, String>() {
-            {
-                put(PropertyAndValueDictionary.EXTERNAL_ID, "ENVO:01000155");
-            }
-        };
-        Map<String, String> enrichedProperties = new EnvoService().enrich(properties);
-        Taxon enrichedTaxon = TaxonUtil.mapToTaxon(enrichedProperties);
-        assertThat(enrichedTaxon.getName(), is("organic material"));
-        assertThat(enrichedTaxon.getExternalId(), is("ENVO:01000155"));
-        assertThat(enrichedTaxon.getPath(), is("environmental material | organic material"));
-        assertThat(enrichedTaxon.getPathIds(), is("ENVO:00010483 | ENVO:01000155"));
-    }
 
 }

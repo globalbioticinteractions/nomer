@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -42,12 +43,14 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
     private static final String MERGED_NODES = "mergedNodes";
     private static final String NAME_IDS = "nameIds";
     private static final String SYNONYM_IDS = "synonymIds";
+    private static final String COMMON_NAME_IDS = "commonNamesIds";
 
 
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, List<String>> nameIds = null;
     private BTreeMap<String, List<String>> synonymIds = null;
+    private BTreeMap<String, List<String>> commonNameIds = null;
     private BTreeMap<String, String> mergedNodes = null;
     private BTreeMap<String, Map<String, String>> ncbiDenormalizedNodes = null;
 
@@ -62,6 +65,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         for (Term term : terms) {
             List<Taxon> matchedTaxa = new ArrayList<>();
             List<Taxon> matchedSynonyms = new ArrayList<>();
+            List<Taxon> matchedCommonNames = new ArrayList<>();
 
             String ncbiId = NCBIService.getNCBIId(term.getId());
             if (StringUtils.isNotBlank(ncbiId)) {
@@ -80,10 +84,15 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     matchedSynonyms.add(TaxonUtil.mapToTaxon(taxonForName));
                 });
 
+                List<Map<String, String>> commonNames = lookupTaxaByCommonName(term.getName());
+                commonNames.forEach(taxonForName -> {
+                    matchedCommonNames.add(TaxonUtil.mapToTaxon(taxonForName));
+                });
+
             }
 
 
-            if (matchedTaxa.isEmpty() && matchedSynonyms.isEmpty()) {
+            if (matchedTaxa.isEmpty() && matchedSynonyms.isEmpty() && matchedCommonNames.isEmpty()) {
                 termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
             } else {
                 matchedTaxa.forEach(matchedTerm -> {
@@ -92,6 +101,9 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                 matchedSynonyms.forEach(matchedTerm -> {
                     termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SYNONYM_OF);
                 });
+                matchedCommonNames.forEach(matchedTerm -> {
+                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.COMMON_NAME_OF);
+                });
             }
         }
     }
@@ -99,6 +111,20 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
     private List<Map<String, String>> lookupTaxaBySynonym(String name) {
         List<Map<String, String>> matches = new ArrayList<>();
         List<String> ids = synonymIds.get(name);
+        if (ids != null) {
+            for (String id : ids) {
+                Map<String, String> taxonMap = ncbiDenormalizedNodes.get(id);
+                if (taxonMap != null) {
+                    matches.add(taxonMap);
+                }
+            }
+        }
+        return matches;
+    }
+
+    private List<Map<String, String>> lookupTaxaByCommonName(String name) {
+        List<Map<String, String>> matches = new ArrayList<>();
+        List<String> ids = commonNameIds.get(name);
         if (ids != null) {
             for (String id : ids) {
                 Map<String, String> taxonMap = ncbiDenormalizedNodes.get(id);
@@ -167,12 +193,14 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES) && db.exists(MERGED_NODES)) {
+        if (db.exists(DENORMALIZED_NODES)
+                && db.exists(MERGED_NODES)) {
             LOG.info("NCBI taxonomy already indexed at [" + ncbiTaxonomyDir.getAbsolutePath() + "], no need to import.");
             ncbiDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
             mergedNodes = db.getTreeMap(MERGED_NODES);
             nameIds = db.getTreeMap(NAME_IDS);
             synonymIds = db.getTreeMap(SYNONYM_IDS);
+            commonNameIds = db.getTreeMap(COMMON_NAME_IDS);
         } else {
             LOG.info("NCBI taxonomy importing...");
             StopWatch watch = new StopWatch();
@@ -209,6 +237,11 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .keySerializer(BTreeKeySerializer.STRING)
                     .make();
 
+            commonNameIds = db
+                    .createTreeMap(COMMON_NAME_IDS)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .make();
+
 
             try {
                 parseMerged(mergedNodes, ctx.getResource(getMergedNodesUrl()));
@@ -222,7 +255,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .make();
 
             try {
-                parseNames(ctx.getResource(getNamesUrl()), ncbiNames, nameIds, synonymIds);
+                parseNames(ctx.getResource(getNamesUrl()), ncbiNames, nameIds, commonNameIds, synonymIds);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -339,6 +372,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
     static void parseNames(InputStream resourceAsStream, Map<String, String> nameMap,
                            Map<String, List<String>> nameIds,
+                           Map<String, List<String>> commonNameIds,
                            Map<String, List<String>> synonymIds) throws PropertyEnricherException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
@@ -376,6 +410,9 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     } else if (StringUtils.equals("synonym", taxonNameClass)) {
                         String ncbiTaxonId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
                         addIdMapEntry(synonymIds, taxonName, ncbiTaxonId);
+                    } else if (Arrays.asList("genbank common name", "common name").contains(taxonNameClass)) {
+                        String ncbiTaxonId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
+                        addIdMapEntry(commonNameIds, taxonName, ncbiTaxonId);
                     }
 
                 }
