@@ -1,6 +1,5 @@
 package org.eol.globi.taxon;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;

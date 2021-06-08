@@ -38,6 +38,7 @@ public class SuggesterFactory {
                 add(manualSuggestor);
                 add(stopwordRemover);
                 add(new SnakeCaseUndoer());
+                add(new PeriodAsWhitespaceUndoer());
                 add(new AllCapsUndoer());
 
                 // map using UK species inventory
