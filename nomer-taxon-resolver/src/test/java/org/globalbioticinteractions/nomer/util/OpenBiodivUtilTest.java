@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertNotNull;
 
 public class OpenBiodivUtilTest {
 
@@ -24,6 +25,8 @@ public class OpenBiodivUtilTest {
     public void retrieveTaxonFamily() throws IOException {
         Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("4B689A17-2541-4F5F-A896-6F0C2EEA3FB4",
                 getSparqlClient());
+
+        assertNotNull(taxon);
         assertThat(taxon.getName(), is("Acanthaceae"));
         assertThat(taxon.getRank(), is("family"));
         assertThat(taxon.getExternalId(), is("http://openbiodiv.net/4B689A17-2541-4F5F-A896-6F0C2EEA3FB4"));
@@ -36,6 +39,8 @@ public class OpenBiodivUtilTest {
         Taxon taxon = OpenBiodivUtil
                 .retrieveTaxonHierarchyById("6A54156A-BE5C-44D7-A9E3-3902DA4CCFAC",
                 getSparqlClient());
+
+        assertNotNull(taxon);
         assertThat(taxon.getName(), is("Copidothrips octarticulatus"));
         assertThat(taxon.getRank(), is(nullValue()));
         assertThat(taxon.getExternalId(), is("http://openbiodiv.net/6A54156A-BE5C-44D7-A9E3-3902DA4CCFAC"));
@@ -47,6 +52,7 @@ public class OpenBiodivUtilTest {
     public void retrieveTaxonSpecies2() throws IOException {
         Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("22A7F215-829B-458A-AEBB-39FFEA6D4A91",
                 getSparqlClient());
+        assertNotNull(taxon);
         assertThat(taxon.getName(), is("Bolacothrips striatopennatus"));
         assertThat(taxon.getRank(), is("species"));
         assertThat(taxon.getExternalId(), is("http://openbiodiv.net/22A7F215-829B-458A-AEBB-39FFEA6D4A91"));
