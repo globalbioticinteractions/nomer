@@ -102,6 +102,20 @@ public class ReplacingRowHandlerTest {
     }
 
     @Test
+    public void replaceWithKingdomOnlyMatchingPipedValues() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("\tJohnny Bravo | Anas crecca carolinensis", StandardCharsets.UTF_8);
+        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(1, "path.kingdom.name");
+                }};
+            }
+        });
+        assertThat(os.toString(), Is.is("\t| Animalia\n"));
+    }
+
+    @Test
     public void resolveTaxonCacheMatchFirstLineByIdOnly() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tJohnny Bravo", StandardCharsets.UTF_8);
         TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault() {

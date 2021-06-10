@@ -64,8 +64,7 @@ public class ReplacingRowHandler implements RowHandler {
                 if (indexType.getKey() < rowMerged.length) {
                     List<String> values = new ArrayList<>(taxonMaps.size());
                     for (Map<String, String> taxonMap : taxonMaps) {
-                        String valueOrNull = taxonMap.getOrDefault(taxonPropertyName, "");
-                        values.add(valueOrNull == null ? "" : valueOrNull);
+                        values.add(AppenderTSV.valueForTaxonProperty(TaxonUtil.mapToTaxon(taxonMap), taxonPropertyName));
                     }
                     rowMerged[indexType.getKey()] = values
                             .stream()

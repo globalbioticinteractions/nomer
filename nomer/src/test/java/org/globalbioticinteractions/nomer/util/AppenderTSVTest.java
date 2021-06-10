@@ -144,6 +144,19 @@ public class AppenderTSVTest {
     }
 
     @Test
+    public void getExternalIdFromPath() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setPathNames("kingdom | species");
+        taxon.setPath("someKingdom | someSpecies");
+        taxon.setPathIds("foo:1 | foo:2");
+        String kingdomName = AppenderTSV.valueForTaxonProperty(
+                taxon,
+                "externalId");
+
+        assertThat(kingdomName, is("someId"));
+    }
+
+    @Test
     public void getPathFromTaxon() {
         TaxonImpl taxon = new TaxonImpl("someName", "someId");
         taxon.setPath("someKingdom | someSpecies");
