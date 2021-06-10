@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class NBNServiceTest {
+public class NBNServiceIT {
 
     @Test
     public void lookupByCode() throws PropertyEnricherException {
