@@ -63,46 +63,9 @@ public class AppenderTSV implements Appender {
         Integer maxColumns = keys.get(keys.size() - 1);
         List<String> columns = new ArrayList<>(maxColumns);
         appended = resolvedTaxa.map(taxon -> {
-            String pathNames = taxon.getPathNames();
-            List<String> ranks = splitAndTrim(pathNames);
-            List<String> ids = splitAndTrim(taxon.getPathIds());
-            List<String> names = splitAndTrim(taxon.getPath());
             for (int i = 0; i <= maxColumns; i++) {
-                String colValue = "";
                 String colName = outputSchema.get(i);
-                if (StringUtils.equalsIgnoreCase(colName, "id")) {
-                    colValue = taxon.getExternalId();
-                } else if (StringUtils.equalsIgnoreCase(colName, "name")) {
-                    colValue = taxon.getName();
-                } else if (StringUtils.equalsIgnoreCase(colName, "rank")) {
-                    colValue = taxon.getRank();
-                } else if (StringUtils.equalsIgnoreCase(colName, "path.id")) {
-                    colValue = taxon.getPathIds();
-                } else if (StringUtils.equalsIgnoreCase(colName, "path.name")) {
-                    colValue = taxon.getPath();
-                } else if (StringUtils.equalsIgnoreCase(colName, "path.rank")) {
-                    colValue = taxon.getPathNames();
-                } else if (StringUtils.startsWith(colName, "path.")
-                        && ranks.size() > 0
-                        && ranks.size() == ids.size()
-                        && names.size() == ids.size()) {
-                    String[] split = StringUtils.split(colName, '.');
-                    if (split != null && split.length > 1) {
-                        String rank = split[1];
-                        int i1 = ranks.indexOf(rank);
-                        if (i1 > -1) {
-                            if (split.length > 2) {
-                                boolean shouldUseId = "id".equalsIgnoreCase(split[2]);
-                                colValue = shouldUseId
-                                        ? ids.get(i1)
-                                        : names.get(i1);
-                            } else {
-                                colValue = rank;
-                            }
-                        }
-                    }
-                }
-                columns.add(colValue);
+                columns.add(valueForTaxonProperty(taxon, colName));
             }
             return Stream.concat(
                     Stream.of(nameTypeOf.nameTypeOf(taxon).name()),
@@ -111,11 +74,52 @@ public class AppenderTSV implements Appender {
         return appended;
     }
 
+    public static String valueForTaxonProperty(Taxon taxon,
+                                               String colName) {
+        List<String> ranks = splitAndTrim(taxon.getPathNames());
+        List<String> ids = splitAndTrim(taxon.getPathIds());
+        List<String> names = splitAndTrim(taxon.getPath());
+        String colValue = "";
+        if (StringUtils.equalsIgnoreCase(colName, "id")) {
+            colValue = taxon.getExternalId();
+        } else if (StringUtils.equalsIgnoreCase(colName, "name")) {
+            colValue = taxon.getName();
+        } else if (StringUtils.equalsIgnoreCase(colName, "rank")) {
+            colValue = taxon.getRank();
+        } else if (StringUtils.equalsIgnoreCase(colName, "path.id")) {
+            colValue = taxon.getPathIds();
+        } else if (StringUtils.equalsIgnoreCase(colName, "path.name")) {
+            colValue = taxon.getPath();
+        } else if (StringUtils.equalsIgnoreCase(colName, "path.rank")) {
+            colValue = taxon.getPathNames();
+        } else if (StringUtils.startsWith(colName, "path.")
+                && ranks.size() > 0
+                && ranks.size() == ids.size()
+                && names.size() == ids.size()) {
+            String[] split = StringUtils.split(colName, '.');
+            if (split != null && split.length > 1) {
+                String rank = split[1];
+                int i1 = ranks.indexOf(rank);
+                if (i1 > -1) {
+                    if (split.length > 2) {
+                        boolean shouldUseId = "id".equalsIgnoreCase(split[2]);
+                        colValue = shouldUseId
+                                ? ids.get(i1)
+                                : names.get(i1);
+                    } else {
+                        colValue = rank;
+                    }
+                }
+            }
+        }
+        return colValue;
+    }
+
     private boolean hasDefaultSchema() {
         return outputSchema.isEmpty();
     }
 
-    private List<String> splitAndTrim(String pathNames) {
+    private static List<String> splitAndTrim(String pathNames) {
         return StringUtils.isBlank(pathNames)
                 ? Collections.emptyList()
                 : Arrays.stream(CSVTSVUtil.splitPipes(pathNames)).map(String::trim).collect(Collectors.toList());
