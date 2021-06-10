@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class OpenBiodivUtilTest {
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/36")
     @Test
     public void retrieveTaxonFamily() throws IOException {
         Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("4B689A17-2541-4F5F-A896-6F0C2EEA3FB4",
@@ -48,6 +49,7 @@ public class OpenBiodivUtilTest {
         assertThat(taxon.getPathNames(), is(""));
     }
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/36")
     @Test
     public void retrieveTaxonSpecies2() throws IOException {
         Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("22A7F215-829B-458A-AEBB-39FFEA6D4A91",
