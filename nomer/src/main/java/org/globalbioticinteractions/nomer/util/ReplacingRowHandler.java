@@ -56,7 +56,10 @@ public class ReplacingRowHandler implements RowHandler {
         return taxonMaps;
     }
 
-    private String[] mergeTaxonMapsIntoRow(String[] row, Collection<Map<String, String>> taxonMaps, Map<Integer, String> outputSchema) {
+    private static String[] mergeTaxonMapsIntoRow(
+            String[] row,
+            Collection<Map<String, String>> taxonMaps,
+            Map<Integer, String> outputSchema) {
         String[] rowMerged = Arrays.copyOf(row, row.length);
         if (outputSchema != null) {
             for (Map.Entry<Integer, String> indexType : outputSchema.entrySet()) {
@@ -64,7 +67,11 @@ public class ReplacingRowHandler implements RowHandler {
                 if (indexType.getKey() < rowMerged.length) {
                     List<String> values = new ArrayList<>(taxonMaps.size());
                     for (Map<String, String> taxonMap : taxonMaps) {
-                        values.add(AppenderTSV.valueForTaxonProperty(TaxonUtil.mapToTaxon(taxonMap), taxonPropertyName));
+
+                        Taxon taxon = TaxonUtil.mapToTaxon(taxonMap);
+
+                        String taxonPropertyValue = AppenderUtil.valueForTaxonPropertyName2(taxon, taxonMap, taxonPropertyName);
+                        values.add(taxonPropertyValue);
                     }
                     rowMerged[indexType.getKey()] = values
                             .stream()

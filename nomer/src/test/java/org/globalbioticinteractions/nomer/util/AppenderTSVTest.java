@@ -130,53 +130,5 @@ public class AppenderTSVTest {
         appender.appendLinesForRow(row, provided, Stream.of(resolved), new PrintStream(out), taxon1 -> NameType.SAME_AS);
     }
 
-    @Test
-    public void getKingdomFromPath() {
-        TaxonImpl taxon = new TaxonImpl("someName", "someId");
-        taxon.setPathNames("kingdom | species");
-        taxon.setPath("someKingdom | someSpecies");
-        taxon.setPathIds("foo:1 | foo:2");
-        String kingdomName = AppenderTSV.valueForTaxonProperty(
-                taxon,
-                "path.kingdom.name");
-
-        assertThat(kingdomName, is("someKingdom"));
-    }
-
-    @Test
-    public void getExternalIdFromPath() {
-        TaxonImpl taxon = new TaxonImpl("someName", "someId");
-        taxon.setPathNames("kingdom | species");
-        taxon.setPath("someKingdom | someSpecies");
-        taxon.setPathIds("foo:1 | foo:2");
-        String kingdomName = AppenderTSV.valueForTaxonProperty(
-                taxon,
-                "externalId");
-
-        assertThat(kingdomName, is("someId"));
-    }
-
-    @Test
-    public void getPathFromTaxon() {
-        TaxonImpl taxon = new TaxonImpl("someName", "someId");
-        taxon.setPath("someKingdom | someSpecies");
-        String kingdomName = AppenderTSV.valueForTaxonProperty(
-                taxon,
-                "path.name");
-
-        assertThat(kingdomName, is("someKingdom | someSpecies"));
-    }
-
-    @Test
-    public void getPathIdsFromTaxon() {
-        TaxonImpl taxon = new TaxonImpl("someName", "someId");
-        taxon.setPathIds("foo:1 | foo:2");
-        String pathIds = AppenderTSV.valueForTaxonProperty(
-                taxon,
-                "path.id");
-
-        assertThat(pathIds, is("foo:1 | foo:2"));
-    }
-
 
 }
