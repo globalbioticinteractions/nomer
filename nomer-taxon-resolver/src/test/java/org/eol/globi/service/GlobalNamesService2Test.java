@@ -531,7 +531,7 @@ public class GlobalNamesService2Test {
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), containsString("Siluriformes | Ariidae | Ariopsis"));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_IDS), is(""));
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_NAMES), containsString("order | family | genus"));
-        assertThat(enrich.get(PropertyAndValueDictionary.RANK), is("species"));
+        assertThat(enrich.get(PropertyAndValueDictionary.RANK), is("Species"));
         assertThat(enrich.get(PropertyAndValueDictionary.EXTERNAL_ID), is("WORMS:158709"));
         assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), not(containsString("hardhead catfish @en")));
         assertThat(enrich.get(PropertyAndValueDictionary.COMMON_NAMES), not(containsString("bagre boca chica @en")));
@@ -714,7 +714,7 @@ public class GlobalNamesService2Test {
                     assertThat(nameType, is(NameType.NONE));
                 });
 
-        assertThat(taxa.size(), is(202));
+        assertThat(taxa.size(), is(203));
 
     }
 
