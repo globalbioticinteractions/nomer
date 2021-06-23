@@ -1,18 +1,15 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.ManualSuggester;
 import org.eol.globi.taxon.SuggesterFactory;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.match.TermMatcherCorrectFactory;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Test;
@@ -26,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.zip.GZIPInputStream;
 
 import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,22 +38,16 @@ public class TermMatcherCorrectFactoryTest {
     @Test(expected = IllegalStateException.class)
     public void notInitialized() throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(null);
-        termMatcher.match(Arrays.asList(new TermImpl(null, "copepods")), (nodeId, name, taxon, nameType) -> {
-        });
+        termMatcher.match(Collections.singletonList(
+                new TermImpl(null, "copepods")),
+                (nodeId, name, taxon, nameType) -> {
+                }
+        );
     }
 
     @Test
     public void correct() throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
-        AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Arrays.asList(new TermImpl(null, "copepods")), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), Is.is("Copepoda"));
-                found.set(true);
-            }
-        });
-        assertTrue(found.get());
+        assertCorrection("copepods", "Copepoda");
     }
 
     private TermMatcherContext createTestContext() {
@@ -99,72 +89,45 @@ public class TermMatcherCorrectFactoryTest {
 
     @Test
     public void correctSingleTermWithStopword() throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
-        AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Arrays.asList(new TermImpl(null, "unidentified copepods")), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), Is.is("Copepoda"));
-                found.set(true);
-            }
-        });
-        assertTrue(found.get());
+        assertCorrection("unidentified copepods", "Copepoda");
     }
 
     @Test
     public void correctSingleTermWithCapitalizedStopword() throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
-        AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Arrays.asList(new TaxonImpl("Unidentified Copepods", null)), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), Is.is("Copepoda"));
-                found.set(true);
-            }
-        });
-        assertTrue(found.get());
+        assertCorrection("Unidentified Copepods", "Copepoda");
     }
 
     @Test
     public void correctSnakeCase() throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
-        AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Arrays.asList(new TermImpl(null, "homo_sapiens")), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
-                assertThat(taxon.getName(), Is.is("Homo sapiens"));
-                found.set(true);
-            }
-        });
-        assertTrue(found.get());
+        assertCorrection("homo_sapiens", "Homo sapiens");
     }
 
     @Test
     public void correctBatSARSCoV() throws PropertyEnricherException {
+        assertPassThroughName("Bat SARS CoV");
+    }
+
+    @Test
+    public void correctVirusAcronymNPV() throws PropertyEnricherException {
+        assertPassThroughName("Spodoptera frugiperda NPV");
+    }
+
+    private void assertPassThroughName(String passThoughName) throws PropertyEnricherException {
+        assertCorrection(passThoughName, passThoughName);
+    }
+
+    private void assertCorrection(final String nameToBeCorrected, String expectedCorrection) throws PropertyEnricherException {
         TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        Term batVirusTerm = new TermImpl(null, "Bat SARS CoV");
+        Term batVirusTerm = new TermImpl(null, nameToBeCorrected);
         termMatcher.match(
                 Collections.singletonList(batVirusTerm),
-                (nodeId, name, taxon, nameType) -> {
-                    assertThat(taxon.getName(), Is.is("Bat SARS CoV"));
+                (nodeId, name1, taxon, nameType) -> {
+                    assertThat(taxon.getName(), Is.is(expectedCorrection));
                     found.set(true);
                 });
         assertTrue(found.get());
     }
 
-    @Test
-    public void correctVirusAcronymNPV() throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
-        AtomicBoolean found = new AtomicBoolean(false);
-        Term batVirusTerm = new TermImpl(null, "Spodoptera frugiperda NPV");
-        termMatcher.match(
-                Collections.singletonList(batVirusTerm),
-                (nodeId, name, taxon, nameType) -> {
-                    assertThat(taxon.getName(), Is.is("Spodoptera frugiperda NPV"));
-                    found.set(true);
-                });
-        assertTrue(found.get());
-    }
 
 }
