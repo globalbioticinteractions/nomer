@@ -21,6 +21,11 @@ public class TaxonNameCorrectorTest {
     }
 
     @Test
+    public void batSARSCoV() {
+        assertThat(CORRECTOR.correct("Bat SARS CoV"), is("Bat SARS CoV"));
+    }
+
+    @Test
     public void taxonNameNoMatch() {
         assertThat(CORRECTOR.correct(PropertyAndValueDictionary.NO_MATCH), is(PropertyAndValueDictionary.NO_MATCH));
     }

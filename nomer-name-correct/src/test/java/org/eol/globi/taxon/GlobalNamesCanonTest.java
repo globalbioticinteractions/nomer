@@ -7,7 +7,7 @@ import org.junit.Test;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@Ignore
+
 public class GlobalNamesCanonTest {
 
     protected NameSuggester getNameSuggester() {
@@ -100,6 +100,12 @@ public class GlobalNamesCanonTest {
         assertThat(getNameSuggester().suggest("Arthopyrenia hyalospora X Hydnellum scrobiculatum"), is(expected));
         assertThat(getNameSuggester().suggest("Arthopyrenia hyalospora x Hydnellum scrobiculatum"), is(expected));
         assertThat(getNameSuggester().suggest("Arthopyrenia hyalospora \u00D7 Hydnellum scrobiculatum"), is(expected));
+    }
+
+    @Test
+    public void batVirusName() {
+        // see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/672#issuecomment-867149488
+        assertThat(getNameSuggester().suggest("Bat SARS CoV"), is("Bat SARS CoV"));
     }
 
 

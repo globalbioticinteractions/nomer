@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -135,6 +136,34 @@ public class TermMatcherCorrectFactoryTest {
                 found.set(true);
             }
         });
+        assertTrue(found.get());
+    }
+
+    @Test
+    public void correctBatSARSCoV() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
+        AtomicBoolean found = new AtomicBoolean(false);
+        Term batVirusTerm = new TermImpl(null, "Bat SARS CoV");
+        termMatcher.match(
+                Collections.singletonList(batVirusTerm),
+                (nodeId, name, taxon, nameType) -> {
+                    assertThat(taxon.getName(), Is.is("Bat SARS CoV"));
+                    found.set(true);
+                });
+        assertTrue(found.get());
+    }
+
+    @Test
+    public void correctVirusAcronymNPV() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
+        AtomicBoolean found = new AtomicBoolean(false);
+        Term batVirusTerm = new TermImpl(null, "Spodoptera frugiperda NPV");
+        termMatcher.match(
+                Collections.singletonList(batVirusTerm),
+                (nodeId, name, taxon, nameType) -> {
+                    assertThat(taxon.getName(), Is.is("Spodoptera frugiperda NPV"));
+                    found.set(true);
+                });
         assertTrue(found.get());
     }
 
