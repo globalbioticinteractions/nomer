@@ -28,7 +28,7 @@ public class AppenderJSON implements Appender {
                 ArrayNode ids = addArray(pathNode, "ids", taxon.getPathIds());
                 ArrayNode ranks = addArray(pathNode, "ranks", taxon.getPathNames());
                 if ((ids == null || names.size() == ids.size())
-                        && (names == null || names.size() == ranks.size())) {
+                        && (names == null || ranks == null || names.size() == ranks.size())) {
                     resolved.put("path", pathNode);
                 }
             }
