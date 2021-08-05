@@ -41,7 +41,8 @@ public class AppenderJSONTest {
                         taxon1 -> NameType.SAME_AS);
 
         assertThat(out.toString(),
-                is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\",\"equivalent_to\":{\"@id\":\"providedId\",\"name\":\"providedName\"}}}\n"));
+                is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\"" +
+                        ",\"equivalent_to\":{\"@id\":\"providedId\",\"name\":\"providedName\"}},\"path\":{\"names\":[\"name1\",\"name2\"],\"ids\":[\"id1\",\"id2\"]}}\n"));
     }
 
     @Test
@@ -62,7 +63,8 @@ public class AppenderJSONTest {
                         taxon1 -> NameType.SAME_AS);
 
         assertThat(out.toString(),
-                is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\",\"equivalent_to\":{\"@id\":\"providedId\",\"name\":\"providedName\"}},\"path\":{\"names\":[\"name1\",\"name2\"],\"ids\":[\"id1\",\"id2\"],\"ranks\":[\"norank\",\"norank\"]}}\n"));
+                is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\"" +
+                        ",\"equivalent_to\":{\"@id\":\"providedId\",\"name\":\"providedName\"}},\"path\":{\"names\":[\"name1\",\"name2\"],\"ids\":[\"id1\",\"id2\"],\"ranks\":[\"norank\",\"norank\"]}}\n"));
     }
 
 }
