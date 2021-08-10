@@ -32,6 +32,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherPlaziFactory());
         add(new TermMatcherOpenBiodivFactory());
         add(new TermMatcherNCBITaxonFactory());
+        add(new TermMatcherGBIFTaxonFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
