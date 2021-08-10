@@ -74,7 +74,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                 List<Map<String, String>> synonyms = lookupTaxaBySynonym(term.getName());
                 synonyms.forEach(taxonForName -> {
                     matchedSynonyms.add(TaxonUtil.mapToTaxon(taxonForName));
-                });                
+                });
             }
 
 
@@ -103,7 +103,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
             }
         }
         return matches;
-    }   
+    }
 
     private List<Map<String, String>> lookupTaxaByName(String name) {
         List<Map<String, String>> matches = new ArrayList<>();
@@ -145,13 +145,13 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
     }
 
     private void lazyInit() throws PropertyEnricherException {
-    	File cacheDir = getCacheDir();
+        File cacheDir = getCacheDir();
         if (!cacheDir.exists()) {
             if (!cacheDir.mkdirs()) {
                 throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
             }
         }
-        
+
         File gbifTaxonomyDir = new File(getCacheDir(), "gbif");
         DB db = DBMaker
                 .newFileDB(gbifTaxonomyDir)
@@ -180,7 +180,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                     .createTreeMap("childParent")
                     .keySerializer(BTreeKeySerializer.STRING)
                     .make();
-            
+
             nameIds = db
                     .createTreeMap(NAME_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
@@ -189,8 +189,8 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
             synonymIds = db
                     .createTreeMap(SYNONYM_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
-                    .make();           
-            
+                    .make();
+
             try {
                 String taxonUrl = ctx.getProperty("nomer.gbif.taxon");
                 if (taxonUrl == null) {
@@ -200,8 +200,8 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                 parseNodes(gbifNodes, childParent, resource, nameIds, synonymIds);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse GBIF nodes", e);
-            }                     
-                                
+            }
+
 
             gbifDenormalizedNodes = db
                     .createTreeMap(DENORMALIZED_NODES)
@@ -216,22 +216,22 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
     }
 
     private boolean needsInit() {
-    	return gbifDenormalizedNodes == null;
+        return gbifDenormalizedNodes == null;
     }
 
     @Override
     public void shutdown() {
 
-    } 
-    
+    }
+
     private File getCacheDir() {
         File cacheDir = new File(ctx.getCacheDir(), "gbif");
         cacheDir.mkdirs();
         return cacheDir;
-    }    
+    }
 
 
-    static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream, BTreeMap<String,List<String>> names, BTreeMap<String,List<String>> synonyms) throws PropertyEnricherException {
+    static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream, BTreeMap<String, List<String>> names, BTreeMap<String, List<String>> synonyms) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
 
         String line;
@@ -239,31 +239,31 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
             while ((line = reader.readLine()) != null) {
                 String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
                 if (rowValues.length > 19) {
-                	String taxId = rowValues[0];                
-                	String parentTaxId = rowValues[1];
-                	String rank = rowValues[5];
-                	
-                	boolean isSynomym = StringUtils.equals("t", rowValues[3]);
-                	
-                	String canonicalName = rowValues[19];                	
-                	String externalId = TaxonomyProvider.ID_PREFIX_GBIF + taxId;
-                	TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
-                	taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "UNRANKED") ? "" : rank);
-                	taxon.setExternalId(externalId);
-                	
-                	taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
-                	childParent.put(TaxonomyProvider.ID_PREFIX_GBIF + taxId, TaxonomyProvider.ID_PREFIX_GBIF + parentTaxId);
-                	
-                	if (!isSynomym) {                        
-                        addIdMapEntry(names, canonicalName, taxId);
-                    } else {                        
+                    String taxId = rowValues[0];
+                    String parentTaxId = rowValues[1];
+                    String rank = rowValues[5];
+
+                    boolean isSynomym = StringUtils.equals("t", rowValues[3]);
+
+                    String canonicalName = rowValues[19];
+                    String externalId = TaxonomyProvider.ID_PREFIX_GBIF + taxId;
+                    TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
+                    taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "UNRANKED") ? "" : rank);
+                    taxon.setExternalId(externalId);
+
+                    taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
+                    childParent.put(TaxonomyProvider.ID_PREFIX_GBIF + taxId, TaxonomyProvider.ID_PREFIX_GBIF + parentTaxId);
+
+                    if (isSynomym) {
                         addIdMapEntry(synonyms, canonicalName, taxId);
+                    } else {
+                        addIdMapEntry(names, canonicalName, taxId);
                     }
                 }
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse GBIF taxon dump", e);
-        }                    
+        }
     }
 
     static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonMapDenormalized, Map<String, String> childParent) {
@@ -279,9 +279,9 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
         List<String> pathIds = new ArrayList<>();
         List<String> path = new ArrayList<>();
 
-        Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);                
+        Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);
         path.add(StringUtils.defaultIfBlank(origTaxon.getName(), ""));
-        
+
         String externalId = origTaxon.getExternalId();
         pathIds.add(StringUtils.defaultIfBlank(externalId, ""));
 
@@ -327,11 +327,11 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                     String rank = rowValues[5];
                     boolean isSynomym = StringUtils.equals("t", rowValues[3]);
                     String gbifTaxonId = TaxonomyProvider.ID_PREFIX_GBIF + taxId;
-                    
-                    if (!isSynomym) {                        
+
+                    if (!isSynomym) {
                         nameMap.put(gbifTaxonId, taxonName);
                         addIdMapEntry(nameIds, taxonName, gbifTaxonId);
-                    } else {                        
+                    } else {
                         addIdMapEntry(synonymIds, taxonName, gbifTaxonId);
                     }
 
