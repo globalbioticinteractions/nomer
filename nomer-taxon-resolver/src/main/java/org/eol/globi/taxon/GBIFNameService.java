@@ -13,7 +13,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-@PropertyEnricherInfo(name = "gbif-taxon-name", description = "Lookup taxon in GBIF by name")
+@PropertyEnricherInfo(name = "gbif-taxon-name", description = "Web-based taxon lookup by name using GBIF backbone API")
 public class GBIFNameService extends PropertyEnricherSimple {
 
     @Override

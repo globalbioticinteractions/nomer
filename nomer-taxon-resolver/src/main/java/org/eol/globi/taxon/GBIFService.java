@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@PropertyEnricherInfo(name = "gbif-taxon-id", description = "Lookup taxon in GBIF by id using prefix GBIF:* prefix.")
+@PropertyEnricherInfo(name = "gbif-taxon-id", description = "Web-based taxon lookup by id using GBIF backbone API and GBIF:* prefix.")
 public class GBIFService extends PropertyEnricherSimple {
 
     @Override
