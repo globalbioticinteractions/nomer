@@ -11,12 +11,14 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.LanguageCodeLookup;
+import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.match.GBIFNameRelationType;
 import org.globalbioticinteractions.nomer.match.GBIFRank;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -271,5 +273,33 @@ public class GBIFUtil {
     public static boolean isSynonym(String[] rowValues) {
         return rowValues != null
                 && StringUtils.equals("t", rowValues[3]);
+    }
+
+    static JsonNode getSpeciesInfo(String gbifSpeciesId) throws IOException {
+        String response = HttpUtil.getContent("http://api.gbif.org/v1/species/" + gbifSpeciesId);
+        return new ObjectMapper().readTree(response);
+    }
+
+    public static void enrichWithTaxonName(Map<String, String> enriched, String taxonName) throws PropertyEnricherException {
+        try {
+            JsonNode jsonNode = getSpeciesInfoByName(taxonName);
+            if (jsonNode != null) {
+                if (jsonNode.has("acceptedKey")) {
+                    jsonNode = getSpeciesInfo(jsonNode.get("acceptedKey").asText());
+                }
+                addTaxonNode(enriched, jsonNode);
+
+                appendCommonNames(enriched, jsonNode);
+            }
+
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to lookup [" + taxonName + "]", e);
+        }
+
+    }
+
+    public static JsonNode getSpeciesInfoByName(String taxonName) throws IOException {
+        String response = HttpUtil.getContent("http://api.gbif.org/v1/species?name=" + URLEncoder.encode(taxonName, "UTF-8"));
+        return getFirstResult(response);
     }
 }

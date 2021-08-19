@@ -2,19 +2,17 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.ExternalIdUtil;
-import org.eol.globi.util.HttpUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@PropertyEnricherInfo(name = "gbif-taxon-id", description = "Web-based taxon lookup by id using GBIF backbone API and GBIF:* prefix.")
+@PropertyEnricherInfo(name = "gbif-taxon-web", description = "Web-based taxon id/name lookup using GBIF backbone API and GBIF:* prefix.")
 public class GBIFService extends PropertyEnricherSimple {
 
     @Override
@@ -25,6 +23,11 @@ public class GBIFService extends PropertyEnricherSimple {
 
         if (StringUtils.isNotBlank(gbifSpeciesId)) {
             enrichWithExternalId(enriched, gbifSpeciesId);
+        } else {
+            final String taxonName = enriched.get(PropertyAndValueDictionary.NAME);
+            if (StringUtils.isNotBlank(taxonName)) {
+                GBIFUtil.enrichWithTaxonName(enriched, taxonName);
+            }
         }
         return enriched;
     }
@@ -45,9 +48,9 @@ public class GBIFService extends PropertyEnricherSimple {
 
     private void enrichWithExternalId(Map<String, String> enriched, String gbifSpeciesId) throws PropertyEnricherException {
         try {
-            JsonNode jsonNode = getSpeciesInfo(gbifSpeciesId);
+            JsonNode jsonNode = GBIFUtil.getSpeciesInfo(gbifSpeciesId);
             if (jsonNode.has("acceptedKey")) {
-                jsonNode = getSpeciesInfo(jsonNode.get("acceptedKey").asText());
+                jsonNode = GBIFUtil.getSpeciesInfo(jsonNode.get("acceptedKey").asText());
             }
             GBIFUtil.addTaxonNode(enriched, jsonNode);
 
@@ -56,11 +59,6 @@ public class GBIFService extends PropertyEnricherSimple {
             throw new PropertyEnricherException("failed to lookup GBIF Species Id [" + gbifSpeciesId + "]", e);
         }
 
-    }
-
-    private JsonNode getSpeciesInfo(String gbifSpeciesId) throws IOException {
-        String response = HttpUtil.getContent("http://api.gbif.org/v1/species/" + gbifSpeciesId);
-        return new ObjectMapper().readTree(response);
     }
 
     public void shutdown() {
