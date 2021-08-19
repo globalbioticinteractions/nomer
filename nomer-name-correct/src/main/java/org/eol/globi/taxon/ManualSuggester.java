@@ -3,7 +3,6 @@ package org.eol.globi.taxon;
 import com.Ostermiller.util.CSVParse;
 import com.Ostermiller.util.CSVParser;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.lucene.store.Directory;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.service.Initializing;
 import org.eol.globi.service.NameSuggester;

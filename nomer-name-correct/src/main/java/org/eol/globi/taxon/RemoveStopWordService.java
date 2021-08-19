@@ -1,10 +1,9 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.store.Directory;
+import org.eol.globi.service.Initializing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eol.globi.service.Initializing;
 
 import java.io.BufferedReader;
 import java.io.IOException;

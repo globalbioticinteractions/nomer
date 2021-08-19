@@ -1,0 +1,11 @@
+Sebaldella	3225898
+Propionigenium modestum	3225869
+Propionigenium maris	9020935
+Leptotrichia wadei	3225906
+Lentisphaeria	7502419
+Fusobacterium equinum	3225874
+Fusobacteriaceae	7806
+Desulfomusa hansenii	3220667
+Desulfofaba hansenii	3220666
+Desulfobacter vibrioformis	3220631
+Desulfatibacillum aliphaticivorans	3220654
