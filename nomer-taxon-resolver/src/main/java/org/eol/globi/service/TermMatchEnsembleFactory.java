@@ -4,7 +4,6 @@ import org.eol.globi.taxon.AtlasOfLivingAustraliaService;
 import org.eol.globi.taxon.BOLDService;
 import org.eol.globi.taxon.EnvoService;
 import org.eol.globi.taxon.FunctionalGroupService;
-import org.eol.globi.taxon.GBIFNameService;
 import org.eol.globi.taxon.GBIFService;
 import org.eol.globi.taxon.GulfBaseService;
 import org.eol.globi.taxon.INaturalistTaxonService;
@@ -19,7 +18,6 @@ import org.globalbioticinteractions.nomer.match.EOLTaxonService;
 import org.globalbioticinteractions.nomer.match.GBIFTaxonService;
 import org.globalbioticinteractions.nomer.match.ITISTaxonService;
 import org.globalbioticinteractions.nomer.match.NCBITaxonIdService;
-import org.globalbioticinteractions.nomer.match.NCBITaxonService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
@@ -43,11 +41,11 @@ public class TermMatchEnsembleFactory {
                 add(new ITISTaxonService(ctx));
                 add(new ITISService());
                 add(new NCBITaxonIdService(ctx));
+                add(new GBIFTaxonService(ctx));
                 add(new NCBIService());
                 add(new BOLDService());
                 add(new EOLTaxonService(ctx));
                 add(new GBIFService());
-                add(new GBIFNameService());
                 add(new INaturalistTaxonService());
 //                add(new EOLService2());
                 add(new WoRMSService());
