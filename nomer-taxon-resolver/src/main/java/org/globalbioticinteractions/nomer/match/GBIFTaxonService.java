@@ -212,7 +212,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                                 }
                                 return idNameRank != null;
                             } catch (IOException e) {
-                                throw new RuntimeException("failed to access [" + taxonUrl + "]");
+                                throw new RuntimeException("failed to access [" + taxonUrl + "]", e);
                             }
                         }
 
@@ -255,7 +255,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                                 }
                                 return idRelation != null;
                             } catch (IOException e) {
-                                throw new RuntimeException("failed to access [" + taxonUrl + "]");
+                                throw new RuntimeException("failed to access [" + taxonUrl + "]", e);
                             }
                         }
 
