@@ -359,6 +359,9 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
     }
 
     private File getCacheDir() {
+        if (ctx == null) {
+            throw new RuntimeException("enricher context not set, cannot create [" + GBIFTaxonService.class.getName() + "]");
+        }
         File cacheDir = new File(ctx.getCacheDir(), "gbif");
         cacheDir.mkdirs();
         return cacheDir;
