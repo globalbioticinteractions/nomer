@@ -15,9 +15,9 @@ import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.WoRMSService;
 import org.globalbioticinteractions.nomer.match.EOLTaxonService;
+import org.globalbioticinteractions.nomer.match.GBIFTaxonService;
 import org.globalbioticinteractions.nomer.match.ITISTaxonService;
 import org.globalbioticinteractions.nomer.match.NCBITaxonIdService;
-import org.globalbioticinteractions.nomer.match.NCBITaxonService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ public class TermMatchEnsembleFactory {
                 add(new ITISTaxonService(ctx));
                 add(new ITISService());
                 add(new NCBITaxonIdService(ctx));
+                add(new GBIFTaxonService(ctx));
                 add(new NCBIService());
                 add(new BOLDService());
                 add(new EOLTaxonService(ctx));
