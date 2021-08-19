@@ -1,5 +1,5 @@
 # nomer
-[![Build Status](https://travis-ci.com/globalbioticinteractions/nomer.svg?branch=master)](https://travis-ci.com/globalbioticinteractions/nomer) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![Build Status](https://travis-ci.com/globalbioticinteractions/nomer.svg?branch=master)](https://travis-ci.com/globalbioticinteractions/nomer) [![Java CI](https://github.com/globalbioticinteractions/nomer/workflows/Java%20CI/badge.svg)](https://github.com/globalbioticinteractions/nomer/actions?query=workflow%3A%22Java+CI%22) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![DOI](https://zenodo.org/badge/117019305.svg)](https://zenodo.org/badge/latestdoi/117019305)
 
 Maps identifiers and names to taxonomic names and ontological terms. 
