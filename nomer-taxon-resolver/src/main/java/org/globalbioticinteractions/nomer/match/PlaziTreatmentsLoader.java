@@ -139,8 +139,14 @@ public class PlaziTreatmentsLoader {
         String path = TaxonUtil.generateTaxonPath(taxonMap);
         taxonMap.put(PropertyAndValueDictionary.PATH, path);
 
-        String value = TaxonUtil.generateTaxonName(taxonMap, taxonRanks, "genus",
-                "specificEpithet", "subspecificEpithet", "species");
+        String value = TaxonUtil.generateTaxonName(
+                taxonMap,
+                taxonRanks,
+                "genus",
+                "specificEpithet",
+                "subspecificEpithet",
+                "species",
+                null);
 
         if (StringUtils.isBlank(value)) {
             String[] pathSplit = StringUtils.split(path, CharsetConstant.SEPARATOR);

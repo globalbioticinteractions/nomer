@@ -1,5 +1,8 @@
 package org.eol.globi.taxon;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.http.HttpResponse;
@@ -8,9 +11,6 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
@@ -111,12 +111,8 @@ public class EOLService extends PropertyEnricherSimple {
                     eolPageId = Long.parseLong(jsonNode1.get("eol_page_id").asText());
                 }
             }
-        } catch (JsonProcessingException ex) {
+        } catch (JsonProcessingException | URISyntaxException ex) {
             throw new PropertyEnricherException("failed to create uri", ex);
-        } catch (URISyntaxException ex) {
-            throw new PropertyEnricherException("failed to create uri", ex);
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to get response", e);
         } catch (NumberFormatException e) {
             throw new PropertyEnricherException("invalid page id", e);
         }
@@ -305,7 +301,7 @@ public class EOLService extends PropertyEnricherSimple {
     }
 
     private void parseTaxonNode(JsonNode ancestor, List<String> ranks, List<String> rankNames, List<String> rankIds, String accordingTo) {
-        String scientificName = ancestor.has("scientificName") ? ancestor.get("scientificName").getTextValue() : null;
+        String scientificName = ancestor.has("scientificName") ? ancestor.get("scientificName").asText() : null;
         scientificName = StringUtils.containsIgnoreCase(scientificName, "Not Assigned") ? "" : scientificName;
         if (null != scientificName) {
             String taxonRank = StringUtils.isBlank(scientificName) ? "" : rankOf(ancestor);
@@ -350,12 +346,12 @@ public class EOLService extends PropertyEnricherSimple {
     private String rankOf(JsonNode ancestor) {
         String taxonRank = "";
         if (ancestor.has("taxonRank")) {
-            taxonRank = ancestor.get("taxonRank").getTextValue().toLowerCase();
+            taxonRank = ancestor.get("taxonRank").asText("").toLowerCase();
         }
         return taxonRank;
     }
 
-    protected Long getPageId(String taxonName, boolean shouldFollowAlternate) throws PropertyEnricherException {
+    private Long getPageId(String taxonName, boolean shouldFollowAlternate) throws PropertyEnricherException {
         try {
             URI uri = createSearchURI(taxonName);
             String response = getResponse(uri);

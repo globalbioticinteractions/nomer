@@ -7,10 +7,6 @@ import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.lucene.store.Directory;
-import org.eol.globi.taxon.TaxonLookupBuilder;
-import org.globalbioticinteractions.nomer.util.CacheUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -19,11 +15,15 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.taxon.TaxonLookupBuilder;
 import org.eol.globi.taxon.TaxonLookupServiceImpl;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,11 +106,11 @@ public class PlaziService implements TermMatcher {
             if (preExistingCacheDir) {
                 LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
             } else {
-                try (SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir)) {
+                try (SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir.toPath())) {
                     indexTreatments(indexDir);
                 }
             }
-            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir);
+            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir.toPath());
             taxonLookupService = new TaxonLookupServiceImpl(indexDir);
 
         } catch (IOException e) {

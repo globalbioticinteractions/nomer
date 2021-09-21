@@ -31,7 +31,7 @@ public class CacheUtil {
         return indexPath;
     }
 
-    public static Directory luceneDirectoryFor(File indexPath) throws IOException {
-        return new SimpleFSDirectory(indexPath);
+    public static Directory luceneDirectoryFor(File indexDir) throws IOException {
+        return new SimpleFSDirectory(indexDir.toPath());
     }
 }

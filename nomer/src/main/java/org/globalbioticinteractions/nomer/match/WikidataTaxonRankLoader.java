@@ -8,8 +8,8 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -60,11 +60,11 @@ public class WikidataTaxonRankLoader {
         Map<String, String> ranks = new HashMap<>();
         for (JsonNode binding : bindings) {
             JsonNode item = binding.get("i");
-            String value = item.get("value").getTextValue();
+            String value = item.get("value").asText();
 
             JsonNode label = binding.get("l");
-            String language = label.get("xml:lang").getTextValue();
-            String labelString = label.get("value").getTextValue();
+            String language = label.get("xml:lang").asText();
+            String labelString = label.get("value").asText();
             String s = ranks.containsKey(value) ? ranks.get(value) + CharsetConstant.SEPARATOR : "";
             ranks.put(value, s + labelString + " " + CharsetConstant.LANG_SEPARATOR_CHAR + language);
         }

@@ -47,12 +47,12 @@ public class TaxonomyImporter {
         getStopwatch().reset();
         getStopwatch().start();
 
-        File indexPath = CacheUtil.createTmpCacheDir();
-        LOG.info("index directory at [" + indexPath + "] created.");
+        File indexDir = CacheUtil.createTmpCacheDir();
+        LOG.info("index directory at [" + indexDir + "] created.");
 
 
         setCounter(0);
-        try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexPath);
+        try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexDir);
              TaxonLookupBuilder taxonImportListener = new TaxonLookupBuilder(cacheDir)) {
             Map<String, BufferedReader> allReaders = taxonReaderFactory.getAllReaders();
             for (Map.Entry<String, BufferedReader> entry : allReaders.entrySet()) {
@@ -62,18 +62,18 @@ public class TaxonomyImporter {
                     throw new IOException("failed to read from [" + entry.getKey() + "]");
                 }
             }
-            return new TaxonLookupServiceImpl(new SimpleFSDirectory(indexPath));
+            return new TaxonLookupServiceImpl(new SimpleFSDirectory(indexDir.toPath()));
         } catch (IOException e) {
             throw new StudyImporterException("failed to import taxonomy", e);
         }
     }
 
     private Directory initCacheDir() throws StudyImporterException {
-        File indexPath = CacheUtil.createTmpCacheDir();
+        File indexDir = CacheUtil.createTmpCacheDir();
         try {
-            return new SimpleFSDirectory(indexPath);
+            return new SimpleFSDirectory(indexDir.toPath());
         } catch (IOException e) {
-            throw new StudyImporterException("failed to create index dir [" + indexPath.getAbsolutePath() + "]");
+            throw new StudyImporterException("failed to create index dir [" + indexDir.getAbsolutePath() + "]");
         }
     }
 

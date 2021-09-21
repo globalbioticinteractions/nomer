@@ -78,7 +78,11 @@ public class NODCTaxonService extends PropertyEnricherSimple {
     }
 
     protected void init(NODCTaxonParser parser) throws PropertyEnricherException {
-        CacheServiceUtil.createCacheDir(getCacheDir());
+        try {
+            CacheServiceUtil.createCacheDir(getCacheDir());
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to initialize", e);
+        }
 
         LOG.info("NODC taxonomy importing...");
         StopWatch watch = new StopWatch();
