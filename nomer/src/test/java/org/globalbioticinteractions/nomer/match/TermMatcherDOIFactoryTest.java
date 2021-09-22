@@ -39,7 +39,8 @@ public class TermMatcherDOIFactoryTest {
             put(TermMatcherDOIFactory.NOMER_DOI_CACHE_URL, "map");
         }};
 
-        TermMatcher termMatcher = new TermMatcherDOIFactory().createTermMatcher(createTestContext());
+        TermMatcher termMatcher = new TermMatcherDOIFactory()
+                .createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl(null, "some citation")), (nodeId, name, taxon, nameType) -> {
             assertThat(taxon.getExternalId(), Is.is("https://doi.org/10.123/456"));
