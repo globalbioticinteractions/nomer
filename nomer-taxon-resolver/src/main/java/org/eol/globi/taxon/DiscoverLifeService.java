@@ -17,11 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
 @PropertyEnricherInfo(name = "discoverlife-taxon", description = "Look up taxa of https://discoverlife.org by name or id with DL:* prefix.")
 public class DiscoverLifeService extends OfflineService {
 
     static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
+    static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
     private static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
             "/mp/20q?search=";
     static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
@@ -58,6 +60,12 @@ public class DiscoverLifeService extends OfflineService {
         return webClient.getPage(DISCOVER_LIFE_URL);
     }
 
+    static InputStream getStreamOfBees() throws IOException {
+        return new GZIPInputStream(DiscoverLifeService.class
+                .getResourceAsStream(BEE_NAMES)
+        );
+    }
+
 
     @Override
     protected TaxonomyImporter createTaxonomyImporter() {
@@ -72,7 +80,10 @@ public class DiscoverLifeService extends OfflineService {
                                 put(DISCOVER_LIFE_URL, new Resource() {
                                     @Override
                                     public InputStream getInputStream() throws IOException {
-                                        return ctx.getResource(DISCOVER_LIFE_URL);
+                                        // note that SSL certificate used by discover life is not supported by jvm somehow
+                                        // so, for the time being, using a static version instead
+                                        //return ctx.getResource(DISCOVER_LIFE_URL);
+                                        return getStreamOfBees();
                                     }
 
                                     @Override
