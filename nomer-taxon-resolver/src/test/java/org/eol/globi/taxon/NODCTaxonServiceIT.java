@@ -2,15 +2,12 @@ package org.eol.globi.taxon;
 
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricherException;
-import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.not;
@@ -24,38 +21,7 @@ public class NODCTaxonServiceIT {
 
     @Before
     public void init() throws IOException, PropertyEnricherException {
-        nodcTaxonService = new NODCTaxonService(new TermMatcherContext() {
-            @Override
-            public String getCacheDir() {
-                return "target";
-            }
-
-            @Override
-            public String getProperty(String key) {
-                return null;
-            }
-
-            @Override
-            public InputStream getResource(String uri) throws IOException {
-                return null;
-            }
-
-            @Override
-            public List<String> getMatchers() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
-                return null;
-            }
-
-        });
+        nodcTaxonService = new NODCTaxonService(new ContextForTesting());
         nodcTaxonService.init(NODCTaxonParserTest.getTestParser());
     }
 
