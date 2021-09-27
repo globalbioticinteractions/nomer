@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
 
 @PropertyEnricherInfo(name = "discoverlife-taxon", description = "Look up taxa of https://discoverlife.org by name or id with DL:* prefix.")
 public class DiscoverLifeService extends OfflineService {
@@ -31,9 +30,10 @@ public class DiscoverLifeService extends OfflineService {
             .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
             .collect(Collectors.toList());
     static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family", "species");
-    public static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
     private final TermMatcherContext ctx;
-    public static final String DISCOVER_LIFE_URL = URL_ENDPOINT_DISCOVER_LIFE +
+    public static final String DISCOVER_LIFE_URL
+            = URL_ENDPOINT_DISCOVER_LIFE +
+            "/mp/20q" +
             "?act=x_checklist" +
             "&guide=Apoidea_species" +
             "&flags=HAS";
@@ -58,11 +58,6 @@ public class DiscoverLifeService extends OfflineService {
         return webClient.getPage(DISCOVER_LIFE_URL);
     }
 
-    static InputStream getStreamOfBees() throws IOException {
-        return new GZIPInputStream(DiscoverLifeService.class
-                .getResourceAsStream(BEE_NAMES)
-        );
-    }
 
     @Override
     protected TaxonomyImporter createTaxonomyImporter() {
@@ -74,7 +69,7 @@ public class DiscoverLifeService extends OfflineService {
                     public Map<String, Resource> getResources() throws IOException {
                         return new TreeMap<String, Resource>() {
                             {
-                                put(BEE_NAMES, new Resource() {
+                                put(DISCOVER_LIFE_URL, new Resource() {
                                     @Override
                                     public InputStream getInputStream() throws IOException {
                                         return ctx.getResource(DISCOVER_LIFE_URL);

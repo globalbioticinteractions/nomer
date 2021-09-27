@@ -60,7 +60,7 @@ public class TaxonomyImporter {
                 try {
                     parse(entry.getValue().getInputStream(), taxonImportListener);
                 } catch (IOException ex) {
-                    throw new IOException("failed to read from [" + entry.getKey() + "]");
+                    throw new IOException("failed to read from [" + entry.getKey() + "]", ex);
                 }
             }
             return new TaxonLookupServiceImpl(new SimpleFSDirectory(indexDir.toPath()));

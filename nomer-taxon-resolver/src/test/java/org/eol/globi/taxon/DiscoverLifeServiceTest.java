@@ -6,13 +6,17 @@ import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.GZIPInputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DiscoverLifeServiceTest {
+
+    private static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
 
     @Test
     public void parseBees() throws IOException {
@@ -54,7 +58,7 @@ public class DiscoverLifeServiceTest {
 
         TaxonParser parser = new TaxonParserForDiscoverLife();
 
-        parser.parse(DiscoverLifeService.getStreamOfBees(), listener);
+        parser.parse(getStreamOfBees(), listener);
 
         assertThat(counter.get(), Is.is(20507));
 
@@ -66,6 +70,22 @@ public class DiscoverLifeServiceTest {
         assertThat(taxon.getName(), Is.is("Acamptopoeum argentinum"));
         assertThat(taxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
         assertThat(taxon.getRank(), Is.is("species"));
+    }
+
+
+    private static InputStream getStreamOfBees() throws IOException {
+        return new GZIPInputStream(DiscoverLifeService.class
+                .getResourceAsStream(DiscoverLifeServiceTest.BEE_NAMES)
+        );
+    }
+
+
+    @Test
+    public void getCurrentBeeNames() throws IOException {
+        String actual = DiscoverLifeService.getBeeNamesAsXmlString();
+
+        String localCopy = IOUtils.toString(DiscoverLifeServiceTest.getStreamOfBees(), StandardCharsets.UTF_8);
+        assertThat(actual, Is.is(localCopy));
     }
 
 
