@@ -20,10 +20,10 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @PropertyEnricherInfo(name = "ncbi-taxon-id-web", description = "Lookup NCBI taxon by id with NCBI:* prefix using web apis.")
@@ -75,8 +75,12 @@ public class NCBIService extends PropertyEnricherSimple {
         enriched.put(PropertyAndValueDictionary.PATH_IDS, taxonPathIdsString);
 
         String genBankCommonName = XmlUtil.extractPath(fullHierarchy, "GenbankCommonName", "", " @en");
-        String commonName = XmlUtil.extractPath(fullHierarchy, "CommonName", "", " @en");
-        enriched.put(PropertyAndValueDictionary.COMMON_NAMES, commonName + CharsetConstant.SEPARATOR + genBankCommonName);
+        List<String> commonNames = XmlUtil.extractPathNoJoin(fullHierarchy, "CommonName", "", " @en");
+        ArrayList<String> commonNamesAll = new ArrayList<String>(commonNames) {{
+            add(genBankCommonName);
+        }};
+        String commonNamesJoined = StringUtils.join(commonNamesAll.stream().filter(StringUtils::isNotBlank).collect(Collectors.joining(CharsetConstant.SEPARATOR)));
+        enriched.put(PropertyAndValueDictionary.COMMON_NAMES, commonNamesJoined);
 
         setPropertyToFirstValue(PropertyAndValueDictionary.NAME, taxonNames, enriched);
         setPropertyToFirstValue(PropertyAndValueDictionary.RANK, rankNames, enriched);
