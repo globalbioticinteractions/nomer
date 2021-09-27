@@ -22,11 +22,27 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DiscoverLifeTest {
+
+    private static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
+
+    private static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
+            "/mp/20q?search=";
+
+    private static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
+
+    private static final List<String> PATH_STATIC_IDS = PATH_STATIC
+            .stream()
+            .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
+            .collect(Collectors.toList());
+
+    private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family", "species");
 
     @Test
     public void getBeeNames() throws IOException {
@@ -38,8 +54,7 @@ public class DiscoverLifeTest {
     }
 
     private DomNode getBeePage(WebClient webClient) throws IOException {
-        String discoverLifeUrl = "https://www.discoverlife.org/" +
-                "mp/20q" +
+        String discoverLifeUrl = URL_ENDPOINT_DISCOVER_LIFE +
                 "?act=x_checklist" +
                 "&guide=Apoidea_species" +
                 "&flags=HAS";
@@ -55,7 +70,9 @@ public class DiscoverLifeTest {
     }
 
     private InputStream getStreamOfBees() throws IOException {
-        return new GZIPInputStream(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz"));
+        return new GZIPInputStream(getClass()
+                .getResourceAsStream("/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz")
+        );
     }
 
     @Test
@@ -90,9 +107,10 @@ public class DiscoverLifeTest {
                 TaxonImpl taxon = new TaxonImpl(
                         name,
                         id);
+
                 taxon.setRank("species");
                 TaxonImpl taxonForNode = getTaxonForNode(currentFamilyNode, taxon);
-                System.out.println(TaxonUtil.taxonToMap(taxonForNode));
+                taxonForNode.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
                 taxa.add(taxonForNode);
                 break;
 
@@ -105,11 +123,11 @@ public class DiscoverLifeTest {
 
         Taxon taxon = taxa.get(0);
 
-        assertThat(taxon.getPath(), Is.is("Andrenidae | Acamptopoeum argentinum"));
-        assertThat(taxon.getPathIds(), Is.is("/mp/20q?search=Andrenidae | /mp/20q?search=Acamptopoeum+argentinum"));
-        assertThat(taxon.getPathNames(), Is.is("family | species"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
+        assertThat(taxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));
         assertThat(taxon.getName(), Is.is("Acamptopoeum argentinum"));
-        assertThat(taxon.getId(), Is.is("/mp/20q?search=Acamptopoeum+argentinum"));
+        assertThat(taxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
         assertThat(taxon.getRank(), Is.is("species"));
     }
 
@@ -118,12 +136,22 @@ public class DiscoverLifeTest {
         String familyId = StringUtils.trim(familyNode.getAttributes().getNamedItem("href").getTextContent());
         String familyName = StringUtils.trim(familyNode.getTextContent());
         TaxonUtil.copy(t, targetTaxon);
-        targetTaxon.setPath(StringUtils.join(Arrays.asList(familyName, t.getName()), CharsetConstant.SEPARATOR));
-        targetTaxon.setPathIds(StringUtils.join(Arrays.asList(familyId, t.getId()), CharsetConstant.SEPARATOR));
-        targetTaxon.setPathNames(StringUtils.join(Arrays.asList("family", "species"), CharsetConstant.SEPARATOR));
+
+        List<String> path = new ArrayList<String>(PATH_STATIC) {{
+            addAll(Arrays.asList(familyName, t.getName()));
+        }};
+
+        targetTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
+
+        List<String> pathIds = new ArrayList<String>(PATH_STATIC_IDS) {{
+            addAll(Arrays.asList(URL_ENDPOINT_DISCOVER_LIFE + familyId, URL_ENDPOINT_DISCOVER_LIFE + t.getId()));
+        }};
+
+        targetTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
+
+        targetTaxon.setPathNames(StringUtils.join(PATH_NAMES_STATIC, CharsetConstant.SEPARATOR));
         return targetTaxon;
     }
-
 
 
 }
