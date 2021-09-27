@@ -1,9 +1,11 @@
 package org.eol.globi.taxon;
 
+import org.apache.http.client.cache.Resource;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 import static org.hamcrest.core.Is.is;
@@ -15,12 +17,12 @@ public class TaxonomyImporterTest {
     public void stringFormat() {
         TaxonomyImporter taxonomyImporter = new TaxonomyImporter(new TaxonParser() {
             @Override
-            public void parse(BufferedReader reader, TaxonImportListener listener) throws IOException {
+            public void parse(InputStream is, TaxonImportListener listener) throws IOException {
 
             }
         }, new TaxonReaderFactory() {
             @Override
-            public Map<String, BufferedReader> getAllReaders() throws IOException {
+            public Map<String, Resource> getResources() throws IOException {
                 return null;
             }
         });

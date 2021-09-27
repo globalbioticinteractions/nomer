@@ -1,6 +1,7 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.apache.http.client.cache.Resource;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.data.StudyImporterException;
@@ -9,9 +10,9 @@ import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 
 public class TaxonomyImporter {
@@ -54,10 +55,10 @@ public class TaxonomyImporter {
         setCounter(0);
         try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexDir);
              TaxonLookupBuilder taxonImportListener = new TaxonLookupBuilder(cacheDir)) {
-            Map<String, BufferedReader> allReaders = taxonReaderFactory.getAllReaders();
-            for (Map.Entry<String, BufferedReader> entry : allReaders.entrySet()) {
+            Map<String, Resource> allReaders = taxonReaderFactory.getResources();
+            for (Map.Entry<String, Resource> entry : allReaders.entrySet()) {
                 try {
-                    parse(entry.getValue(), taxonImportListener);
+                    parse(entry.getValue().getInputStream(), taxonImportListener);
                 } catch (IOException ex) {
                     throw new IOException("failed to read from [" + entry.getKey() + "]");
                 }
@@ -77,8 +78,8 @@ public class TaxonomyImporter {
         }
     }
 
-    private void parse(BufferedReader reader, TaxonLookupBuilder taxonImportListener) throws IOException {
-        getParser().parse(reader, new TaxonImportListener() {
+    private void parse(InputStream is, TaxonLookupBuilder taxonImportListener) throws IOException {
+        getParser().parse(is, new TaxonImportListener() {
             @Override
             public void addTerm(Taxon term) {
                 taxonImportListener.addTerm(term);

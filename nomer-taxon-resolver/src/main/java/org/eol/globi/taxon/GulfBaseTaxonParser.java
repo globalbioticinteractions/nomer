@@ -10,13 +10,14 @@ import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GulfBaseTaxonParser implements TaxonParser {
     @Override
-    public void parse(BufferedReader reader, TaxonImportListener listener) throws IOException {
-        LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(reader);
+    public void parse(InputStream is, TaxonImportListener listener) throws IOException {
+        LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(is);
         listener.start();
         while (labeledCSVParser.getLine() != null) {
             List<String> pathNames = new ArrayList<String>();

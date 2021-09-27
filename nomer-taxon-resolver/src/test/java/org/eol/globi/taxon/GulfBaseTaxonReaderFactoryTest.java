@@ -8,7 +8,7 @@ public class GulfBaseTaxonReaderFactoryTest {
 
     @Test
     public void allReaders() throws IOException {
-        new GulfBaseTaxonReaderFactory().getAllReaders();
+        new GulfBaseTaxonReaderFactory().getResources();
     }
 
 }
