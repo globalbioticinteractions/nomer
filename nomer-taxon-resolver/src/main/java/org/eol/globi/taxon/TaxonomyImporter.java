@@ -7,6 +7,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.data.StudyImporterException;
 import org.eol.globi.domain.Taxon;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,7 @@ public class TaxonomyImporter {
     private static final Logger LOG = LoggerFactory.getLogger(TaxonomyImporter.class);
 
     private static final int BATCH_TRANSACTION_SIZE = 250000;
+    private final TermMatcherContext ctx;
     private int counter;
     private StopWatch stopwatch;
 
@@ -26,10 +28,15 @@ public class TaxonomyImporter {
 
     private TaxonReaderFactory taxonReaderFactory;
 
-    public TaxonomyImporter(TaxonParser taxonParser, TaxonReaderFactory taxonReaderFactory) {
+    public TaxonomyImporter(TermMatcherContext ctx, TaxonParser taxonParser, TaxonReaderFactory taxonReaderFactory) {
+        this.ctx = ctx;
         this.parser = taxonParser;
         this.taxonReaderFactory = taxonReaderFactory;
         stopwatch = new StopWatch();
+    }
+
+    public TaxonomyImporter(TaxonParser taxonParser, TaxonReaderFactory taxonReaderFactory) {
+        this(null, taxonParser, taxonReaderFactory);
     }
 
     public TaxonParser getParser() {
@@ -48,31 +55,45 @@ public class TaxonomyImporter {
         getStopwatch().reset();
         getStopwatch().start();
 
-        File indexDir = CacheUtil.createTmpCacheDir();
-        LOG.info("index directory at [" + indexDir + "] created.");
-
 
         setCounter(0);
-        try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexDir);
-             TaxonLookupBuilder taxonImportListener = new TaxonLookupBuilder(cacheDir)) {
-            Map<String, Resource> allReaders = taxonReaderFactory.getResources();
-            for (Map.Entry<String, Resource> entry : allReaders.entrySet()) {
-                try {
-                    parse(entry.getValue().getInputStream(), taxonImportListener);
-                } catch (IOException ex) {
-                    throw new IOException("failed to read from [" + entry.getKey() + "]", ex);
+        File indexDir = ctx == null
+                ? initTmpCacheDir()
+                : new File(ctx.getCacheDir(), parser.getClass().getSimpleName());
+
+        if (!indexDir.exists()) {
+
+            try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexDir);
+                 TaxonLookupBuilder taxonImportListener = new TaxonLookupBuilder(cacheDir)) {
+
+                LOG.info("index directory at [" + indexDir + "] initializing...");
+                Map<String, Resource> allReaders = taxonReaderFactory.getResources();
+                for (Map.Entry<String, Resource> entry : allReaders.entrySet()) {
+                    try {
+                        parse(entry.getValue().getInputStream(), taxonImportListener);
+                    } catch (IOException ex) {
+                        throw new IOException("failed to read from [" + entry.getKey() + "]", ex);
+                    }
+                    LOG.info("index directory at [" + indexDir + "] initialized.");
+
                 }
+            } catch (IOException e) {
+                throw new StudyImporterException("failed to import taxonomy", e);
             }
+        }
+        try {
             return new TaxonLookupServiceImpl(new SimpleFSDirectory(indexDir.toPath()));
         } catch (IOException e) {
-            throw new StudyImporterException("failed to import taxonomy", e);
+            throw new StudyImporterException("failed to initialize taxon index", e);
         }
+
     }
 
-    private Directory initCacheDir() throws StudyImporterException {
+    private File initTmpCacheDir() throws StudyImporterException {
         File indexDir = CacheUtil.createTmpCacheDir();
         try {
-            return new SimpleFSDirectory(indexDir.toPath());
+            SimpleFSDirectory simpleFSDirectory = new SimpleFSDirectory(indexDir.toPath());
+            return indexDir;
         } catch (IOException e) {
             throw new StudyImporterException("failed to create index dir [" + indexDir.getAbsolutePath() + "]");
         }

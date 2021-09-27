@@ -71,6 +71,7 @@ public class DiscoverLifeService extends OfflineService {
     protected TaxonomyImporter createTaxonomyImporter() {
 
         return new TaxonomyImporter(
+                ctx,
                 new TaxonParserForDiscoverLife(),
                 new TaxonReaderFactory() {
                     @Override
