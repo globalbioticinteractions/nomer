@@ -1,12 +1,21 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.io.IOUtils;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
 import org.hamcrest.core.Is;
 import org.junit.Test;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -56,7 +65,7 @@ public class DiscoverLifeServiceTest {
 
         parser.parse(DiscoverLifeService.getStreamOfBees(), listener);
 
-        assertThat(counter.get(), Is.is(20507));
+        assertThat(counter.get(), Is.is(50590));
 
         Taxon taxon = firstTaxon.get();
 
@@ -64,8 +73,8 @@ public class DiscoverLifeServiceTest {
         assertThat(taxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));
         assertThat(taxon.getName(), Is.is("Acamptopoeum argentinum"));
-        assertThat(taxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
         assertThat(taxon.getRank(), Is.is("species"));
+        assertThat(taxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
     }
 
 
@@ -76,6 +85,8 @@ public class DiscoverLifeServiceTest {
         String localCopy = IOUtils.toString(DiscoverLifeService.getStreamOfBees(), StandardCharsets.UTF_8);
         assertThat(actual, Is.is(localCopy));
     }
+
+
 
 
 }

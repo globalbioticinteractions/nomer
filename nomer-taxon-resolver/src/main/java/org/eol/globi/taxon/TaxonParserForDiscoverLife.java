@@ -2,6 +2,7 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
@@ -17,8 +18,108 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class TaxonParserForDiscoverLife implements TaxonParser {
+
+    public static void parseNames(Node familyNameNode, Node nameNodeCandidate, TermMatchListener listener) throws XPathExpressionException {
+
+        Taxon focalTaxon = null;
+
+        Node currentNode = nameNodeCandidate.getParentNode();
+        if (StringUtils.equals("i", currentNode.getNodeName())) {
+            Map<String, String> taxonMap = new TreeMap<>();
+            taxonMap.put("name", StringUtils.trim(nameNodeCandidate.getTextContent()));
+
+            Node expectedTextNode = currentNode.getNextSibling();
+            Node authorshipNode = expectedTextNode == null ? null : expectedTextNode.getNextSibling();
+
+            if (authorshipNode != null) {
+                enrichFromAuthorString(authorshipNode, taxonMap);
+                taxonMap.put("status", "accepted");
+            }
+
+            String id = nameNodeCandidate.getAttributes().getNamedItem("href") == null
+                    ? null
+                    : StringUtils.trim(nameNodeCandidate
+                    .getAttributes()
+                    .getNamedItem("href")
+                    .getTextContent());
+
+
+            taxonMap.put("rank", "species");
+
+            Taxon parsedTaxon = TaxonUtil.mapToTaxon(taxonMap);
+            parsedTaxon.setExternalId(id);
+
+            focalTaxon = familyNameNode == null
+                    ? parsedTaxon
+                    : getTaxonForNode(familyNameNode, parsedTaxon);
+
+            currentNode = authorshipNode;
+
+            focalTaxon.setExternalId(StringUtils.prependIfMissing(id, DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE));
+            listener.foundTaxonForTerm(null, focalTaxon, focalTaxon, NameType.SAME_AS);
+        }
+
+
+        if (focalTaxon != null) {
+
+            while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
+
+                if ("i".equals(currentNode.getNodeName())) {
+
+                    Map<String, String> relatedName = new TreeMap<>();
+
+                    enrichFromNameString(currentNode, relatedName);
+
+                    currentNode = currentNode.getNextSibling();
+
+                    enrichFromAuthorString(currentNode, relatedName);
+
+                    String status = relatedName.get("status");
+                    NameType nameType = NameType.SYNONYM_OF;
+                    if (StringUtils.equals(status, "homonym")) {
+                        nameType = NameType.NONE;
+                    }
+
+                    listener.foundTaxonForTerm(
+                            null,
+                            focalTaxon,
+                            TaxonUtil.mapToTaxon(relatedName),
+                            nameType
+                    );
+                }
+            }
+        }
+    }
+
+    private static void enrichFromAuthorString(Node currentNode, Map<String, String> relatedName) {
+        String scrubbedName = StringUtils.replace(
+                StringUtils.trim(currentNode.getTextContent()), ";", "");
+
+        String[] authorParts = StringUtils.split(scrubbedName, ",");
+
+        if (authorParts.length > 1) {
+            String authorName = StringUtils.trim(authorParts[0]);
+            String authorYear = StringUtils.trim(authorParts[1]);
+            relatedName.put("authorship", StringUtils.join(Arrays.asList(authorName, authorYear), ", "));
+        }
+    }
+
+    public static void enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
+        String altName = StringUtils.trim(currentNode.getTextContent());
+
+        String[] nameAndStatus = StringUtils.splitByWholeSeparatorPreserveAllTokens(altName, "_homonym");
+        if (nameAndStatus.length == 2) {
+            relatedName.put("status", "homonym");
+        } else {
+            relatedName.put("status", "synonym");
+        }
+
+        relatedName.put("name", nameAndStatus[0]);
+    }
 
     @Override
     public void parse(InputStream is, TaxonImportListener listener) throws IOException {
@@ -38,24 +139,11 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
                 }
 
                 if (isSpeciesNode && currentFamilyNode != null) {
-                    String name = StringUtils.trim(node.getTextContent());
-
-                    String id = node.getAttributes().getNamedItem("href") == null
-                            ? null
-                            : StringUtils.trim(node
-                            .getAttributes()
-                            .getNamedItem("href")
-                            .getTextContent()
+                    parseNames(
+                            currentFamilyNode,
+                            node,
+                            (requestId, providedTerm, resolvedTaxon, nameType) -> listener.addTerm(resolvedTaxon)
                     );
-
-                    TaxonImpl taxon = new TaxonImpl(
-                            name,
-                            id);
-
-                    taxon.setRank("species");
-                    TaxonImpl taxonForNode = getTaxonForNode(currentFamilyNode, taxon);
-                    taxonForNode.setExternalId(StringUtils.prependIfMissing(id, DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE));
-                    listener.addTerm(taxonForNode);
                 }
 
             }
@@ -68,7 +156,7 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
 
     }
 
-    private TaxonImpl getTaxonForNode(Node familyNode, Taxon t) {
+    private static Taxon getTaxonForNode(Node familyNode, Taxon t) {
         TaxonImpl targetTaxon = new TaxonImpl();
         String familyId = StringUtils.trim(familyNode.getAttributes().getNamedItem("href").getTextContent());
         String familyName = StringUtils.trim(familyNode.getTextContent());

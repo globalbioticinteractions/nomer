@@ -64,7 +64,7 @@ public class MatchUtil {
         }
     }
 
-    public static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
+    static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
         Map<String, String> taxonMap = new TreeMap<>();
         for (Map.Entry<Integer, String> indexType : schema.entrySet()) {
             Integer key = indexType.getKey();
