@@ -24,7 +24,7 @@ public class DiscoverLifeService extends OfflineService {
 
     static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
     static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
-    private static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
+    static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
             "/mp/20q?search=";
     static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
     static final List<String> PATH_STATIC_IDS = PATH_STATIC

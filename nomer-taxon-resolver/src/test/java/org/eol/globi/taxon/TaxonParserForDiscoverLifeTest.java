@@ -99,6 +99,7 @@ public class TaxonParserForDiscoverLifeTest {
         Taxon secondRelatedName = relatedTaxa.get(1);
         //assertThat(secondRelatedName.get("status"), Is.is("homonym"));
         assertThat(secondRelatedName.getName(), Is.is("Andrena pulchella"));
+        assertThat(secondRelatedName.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
         //assertThat(secondRelatedName.get("authorship"), Is.is("Robertson, 1891"));
 
         Taxon thirdRelatedName = relatedTaxa.get(2);

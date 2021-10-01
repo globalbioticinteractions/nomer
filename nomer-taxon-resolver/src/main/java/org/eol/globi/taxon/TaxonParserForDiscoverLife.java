@@ -3,6 +3,7 @@ package org.eol.globi.taxon;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
@@ -84,10 +85,14 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
                         nameType = NameType.NONE;
                     }
 
+
+                    Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
+                    relatedTaxon.setExternalId(DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE_SEARCH
+                                    + StringUtils.replace(relatedTaxon.getName(), " ", "+"));
                     listener.foundTaxonForTerm(
                             null,
                             focalTaxon,
-                            TaxonUtil.mapToTaxon(relatedName),
+                            relatedTaxon,
                             nameType
                     );
                 }
