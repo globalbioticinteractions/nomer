@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class MatchUtil {
@@ -40,8 +41,12 @@ public class MatchUtil {
                         .map(Optional::get);
 
         Optional<TermMatcher> firstMatcher = matchers.findFirst();
-        TermMatcher termMatcher = firstMatcher.orElseGet(() -> TermMatcherRegistry.defaultMatcher(ctx));
-        return new TermMatcherHierarchical(termMatcher);
+
+        if (!firstMatcher.isPresent()) {
+            throw new IllegalArgumentException("unknown matcher");
+        }
+
+        return new TermMatcherHierarchical(firstMatcher.get());
     }
 
     public static void apply(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {

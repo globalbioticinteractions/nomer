@@ -55,10 +55,12 @@ public class TermMatcherRegistry {
 
     public static TermMatcher termMatcherFor(String id, TermMatcherContext ctx) {
         TermMatcherFactory factory = getRegistry(ctx).get(id);
-        if (factory != null) {
+        if (factory == null) {
+            throw new IllegalArgumentException("unknown matcher [" + id + "]");
+        } else {
             LOG.info("using matcher [" + factory.getName() + "]");
         }
-        return factory == null ? defaultMatcher(ctx) : factory.createTermMatcher(ctx);
+        return factory.createTermMatcher(ctx);
     }
 
     public static TermMatcher defaultMatcher(TermMatcherContext ctx) {

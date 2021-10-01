@@ -26,10 +26,7 @@ public class CmdLine {
             jc.parse(args);
             CmdLine.run(jc.getCommands().get(jc.getParsedCommand()));
         } catch (Throwable ex) {
-            LOG.error("unexpected exception", ex);
-            StringBuilder out = new StringBuilder();
-            jc.usage(out);
-            System.err.append(out.toString());
+            LOG.error(ex.getMessage(), ex);
             throw ex;
         }
     }
