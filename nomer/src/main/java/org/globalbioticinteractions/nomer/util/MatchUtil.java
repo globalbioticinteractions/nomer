@@ -31,6 +31,12 @@ public class MatchUtil {
     }
 
     public static TermMatcher getTermMatcher(List<String> matcherIds, TermMatcherContext ctx) {
+        return matcherIds.isEmpty()
+                ? TermMatcherRegistry.defaultMatcher(ctx)
+                : resolveMatcher(matcherIds, ctx);
+    }
+
+    private static TermMatcher resolveMatcher(List<String> matcherIds, TermMatcherContext ctx) {
         final Stream<TermMatcher> matchers =
                 matcherIds
                         .stream()
