@@ -16,10 +16,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TaxonParserForDiscoverLifeTest {
+public class DiscoverLifeUtilTest {
 
     @Test
     public void parseNameRelationsAcamptopoeumVagans() {
@@ -80,7 +82,7 @@ public class TaxonParserForDiscoverLifeTest {
 
         List<Taxon> relatedTaxa = new ArrayList<>();
 
-        TaxonParserForDiscoverLife.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
@@ -113,6 +115,48 @@ public class TaxonParserForDiscoverLifeTest {
         //assertThat(fourthRelatedName.get("authorship"), Is.is("Viereck, 1916"));
 
 
+    }
+
+    @Test
+    public void parseBees() throws IOException {
+
+        final AtomicReference<Taxon> firstTaxon = new AtomicReference<>();
+
+        AtomicInteger counter = new AtomicInteger(0);
+
+        TermMatchListener listener = new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                int index = counter.getAndIncrement();
+                if (index == 0) {
+                    firstTaxon.set(resolvedTaxon);
+                }
+
+            }
+        };
+
+        DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), listener);
+
+        assertThat(counter.get(), Is.is(50590));
+
+        Taxon taxon = firstTaxon.get();
+
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
+        assertThat(taxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));
+        assertThat(taxon.getName(), Is.is("Acamptopoeum argentinum"));
+        assertThat(taxon.getRank(), Is.is("species"));
+        assertThat(taxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+    }
+
+
+    @Test
+    public void getCurrentBeeNames() throws IOException {
+        String actual = DiscoverLifeUtil.getBeeNamesAsXmlString();
+
+        String localCopy = IOUtils.toString(DiscoverLifeUtil.getStreamOfBees(), StandardCharsets.UTF_8);
+        assertThat(actual, Is.is(localCopy));
     }
 
 

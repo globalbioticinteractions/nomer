@@ -2,7 +2,6 @@ package org.eol.globi.service;
 
 import org.eol.globi.taxon.AtlasOfLivingAustraliaService;
 import org.eol.globi.taxon.BOLDService;
-import org.eol.globi.taxon.DiscoverLifeService;
 import org.eol.globi.taxon.EnvoService;
 import org.eol.globi.taxon.FunctionalGroupService;
 import org.eol.globi.taxon.GBIFService;
@@ -43,7 +42,6 @@ public class TermMatchEnsembleFactory {
                 add(new ITISService());
                 add(new NCBITaxonIdService(ctx));
                 add(new GBIFTaxonService(ctx));
-                add(new DiscoverLifeService(ctx));
                 add(new NCBIService());
                 add(new BOLDService());
                 add(new EOLTaxonService(ctx));

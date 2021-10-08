@@ -1,9 +1,10 @@
 package org.eol.globi.taxon;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.DomNode;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
-import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
@@ -21,8 +22,48 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.zip.GZIPInputStream;
 
-public class TaxonParserForDiscoverLife implements TaxonParser {
+public class DiscoverLifeUtil {
+
+    private static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
+    private static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
+    private static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
+            "/mp/20q?search=";
+    private static final List<String> PATH_STATIC_IDS = PATH_STATIC
+            .stream()
+            .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
+            .collect(Collectors.toList());
+    private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family", "species");
+    static final String DISCOVER_LIFE_URL
+            = URL_ENDPOINT_DISCOVER_LIFE +
+            "/mp/20q" +
+            "?act=x_checklist" +
+            "&guide=Apoidea_species" +
+            "&flags=HAS";
+    private static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
+
+    public static String getBeeNamesAsXmlString() throws IOException {
+        final WebClient webClient = new WebClient();
+
+        final DomNode page = getBeePage(webClient);
+        return page.asXml();
+    }
+
+    private static DomNode getBeePage(WebClient webClient) throws IOException {
+        webClient
+                .getOptions()
+                .setUseInsecureSSL(true);
+
+        return webClient.getPage(DISCOVER_LIFE_URL);
+    }
+
+    public static InputStream getStreamOfBees() throws IOException {
+        return new GZIPInputStream(DiscoverLifeUtil.class
+                .getResourceAsStream(BEE_NAMES)
+        );
+    }
 
     public static void parseNames(Node familyNameNode, Node nameNodeCandidate, TermMatchListener listener) throws XPathExpressionException {
 
@@ -60,7 +101,7 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
 
             currentNode = authorshipNode;
 
-            focalTaxon.setExternalId(StringUtils.prependIfMissing(id, DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE));
+            focalTaxon.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
             listener.foundTaxonForTerm(null, focalTaxon, focalTaxon, NameType.SAME_AS);
         }
 
@@ -87,7 +128,7 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
 
 
                     Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
-                    relatedTaxon.setExternalId(DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE_SEARCH
+                    relatedTaxon.setExternalId(URL_ENDPOINT_DISCOVER_LIFE_SEARCH
                                     + StringUtils.replace(relatedTaxon.getName(), " ", "+"));
                     listener.foundTaxonForTerm(
                             null,
@@ -126,9 +167,7 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
         relatedName.put("name", nameAndStatus[0]);
     }
 
-    @Override
-    public void parse(InputStream is, TaxonImportListener listener) throws IOException {
-        listener.start();
+    public static void parse(InputStream is, TermMatchListener termMatchListener) throws IOException {
         NodeList o;
         try {
             o = (NodeList) XmlUtil.applyXPath(is, "//tr/td/b/a | //tr/td/i/a", XPathConstants.NODESET);
@@ -147,7 +186,7 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
                     parseNames(
                             currentFamilyNode,
                             node,
-                            (requestId, providedTerm, resolvedTaxon, nameType) -> listener.addTerm(resolvedTaxon)
+                            termMatchListener
                     );
                 }
 
@@ -156,9 +195,6 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
         } catch (SAXException | ParserConfigurationException | XPathExpressionException e) {
             throw new IOException(e);
         }
-
-        listener.finish();
-
     }
 
     private static Taxon getTaxonForNode(Node familyNode, Taxon t) {
@@ -167,20 +203,19 @@ public class TaxonParserForDiscoverLife implements TaxonParser {
         String familyName = StringUtils.trim(familyNode.getTextContent());
         TaxonUtil.copy(t, targetTaxon);
 
-        List<String> path = new ArrayList<String>(DiscoverLifeService.PATH_STATIC) {{
+        List<String> path = new ArrayList<String>(PATH_STATIC) {{
             addAll(Arrays.asList(familyName, t.getName()));
         }};
 
         targetTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
 
-        List<String> pathIds = new ArrayList<String>(DiscoverLifeService.PATH_STATIC_IDS) {{
-            addAll(Arrays.asList(DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE + familyId, DiscoverLifeService.URL_ENDPOINT_DISCOVER_LIFE + t.getId()));
+        List<String> pathIds = new ArrayList<String>(PATH_STATIC_IDS) {{
+            addAll(Arrays.asList(URL_ENDPOINT_DISCOVER_LIFE + familyId, URL_ENDPOINT_DISCOVER_LIFE + t.getId()));
         }};
 
         targetTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
 
-        targetTaxon.setPathNames(StringUtils.join(DiscoverLifeService.PATH_NAMES_STATIC, CharsetConstant.SEPARATOR));
+        targetTaxon.setPathNames(StringUtils.join(PATH_NAMES_STATIC, CharsetConstant.SEPARATOR));
         return targetTaxon;
     }
-
 }

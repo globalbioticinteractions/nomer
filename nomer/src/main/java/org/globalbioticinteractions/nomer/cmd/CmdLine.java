@@ -27,6 +27,9 @@ public class CmdLine {
             CmdLine.run(jc.getCommands().get(jc.getParsedCommand()));
         } catch (Throwable ex) {
             LOG.error(ex.getMessage(), ex);
+            StringBuilder out = new StringBuilder();
+            jc.usage(out);
+            System.err.append(out.toString());
             throw ex;
         }
     }
