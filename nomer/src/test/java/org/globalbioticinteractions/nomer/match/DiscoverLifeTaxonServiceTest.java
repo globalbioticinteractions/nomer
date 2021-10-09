@@ -14,12 +14,15 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
 
 public class DiscoverLifeTaxonServiceTest {
 
@@ -33,6 +36,21 @@ public class DiscoverLifeTaxonServiceTest {
         assertLookup(discoverLifeTaxonService);
     }
 
+    @Test
+    public void lookupByNonExistingName() throws PropertyEnricherException {
+        AtomicReference<NameType> noMatch = new AtomicReference<>(null);
+        DiscoverLifeTaxonService discoverLifeTaxonService = new DiscoverLifeTaxonService(getTmpContext());
+        discoverLifeTaxonService.match(Arrays.asList(new TaxonImpl("Donald duck")), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                noMatch.set(nameType);
+            }
+        });
+
+        assertThat(noMatch.get(), Is.is(NameType.NONE));
+    }
+
     private void assertLookup(DiscoverLifeTaxonService discoverLifeTaxonService) throws PropertyEnricherException {
         final AtomicInteger counter = new AtomicInteger(0);
 
@@ -44,7 +62,7 @@ public class DiscoverLifeTaxonServiceTest {
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
                         if (counter.get() == 0) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(nameType, Is.is(NameType.SAME_AS));
+                            assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
                             assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
                             assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
                             assertThat(resolvedTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));

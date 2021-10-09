@@ -139,7 +139,7 @@ public class PlaziTreatmentsLoader {
         String path = TaxonUtil.generateTaxonPath(taxonMap);
         taxonMap.put(PropertyAndValueDictionary.PATH, path);
 
-        String value = TaxonUtil.generateTaxonName(
+        Taxon value = TaxonUtil.generateTaxonName(
                 taxonMap,
                 taxonRanks,
                 "genus",
@@ -148,12 +148,13 @@ public class PlaziTreatmentsLoader {
                 "species",
                 null);
 
-        if (StringUtils.isBlank(value)) {
+        String name = value == null ? null : value.getName();
+        if (StringUtils.isBlank(name)) {
             String[] pathSplit = StringUtils.split(path, CharsetConstant.SEPARATOR);
-            value = pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "";
+            name = pathSplit.length > 0 ? pathSplit[pathSplit.length - 1] : "";
         }
 
-        taxonMap.put(PropertyAndValueDictionary.NAME, value);
+        taxonMap.put(PropertyAndValueDictionary.NAME, name);
 
         String pathNames = TaxonUtil.generateTaxonPathNames(taxonMap);
         taxonMap.put(PropertyAndValueDictionary.PATH_NAMES, pathNames);

@@ -102,7 +102,7 @@ public class DiscoverLifeUtil {
             currentNode = authorshipNode;
 
             focalTaxon.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
-            listener.foundTaxonForTerm(null, focalTaxon, focalTaxon, NameType.SAME_AS);
+            listener.foundTaxonForTerm(null, focalTaxon, focalTaxon, NameType.HAS_ACCEPTED_NAME);
         }
 
 

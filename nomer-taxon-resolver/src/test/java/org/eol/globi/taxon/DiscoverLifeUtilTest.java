@@ -96,23 +96,23 @@ public class DiscoverLifeUtilTest {
         //assertThat(firstRelatedName.get("status"), Is.is("accepted"));
         assertThat(firstRelatedName.getName(), Is.is("Andrena accepta"));
         assertThat(firstRelatedName.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
-        //assertThat(firstRelatedName.get("authorship"), Is.is("Viereck, 1916"));
+        assertThat(firstRelatedName.getAuthorship(), Is.is("Viereck, 1916"));
 
         Taxon secondRelatedName = relatedTaxa.get(1);
         //assertThat(secondRelatedName.get("status"), Is.is("homonym"));
         assertThat(secondRelatedName.getName(), Is.is("Andrena pulchella"));
         assertThat(secondRelatedName.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
-        //assertThat(secondRelatedName.get("authorship"), Is.is("Robertson, 1891"));
+        assertThat(secondRelatedName.getAuthorship(), Is.is("Robertson, 1891"));
 
         Taxon thirdRelatedName = relatedTaxa.get(2);
         // assertThat(thirdRelatedName.get("status"), Is.is("synonym"));
         assertThat(thirdRelatedName.getName(), Is.is("Pterandrena pulchella"));
-        //assertThat(thirdRelatedName.get("authorship"), Is.is("(Robertson, 1891)"));
+        assertThat(thirdRelatedName.getAuthorship(), Is.is("(Robertson, 1891)"));
 
         Taxon fourthRelatedName = relatedTaxa.get(3);
         //assertThat(fourthRelatedName.getName(), Is.is("synonym"));
         assertThat(fourthRelatedName.getName(), Is.is("Andrena accepta"));
-        //assertThat(fourthRelatedName.get("authorship"), Is.is("Viereck, 1916"));
+        assertThat(fourthRelatedName.getAuthorship(), Is.is("Viereck, 1916"));
 
 
     }
