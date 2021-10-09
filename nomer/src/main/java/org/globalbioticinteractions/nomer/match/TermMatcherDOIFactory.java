@@ -91,7 +91,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         if (ctx != null) {
             String property = ctx.getProperty(NOMER_DOI_CROSSREF_MIN_SCORE);
             if (StringUtils.isNotBlank(property)) {
-                if (NumberUtils.isNumber(property)) {
+                if (NumberUtils.isCreatable(property)) {
                     double minScore = Double.parseDouble(property);
                     doiResolver.setMinMatchScore(minScore);
                 } else {

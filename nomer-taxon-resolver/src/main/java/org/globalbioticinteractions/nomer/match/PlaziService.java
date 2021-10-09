@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -151,7 +152,7 @@ public class PlaziService implements TermMatcher {
             ArchiveEntry nextEntry;
             while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
                 if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
-                    CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
+                    CloseShieldInputStream closeShieldInputStream = CloseShieldInputStream.wrap(archiveInputStream);
                     PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
                 }
             }
