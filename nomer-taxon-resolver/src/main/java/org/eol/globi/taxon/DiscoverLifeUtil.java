@@ -132,8 +132,8 @@ public class DiscoverLifeUtil {
                                     + StringUtils.replace(relatedTaxon.getName(), " ", "+"));
                     listener.foundTaxonForTerm(
                             null,
-                            focalTaxon,
                             relatedTaxon,
+                            focalTaxon,
                             nameType
                     );
                 }

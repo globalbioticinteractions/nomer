@@ -27,7 +27,7 @@ import java.util.List;
 public class TermMatcherWikidataFactory implements TermMatcherFactory {
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "wikidata-taxon-id-web";
     }
 

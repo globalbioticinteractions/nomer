@@ -32,7 +32,7 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
     private static final Logger LOG = LoggerFactory.getLogger(TermMatcherPMDID2DOIFactory.class);
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "pmid-doi";
     }
 
@@ -82,7 +82,7 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
                     }
                 };
             } catch (IOException e) {
-                throw new RuntimeException("failed to initialize [" + this.getName() + "]", e);
+                throw new RuntimeException("failed to initialize [" + this.getPreferredName() + "]", e);
             }
 
         }

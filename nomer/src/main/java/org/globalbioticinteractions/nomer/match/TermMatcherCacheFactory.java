@@ -33,7 +33,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
     }
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "globi-taxon-cache";
     }
 

@@ -40,7 +40,7 @@ public class TermMatcherRegistry {
         Map<String, TermMatcherFactory> registryDynamic = new HashMap<>(registry);
         List<TermMatcherFactory> termMatchFactories = new TermMatcherFactoryEnricherFactory().createTermMatchFactories(ctx);
         for (TermMatcherFactory termMatchFactory : termMatchFactories) {
-            registryDynamic.put(termMatchFactory.getName(), termMatchFactory);
+            registryDynamic.put(termMatchFactory.getPreferredName(), termMatchFactory);
         }
         return MapUtils.unmodifiableMap(registryDynamic);
     }
@@ -48,7 +48,7 @@ public class TermMatcherRegistry {
     private final static Map<String, TermMatcherFactory> registry = Collections.unmodifiableMap(new TreeMap<String, TermMatcherFactory>() {
         {
             for (TermMatcherFactory matcher : matchers) {
-                put(matcher.getName(), matcher);
+                put(matcher.getPreferredName(), matcher);
             }
 
         }
@@ -59,14 +59,14 @@ public class TermMatcherRegistry {
         if (factory == null) {
             throw new IllegalArgumentException("unknown matcher [" + id + "]");
         } else {
-            LOG.info("using matcher [" + factory.getName() + "]");
+            LOG.info("using matcher [" + factory.getPreferredName() + "]");
         }
         return factory.createTermMatcher(ctx);
     }
 
     public static TermMatcher defaultMatcher(TermMatcherContext ctx) {
         TermMatcherCacheFactory factory = new TermMatcherCacheFactory();
-        LOG.info("using default matcher [" + factory.getName() + "]");
+        LOG.info("using default matcher [" + factory.getPreferredName() + "]");
         return factory.createTermMatcher(ctx);
     }
 }

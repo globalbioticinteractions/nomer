@@ -21,7 +21,7 @@ import java.util.List;
 public class TermMatcherOpenBiodivFactory implements TermMatcherFactory {
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "openbiodiv";
     }
 

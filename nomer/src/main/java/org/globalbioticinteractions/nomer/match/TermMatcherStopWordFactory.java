@@ -18,7 +18,7 @@ public class TermMatcherStopWordFactory implements TermMatcherFactory {
     }
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "remove-stop-words";
     }
 

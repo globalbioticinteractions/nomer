@@ -30,7 +30,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
     private static final Logger LOG = LoggerFactory.getLogger(TermMatcherDOIFactory.class);
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "crossref-doi";
     }
 

@@ -7,7 +7,7 @@ public interface TermMatcherFactory {
 
     TermMatcher createTermMatcher(TermMatcherContext ctx);
 
-    String getName();
+    String getPreferredName();
 
     String getDescription();
 

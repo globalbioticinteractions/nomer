@@ -6,7 +6,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 public class TermMatcherGBIFTaxonFactory implements TermMatcherFactory {
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "gbif-taxon";
     }
 

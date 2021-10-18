@@ -17,7 +17,7 @@ public class TermMatcherTranslateNamesFactory implements TermMatcherFactory {
     }
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "translate-names";
     }
 

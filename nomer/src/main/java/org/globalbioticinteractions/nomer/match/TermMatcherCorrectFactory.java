@@ -12,7 +12,7 @@ public class TermMatcherCorrectFactory implements TermMatcherFactory {
     }
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "globi-correct";
     }
 

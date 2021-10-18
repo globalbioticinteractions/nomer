@@ -31,9 +31,18 @@ public class DiscoverLifeTaxonServiceTest {
 
     @Test
     public void lookupByName() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService = new DiscoverLifeTaxonService(getTmpContext());
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
         assertLookup(discoverLifeTaxonService);
         assertLookup(discoverLifeTaxonService);
+    }
+
+    @Test
+    public void lookupBySynonym() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        assertLookupSynonym(discoverLifeTaxonService);
+        assertLookupSynonym(discoverLifeTaxonService);
     }
 
     @Test
@@ -60,26 +69,39 @@ public class DiscoverLifeTaxonServiceTest {
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
-                        if (counter.get() == 0) {
-                            assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
-                            assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
-                            assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
-                            assertThat(resolvedTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));
-                            assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
-                            assertThat(resolvedTaxon.getRank(), Is.is("species"));
-                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
-                        } else {
-                            assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(nameType, Is.is(NameType.SYNONYM_OF));
-                            assertThat(resolvedTaxon.getName(), Is.is("Perdita argentina"));
-                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Perdita+argentina"));
-                        }
+                        assertThat(providedTerm.getName(), Is.is(providedName));
+                        assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
+                        assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
+                        assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        assertThat(resolvedTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));
+                        assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
+                        assertThat(resolvedTaxon.getRank(), Is.is("species"));
+                        assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
                         counter.getAndIncrement();
                     }
                 });
 
-        assertThat(counter.get(), Is.is(2));
+        assertThat(counter.get(), Is.is(1));
+    }
+
+    private void assertLookupSynonym(DiscoverLifeTaxonService discoverLifeTaxonService) throws PropertyEnricherException {
+        final AtomicInteger counter = new AtomicInteger(0);
+
+        String providedName = "Perdita argentina";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                        assertThat(providedTerm.getName(), Is.is(providedName));
+                        assertThat(nameType, Is.is(NameType.SYNONYM_OF));
+                        assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
+                        assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        counter.getAndIncrement();
+                    }
+                });
+
+        assertThat(counter.get(), Is.is(1));
     }
 
     private TermMatcherContext getTmpContext() {
