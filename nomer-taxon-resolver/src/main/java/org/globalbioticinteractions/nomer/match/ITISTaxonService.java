@@ -43,7 +43,7 @@ public class ITISTaxonService extends PropertyEnricherSimple {
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, String> mergedNodes = null;
-    private BTreeMap<String, Map<String, String>> itisDenormalizedNodes = null;
+    private BTreeMap<String, List<Map<String, String>>> itisDenormalizedNodes = null;
 
     public ITISTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -53,18 +53,32 @@ public class ITISTaxonService extends PropertyEnricherSimple {
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enriched = new TreeMap<>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
+        String name = properties.get(PropertyAndValueDictionary.NAME);
         if (StringUtils.startsWith(externalId, TaxonomyProvider.ID_PREFIX_ITIS)) {
-            if (needsInit()) {
-                if (ctx == null) {
-                    throw new PropertyEnricherException("context needed to initialize");
-                }
-                lazyInit();
-            }
-            String idForLookup = mergedNodes.getOrDefault(externalId, externalId);
-            Map<String, String> enrichedProperties = itisDenormalizedNodes.get(idForLookup);
-            enriched = enrichedProperties == null ? enriched : new TreeMap<>(enrichedProperties);
+            enriched = enrichMatches(enriched, externalId);
+        } else if (StringUtils.isNoneBlank(name)) {
+            enriched = enrichMatches(enriched, name);
         }
         return enriched;
+    }
+
+    private Map<String, String> enrichMatches(Map<String, String> enriched, String name) throws PropertyEnricherException {
+        checkInit();
+        String idForLookup = mergedNodes.getOrDefault(name, name);
+        List<Map<String, String>> enrichedProperties = itisDenormalizedNodes.get(idForLookup);
+
+        return (enrichedProperties == null || enriched.size() == 0)
+                ? enriched
+                : new TreeMap<>(enrichedProperties.get(0));
+    }
+
+    private void checkInit() throws PropertyEnricherException {
+        if (needsInit()) {
+            if (ctx == null) {
+                throw new PropertyEnricherException("context needed to initialize");
+            }
+            lazyInit();
+        }
     }
 
 
@@ -122,7 +136,9 @@ public class ITISTaxonService extends PropertyEnricherSimple {
         }
     }
 
-    static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonMapDenormalized, Map<String, String> childParent) {
+    static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap,
+                                Map<String, List<Map<String, String>>> taxonMapDenormalized,
+                                Map<String, String> childParent) {
         Set<Map.Entry<String, Map<String, String>>> taxa = taxonMap.entrySet();
         for (Map.Entry<String, Map<String, String>> taxon : taxa) {
             denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxon);
@@ -130,7 +146,7 @@ public class ITISTaxonService extends PropertyEnricherSimple {
     }
 
     private static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap,
-                                        Map<String, Map<String, String>> taxonEnrichMap,
+                                        Map<String, List<Map<String, String>>> taxonEnrichMap,
                                         Map<String, String> childParent,
                                         Map.Entry<String, Map<String, String>> taxon) {
         Map<String, String> childTaxon = taxon.getValue();
@@ -167,7 +183,21 @@ public class ITISTaxonService extends PropertyEnricherSimple {
         origTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
         origTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
 
-        taxonEnrichMap.put(taxon.getKey(), TaxonUtil.taxonToMap(origTaxon));
+        update(taxonEnrichMap, taxon.getKey(), origTaxon);
+        update(taxonEnrichMap, origTaxon.getName(), origTaxon);
+    }
+
+    private static void update(Map<String, List<Map<String, String>>> taxonEnrichMap,
+                               String key,
+                               Taxon origTaxon) {
+        List<Map<String, String>> existing = taxonEnrichMap.get(key);
+
+        List<Map<String, String>> updated = existing == null
+                ? new ArrayList<>()
+                : new ArrayList<>(existing);
+
+        updated.add(TaxonUtil.taxonToMap(origTaxon));
+        taxonEnrichMap.put(key, updated);
     }
 
     static void parseMerged(Map<String, String> mergedMap, InputStream resourceAsStream) throws PropertyEnricherException {

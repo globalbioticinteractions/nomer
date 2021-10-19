@@ -19,17 +19,32 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ITISTaxonServiceTest {
 
     @Test
-    public void enrich() throws PropertyEnricherException {
+    public void enrichById() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl(null, "ITIS:57");
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:57"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Nitrobacter"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+    }
+
+    @Test
+    public void enrichByName() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl("Nitrobacter", null);
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
@@ -167,7 +182,7 @@ public class ITISTaxonServiceTest {
             put("2", TaxonUtil.taxonToMap(two));
         }};
 
-        Map<String, Map<String, String>> taxonMapDenormalized = new TreeMap<>();
+        Map<String, List<Map<String, String>>> taxonMapDenormalized = new TreeMap<>();
 
         Map<String, String> childParent = new TreeMap<String, String>() {{
             put("1", "2");
@@ -176,7 +191,7 @@ public class ITISTaxonServiceTest {
 
         ITISTaxonService.denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent);
 
-        Taxon actual = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("1"));
+        Taxon actual = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("1").get(0));
         assertThat(actual.getPath(), is("two name | one name"));
         assertThat(actual.getPathIds(), is("2 | 1"));
         assertThat(actual.getPathNames(), is("rank two | rank one"));
@@ -184,7 +199,7 @@ public class ITISTaxonServiceTest {
         assertThat(actual.getName(), is("one name"));
         assertThat(actual.getExternalId(), is("1"));
 
-        Taxon two = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("2"));
+        Taxon two = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("2").get(0));
         assertThat(two.getPath(), is("two name"));
         assertThat(two.getPathIds(), is("2"));
         assertThat(two.getPathNames(), is("rank two"));
