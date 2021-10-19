@@ -2,8 +2,6 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -19,6 +17,8 @@ import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,14 +62,32 @@ public class ITISTaxonService extends PropertyEnricherSimple {
         return enriched;
     }
 
-    private Map<String, String> enrichMatches(Map<String, String> enriched, String name) throws PropertyEnricherException {
+    private Map<String, String> enrichMatches(Map<String, String> enriched, String key) throws PropertyEnricherException {
         checkInit();
-        String idForLookup = mergedNodes.getOrDefault(name, name);
+        String idForLookup = mergedNodes.getOrDefault(key, key);
         List<Map<String, String>> enrichedProperties = itisDenormalizedNodes.get(idForLookup);
 
-        return (enrichedProperties == null || enriched.size() == 0)
-                ? enriched
-                : new TreeMap<>(enrichedProperties.get(0));
+        if (enrichedProperties != null && enrichedProperties.size() > 0) {
+            Map<String, String> resolved = new TreeMap<>(enrichedProperties.get(0));
+            if (StringUtils.startsWith(key, TaxonomyProvider.ID_PREFIX_ITIS)) {
+                enriched = new TreeMap<>(enrichedProperties.get(0));
+            } else {
+                enriched = resolveAcceptedNameIfAvailable(resolved, resolved);
+            }
+        }
+        return enriched;
+    }
+
+    private Map<String, String> resolveAcceptedNameIfAvailable(Map<String, String> enriched, Map<String, String> resolved) {
+        String externalId = resolved.get(PropertyAndValueDictionary.EXTERNAL_ID);
+        if (StringUtils.startsWith(externalId, TaxonomyProvider.ID_PREFIX_ITIS)) {
+            final String acceptedExternalId = mergedNodes.getOrDefault(externalId, externalId);
+            if (!StringUtils.equals(acceptedExternalId, externalId)) {
+                List<Map<String, String>> acceptedNameMap = itisDenormalizedNodes.get(acceptedExternalId);
+                enriched = acceptedNameMap.size() == 0 ? enriched : acceptedNameMap.get(0);
+            }
+        }
+        return enriched;
     }
 
     private void checkInit() throws PropertyEnricherException {
