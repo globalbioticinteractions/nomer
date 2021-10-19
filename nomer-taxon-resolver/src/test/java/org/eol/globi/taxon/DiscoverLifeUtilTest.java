@@ -1,6 +1,7 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
@@ -80,39 +81,46 @@ public class DiscoverLifeUtilTest {
 
         assertThat(nodes.getLength(), Is.is(1));
 
-        List<Taxon> relatedTaxa = new ArrayList<>();
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
-                relatedTaxa.add(resolvedTaxon);
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
 
         assertThat(relatedTaxa.size(), Is.is(4));
 
-        Taxon firstRelatedName = relatedTaxa.get(0);
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         //assertThat(firstRelatedName.get("status"), Is.is("accepted"));
-        assertThat(firstRelatedName.getName(), Is.is("Andrena accepta"));
-        assertThat(firstRelatedName.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
-        assertThat(firstRelatedName.getAuthorship(), Is.is("Viereck, 1916"));
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(((Taxon)firstNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
 
-        Taxon secondRelatedName = relatedTaxa.get(1);
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Andrena pulchella"));
+        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
+        assertThat(((Taxon)secondNameRelation.getLeft()).getAuthorship(), Is.is("Robertson, 1891"));
         //assertThat(secondRelatedName.get("status"), Is.is("homonym"));
-        assertThat(secondRelatedName.getName(), Is.is("Andrena pulchella"));
-        assertThat(secondRelatedName.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
-        assertThat(secondRelatedName.getAuthorship(), Is.is("Robertson, 1891"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.NONE));
+        assertThat(secondNameRelation.getRight().getName(), Is.is("Andrena accepta"));
 
-        Taxon thirdRelatedName = relatedTaxa.get(2);
+        Triple<Term, NameType, Taxon> thirdNameRelation = relatedTaxa.get(2);
         // assertThat(thirdRelatedName.get("status"), Is.is("synonym"));
-        assertThat(thirdRelatedName.getName(), Is.is("Pterandrena pulchella"));
-        assertThat(thirdRelatedName.getAuthorship(), Is.is("(Robertson, 1891)"));
+        assertThat(thirdNameRelation.getLeft().getName(), Is.is("Pterandrena pulchella"));
+        assertThat(((Taxon)thirdNameRelation.getLeft()).getAuthorship(), Is.is("(Robertson, 1891)"));
+        assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(thirdNameRelation.getRight().getName(), Is.is("Andrena accepta"));
 
-        Taxon fourthRelatedName = relatedTaxa.get(3);
+        Triple<Term, NameType, Taxon> fourthNameRelation = relatedTaxa.get(3);
         //assertThat(fourthRelatedName.getName(), Is.is("synonym"));
-        assertThat(fourthRelatedName.getName(), Is.is("Andrena accepta"));
-        assertThat(fourthRelatedName.getAuthorship(), Is.is("Viereck, 1916"));
+        assertThat(fourthNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
+        assertThat(((Taxon)fourthNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
+        assertThat(fourthNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(fourthNameRelation.getRight().getName(), Is.is("Andrena accepta"));
 
 
     }
