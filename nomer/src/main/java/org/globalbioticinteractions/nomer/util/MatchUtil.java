@@ -22,6 +22,8 @@ import java.util.stream.Stream;
 
 public class MatchUtil {
 
+    public static final String WILDCARD_MATCH = ".*";
+
     public static void match(RowHandler handler) {
         try {
             apply(System.in, handler);

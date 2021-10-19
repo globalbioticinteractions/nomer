@@ -15,7 +15,7 @@ import org.globalbioticinteractions.nomer.util.MatchUtil;
 @Parameters(separators = "= ", commandDescription = "Dumps all terms into the defined output schema.")
 public class CmdDump extends CmdOutput {
 
-    public static final String[] MATCH_ALL = {".*", ".*"};
+    private static final String[] MATCH_ALL = {MatchUtil.WILDCARD_MATCH, MatchUtil.WILDCARD_MATCH};
 
     @Override
     public void run() {

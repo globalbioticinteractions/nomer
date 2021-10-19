@@ -13,6 +13,7 @@ import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.DiscoverLifeUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.MatchUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
@@ -48,7 +49,8 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             lazyInit();
 
             for (Term term : terms) {
-                if (StringUtils.equals(term.getName(), ".*") && StringUtils.equals(term.getId(), ".*")) {
+                if (StringUtils.equals(term.getName(), MatchUtil.WILDCARD_MATCH)
+                        && StringUtils.equals(term.getId(), MatchUtil.WILDCARD_MATCH)) {
                     matchAll(termMatchListener);
                 } else {
                     List<Pair<NameType, Map<String, String>>> pairs = nameMap.get(term.getName());
@@ -70,7 +72,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             for (Pair<NameType, Map<String, String>> resolvedPair : resolvedPairs) {
                 termMatchListener.foundTaxonForTerm(
                         null,
-                        new TaxonImpl(provided),
+                        new TaxonImpl(provided, DiscoverLifeUtil.urlForName(provided)),
                         TaxonUtil.mapToTaxon(resolvedPair.getRight()),
                         resolvedPair.getLeft());
 

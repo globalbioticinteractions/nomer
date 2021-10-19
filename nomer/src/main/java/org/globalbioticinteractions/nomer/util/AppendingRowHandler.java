@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -31,13 +32,27 @@ public class AppendingRowHandler implements RowHandler {
         termMatcher.match(Collections.singletonList(taxonProvided), (id, termToBeResolved, taxonResolved, nameType) -> {
             Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxonResolved));
             Taxon taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
+
+            String[] replacedRow = row;
+            if (isWildcardMatch(row)) {
+                replacedRow = new String[]{
+                        StringUtils.defaultString(termToBeResolved.getId(), ""),
+                        StringUtils.defaultString(termToBeResolved.getName(), "")
+                };
+            }
             appender.appendLinesForRow(
-                    row,
+                    replacedRow,
                     taxonToBeResolved,
                     taxon1 -> nameType, Stream.of(taxonWithServiceInfo),
                     out
             );
         });
+    }
+
+    private boolean isWildcardMatch(String[] row) {
+        return row.length == 2
+                && StringUtils.equals(row[0], MatchUtil.WILDCARD_MATCH)
+                && StringUtils.equals(row[1], MatchUtil.WILDCARD_MATCH);
     }
 
 }

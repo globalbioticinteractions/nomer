@@ -128,8 +128,7 @@ public class DiscoverLifeUtil {
 
 
                     Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
-                    relatedTaxon.setExternalId(URL_ENDPOINT_DISCOVER_LIFE_SEARCH
-                                    + StringUtils.replace(relatedTaxon.getName(), " ", "+"));
+                    relatedTaxon.setExternalId(urlForName(relatedTaxon));
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
@@ -139,6 +138,16 @@ public class DiscoverLifeUtil {
                 }
             }
         }
+    }
+
+    public static String urlForName(Taxon relatedTaxon) {
+        String name = relatedTaxon.getName();
+        return urlForName(name);
+    }
+
+    public static String urlForName(String name) {
+        return URL_ENDPOINT_DISCOVER_LIFE_SEARCH
+                        + StringUtils.replace(name, " ", "+");
     }
 
     private static void enrichFromAuthorString(Node currentNode, Map<String, String> relatedName) {
