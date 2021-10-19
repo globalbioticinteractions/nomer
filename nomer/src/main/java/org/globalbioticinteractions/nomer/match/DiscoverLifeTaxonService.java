@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
@@ -47,17 +48,35 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             lazyInit();
 
             for (Term term : terms) {
-                List<Pair<NameType, Map<String, String>>> pairs = nameMap.get(term.getName());
-                if (pairs == null || pairs.isEmpty()) {
-                    noMatch(termMatchListener, term);
+                if (StringUtils.equals(term.getName(), ".*") && StringUtils.equals(term.getId(), ".*")) {
+                    matchAll(termMatchListener);
                 } else {
-                    foundMatches(termMatchListener, term, pairs);
+                    List<Pair<NameType, Map<String, String>>> pairs = nameMap.get(term.getName());
+                    if (pairs == null || pairs.isEmpty()) {
+                        noMatch(termMatchListener, term);
+                    } else {
+                        foundMatches(termMatchListener, term, pairs);
+                    }
                 }
             }
         } catch (IOException e) {
             String msg = "failed to match terms [" + terms.stream().map(Term::getName).collect(Collectors.joining("|"));
             throw new PropertyEnricherException(msg, e);
         }
+    }
+
+    private void matchAll(TermMatchListener termMatchListener) {
+        nameMap.forEach((provided, resolvedPairs) -> {
+            for (Pair<NameType, Map<String, String>> resolvedPair : resolvedPairs) {
+                termMatchListener.foundTaxonForTerm(
+                        null,
+                        new TaxonImpl(provided),
+                        TaxonUtil.mapToTaxon(resolvedPair.getRight()),
+                        resolvedPair.getLeft());
+
+            }
+
+        });
     }
 
     private void foundMatches(TermMatchListener termMatchListener, Term term, List<Pair<NameType, Map<String, String>>> pairs) {

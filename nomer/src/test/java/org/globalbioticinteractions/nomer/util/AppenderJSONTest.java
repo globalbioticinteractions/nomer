@@ -19,7 +19,7 @@ public class AppenderJSONTest {
         TaxonImpl provided = new TaxonImpl("providedName", "providedId");
         TaxonImpl resolved = new TaxonImpl("resolvedName", "resolvedId");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new AppenderJSON().appendLinesForRow(row, provided, Stream.of(resolved), new PrintStream(out), taxon1 -> NameType.SAME_AS);
+        new AppenderJSON().appendLinesForRow(row, provided, taxon1 -> NameType.SAME_AS, Stream.of(resolved), new PrintStream(out));
         assertThat(out.toString(), is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\",\"equivalent_to\":{\"@id\":\"providedId\",\"name\":\"providedName\"}}}\n"));
     }
 
@@ -36,9 +36,9 @@ public class AppenderJSONTest {
                 .appendLinesForRow(
                         row,
                         provided,
-                        Stream.of(resolved),
-                        new PrintStream(out),
-                        taxon1 -> NameType.SAME_AS);
+                        taxon1 -> NameType.SAME_AS, Stream.of(resolved),
+                        new PrintStream(out)
+                );
 
         assertThat(out.toString(),
                 is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\"" +
@@ -58,9 +58,9 @@ public class AppenderJSONTest {
                 .appendLinesForRow(
                         row,
                         provided,
-                        Stream.of(resolved),
-                        new PrintStream(out),
-                        taxon1 -> NameType.SAME_AS);
+                        taxon1 -> NameType.SAME_AS, Stream.of(resolved),
+                        new PrintStream(out)
+                );
 
         assertThat(out.toString(),
                 is("{\"norank\":{\"@id\":\"resolvedId\",\"name\":\"resolvedName\"" +

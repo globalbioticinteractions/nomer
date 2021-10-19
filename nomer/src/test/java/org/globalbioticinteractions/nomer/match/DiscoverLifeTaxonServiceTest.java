@@ -46,6 +46,13 @@ public class DiscoverLifeTaxonServiceTest {
     }
 
     @Test
+    public void matchAll() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        assertMatchAll(discoverLifeTaxonService);
+    }
+
+    @Test
     public void lookupByNonExistingName() throws PropertyEnricherException {
         AtomicReference<NameType> noMatch = new AtomicReference<>(null);
         DiscoverLifeTaxonService discoverLifeTaxonService = new DiscoverLifeTaxonService(getTmpContext());
@@ -102,6 +109,37 @@ public class DiscoverLifeTaxonServiceTest {
                 });
 
         assertThat(counter.get(), Is.is(1));
+    }
+
+    private void assertMatchAll(DiscoverLifeTaxonService discoverLifeTaxonService) throws PropertyEnricherException {
+        final AtomicInteger counter = new AtomicInteger(0);
+
+        List<Term> termsToBeMatched = Collections.singletonList(
+                new TaxonImpl(".*", ".*"));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                        if (counter.get() == 0) {
+                            assertThat(providedTerm.getName(), Is.is("Acamptopoeum argentinum"));
+                            assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
+                            assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
+                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        }
+
+                        if (counter.get() == 50589) {
+                            assertThat(providedTerm.getName(), Is.is("Zonalictus zaleucus"));
+                            assertThat(nameType, Is.is(NameType.SYNONYM_OF));
+                            assertThat(resolvedTaxon.getName(), Is.is("Patellapis zaleuca"));
+                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Patellapis+zaleuca"));
+                        }
+
+
+                        counter.getAndIncrement();
+                    }
+                });
+
+        assertThat(counter.get(), Is.is(50590));
     }
 
     private TermMatcherContext getTmpContext() {

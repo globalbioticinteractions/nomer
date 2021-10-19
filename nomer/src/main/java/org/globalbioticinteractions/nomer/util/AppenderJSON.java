@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class AppenderJSON implements Appender {
 
     @Override
-    public void appendLinesForRow(String[] row, Taxon taxonProvided, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf) {
+    public void appendLinesForRow(String[] row, Taxon taxonProvided, NameTypeOf nameTypeOf, Stream<Taxon> resolvedTaxa, PrintStream out) {
         ObjectMapper obj = new ObjectMapper();
         ObjectNode resolved = obj.createObjectNode();
         resolvedTaxa.forEach(taxon -> {
@@ -33,7 +33,7 @@ public class AppenderJSON implements Appender {
                 }
             }
 
-            p.println(resolved.toString());
+            out.println(resolved.toString());
         });
 
     }

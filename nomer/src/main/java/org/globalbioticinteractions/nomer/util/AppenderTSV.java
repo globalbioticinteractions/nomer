@@ -27,7 +27,7 @@ public class AppenderTSV implements Appender {
 
 
     @Override
-    public void appendLinesForRow(String[] row, Taxon taxonProvided, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf) {
+    public void appendLinesForRow(String[] row, Taxon taxonProvided, NameTypeOf nameTypeOf, Stream<Taxon> resolvedTaxa, PrintStream out) {
         Stream<String> provided = Stream.of(row);
 
         Stream<Stream<String>> appended = hasDefaultSchema()
@@ -39,7 +39,7 @@ public class AppenderTSV implements Appender {
 
         lines.map(combinedLine -> CSVTSVUtil.mapEscapedValues(combinedLine)
                 .collect(Collectors.joining("\t")))
-                .forEach(p::println);
+                .forEach(out::println);
     }
 
     private Stream<Stream<String>> handleDefaultSchema(Stream<Taxon> resolvedTaxa, NameTypeOf nameTypeOf) {
