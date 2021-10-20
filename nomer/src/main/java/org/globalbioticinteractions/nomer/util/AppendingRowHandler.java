@@ -7,6 +7,8 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.MatchUtil;
+import org.globalbioticinteractions.nomer.match.TermMatchUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -51,8 +53,8 @@ public class AppendingRowHandler implements RowHandler {
 
     private boolean isWildcardMatch(String[] row) {
         return row.length == 2
-                && StringUtils.equals(row[0], MatchUtil.WILDCARD_MATCH)
-                && StringUtils.equals(row[1], MatchUtil.WILDCARD_MATCH);
+                && StringUtils.equals(row[0], TermMatchUtil.WILDCARD_MATCH)
+                && StringUtils.equals(row[1], TermMatchUtil.WILDCARD_MATCH);
     }
 
 }

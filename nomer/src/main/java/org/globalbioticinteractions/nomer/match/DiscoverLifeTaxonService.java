@@ -1,7 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
@@ -13,7 +12,6 @@ import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.DiscoverLifeUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.util.MatchUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
@@ -49,8 +47,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             lazyInit();
 
             for (Term term : terms) {
-                if (StringUtils.equals(term.getName(), MatchUtil.WILDCARD_MATCH)
-                        && StringUtils.equals(term.getId(), MatchUtil.WILDCARD_MATCH)) {
+                if (MatchUtil.shouldMatchAll(term)) {
                     matchAll(termMatchListener);
                 } else {
                     List<Pair<NameType, Map<String, String>>> pairs = nameMap.get(term.getName());

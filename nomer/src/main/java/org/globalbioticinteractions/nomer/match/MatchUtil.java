@@ -1,6 +1,8 @@
-package org.globalbioticinteractions.nomer.util;
+package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.service.TermMatcherHierarchical;
@@ -8,6 +10,7 @@ import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
 import org.globalbioticinteractions.nomer.match.TermMatcherRegistry;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,12 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class MatchUtil {
-
-    public static final String WILDCARD_MATCH = ".*";
 
     public static void match(RowHandler handler) {
         try {
@@ -57,6 +57,17 @@ public class MatchUtil {
         return new TermMatcherHierarchical(firstMatcher.get());
     }
 
+    public static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
+        Map<String, String> taxonMap = new TreeMap<>();
+        for (Map.Entry<Integer, String> indexType : schema.entrySet()) {
+            Integer key = indexType.getKey();
+            if (row.length > key) {
+                taxonMap.put(indexType.getValue(), row[key]);
+            }
+        }
+        return TaxonUtil.mapToTaxon(taxonMap);
+    }
+
     public static void apply(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
@@ -66,14 +77,7 @@ public class MatchUtil {
         }
     }
 
-    static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
-        Map<String, String> taxonMap = new TreeMap<>();
-        for (Map.Entry<Integer, String> indexType : schema.entrySet()) {
-            Integer key = indexType.getKey();
-            if (row.length > key) {
-                taxonMap.put(indexType.getValue(), row[key]);
-            }
-        }
-        return TaxonUtil.mapToTaxon(taxonMap);
+    public static boolean shouldMatchAll(Term term) {
+        return TermMatchUtil.shouldMatchAll(term);
     }
 }

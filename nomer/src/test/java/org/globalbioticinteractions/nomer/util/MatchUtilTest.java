@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.junit.Test;
 
 import java.util.Collections;

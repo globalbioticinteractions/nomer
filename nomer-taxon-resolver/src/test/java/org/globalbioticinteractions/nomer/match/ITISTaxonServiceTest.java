@@ -131,29 +131,29 @@ public class ITISTaxonServiceTest {
 
     @Test
     public void parseNodes() throws PropertyEnricherException {
-        Map<String, Map<String,String>> node = new TreeMap<>();
-        Map<String, String> childParent = new TreeMap<>();
+        Map<Long, Map<String, String>> node = new TreeMap<>();
+        Map<Long, Long> childParent = new TreeMap<>();
         Map<String, String> rankIdNameMap = new TreeMap<String, String>() {{
-           put("1-180", "some rank");
+            put("1-180", "some rank");
         }};
 
         InputStream nodesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/itis/taxonomic_units.psv");
         ITISTaxonService.parseNodes(node, childParent, rankIdNameMap, nodesStream);
 
-        assertThat(childParent.get("ITIS:57"), is("ITIS:956340"));
-        assertThat(TaxonUtil.mapToTaxon(node.get("ITIS:57")).getRank(), is("some rank"));
+        assertThat(childParent.get(57L), is(956340L));
+        assertThat(TaxonUtil.mapToTaxon(node.get(57L)).getRank(), is("some rank"));
 
     }
 
     @Test
     public void parseMerged() throws PropertyEnricherException {
-        Map<String, String> mergedIds = new TreeMap<>();
+        Map<Long, Long> mergedIds = new TreeMap<>();
 
         InputStream mergedStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/itis/synonym_links.psv");
         ITISTaxonService.parseMerged(mergedIds, mergedStream);
 
-        assertThat(mergedIds.get("ITIS:51"), is("ITIS:50"));
-        assertThat(mergedIds.get("ITIS:52"), is("ITIS:50"));
+        assertThat(mergedIds.get(51L), is(50L));
+        assertThat(mergedIds.get(52L), is(50L));
 
     }
 
@@ -171,43 +171,56 @@ public class ITISTaxonServiceTest {
     }
 
     @Test
-    public void denormalizeTaxa() throws PropertyEnricherException {
-        Map<String, Map<String, String>> taxonMap = new TreeMap<String, Map<String, String>>() {{
+    public void denormalizeTaxa() {
+        Map<Long, Map<String, String>> taxonMap = new TreeMap<Long, Map<String, String>>() {{
             TaxonImpl one = new TaxonImpl("one name", "1");
             one.setRank("rank one");
-            put("1", TaxonUtil.taxonToMap(one));
+            put(1L, TaxonUtil.taxonToMap(one));
 
             TaxonImpl two = new TaxonImpl("two name", "2");
             two.setRank("rank two");
-            put("2", TaxonUtil.taxonToMap(two));
+            put(2L, TaxonUtil.taxonToMap(two));
         }};
 
         Map<String, List<Map<String, String>>> taxonMapDenormalized = new TreeMap<>();
+        Map<Long, List<Map<String, String>>> taxonMapDenormalizedIds = new TreeMap<>();
 
-        Map<String, String> childParent = new TreeMap<String, String>() {{
-            put("1", "2");
+        Map<Long, Long> childParent = new TreeMap<Long, Long>() {{
+            put(1L, 2L);
         }};
 
 
-        ITISTaxonService.denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent);
+        ITISTaxonService.denormalizeTaxa(
+                taxonMap,
+                taxonMapDenormalized,
+                taxonMapDenormalizedIds,
+                childParent);
 
-        Taxon actual = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("1").get(0));
-        assertThat(actual.getPath(), is("two name | one name"));
-        assertThat(actual.getPathIds(), is("2 | 1"));
-        assertThat(actual.getPathNames(), is("rank two | rank one"));
-        assertThat(actual.getRank(), is("rank one"));
-        assertThat(actual.getName(), is("one name"));
-        assertThat(actual.getExternalId(), is("1"));
+        assertOneName(TaxonUtil.mapToTaxon(taxonMapDenormalized.get("one name").get(0)));
+        assertOneName(TaxonUtil.mapToTaxon(taxonMapDenormalizedIds.get(1L).get(0)));
 
-        Taxon two = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("2").get(0));
+        assertTwoName(TaxonUtil.mapToTaxon(taxonMapDenormalized.get("two name").get(0)));
+        assertTwoName(TaxonUtil.mapToTaxon(taxonMapDenormalizedIds.get(2L).get(0)));
+
+
+    }
+
+    private void assertTwoName(Taxon two) {
         assertThat(two.getPath(), is("two name"));
         assertThat(two.getPathIds(), is("2"));
         assertThat(two.getPathNames(), is("rank two"));
         assertThat(two.getRank(), is("rank two"));
         assertThat(two.getName(), is("two name"));
         assertThat(two.getExternalId(), is("2"));
+    }
 
-
+    private void assertOneName(Taxon actual) {
+        assertThat(actual.getPath(), is("two name | one name"));
+        assertThat(actual.getPathIds(), is("2 | 1"));
+        assertThat(actual.getPathNames(), is("rank two | rank one"));
+        assertThat(actual.getRank(), is("rank one"));
+        assertThat(actual.getName(), is("one name"));
+        assertThat(actual.getExternalId(), is("1"));
     }
 
     @Test

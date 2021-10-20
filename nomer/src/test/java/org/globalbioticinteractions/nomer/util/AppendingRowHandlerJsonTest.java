@@ -11,6 +11,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
