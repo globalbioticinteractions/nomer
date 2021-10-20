@@ -56,7 +56,7 @@ public class TermMatcherRegistryTest {
                 "remove-stop-words\n" +
                 "translate-names\n" +
                 "wikidata-taxon-id-web\n" +
-                "worms-taxon\n";
+                "worms-taxon";
 
         String[] matcherNames = StringUtils.split(supportedMatchers, "\n");
 
