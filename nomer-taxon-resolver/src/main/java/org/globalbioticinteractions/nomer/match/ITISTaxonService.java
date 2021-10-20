@@ -89,8 +89,7 @@ public class ITISTaxonService extends PropertyEnricherSimple implements TermMatc
                 }
             } else {
                 List<Map<String, String>> synonyms = itisDenormalizedNodeIds.get(id);
-                long itisTaxonId = acceptedNameId;
-                List<Map<String, String>> acceptedNames = itisDenormalizedNodeIds.get(itisTaxonId);
+                List<Map<String, String>> acceptedNames = itisDenormalizedNodeIds.get(acceptedNameId);
                 if (synonyms != null && synonyms.size() > 0
                         && acceptedNames != null && acceptedNames.size() > 0) {
                     termMatchListener.foundTaxonForTerm(
@@ -165,8 +164,8 @@ public class ITISTaxonService extends PropertyEnricherSimple implements TermMatc
         Long providedId = getItisIdOrNull(resolvedTaxon.getExternalId());
 
         if (providedId != null) {
-            final long acceptedExternalId = mergedNodes.getOrDefault(providedId, providedId);
-            if (acceptedExternalId == providedId) {
+            final Long acceptedExternalId = mergedNodes.getOrDefault(providedId, providedId);
+            if (acceptedExternalId.equals(providedId)) {
                 listener.foundTaxonForTerm(null,
                         providedTerm,
                         resolvedTaxon,
@@ -386,6 +385,7 @@ public class ITISTaxonService extends PropertyEnricherSimple implements TermMatc
         if (db.exists(DENORMALIZED_NODES) && db.exists(DENORMALIZED_NODE_IDS) && db.exists(MERGED_NODES)) {
             LOG.info("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             itisDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
+            itisDenormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
             mergedNodes = db.getTreeMap(MERGED_NODES);
         } else {
             indexITIS(db);
