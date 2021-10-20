@@ -5,9 +5,10 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +21,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TermMatchEnsembleFactoryTest {
 
     private PropertyEnricher taxonEnricher;
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @After
     public void shutdown() {
@@ -40,13 +44,16 @@ public class TermMatchEnsembleFactoryTest {
     }
 
     @Test
-    public void gbifLongUrl() throws PropertyEnricherException {
+    public void gbifLongUrl() throws PropertyEnricherException, IOException {
+
+         final String cachePath = folder.newFolder("cacheDir").getAbsolutePath();
+
         Taxon taxon = new TaxonImpl("Mickey", "https://www.gbif.org/species/1777631");
         taxonEnricher = new TaxonEnricherImpl() {{
             setServices(TermMatchEnsembleFactory.getEnrichers(new TermMatcherContext() {
                 @Override
                 public String getCacheDir() {
-                    return null;
+                    return cachePath;
                 }
 
                 @Override

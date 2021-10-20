@@ -38,9 +38,9 @@ public class TermMatchEnsembleFactory {
                 add(new FunctionalGroupService());
                 add(new NBNService());
                 add(new NODCTaxonService(ctx));
-                add(new ITISTaxonService(ctx));
                 add(new ITISService());
                 add(new NCBITaxonIdService(ctx));
+                add(new ITISTaxonService(ctx));
                 add(new GBIFTaxonService(ctx));
                 add(new NCBIService());
                 add(new BOLDService());

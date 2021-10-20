@@ -282,7 +282,7 @@ public class ITISTaxonService extends PropertyEnricherSimple implements TermMatc
         pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
 
         Long parent = childParent.get(taxon.getKey());
-        while (parent != null && !pathIds.contains(parent)) {
+        while (parent != null && !pathIds.contains(TaxonomyProvider.ID_PREFIX_ITIS + parent)) {
             Map<String, String> parentTaxonProperties = taxonMap.get(parent);
             if (parentTaxonProperties != null) {
                 Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);
@@ -382,7 +382,9 @@ public class ITISTaxonService extends PropertyEnricherSimple implements TermMatc
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES) && db.exists(DENORMALIZED_NODE_IDS) && db.exists(MERGED_NODES)) {
+        if (db.exists(DENORMALIZED_NODES)
+                && db.exists(DENORMALIZED_NODE_IDS)
+                && db.exists(MERGED_NODES)) {
             LOG.info("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             itisDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
             itisDenormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
@@ -403,7 +405,11 @@ public class ITISTaxonService extends PropertyEnricherSimple implements TermMatc
                 .make();
 
         try {
-            parseTaxonUnitTypes(rankIdNameMap, this.ctx.getResource(getTaxonUnitTypes()));
+            InputStream resource = this.ctx.getResource(getTaxonUnitTypes());
+            if (resource == null) {
+                throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonUnitTypes() + "]");
+            }
+            parseTaxonUnitTypes(rankIdNameMap, resource);
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
         }
