@@ -33,7 +33,8 @@ public class CmdMatchers implements Runnable {
             ArrayNode matchers = f.createArrayNode();
             for (Map.Entry<String, TermMatcherFactory> matcherEntry : registry.entrySet()) {
                 ObjectNode matcher = f.createObjectNode();
-                matcher.put("name", matcherEntry.getKey());
+                String shortName = getShortNameForEntry(matcherEntry);
+                matcher.put("name", shortName);
                 matcher.put("description", matcherEntry.getValue().getDescription());
                 matchers.add(matcher);
             }
@@ -45,15 +46,24 @@ public class CmdMatchers implements Runnable {
         } else {
             List<String> lines = new TreeList<>();
             for (Map.Entry<String, TermMatcherFactory> matcherEntry : registry.entrySet()) {
+                String shortName = getShortNameForEntry(matcherEntry);
                 if (verbose) {
-                    lines.add(matcherEntry.getKey() + "\t" + matcherEntry.getValue().getDescription());
+                    lines.add(shortName + "\t" + matcherEntry.getValue().getDescription());
                 } else {
-                    lines.add(matcherEntry.getKey());
+                    lines.add(shortName);
                 }
             }
             Collections.sort(lines);
             outputString = StringUtils.join(lines, '\n');
         }
         System.out.println(outputString);
+    }
+
+    private String getShortNameForEntry(Map.Entry<String, TermMatcherFactory> matcherEntry) {
+        String shortName = TermMatcherRegistry.getMatcherShortName(matcherEntry.getKey());
+        if (StringUtils.isBlank(shortName)) {
+            throw new IllegalArgumentException("no matcher found for [" + matcherEntry.getKey() + "]");
+        }
+        return shortName;
     }
 }
