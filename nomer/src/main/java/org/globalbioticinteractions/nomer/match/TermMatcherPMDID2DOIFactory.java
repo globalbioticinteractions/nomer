@@ -44,49 +44,63 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
         if (null != ctx) {
-            String pmidCache = ctx.getProperty(NOMER_PMID_CACHE);
-            try {
-                InputStream resource = ctx.getResource(pmidCache);
+            return new TermMatcher() {
+                private Map<Long, DOI> pmidToDOI = null;
 
-                LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(new InputStreamReader(new BufferedInputStream(resource), StandardCharsets.UTF_8));
+                private Map<Long, DOI> init(TermMatcherContext ctx) throws IOException {
+                    String pmidCache = ctx.getProperty(NOMER_PMID_CACHE);
+                    InputStream resource = ctx.getResource(pmidCache);
 
-                Map<Long, DOI> pmidToDOI = new TreeMap<>();
+                    LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(new InputStreamReader(new BufferedInputStream(resource), StandardCharsets.UTF_8));
 
-                while (labeledCSVParser.getLine() != null) {
-                    String pmid = labeledCSVParser.getValueByLabel("PMID");
-                    String doiString = labeledCSVParser.getValueByLabel("DOI");
-                    if (StringUtils.isNotBlank(doiString) && NumberUtils.isDigits(pmid)) {
-                        try {
-                            pmidToDOI.put(Long.parseLong(pmid), DOI.create(doiString));
-                        } catch (MalformedDOIException e) {
-                            LOG.warn("skipping invalid doi [" + doiString + "]", e);
-                        }
-                    }
+                    Map<Long, DOI> pmidToDOI = new TreeMap<>();
 
-                }
-                return new TermMatcher() {
-
-                    @Override
-                    public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                        for (Term term : list) {
-                            String id = term.getId();
-                            DOI doi = null;
-                            if (NumberUtils.isDigits(id)) {
-                                doi = pmidToDOI.get(Long.parseLong(id));
+                    while (labeledCSVParser.getLine() != null) {
+                        String pmid = labeledCSVParser.getValueByLabel("PMID");
+                        String doiString = labeledCSVParser.getValueByLabel("DOI");
+                        if (StringUtils.isNotBlank(doiString) && NumberUtils.isDigits(pmid)) {
+                            try {
+                                pmidToDOI.put(Long.parseLong(pmid), DOI.create(doiString));
+                            } catch (MalformedDOIException e) {
+                                LOG.warn("skipping invalid doi [" + doiString + "]", e);
                             }
-                            Taxon found = doi == null
-                                    ? new TaxonImpl(term.getName(), term.getId())
-                                    : new TaxonImpl(null, doi.toString());
-                            termMatchListener.foundTaxonForTerm(null, term, found, doi == null ? NameType.NONE : NameType.SAME_AS);
+                        }
+
+                    }
+                    return pmidToDOI;
+                }
+
+                @Override
+                public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                    initIfNeeded();
+                    for (Term term : list) {
+                        String id = term.getId();
+                        DOI doi = null;
+                        if (NumberUtils.isDigits(id)) {
+                            doi = pmidToDOI.get(Long.parseLong(id));
+                        }
+                        Taxon found = doi == null
+                                ? new TaxonImpl(term.getName(), term.getId())
+                                : new TaxonImpl(null, doi.toString());
+                        termMatchListener.foundTaxonForTerm(null, term, found, doi == null ? NameType.NONE : NameType.SAME_AS);
+                    }
+                }
+
+                private void initIfNeeded() throws PropertyEnricherException {
+                    if (pmidToDOI == null) {
+                        try {
+                            pmidToDOI = init(ctx);
+                        } catch (IOException e) {
+                            throw new PropertyEnricherException("failed to create pmid-doi lookup", e);
                         }
                     }
-                };
-            } catch (IOException e) {
-                throw new RuntimeException("failed to initialize [" + this.getPreferredName() + "]", e);
-            }
+                }
+            };
+
 
         }
         return null;
     }
+
 
 }

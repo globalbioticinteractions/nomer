@@ -2,10 +2,10 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.collections4.list.TreeList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
