@@ -14,12 +14,10 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.junit.Assert.fail;
 
 public class TermMatcherRegistryTest {
 
-
-    public static final List<String> SUPPORTED_LONG_NAMES = Collections.unmodifiableList(Arrays.asList(
+    private static final List<String> SUPPORTED_LONG_NAMES = Collections.unmodifiableList(Arrays.asList(
             "ala-taxon",
             "bold-web",
             "crossref-doi",
