@@ -155,13 +155,6 @@ public class ITISTaxonService extends CommonTaxonService {
         update(taxonEnrichMap, origTaxon.getName(), origTaxon);
     }
 
-    private static Long getItisIdOrNull(String key) {
-        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
-        return TaxonomyProvider.ITIS.equals(taxonomyProvider)
-                ? Long.parseLong(ExternalIdUtil.stripPrefix(TaxonomyProvider.ITIS, key))
-                : null;
-    }
-
     private static void update(Map<String, List<Map<String, String>>> taxonEnrichMap,
                                String key,
                                Taxon origTaxon) {
