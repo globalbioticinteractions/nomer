@@ -37,6 +37,25 @@ public class DiscoverLifeTaxonServiceTest {
     }
 
     @Test
+    public void lookupByNullName() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger counter = new AtomicInteger(0);
+
+        String providedName = null;
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                        counter.getAndIncrement();
+                    }
+                });
+
+        assertThat(counter.get(), Is.is(0));
+    }
+
+    @Test
     public void lookupBySynonym() throws PropertyEnricherException {
         DiscoverLifeTaxonService discoverLifeTaxonService
                 = new DiscoverLifeTaxonService(getTmpContext());

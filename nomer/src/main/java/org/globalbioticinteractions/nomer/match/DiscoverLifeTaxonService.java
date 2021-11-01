@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
@@ -49,7 +50,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             for (Term term : terms) {
                 if (MatchUtil.shouldMatchAll(term)) {
                     matchAll(termMatchListener);
-                } else {
+                } else if (StringUtils.isNoneBlank(term.getName())) {
                     List<Pair<NameType, Map<String, String>>> pairs = nameMap.get(term.getName());
                     if (pairs == null || pairs.isEmpty()) {
                         noMatch(termMatchListener, term);
