@@ -107,6 +107,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherGBIFTaxonFactory());
         add(new TermMatcherDiscoverLifeTaxonFactory());
         add(new TermMatcherITISFactory());
+        add(new TermMatcherIndexFungorumFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
