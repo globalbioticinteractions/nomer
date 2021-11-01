@@ -78,7 +78,7 @@ public class DiscoverLifeUtil {
             Node authorshipNode = expectedTextNode == null ? null : expectedTextNode.getNextSibling();
 
             if (authorshipNode != null) {
-                enrichFromAuthorString(authorshipNode, taxonMap);
+                enrichFromAuthorString(StringUtils.trim(authorshipNode.getTextContent()), taxonMap);
                 taxonMap.put("status", "accepted");
             }
 
@@ -114,11 +114,11 @@ public class DiscoverLifeUtil {
 
                     Map<String, String> relatedName = new TreeMap<>();
 
-                    enrichFromNameString(currentNode, relatedName);
+                    String authorshipString = enrichFromNameString(currentNode, relatedName);
 
                     currentNode = currentNode.getNextSibling();
 
-                    enrichFromAuthorString(currentNode, relatedName);
+                    enrichFromAuthorString(StringUtils.trim(authorshipString), relatedName);
 
                     String status = relatedName.get("status");
                     NameType nameType = NameType.SYNONYM_OF;
@@ -150,9 +150,9 @@ public class DiscoverLifeUtil {
                         + StringUtils.replace(name, " ", "+");
     }
 
-    private static void enrichFromAuthorString(Node currentNode, Map<String, String> relatedName) {
+    private static void enrichFromAuthorString(String authorshipString, Map<String, String> relatedName) {
         String scrubbedName = StringUtils.replace(
-                StringUtils.trim(currentNode.getTextContent()), ";", "");
+                authorshipString, ";", "");
 
         String[] authorParts = StringUtils.split(scrubbedName, ",");
 
@@ -163,8 +163,24 @@ public class DiscoverLifeUtil {
         }
     }
 
-    public static void enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
+    public static String enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
         String altName = StringUtils.trim(currentNode.getTextContent());
+
+        String authorship = null;
+        Node authorshipNode = currentNode.getNextSibling();
+        if (authorshipNode != null) {
+            authorship = StringUtils.trim(authorshipNode.getTextContent());
+            if (StringUtils.startsWith(authorship, ",")) {
+                authorship = StringUtils.trim(authorship.substring(1));
+            }
+            if (StringUtils.endsWith(altName, "var")) {
+                String[] split = StringUtils.split(authorship);
+                if (split.length > 2) {
+                    altName = altName + " " + split[0];
+                    authorship = StringUtils.trim(authorship.substring(split[0].length()));
+                }
+            }
+        }
 
         String[] nameAndStatus = StringUtils.splitByWholeSeparatorPreserveAllTokens(altName, "_homonym");
         if (nameAndStatus.length == 2) {
@@ -174,6 +190,8 @@ public class DiscoverLifeUtil {
         }
 
         relatedName.put("name", nameAndStatus[0]);
+
+        return authorship;
     }
 
     public static void parse(InputStream is, TermMatchListener termMatchListener) throws IOException {

@@ -126,6 +126,126 @@ public class DiscoverLifeUtilTest {
     }
 
     @Test
+    public void parseNameRelationsDanglingVar() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/52
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Xylocopa+inconspicua\" target=\"_self\">\n" +
+                "                  Xylocopa inconspicua\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                Maa, 1937\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Xylocopa (Xylocopa) rufipes var \n" +
+                "              </i>\n" +
+                "              inconspicua Maa, 1937; \n" +
+                "              <i>\n" +
+                "                Xylocopa (Mimoxylocopa) inconspicua \n" +
+                "              </i>\n" +
+                "              Maa, 1937; \n" +
+                "              <i>\n" +
+                "                Xylocopa (Bomboixylocopa) inconspicua \n" +
+                "              </i>\n" +
+                "              Maa, 1937\n" +
+                "            </td>\n" +
+                "          </tr>";
+
+        NodeList nodes = (NodeList) XmlUtil.applyXPath(
+                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
+                "//tr/td/b/a | //tr/td/i/a",
+                XPathConstants.NODESET
+        );
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(4));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        //assertThat(firstRelatedName.get("status"), Is.is("accepted"));
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Xylocopa inconspicua"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Xylocopa+inconspicua"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(((Taxon)firstNameRelation.getLeft()).getAuthorship(), Is.is("Maa, 1937"));
+
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Xylocopa (Xylocopa) rufipes var inconspicua"));
+        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Xylocopa+(Xylocopa)+rufipes+var+inconspicua"));
+        assertThat(((Taxon)secondNameRelation.getLeft()).getAuthorship(), Is.is("Maa, 1937"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(secondNameRelation.getRight().getName(), Is.is("Xylocopa inconspicua"));
+
+    }@Test
+    public void parseNameRelationsDanglingVarWithLeadingComma() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/52
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Ceratina+moricei\" target=\"_self\">\n" +
+                "                  Ceratina moricei\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                Friese, 1899\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Ceratina laevifrons var\n" +
+                "              </i>\n" +
+                "              , moricei Friese, 1899\n" +
+                "            </td>\n" +
+                "          </tr>\n";
+
+        NodeList nodes = (NodeList) XmlUtil.applyXPath(
+                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
+                "//tr/td/b/a | //tr/td/i/a",
+                XPathConstants.NODESET
+        );
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(2));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        //assertThat(firstRelatedName.get("status"), Is.is("accepted"));
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Ceratina moricei"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(((Taxon)firstNameRelation.getLeft()).getAuthorship(), Is.is("Friese, 1899"));
+
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Ceratina laevifrons var moricei"));
+        assertThat(((Taxon)secondNameRelation.getLeft()).getAuthorship(), Is.is("Friese, 1899"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(secondNameRelation.getRight().getName(), Is.is("Ceratina moricei"));
+
+    }
+
+    @Test
     public void parseBees() throws IOException {
 
         final AtomicReference<Taxon> firstTaxon = new AtomicReference<>();
