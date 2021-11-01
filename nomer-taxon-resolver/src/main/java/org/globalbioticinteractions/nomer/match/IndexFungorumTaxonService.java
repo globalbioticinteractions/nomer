@@ -4,6 +4,9 @@ import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.eclipse.jetty.util.StringUtil;
+import org.eol.globi.data.CharsetConstant;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
@@ -23,6 +26,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class IndexFungorumTaxonService extends CommonTaxonService {
@@ -42,39 +48,41 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
                            InputStream resourceAsStream) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
 
-        String[] rowValues;
         try {
             LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(reader);
-            while ((rowValues = labeledCSVParser.getLine()) != null) {
-                if (rowValues.length > 24) {
+            while (labeledCSVParser.getLine() != null) {
+                String taxId = labeledCSVParser.getValueByLabel("RECORD NUMBER");
+                String acceptedTaxId = labeledCSVParser.getValueByLabel("CURRENT NAME RECORD NUMBER");
+                String author = labeledCSVParser.getValueByLabel("AUTHORS");
+                String year = labeledCSVParser.getValueByLabel("YEAR OF PUBLICATION");
 
-                    String taxId = labeledCSVParser.getValueByLabel("RECORD NUMBER");
-                    String acceptedTaxId = labeledCSVParser.getValueByLabel("17976");
-                    String author = labeledCSVParser.getValueByLabel("AUTHORS");
-                    String year = labeledCSVParser.getValueByLabel("YEAR OF PUBLICATION");
 
-                    String familyName = labeledCSVParser.getValueByLabel("Family name");
-                    String orderName = labeledCSVParser.getValueByLabel("Order name");
-                    String subclassName = labeledCSVParser.getValueByLabel("Subclass name");
-                    String className = labeledCSVParser.getValueByLabel("Class name");
-                    String subphylumName = labeledCSVParser.getValueByLabel("Subphylum name");
-                    String phylumName = labeledCSVParser.getValueByLabel("Phylum name");
-                    String kingdomName = labeledCSVParser.getValueByLabel("Kingdom name");
 
-                    String completeName = labeledCSVParser.getValueByLabel("NAME OF FUNGUS");
+                String familyName = labeledCSVParser.getValueByLabel("Family name");
+                String orderName = labeledCSVParser.getValueByLabel("Order name");
+                String subclassName = labeledCSVParser.getValueByLabel("Subclass name");
+                String className = labeledCSVParser.getValueByLabel("Class name");
+                String subphylumName = labeledCSVParser.getValueByLabel("Subphylum name");
+                String phylumName = labeledCSVParser.getValueByLabel("Phylum name");
+                String kingdomName = labeledCSVParser.getValueByLabel("Kingdom name");
 
-                    TaxonImpl taxon = new TaxonImpl(completeName, TaxonomyProvider.INDEX_FUNGORUM.getIdPrefix() + taxId);
+                String completeName = labeledCSVParser.getValueByLabel("NAME OF FUNGUS");
 
-                    taxon.setPath(StringUtils.join(kingdomName, phylumName, subphylumName, className, subclassName, orderName, familyName));
-                    taxon.setPathNames(StringUtils.join("kingdom", "phylum", "subphylum", "class", "subclass", "order", "family"));
-                    if (NumberUtils.isCreatable(taxId)) {
-                        taxonMap.put(Long.parseLong(taxId), TaxonUtil.taxonToMap(taxon));
-                        if (NumberUtils.isCreatable(acceptedTaxId)) {
-                            acceptedNameMap.put(
-                                    Long.parseLong(taxId),
-                                    Long.parseLong(acceptedTaxId)
-                            );
-                        }
+                TaxonImpl taxon = new TaxonImpl(completeName, TaxonomyProvider.INDEX_FUNGORUM.getIdPrefix() + taxId);
+
+                if (StringUtils.isNoneBlank(author) && StringUtils.isNoneBlank(year)) {
+                    String authorship = StringUtils.join(new String[]{author, year}, ", ");
+                    taxon.setAuthorship(authorship);
+                }
+                taxon.setPath(StringUtils.join(new String[] { kingdomName, phylumName, subphylumName, className, subclassName, orderName, familyName}, CharsetConstant.SEPARATOR));
+                taxon.setPathNames(StringUtils.join(new String[] { "kingdom", "phylum", "subphylum", "class", "subclass", "order", "family"}, CharsetConstant.SEPARATOR));
+                if (NumberUtils.isCreatable(taxId)) {
+                    taxonMap.put(Long.parseLong(taxId), TaxonUtil.taxonToMap(taxon));
+                    if (NumberUtils.isCreatable(acceptedTaxId)) {
+                        acceptedNameMap.put(
+                                Long.parseLong(taxId),
+                                Long.parseLong(acceptedTaxId)
+                        );
                     }
                 }
             }
@@ -125,16 +133,16 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
 
-        try {
-            parseNodes(nodes, null, getCtx().getResource(getNodesUrl()));
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS nodes", e);
-        }
-
         mergedNodes = db
                 .createTreeMap(MERGED_NODES)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
+
+        try {
+            parseNodes(nodes, mergedNodes, getCtx().getResource(getNodesUrl()));
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS nodes", e);
+        }
 
         denormalizedNodes = db
                 .createTreeMap(DENORMALIZED_NODES)
@@ -146,6 +154,16 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
 
+        nodes.forEach((id, record) -> {
+            Taxon taxon = TaxonUtil.mapToTaxon(record);
+            List<Map<String, String>> taxa = denormalizedNodes.getOrDefault(taxon.getName(), new ArrayList<>());
+            taxa.add(record);
+            denormalizedNodes.put(taxon.getName(), taxa);
+
+            taxa = denormalizedNodeIds.getOrDefault(id, new ArrayList<>());
+            taxa.add(record);
+            denormalizedNodeIds.put(id, taxa);
+        });
 
         watch.stop();
         TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);

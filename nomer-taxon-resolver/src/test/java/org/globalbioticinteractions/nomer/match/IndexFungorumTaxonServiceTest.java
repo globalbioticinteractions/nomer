@@ -22,70 +22,67 @@ import static org.hamcrest.core.IsNull.nullValue;
 
 public class IndexFungorumTaxonServiceTest {
 
-    @Ignore("to be implemented")
     @Test
     public void enrichById() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl(null, "IF:808518");
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+
+        assertIF808518(enriched);
+    }
+
+    private void assertIF808518(Map<String, String> enriched) {
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("IF:808518"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Leucocybe candicans"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(nullValue()));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Pers.) Vizzini, P. Alvarado, G. Moreno & Consiglio, 2015"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Fungi | Basidiomycota | Agaricomycotina | Agaricomycetes | Agaricomycetidae | Agaricales | Incertae sedis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | subphylum | class | subclass | order | family"));
+    }
+
+    private void assertIF177054(Map<String, String> enriched) {
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("IF:177054"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Clitocybe candicans"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(nullValue()));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Pers.) P. Kumm., 1871"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Fungi | Basidiomycota | Agaricomycotina | Agaricomycetes | Agaricomycetidae | Agaricales | Incertae sedis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | subphylum | class | subclass | order | family"));
+    }
+
+    @Test
+    public void enrichByName() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+        TaxonImpl taxon = new TaxonImpl("Clitocybe candicans", null);
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+        assertIF808518(enriched);
+    }
+
+    @Test
+    public void acceptedName() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl(null, "IF:177054");
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:57"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Nitrobacter"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+        assertIF808518(enriched);
     }
 
-    @Ignore("to be implemented")
-    @Test
-    public void enrichByName() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
-
-        TaxonImpl taxon = new TaxonImpl("Clitocybe candicans", null);
-        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
-
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("IF:177054"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Nitrobacter"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
-    }
-
-    @Ignore("to be implemented")
-    @Test
-    public void enrichMerged() throws PropertyEnricherException {
-        PropertyEnricher service = createService();
-
-        TaxonImpl taxon = new TaxonImpl(null, "ITIS:57");
-        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
-
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bradyrhizobiaceae | Nitrobacter"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:57"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Nitrobacter"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
-    }
-
-    @Ignore("to be implemented")
     @Test
     public void enrichNoMatch() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "ITIS:999999999")));
+        Map<String, String> unknownTaxon = TaxonUtil.taxonToMap(new TaxonImpl(null, "IF:999999999"));
+        Map<String, String> enriched = service.enrichFirstMatch(unknownTaxon);
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
 
-    @Ignore("to be implemented")
     @Test
     public void enrichPrefixMismatch() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:2")));
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:177054")));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
