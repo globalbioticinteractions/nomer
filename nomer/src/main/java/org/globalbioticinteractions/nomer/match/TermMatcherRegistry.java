@@ -80,6 +80,7 @@ public class TermMatcherRegistry {
             put("translate-names", "translate-names");
             put("wikidata-taxon-id-web", "wikidata-web");
             put("worms-taxon", "worms");
+            put("indexfungorum", "indexfungorum");
         }
     });
 

@@ -45,6 +45,7 @@ public class TermMatcherRegistryTest {
             "remove-stop-words",
             "translate-names",
             "wikidata-taxon-id-web",
+            "indexfungorum",
             "worms-taxon"));
 
     @Test(expected = IllegalArgumentException.class)
