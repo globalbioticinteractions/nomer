@@ -48,7 +48,7 @@ public class CmdLine {
                 .addCommand("version", new CmdVersion())
                 .addCommand("replace", new CmdReplace())
                 .addCommand("append", new CmdAppend())
-                .addCommand("dump", new CmdDump(),"peruse-all", "crawl-full-lexicon", "show-all-terms", "terms", "show", "export")
+                .addCommand("list", new CmdDump(), "ls", "dump", "peruse-all", "crawl-full-lexicon", "show-all-terms", "terms", "show", "export")
                 .addCommand("matchers", new CmdMatchers())
                 .addCommand("properties", new CmdProperties())
                 .addCommand("input-schema", new CmdInputSchema())

@@ -4,7 +4,6 @@ import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.eclipse.jetty.util.StringUtil;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +99,7 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
             }
         }
 
-        File taxonomyDir = new File(cacheDir, StringUtils.lowerCase(getTaxonomyProvider().name()));
+        File taxonomyDir = new File(cacheDir, getProviderShortName());
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
@@ -113,7 +111,7 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
         if (db.exists(DENORMALIZED_NODES)
                 && db.exists(DENORMALIZED_NODE_IDS)
                 && db.exists(MERGED_NODES)) {
-            LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.info("[" + getProviderShortName() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             denormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
             denormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
             mergedNodes = db.getTreeMap(MERGED_NODES);
@@ -123,7 +121,7 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
     }
 
     private void index(DB db) throws PropertyEnricherException {
-        LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
+        LOG.info("[" + getProviderShortName() + "] taxonomy importing...");
         StopWatch watch = new StopWatch();
         watch.start();
 
@@ -167,7 +165,11 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
 
         watch.stop();
         TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
-        LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
+        LOG.info("[" + getProviderShortName() + "] taxonomy imported.");
+    }
+
+    private String getProviderShortName() {
+        return StringUtils.lowerCase(getTaxonomyProvider().name());
     }
 
     @Override
