@@ -164,7 +164,10 @@ public class DiscoverLifeUtil {
     }
 
     public static String enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
-        String altName = StringUtils.trim(currentNode.getTextContent());
+        String altName = StringUtils.replace(
+                StringUtils.trim(currentNode.getTextContent()),
+                "_sic",
+                "");
 
         String authorship = null;
         Node authorshipNode = currentNode.getNextSibling();
