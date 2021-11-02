@@ -1,9 +1,5 @@
 #!/usr/bin/env sh
 #
-# see related https://stackoverflow.com/questions/46454995/how-to-hide-warning-illegal-reflective-access-in-java-9-without-jvm-argument
-# and https://github.com/globalbioticinteractions/nomer/issues/44
-# for background on --illegal-access=deny
-#
 @ 2>/dev/null # 2>nul & echo off & goto BOF
 :
 exec java -Xmx4G -XX:+UseG1GC $JAVA_OPTS -cp "$0" org.globalbioticinteractions.nomer.Nomer "$@"
