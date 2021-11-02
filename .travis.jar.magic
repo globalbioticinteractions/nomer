@@ -6,10 +6,10 @@
 #
 @ 2>/dev/null # 2>nul & echo off & goto BOF
 :
-exec java --illegal-access=deny -Xmx4G -XX:+UseG1GC $JAVA_OPTS -cp "$0" org.globalbioticinteractions.nomer.Nomer "$@"
+exec java -Xmx4G -XX:+UseG1GC $JAVA_OPTS -cp "$0" org.globalbioticinteractions.nomer.Nomer "$@"
 exit
 
 :BOF
 @echo off
-java --illegal-access=deny -Xmx4G -XX:+UseG1GC %JAVA_OPTS% -cp "%~dpnx0" org.globalbioticinteractions.nomer.Nomer %*
+java -Xmx4G -XX:+UseG1GC %JAVA_OPTS% -cp "%~dpnx0" org.globalbioticinteractions.nomer.Nomer %*
 exit /B %errorlevel%
