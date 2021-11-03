@@ -1,4 +1,4 @@
-package org.eol.globi.taxon;
+package org.globalbioticinteractions.nomer.match;
 
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -8,20 +8,10 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-public class ContextForTesting implements TermMatcherContext {
-    @Override
-    public String getCacheDir() {
-        return "target";
-    }
-
-    @Override
-    public String getProperty(String key) {
-        return null;
-    }
-
+public abstract class TermMatcherContextClasspath implements TermMatcherContext {
     @Override
     public InputStream retrieve(URI uri) throws IOException {
-        return null;
+        return getClass().getResourceAsStream(uri.toString());
     }
 
     @Override
@@ -38,5 +28,6 @@ public class ContextForTesting implements TermMatcherContext {
     public Map<Integer, String> getOutputSchema() {
         return null;
     }
+
 
 }

@@ -15,6 +15,7 @@ import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
@@ -28,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -217,7 +219,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .make();
 
             try {
-                parseNodes(ncbiNodes, childParent, ctx.getResource(getNodesUrl()));
+                parseNodes(ncbiNodes, childParent, ctx.retrieve(getNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -244,7 +246,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
 
             try {
-                parseMerged(mergedNodes, ctx.getResource(getMergedNodesUrl()));
+                parseMerged(mergedNodes, ctx.retrieve(getMergedNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -255,7 +257,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .make();
 
             try {
-                parseNames(ctx.getResource(getNamesUrl()), ncbiNames, nameIds, commonNameIds, synonymIds);
+                parseNames(ctx.retrieve(getNamesUrl()), ncbiNames, nameIds, commonNameIds, synonymIds);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -288,16 +290,16 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         return cacheDir;
     }
 
-    private String getNodesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.ncbi.nodes");
+    private URI getNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.ncbi.nodes");
     }
 
-    private String getMergedNodesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.ncbi.merged");
+    private URI getMergedNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.ncbi.merged");
     }
 
-    private String getNamesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.ncbi.names");
+    private URI getNamesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.ncbi.names");
     }
 
     static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream) throws PropertyEnricherException {

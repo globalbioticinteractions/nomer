@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -89,30 +90,10 @@ public class IndexFungorumTaxonServiceTest {
 
     private PropertyEnricher createService() {
         File file = new File("target/cache" + UUID.randomUUID());
-        return new IndexFungorumTaxonService(new TermMatcherContext() {
+        return new IndexFungorumTaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
                 return file.getAbsolutePath();
-            }
-
-            @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
-            }
-
-            @Override
-            public List<String> getMatchers() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
-                return null;
             }
 
             @Override

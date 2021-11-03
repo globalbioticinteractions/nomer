@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.data.StudyImporterException;
@@ -9,6 +10,8 @@ import org.eol.globi.taxon.TaxonomyImporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 public class CacheUtil {
     public static File getCacheDir(TermMatcherContext ctx, String namespace) {
@@ -33,5 +36,17 @@ public class CacheUtil {
 
     public static Directory luceneDirectoryFor(File indexDir) throws IOException {
         return new SimpleFSDirectory(indexDir.toPath());
+    }
+
+    public static URI getValueURI(TermMatcherContext ctx, String key) throws PropertyEnricherException {
+        String value = ctx.getProperty(key);
+        if (StringUtils.isBlank(value)) {
+            throw new PropertyEnricherException("no uri for taxon resource [" + key + "] found");
+        }
+        try {
+            return new URI(value);
+        } catch (URISyntaxException e) {
+            throw new PropertyEnricherException("invalid uri for taxon resource [" + key + "] found: [" + value + "]");
+        }
     }
 }

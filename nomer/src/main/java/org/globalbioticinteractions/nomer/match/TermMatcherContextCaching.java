@@ -3,6 +3,8 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eol.globi.service.ResourceService;
+import org.eol.globi.util.InputStreamFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.vfs2.FileObject;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,12 +30,19 @@ import java.util.zip.GZIPOutputStream;
 public abstract class TermMatcherContextCaching extends CmdDefaultParams implements TermMatcherContext {
     private final static Logger LOG = LoggerFactory.getLogger(TermMatcherContextCaching.class);
 
+    ResourceService factory = new ResourceService() {
+        @Override
+        public InputStream retrieve(URI resourceName) throws IOException {
+            return null;
+        }
+    };
+
     @Override
-    public InputStream getResource(String uri) throws IOException {
+    public InputStream retrieve(URI uri) throws IOException {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-256");
-            md.update(uri.getBytes(StandardCharsets.UTF_8));
+            md.update(uri.toString().getBytes(StandardCharsets.UTF_8));
             byte[] digest = md.digest();
             String hex = String.format("%064x", new BigInteger(1, digest));
             FileUtils.forceMkdir(new File(getCacheDir()));
@@ -44,7 +54,7 @@ public abstract class TermMatcherContextCaching extends CmdDefaultParams impleme
                 FileSystemManager fsManager = VFS.getManager();
                 FileObject fileObj = fsManager.resolveFile(uri);
 
-                try (OutputStream output = StringUtils.endsWith(uri, ".gz") ?
+                try (OutputStream output = StringUtils.endsWith(uri.toString(), ".gz") ?
                         new FileOutputStream(cachedFile) :
                         new GZIPOutputStream(new FileOutputStream(cachedFile))) {
                     IOUtils.copyLarge(fileObj.getContent().getInputStream(), output);

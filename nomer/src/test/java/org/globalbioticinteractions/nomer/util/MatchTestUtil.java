@@ -5,6 +5,7 @@ import org.eol.globi.taxon.TaxonCacheService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -42,7 +43,7 @@ public class MatchTestUtil {
         }
 
         @Override
-        public InputStream getResource(String uri) throws IOException {
+        public InputStream retrieve(URI uri) throws IOException {
             return null;
         }
 

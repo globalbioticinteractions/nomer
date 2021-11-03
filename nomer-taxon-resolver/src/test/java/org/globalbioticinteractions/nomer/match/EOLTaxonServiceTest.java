@@ -11,6 +11,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -57,30 +58,10 @@ public class EOLTaxonServiceTest {
     }
 
     private PropertyEnricher createService() {
-        EOLTaxonService taxonService = new EOLTaxonService(new TermMatcherContext() {
+        EOLTaxonService taxonService = new EOLTaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
                 return new File("target/eolCache" + UUID.randomUUID()).getAbsolutePath();
-            }
-
-            @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
-            }
-
-            @Override
-            public List<String> getMatchers() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
-                return null;
             }
 
             @Override

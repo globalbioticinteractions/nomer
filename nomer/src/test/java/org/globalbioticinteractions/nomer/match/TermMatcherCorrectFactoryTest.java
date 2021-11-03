@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,7 +59,7 @@ public class TermMatcherCorrectFactoryTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
+            public InputStream retrieve(URI uri) throws IOException {
                 return IOUtils.toInputStream("map".equals(uri) ? "copepods,Copepoda" : "unidentified", StandardCharsets.UTF_8);
             }
 

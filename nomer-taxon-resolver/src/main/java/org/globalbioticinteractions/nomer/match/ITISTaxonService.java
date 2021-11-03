@@ -10,7 +10,7 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.eol.globi.util.ExternalIdUtil;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,8 +46,8 @@ public class ITISTaxonService extends CommonTaxonService {
     static void parseNodes(Map<Long, Map<String, String>> taxonMap,
                            Map<Long, Long> childParent,
                            Map<String, String> rankIdNameMap,
-                           InputStream resourceAsStream) throws PropertyEnricherException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+                           InputStream is) throws PropertyEnricherException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
         String line;
         try {
@@ -246,7 +247,7 @@ public class ITISTaxonService extends CommonTaxonService {
                 .make();
 
         try {
-            InputStream resource = getCtx().getResource(getTaxonUnitTypes());
+            InputStream resource = getCtx().retrieve(getTaxonUnitTypes());
             if (resource == null) {
                 throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonUnitTypes() + "]");
             }
@@ -266,7 +267,7 @@ public class ITISTaxonService extends CommonTaxonService {
                 .make();
 
         try {
-            parseNodes(itisNodes, childParent, rankIdNameMap, getCtx().getResource(getNodesUrl()));
+            parseNodes(itisNodes, childParent, rankIdNameMap, getCtx().retrieve(getNodesUrl()));
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS nodes", e);
         }
@@ -278,7 +279,7 @@ public class ITISTaxonService extends CommonTaxonService {
 
 
         try {
-            parseMerged(mergedNodes, getCtx().getResource(getMergedNodesUrl()));
+            parseMerged(mergedNodes, getCtx().retrieve(getMergedNodesUrl()));
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS nodes", e);
         }
@@ -309,16 +310,16 @@ public class ITISTaxonService extends CommonTaxonService {
 
     }
 
-    private String getNodesUrl() throws PropertyEnricherException {
-        return getCtx().getProperty("nomer.itis.taxonomic_units");
+    private URI getNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.taxonomic_units");
     }
 
-    private String getTaxonUnitTypes() throws PropertyEnricherException {
-        return getCtx().getProperty("nomer.itis.taxon_unit_types");
+    private URI getTaxonUnitTypes() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.taxon_unit_types");
     }
 
-    private String getMergedNodesUrl() throws PropertyEnricherException {
-        return getCtx().getProperty("nomer.itis.synonym_links");
+    private URI getMergedNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.synonym_links");
     }
 
 }

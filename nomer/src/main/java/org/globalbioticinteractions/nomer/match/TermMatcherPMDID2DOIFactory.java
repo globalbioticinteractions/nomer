@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
@@ -48,8 +49,12 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
                 private Map<Long, DOI> pmidToDOI = null;
 
                 private Map<Long, DOI> init(TermMatcherContext ctx) throws IOException {
-                    String pmidCache = ctx.getProperty(NOMER_PMID_CACHE);
-                    InputStream resource = ctx.getResource(pmidCache);
+                    InputStream resource;
+                    try {
+                        resource = ctx.retrieve(CacheUtil.getValueURI(ctx, NOMER_PMID_CACHE));
+                    } catch (PropertyEnricherException e) {
+                        throw new IOException("failed to access properties", e);
+                    }
 
                     LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(new InputStreamReader(new BufferedInputStream(resource), StandardCharsets.UTF_8));
 

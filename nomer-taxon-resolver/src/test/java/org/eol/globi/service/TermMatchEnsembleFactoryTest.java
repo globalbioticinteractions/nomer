@@ -3,6 +3,7 @@ package org.eol.globi.service;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.taxon.TaxonEnricherImpl;
+import org.globalbioticinteractions.nomer.match.TermMatcherContextClasspath;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.After;
 import org.junit.Ignore;
@@ -50,30 +51,10 @@ public class TermMatchEnsembleFactoryTest {
 
         Taxon taxon = new TaxonImpl("Mickey", "https://www.gbif.org/species/1777631");
         taxonEnricher = new TaxonEnricherImpl() {{
-            setServices(TermMatchEnsembleFactory.getEnrichers(new TermMatcherContext() {
+            setServices(TermMatchEnsembleFactory.getEnrichers(new TermMatcherContextClasspath() {
                 @Override
                 public String getCacheDir() {
                     return cachePath;
-                }
-
-                @Override
-                public InputStream getResource(String uri) throws IOException {
-                    return null;
-                }
-
-                @Override
-                public List<String> getMatchers() {
-                    return null;
-                }
-
-                @Override
-                public Map<Integer, String> getInputSchema() {
-                    return null;
-                }
-
-                @Override
-                public Map<Integer, String> getOutputSchema() {
-                    return null;
                 }
 
                 @Override

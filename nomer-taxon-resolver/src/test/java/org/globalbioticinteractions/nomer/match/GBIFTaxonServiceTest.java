@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -128,30 +129,10 @@ public class GBIFTaxonServiceTest {
     }
 
     private GBIFTaxonService createService(final String nameUrl) {
-        return new GBIFTaxonService(new TermMatcherContext() {
+        return new GBIFTaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
                 return new File("target/gbifCache" + UUID.randomUUID()).getAbsolutePath();
-            }
-
-            @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
-            }
-
-            @Override
-            public List<String> getMatchers() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
-                return null;
             }
 
             @Override

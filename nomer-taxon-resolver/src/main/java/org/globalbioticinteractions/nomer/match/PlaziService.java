@@ -3,7 +3,6 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -29,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -128,7 +128,7 @@ public class PlaziService implements TermMatcher {
 
         try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(indexDir)) {
             taxonLookupBuilder.start();
-            InputStream resource = this.ctx.getResource(getArchiveUrl());
+            InputStream resource = this.ctx.retrieve(getArchiveUrl());
             TaxonCacheListener listener = new TaxonCacheListener() {
 
                 @Override
@@ -171,8 +171,8 @@ public class PlaziService implements TermMatcher {
         return taxonLookupService == null;
     }
 
-    private String getArchiveUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.plazi.treatments.archive");
+    private URI getArchiveUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.plazi.treatments.archive");
     }
 
 }

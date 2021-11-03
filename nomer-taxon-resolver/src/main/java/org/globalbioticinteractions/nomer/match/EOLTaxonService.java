@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -187,11 +189,7 @@ public class EOLTaxonService extends PropertyEnricherSimple {
                     .make();
 
             try {
-                String taxonUrl = ctx.getProperty("nomer.eol.taxon");
-                if (taxonUrl == null) {
-                    throw new PropertyEnricherException("no url for taxon resource [nomer.eol.taxon] found");
-                }
-                InputStream resource = ctx.getResource(taxonUrl);
+                InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, "nomer.eol.taxon"));
                 parseNodes(eolNodes, childParent, resource);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse EOL nodes", e);

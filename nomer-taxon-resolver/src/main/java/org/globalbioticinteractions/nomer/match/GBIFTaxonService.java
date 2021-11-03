@@ -16,6 +16,7 @@ import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
@@ -29,6 +30,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,11 +96,11 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
         watch.start();
         List<Map<String, String>> maps =
                 matchedIds == null || matchedIds.size() == 0
-                ? Collections.emptyList()
-                : matchedIds
-                .stream()
-                .map(id -> lookupTaxonById(id.toString())
-                ).collect(Collectors.toList());
+                        ? Collections.emptyList()
+                        : matchedIds
+                        .stream()
+                        .map(id -> lookupTaxonById(id.toString())
+                        ).collect(Collectors.toList());
         watch.stop();
         return maps;
 
@@ -186,10 +188,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
             idRelations = db.getTreeMap(ID_RELATION);
             nameIds = db.getTreeMap(NAME_ID);
         } else {
-            String taxonUrl = ctx.getProperty("nomer.gbif.ids");
-            if (taxonUrl == null) {
-                throw new PropertyEnricherException("no url for taxon resource [nomer.gbif.ids] found");
-            }
+            URI taxonUrl = CacheUtil.getValueURI(ctx, "nomer.gbif.ids");
             LOG.info("indexing GBIF taxonomy ids...");
 
             idNameRanks = db
@@ -202,7 +201,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                         public boolean hasNext() {
                             try {
                                 if (reader == null) {
-                                    reader = new BufferedReader(new InputStreamReader(ctx.getResource(taxonUrl), StandardCharsets.UTF_8));
+                                    reader = new BufferedReader(new InputStreamReader(ctx.retrieve(taxonUrl), StandardCharsets.UTF_8));
                                 }
 
                                 if (idNameRank == null) {
@@ -247,7 +246,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                         public boolean hasNext() {
                             try {
                                 if (reader == null) {
-                                    reader = new BufferedReader(new InputStreamReader(ctx.getResource(taxonUrl), StandardCharsets.UTF_8));
+                                    reader = new BufferedReader(new InputStreamReader(ctx.retrieve(taxonUrl), StandardCharsets.UTF_8));
                                 }
                                 if (idRelation == null) {
                                     String line = reader.readLine();
@@ -280,10 +279,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
             watch.start();
 
 
-            String nameUrl = ctx.getProperty("nomer.gbif.names");
-            if (nameUrl == null) {
-                throw new PropertyEnricherException("no url for taxon resource [nomer.gbif.names] found");
-            }
+            URI nameUrl = CacheUtil.getValueURI(ctx, "nomer.gbif.names");
 
             nameIds = db
                     .createTreeMap(NAME_ID)
@@ -295,7 +291,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                         public boolean hasNext() {
                             try {
                                 if (reader == null) {
-                                    reader = new BufferedReader(new InputStreamReader(ctx.getResource(nameUrl), StandardCharsets.UTF_8));
+                                    reader = new BufferedReader(new InputStreamReader(ctx.retrieve(nameUrl), StandardCharsets.UTF_8));
                                 }
 
                                 if (nameId == null) {

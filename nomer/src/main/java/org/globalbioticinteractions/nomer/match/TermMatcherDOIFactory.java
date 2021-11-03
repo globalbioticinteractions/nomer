@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
@@ -76,7 +77,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
     private DOIResolver createWithCache(TermMatcherContext ctx, String taxonRankCacheUrl) {
         DOIResolver doiResolver;
         try {
-            InputStream resource = ctx.getResource(taxonRankCacheUrl);
+            InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, taxonRankCacheUrl));
             DOIResolverCache doiResolverCache = new DOIResolverCache();
             doiResolverCache.init(new InputStreamReader(resource, StandardCharsets.UTF_8));
             doiResolver = doiResolverCache;

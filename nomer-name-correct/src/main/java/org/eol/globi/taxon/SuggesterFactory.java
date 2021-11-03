@@ -3,10 +3,13 @@ package org.eol.globi.taxon;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.service.Initializing;
 import org.eol.globi.service.NameSuggester;
+import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.UKSISuggestionService;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +19,13 @@ public class SuggesterFactory {
     public static final String NOMER_TAXON_NAME_CORRECTION_URL = "nomer.taxon.name.correction.url";
 
     private static void initWith(Initializing service, String propertyName, TermMatcherContext ctx) {
-        String property = null == ctx ? null : ctx.getProperty(propertyName);
         try {
-            if (StringUtils.isNotBlank(property)) {
-                service.init(ctx.getResource(property));
+            URI property = null == ctx ? null : CacheUtil.getValueURI(ctx, propertyName);
+            if (property != null) {
+                service.init(ctx.retrieve(property));
             }
-        } catch (IOException e) {
-            throw new IllegalArgumentException("failed to instantiate name service [" + service.getClass().getSimpleName() + "]", e);
+        } catch (IOException | PropertyEnricherException e) {
+            throw new IllegalArgumentException("failed to instantiate name service [" + service.getClass().getSimpleName() + "] using property [" + propertyName + "]", e);
         }
     }
 
@@ -44,7 +47,7 @@ public class SuggesterFactory {
                 // map using UK species inventory
                 add(new UKSISuggestionService() {
                     {
-                        initWith(this,"nomer.taxon.name.uksi.url", ctx);
+                        initWith(this, "nomer.taxon.name.uksi.url", ctx);
                     }
                 });
                 // attempt to extract canonical name
@@ -62,13 +65,13 @@ public class SuggesterFactory {
 
     public static NameSuggester createStopwordRemover(TermMatcherContext ctx) {
         return new RemoveStopWordService() {{
-                initWith(this, NOMER_TAXON_NAME_STOPWORD_URL, ctx);
-            }};
+            initWith(this, NOMER_TAXON_NAME_STOPWORD_URL, ctx);
+        }};
     }
 
     public static NameSuggester createManualSuggester(TermMatcherContext ctx) {
         return new ManualSuggester() {{
-                initWith(this, NOMER_TAXON_NAME_CORRECTION_URL, ctx);
-            }};
+            initWith(this, NOMER_TAXON_NAME_CORRECTION_URL, ctx);
+        }};
     }
 }

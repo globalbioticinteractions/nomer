@@ -33,6 +33,12 @@
         </dependency>
 
         <dependency>
+            <groupId>bio.guoda</groupId>
+            <artifactId>preston-get</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.21</version>

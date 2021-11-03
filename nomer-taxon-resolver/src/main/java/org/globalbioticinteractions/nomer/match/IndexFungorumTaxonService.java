@@ -12,6 +12,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.util.CSVTSVUtil;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
@@ -25,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -140,9 +142,9 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
                 .make();
 
         try {
-            InputStream resource = getCtx().getResource(getNodesUrl());
+            InputStream resource = getCtx().retrieve(getNodesUrl());
             if (resource == null) {
-                throw new PropertyEnricherException("no discoverlife resource found at [" + getNodesUrl() +"], please configure property [" + INDEXFUNGORUM_EXPORT_PROPERTY_NAME + "]");
+                throw new PropertyEnricherException("no discoverlife resource found at [" + getNodesUrl() + "], please configure property [" + INDEXFUNGORUM_EXPORT_PROPERTY_NAME + "]");
             }
             parseNodes(nodes, mergedNodes, resource);
         } catch (IOException e) {
@@ -184,8 +186,8 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
 
     }
 
-    private String getNodesUrl() throws PropertyEnricherException {
-        return getCtx().getProperty(INDEXFUNGORUM_EXPORT_PROPERTY_NAME);
+    private URI getNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), INDEXFUNGORUM_EXPORT_PROPERTY_NAME);
     }
 
 }

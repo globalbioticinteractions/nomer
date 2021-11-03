@@ -3,6 +3,7 @@ package org.eol.globi.taxon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
@@ -20,7 +21,9 @@ import org.mapdb.DBMaker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -56,24 +59,21 @@ public class NODCTaxonService extends PropertyEnricherSimple {
         return enriched;
     }
 
-    public boolean needsInit() {
+    private boolean needsInit() {
         return nodc2itis == null;
     }
 
-    private String getNodcResourceUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.nodc.url");
+    private URI getNodcResourceUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.nodc.url");
     }
 
     private void lazyInit() throws PropertyEnricherException {
-        String nodcFilename = getNodcResourceUrl();
-        if (StringUtils.isBlank(getNodcResourceUrl())) {
-            throw new PropertyEnricherException("cannot initialize NODC enricher: failed to find NODC taxon file. Did you install the NODC taxonomy and set -DnodcFile=...?");
-        }
         try {
-            NODCTaxonParser parser = new NODCTaxonParser(new BufferedReader(new InputStreamReader(ctx.getResource(nodcFilename))));
+            InputStream retrieve = ctx.retrieve(getNodcResourceUrl());
+            NODCTaxonParser parser = new NODCTaxonParser(new BufferedReader(new InputStreamReader(retrieve)));
             init(parser);
         } catch (IOException e) {
-            throw new PropertyEnricherException("failed to read from NODC resource [" + nodcFilename + "]", e);
+            throw new PropertyEnricherException("failed to read from NODC resource [" + getNodcResourceUrl() + "]", e);
         }
     }
 

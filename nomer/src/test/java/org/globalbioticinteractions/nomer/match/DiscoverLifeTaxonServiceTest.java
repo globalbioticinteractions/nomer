@@ -14,6 +14,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -172,7 +173,7 @@ public class DiscoverLifeTaxonServiceTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
+            public InputStream retrieve(URI uri) throws IOException {
                 return null;
             }
 

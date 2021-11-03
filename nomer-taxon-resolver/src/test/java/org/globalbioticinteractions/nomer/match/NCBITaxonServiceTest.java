@@ -13,6 +13,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -224,30 +225,10 @@ public class NCBITaxonServiceTest {
     }
 
     private NCBITaxonService createService() {
-        return new NCBITaxonService(new TermMatcherContext() {
+        return new NCBITaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
                 return new File("target/ncbiCache" + UUID.randomUUID()).getAbsolutePath();
-            }
-
-            @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
-            }
-
-            @Override
-            public List<String> getMatchers() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
-                return null;
             }
 
             @Override

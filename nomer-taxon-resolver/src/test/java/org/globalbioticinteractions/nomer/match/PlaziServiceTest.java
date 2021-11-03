@@ -166,8 +166,8 @@ public class PlaziServiceTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
+            public InputStream retrieve(URI uri) throws IOException {
+                return getClass().getResourceAsStream(uri.toString());
             }
 
             @Override
