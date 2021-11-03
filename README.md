@@ -2,10 +2,9 @@
 [![Build Status](https://travis-ci.com/globalbioticinteractions/nomer.svg?branch=master)](https://travis-ci.com/globalbioticinteractions/nomer) [![Java CI](https://github.com/globalbioticinteractions/nomer/workflows/Java%20CI/badge.svg)](https://github.com/globalbioticinteractions/nomer/actions?query=workflow%3A%22Java+CI%22) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![DOI](https://zenodo.org/badge/117019305.svg)](https://zenodo.org/badge/latestdoi/117019305)
 
-Maps identifiers and names to taxonomic names and ontological terms. 
+Maps identifiers and names to other identifiers and names.
 
 Standard out (stdout) is used for results, and standard error (stderr) is used for logging (e.g., progress reporting). Designed to work with [*nix pipes](https://en.wikipedia.org/wiki/Pipeline_%28Unix%29) or as simple commandline tool. 
-
 
 ```Nomer``` expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema.*``` properties. See ```properties``` command to list available properties.
 
