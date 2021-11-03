@@ -1,7 +1,7 @@
 package org.globalbioticinteractions.nomer;
 
 /*
-    Nomer - a GloBI tool to help map identifiers and name to identifiers and names
+    Nomer - maps identifiers and names to other identifiers and names
  */
 
 import org.globalbioticinteractions.nomer.cmd.CmdLine;
