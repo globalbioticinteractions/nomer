@@ -6,6 +6,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.taxon.DiscoverLifeUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
@@ -89,6 +90,39 @@ public class DiscoverLifeTaxonServiceTest {
                 });
 
         assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+    @Test
+    public void lookupByHomonymWithParenthesis() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+
+        final String providedName = "Xylocopa (Proxylocopa) sinensis";
+//        final String providedName = "Xylocopa sinensis";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                        if (NameType.HOMONYM_OF.equals(nameType)) {
+                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            assertThat(nameType, Is.is(NameType.HOMONYM_OF));
+                            assertThat(resolvedTaxon.getName(), Is.is("Xylocopa sinensis"));
+                            assertThat(resolvedTaxon.getAuthorship(), Is.is("Smith, 1854"));
+                            homonymCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+    @Test
+    public void trimScientificName() {
+        String actual = "Xylocopa (Proxylocopa) sinensis";
+        String trimmedName = DiscoverLifeUtil.trimScientificName(actual);
+        assertThat(trimmedName, Is.is("Xylocopa sinensis"));
     }
 
     @Test

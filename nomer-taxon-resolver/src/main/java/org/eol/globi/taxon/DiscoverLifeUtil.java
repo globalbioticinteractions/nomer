@@ -2,6 +2,7 @@ package org.eol.globi.taxon;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.DomNode;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
@@ -256,5 +257,9 @@ public class DiscoverLifeUtil {
 
         targetTaxon.setPathNames(StringUtils.join(PATH_NAMES_STATIC, CharsetConstant.SEPARATOR));
         return targetTaxon;
+    }
+
+    public static String trimScientificName(String actual) {
+        return StringUtils.replacePattern(actual, " \\(.*\\) ", " ");
     }
 }
