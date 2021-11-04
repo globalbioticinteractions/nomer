@@ -252,10 +252,9 @@ public class DiscoverLifeUtilTest {
 
         Triple<Term, NameType, Taxon> thirdNameRelation = relatedTaxa.get(2);
         assertThat(thirdNameRelation.getLeft().getName(), Is.is("Allodape clypeata"));
-        assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("Strand, 1915"));
+        assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("Friese, 1924"));
         assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
-        assertThat(thirdNameRelation.getRight().getName(), Is.is("Allodape clypeata"));
-        assertThat(thirdNameRelation.getRight().getAuthorship(), Is.is("Friese, 1924"));
+        assertNull(thirdNameRelation.getRight());
 
 
     }

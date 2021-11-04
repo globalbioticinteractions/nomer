@@ -108,8 +108,6 @@ public class DiscoverLifeUtil {
 
         if (focalTaxon != null) {
 
-            Map<String, Taxon> parsedNonHomonyms = new TreeMap<String, Taxon>();
-
             while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
 
                 if ("i".equals(currentNode.getNodeName())) {
@@ -126,17 +124,15 @@ public class DiscoverLifeUtil {
                     if (StringUtils.equals(status, "homonym")) {
                         Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
                         relatedTaxon.setExternalId(urlForName(relatedTaxon));
-                        Taxon taxon = parsedNonHomonyms.get(relatedTaxon.getName());
                         listener.foundTaxonForTerm(
                                 null,
                                 relatedTaxon,
                                 NameType.HOMONYM_OF,
-                                taxon
+                                null
                         );
                     } else {
                         Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
                         relatedTaxon.setExternalId(urlForName(relatedTaxon));
-                        parsedNonHomonyms.put(relatedTaxon.getName(), relatedTaxon);
                         listener.foundTaxonForTerm(
                                 null,
                                 relatedTaxon,
