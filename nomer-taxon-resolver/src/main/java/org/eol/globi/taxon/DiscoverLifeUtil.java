@@ -65,14 +65,14 @@ public class DiscoverLifeUtil {
         );
     }
 
-    public static void parseNames(Node familyNameNode, Node nameNodeCandidate, TermMatchListener listener) throws XPathExpressionException {
+    static void parseNames(Node familyNameNode, Node nameNodeCandidate, TermMatchListener listener) throws XPathExpressionException {
 
         Taxon focalTaxon = null;
 
         Node currentNode = nameNodeCandidate.getParentNode();
         if (StringUtils.equals("i", currentNode.getNodeName())) {
             Map<String, String> taxonMap = new TreeMap<>();
-            taxonMap.put("name", StringUtils.trim(nameNodeCandidate.getTextContent()));
+            taxonMap.put("name", trimNameNodeTextContent(nameNodeCandidate));
 
             Node expectedTextNode = currentNode.getNextSibling();
             Node authorshipNode = expectedTextNode == null ? null : expectedTextNode.getNextSibling();
@@ -124,6 +124,7 @@ public class DiscoverLifeUtil {
                     NameType nameType = NameType.SYNONYM_OF;
                     if (StringUtils.equals(status, "homonym")) {
                         nameType = NameType.NONE;
+                        //nameType = NameType.HOMONYM_OF;
                     }
 
 
@@ -164,10 +165,7 @@ public class DiscoverLifeUtil {
     }
 
     public static String enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
-        String altName = StringUtils.replace(
-                StringUtils.trim(currentNode.getTextContent()),
-                "_sic",
-                "");
+        String altName = trimNameNodeTextContent(currentNode);
 
         String authorship = null;
         Node authorshipNode = currentNode.getNextSibling();
@@ -195,6 +193,13 @@ public class DiscoverLifeUtil {
         relatedName.put("name", nameAndStatus[0]);
 
         return authorship;
+    }
+
+    private static String trimNameNodeTextContent(Node currentNode) {
+        return StringUtils.replace(
+                StringUtils.trim(currentNode.getTextContent()),
+                "_sic",
+                "");
     }
 
     public static void parse(InputStream is, TermMatchListener termMatchListener) throws IOException {

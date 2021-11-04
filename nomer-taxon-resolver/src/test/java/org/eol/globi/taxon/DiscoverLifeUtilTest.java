@@ -309,6 +309,60 @@ public class DiscoverLifeUtilTest {
         assertThat(secondNameRelation.getRight().getName(), Is.is("Andrena apicata"));
 
     }
+    @Test
+    public void parseNameRelationsWithSicSuffix2() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/51
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Coelioxys+pasteeli_sic\" target=\"_self\">\n" +
+                "                  Coelioxys pasteeli_sic\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                Gupta, 1992\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Coelioxys (Coelioxys) pasteeli_sic \n" +
+                "              </i>\n" +
+                "              Gupta, 1992\n" +
+                "            </td>\n" +
+                "          </tr>\n";
+
+        NodeList nodes = (NodeList) XmlUtil.applyXPath(
+                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
+                "//tr/td/b/a | //tr/td/i/a",
+                XPathConstants.NODESET
+        );
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(2));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Coelioxys pasteeli"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Gupta, 1992"));
+
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Coelioxys (Coelioxys) pasteeli"));
+        assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("Gupta, 1992"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(secondNameRelation.getRight().getName(), Is.is("Coelioxys pasteeli"));
+
+    }
 
     @Test
     public void parseBees() throws IOException {
