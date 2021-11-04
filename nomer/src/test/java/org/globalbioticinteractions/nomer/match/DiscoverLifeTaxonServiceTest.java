@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
@@ -15,7 +16,6 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +64,58 @@ public class DiscoverLifeTaxonServiceTest {
         assertLookupSynonym(discoverLifeTaxonService);
     }
 
+
+    @Test
+    public void lookupByHomonym() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+
+        String providedName = "Andrena proxima";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                        if (NameType.HOMONYM_OF.equals(nameType)) {
+                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            assertThat(((Taxon)providedTerm).getAuthorship(), Is.is("Smith, 1847"));
+                            assertThat(nameType, Is.is(NameType.HOMONYM_OF));
+                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getAuthorship(), Is.is("(Kirby, 1802)"));
+                            homonymCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+    @Test
+    public void lookupByNoMatchHomonym() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+
+        String providedName = "Apis muraria";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                        if (NameType.HOMONYM_OF.equals(nameType)) {
+                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            assertThat(nameType, Is.is(NameType.HOMONYM_OF));
+                            assertThat(resolvedTaxon.getName(), Is.is(PropertyAndValueDictionary.NO_MATCH));
+                            assertThat(resolvedTaxon.getId(), Is.is(PropertyAndValueDictionary.NO_MATCH));
+                            homonymCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(homonymCounter.get(), Is.is(1));
+    }
+
     @Test
     public void matchAll() throws PropertyEnricherException {
         DiscoverLifeTaxonService discoverLifeTaxonService
@@ -75,7 +127,7 @@ public class DiscoverLifeTaxonServiceTest {
     public void lookupByNonExistingName() throws PropertyEnricherException {
         AtomicReference<NameType> noMatch = new AtomicReference<>(null);
         DiscoverLifeTaxonService discoverLifeTaxonService = new DiscoverLifeTaxonService(getTmpContext());
-        discoverLifeTaxonService.match(Arrays.asList(new TaxonImpl("Donald duck")), new TermMatchListener() {
+        discoverLifeTaxonService.match(Collections.singletonList(new TaxonImpl("Donald duck")), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {

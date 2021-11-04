@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -129,19 +131,47 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         stopWatch.start();
         AtomicLong nameCounter = new AtomicLong();
         nameMap = db.createTreeMap(MAP_NAME).make();
+        List<Term> homonymsToBeResolved = new ArrayList<>();
         DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
-                List<Pair<NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
-                List<Pair<NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
-                pairs.add(Pair.of(nameType, TaxonUtil.taxonToMap(resolvedTaxon)));
-                nameMap.put(providedTerm.getName(), pairs);
+                if (resolvedTaxon == null && NameType.HOMONYM_OF.equals(nameType)) {
+                    homonymsToBeResolved.add(providedTerm);
+                } else {
+                    List<Pair<NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
+                    List<Pair<NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
+                    pairs.add(Pair.of(nameType, TaxonUtil.taxonToMap(resolvedTaxon)));
+                    nameMap.put(providedTerm.getName(), pairs);
+                }
                 nameCounter.incrementAndGet();
             }
         });
 
+        attemptToResolveHomonyms(homonymsToBeResolved);
+
+
         stopWatch.stop();
         long time = stopWatch.getTime(TimeUnit.SECONDS);
         LOG.info("[" + nameCounter.get() + "] DiscoverLife names were indexed in " + time + "s (@ " + (nameCounter.get() / time) + " names/s)");
+    }
+
+    private void attemptToResolveHomonyms(List<Term> homonymsToBeResolved) {
+        for (Term homonymToBeResolved : homonymsToBeResolved) {
+
+            List<Pair<NameType, Map<String, String>>> candidatePairs = nameMap.get(homonymToBeResolved.getName());
+            if (candidatePairs == null) {
+                candidatePairs = new ArrayList<>();
+                candidatePairs.add(Pair.of(NameType.HOMONYM_OF, TaxonUtil.taxonToMap(new TaxonImpl(PropertyAndValueDictionary.NO_MATCH, PropertyAndValueDictionary.NO_MATCH))));
+            } else {
+                List<Pair<NameType, Map<String, String>>> candidates = new ArrayList<>();
+                for (Pair<NameType, Map<String, String>> nameTypeMapPair : candidatePairs) {
+                    if (NameType.HAS_ACCEPTED_NAME.equals(nameTypeMapPair.getLeft())) {
+                        candidates.add(Pair.of(NameType.HOMONYM_OF, nameTypeMapPair.getRight()));
+                    }
+                }
+                candidatePairs.addAll(candidates);
+            }
+            nameMap.put(homonymToBeResolved.getName(), candidatePairs);
+        }
     }
 }
