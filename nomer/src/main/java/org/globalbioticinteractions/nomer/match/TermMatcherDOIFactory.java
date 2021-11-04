@@ -18,6 +18,7 @@ import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.doi.DOI;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -71,7 +72,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         String taxonRankCacheUrl = ctx == null ? null : ctx.getProperty(NOMER_DOI_CACHE_URL);
         return StringUtils.isBlank(taxonRankCacheUrl)
                 ? createWithAPI(ctx)
-                : createWithCache(ctx, taxonRankCacheUrl);
+                : createWithCache(ctx, NOMER_DOI_CACHE_URL);
     }
 
     private DOIResolver createWithCache(TermMatcherContext ctx, String taxonRankCacheUrl) {
@@ -79,6 +80,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         try {
             InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, taxonRankCacheUrl));
             DOIResolverCache doiResolverCache = new DOIResolverCache();
+            doiResolverCache.setCacheDir(new File(ctx.getCacheDir(), "doi-cache"));
             doiResolverCache.init(new InputStreamReader(resource, StandardCharsets.UTF_8));
             doiResolver = doiResolverCache;
         } catch (IOException | PropertyEnricherException e) {

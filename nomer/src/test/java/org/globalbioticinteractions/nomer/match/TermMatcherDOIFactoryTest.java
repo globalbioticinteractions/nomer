@@ -13,7 +13,9 @@ import org.globalbioticinteractions.doi.DOI;
 import org.globalbioticinteractions.doi.MalformedDOIException;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.zip.GZIPInputStream;
 
 import static org.junit.Assert.assertFalse;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -34,10 +37,13 @@ public class TermMatcherDOIFactoryTest {
 
     private HashMap<String, String> testPropertyMap;
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
     @Test
     public void correct() throws PropertyEnricherException {
         testPropertyMap = new HashMap<String, String>() {{
-            put(TermMatcherDOIFactory.NOMER_DOI_CACHE_URL, "map");
+            put(TermMatcherDOIFactory.NOMER_DOI_CACHE_URL, "https://example.org/map");
         }};
 
         TermMatcher termMatcher = new TermMatcherDOIFactory()
@@ -54,16 +60,26 @@ public class TermMatcherDOIFactoryTest {
         return new TermMatcherContext() {
             @Override
             public String getCacheDir() {
-                return null;
+                try {
+                    return folder.newFolder().getAbsolutePath();
+                } catch (IOException e) {
+                    throw new RuntimeException("failed to create test cache dir", e);
+                }
             }
 
             @Override
             public InputStream retrieve(URI uri) throws IOException {
-                if (StringUtils.equals("map", uri.toString())) {
-                    return IOUtils.toInputStream("uri\treference\nhttps://doi.org/10.123/456\tsome citation", StandardCharsets.UTF_8);
+                if (StringUtils.equals("https://example.org/map", uri.toString())) {
+                    return getSampleStream();
+                } else if (StringUtils.equals("/tsv/citations.tsv.gz", uri.toString())) {
+                    return new GZIPInputStream(getSampleStream());
                 } else {
                     throw new IOException("[" + uri + "] not found");
                 }
+            }
+
+            private InputStream getSampleStream() {
+                return IOUtils.toInputStream("uri\treference\nhttps://doi.org/10.123/456\tsome citation", StandardCharsets.UTF_8);
             }
 
             @Override
