@@ -60,7 +60,9 @@ public class TermMatcherCorrectFactoryTest {
 
             @Override
             public InputStream retrieve(URI uri) throws IOException {
-                return IOUtils.toInputStream("map".equals(uri) ? "copepods,Copepoda" : "unidentified", StandardCharsets.UTF_8);
+                return IOUtils.toInputStream("map".equals(uri.toString())
+                        ? "copepods,Copepoda"
+                        : "unidentified", StandardCharsets.UTF_8);
             }
 
             @Override
@@ -118,7 +120,8 @@ public class TermMatcherCorrectFactoryTest {
     }
 
     private void assertCorrection(final String nameToBeCorrected, String expectedCorrection) throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
+        TermMatcher termMatcher = new TermMatcherCorrectFactory()
+                .createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
         Term batVirusTerm = new TermImpl(null, nameToBeCorrected);
         termMatcher.match(
