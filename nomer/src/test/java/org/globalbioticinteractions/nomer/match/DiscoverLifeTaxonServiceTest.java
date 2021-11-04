@@ -48,7 +48,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                         counter.getAndIncrement();
                     }
                 });
@@ -78,7 +78,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService.match(Arrays.asList(new TaxonImpl("Donald duck")), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 noMatch.set(nameType);
             }
         });
@@ -94,7 +94,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
                         assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
@@ -118,7 +118,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.SYNONYM_OF));
                         assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
@@ -138,7 +138,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                         if (counter.get() == 0) {
                             assertThat(providedTerm.getName(), Is.is("Acamptopoeum argentinum"));
                             assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));

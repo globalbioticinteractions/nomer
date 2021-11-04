@@ -78,10 +78,19 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
 
             if (matchedTaxa.isEmpty()) {
-                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
+                termMatchListener.foundTaxonForTerm(null,
+                        term,
+                        NameType.NONE,
+                        new TaxonImpl(term.getName(), term.getId())
+                );
             } else {
                 matchedTaxa.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SAME_AS);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.SAME_AS,
+                            matchedTerm
+                    );
                 });
             }
         }

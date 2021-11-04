@@ -122,7 +122,7 @@ public class AppendingRowHandlerJsonTest {
             for (Term term : list) {
                 Taxon taxon = mapper.mapTerm(term);
                 taxon.setRank("species");
-                termMatchListener.foundTaxonForTerm(null, term, taxon, NameType.SAME_AS);
+                termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, taxon);
             }
         }
 

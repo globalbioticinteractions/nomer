@@ -26,7 +26,7 @@ public class TermMatcherRegistryITISTest {
         itisService.match(Collections.singletonList(new TermImpl("ITIS:180547", null)), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long nodeId, Term name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
                 assertThat(taxon.getName(), is("Enhydra lutris"));
                 found.set(true);
             }

@@ -32,7 +32,7 @@ public class TermMatcherFactoryTaxonRanksTest {
     public void ranks() throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("", "genus"));
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), is("WD:Q34740"));
             assertThat(taxon.getName(), is("genus"));
             found.set(true);
@@ -44,7 +44,7 @@ public class TermMatcherFactoryTaxonRanksTest {
     public void ranksShort() throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("", "sp."));
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), is("WD:Q7432"));
             assertThat(taxon.getName(), is("species"));
             found.set(true);
@@ -60,7 +60,7 @@ public class TermMatcherFactoryTaxonRanksTest {
     private void assertFoundById(TermMatcher termMatcher) throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("WD:Q7432", ""));
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), is("WD:Q7432"));
             assertThat(taxon.getName(), is("species"));
             found.set(true);

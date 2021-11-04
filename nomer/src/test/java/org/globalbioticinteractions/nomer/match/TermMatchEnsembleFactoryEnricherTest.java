@@ -76,7 +76,7 @@ public class TermMatchEnsembleFactoryEnricherTest {
         TermMatcher termMatcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(ctx);
         termMatcher.match(Arrays.asList(new TermImpl("NODC:9227040101", "Mickey")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long id, Term name, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long id, Term name, NameType nameType, Taxon taxon) {
                 assertThat(name.getName(), Is.is("Mickey"));
                 assertThat(name.getId(), Is.is("NODC:9227040101"));
                 // note that the NODC taxonomy maps to ITIS:180725 and online itis maps ITIS:180725 to ITIS:552761

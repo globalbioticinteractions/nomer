@@ -47,10 +47,20 @@ public class TermMatcherWikidataFactory implements TermMatcherFactory {
                         try {
                             final List<Taxon> linkedTaxa = WikidataUtil.findRelatedTaxonIds(term.getId());
                             for (Taxon taxon : linkedTaxa) {
-                                termMatchListener.foundTaxonForTerm(null, term, taxon, NameType.SAME_AS);
+                                termMatchListener.foundTaxonForTerm(
+                                        null,
+                                        term,
+                                        NameType.SAME_AS,
+                                        taxon
+                                );
                             }
                             if (linkedTaxa.size() == 0) {
-                                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
+                                termMatchListener.foundTaxonForTerm(
+                                        null,
+                                        term,
+                                        NameType.NONE,
+                                        new TaxonImpl(term.getName(), term.getId())
+                                );
                             }
                         } catch (URISyntaxException | IOException e) {
                             throw new PropertyEnricherException("failed to query wikidata with [" + term.getId() + "]", e);

@@ -35,7 +35,7 @@ public class TermMatcherPMDID2DOIFactoryTest {
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl("11056684", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term s, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term s, NameType nameType, Taxon taxon) {
                 assertThat(nameType, is(NameType.SAME_AS));
                 assertThat(taxon.getId(), is("10.1186/bcr29"));
                 found.set(true);
@@ -53,7 +53,7 @@ public class TermMatcherPMDID2DOIFactoryTest {
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl("this is not valid", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term s, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term s, NameType nameType, Taxon taxon) {
                 assertThat(nameType, is(NameType.NONE));
                 found.set(true);
             }

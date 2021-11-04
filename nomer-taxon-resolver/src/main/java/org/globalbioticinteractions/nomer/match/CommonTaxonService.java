@@ -13,6 +13,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TermMatchListener;
+import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -78,9 +79,9 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                     termMatchListener.foundTaxonForTerm(
                             null,
                             TaxonUtil.mapToTaxon(names.get(0)),
-                            TaxonUtil.mapToTaxon(names.get(0)),
-                            NameType.HAS_ACCEPTED_NAME
-                    );
+                            NameType.HAS_ACCEPTED_NAME,
+                            TaxonUtil.mapToTaxon(names.get(0))
+                            );
                 }
             } else {
                 List<Map<String, String>> synonyms = denormalizedNodeIds.get(id);
@@ -90,8 +91,8 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                     termMatchListener.foundTaxonForTerm(
                             null,
                             TaxonUtil.mapToTaxon(synonyms.get(0)),
-                            TaxonUtil.mapToTaxon(acceptedNames.get(0)),
-                            NameType.SYNONYM_OF
+                            NameType.SYNONYM_OF,
+                            TaxonUtil.mapToTaxon(acceptedNames.get(0))
                     );
                 }
             }
@@ -121,8 +122,11 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
     }
 
     private TermMatchListener noopListener() {
-        return (requestId, providedTerm, resolvedTaxon, nameType) -> {
+        return new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
 
+            }
         };
     }
 
@@ -140,8 +144,9 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                 listener.foundTaxonForTerm(
                         null,
                         TaxonUtil.mapToTaxon(enriched),
-                        TaxonUtil.mapToTaxon(enrichedProperty),
-                        type);
+                        type,
+                        TaxonUtil.mapToTaxon(enrichedProperty)
+                );
             }
             enriched = new TreeMap<>(enrichedProperties.get(0));
         }
@@ -170,15 +175,17 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
             if (acceptedExternalId.equals(providedId)) {
                 listener.foundTaxonForTerm(null,
                         providedTerm,
-                        resolvedTaxon,
-                        NameType.HAS_ACCEPTED_NAME);
+                        NameType.HAS_ACCEPTED_NAME,
+                        resolvedTaxon
+                );
             } else {
                 List<Map<String, String>> acceptedNameMap = denormalizedNodeIds.get(acceptedExternalId);
                 for (Map<String, String> hasSynonym : acceptedNameMap) {
                     listener.foundTaxonForTerm(null,
                             providedTerm,
-                            TaxonUtil.mapToTaxon(hasSynonym),
-                            NameType.SYNONYM_OF);
+                            NameType.SYNONYM_OF,
+                            TaxonUtil.mapToTaxon(hasSynonym)
+                    );
                 }
                 enriched = acceptedNameMap.size() == 0 ? enriched : acceptedNameMap.get(0);
             }

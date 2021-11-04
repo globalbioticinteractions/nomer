@@ -71,8 +71,9 @@ public class DiscoverLifeTaxonService implements TermMatcher {
                 termMatchListener.foundTaxonForTerm(
                         null,
                         new TaxonImpl(provided, DiscoverLifeUtil.urlForName(provided)),
-                        TaxonUtil.mapToTaxon(resolvedPair.getRight()),
-                        resolvedPair.getLeft());
+                        resolvedPair.getLeft(),
+                        TaxonUtil.mapToTaxon(resolvedPair.getRight())
+                );
 
             }
 
@@ -85,8 +86,9 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             termMatchListener.foundTaxonForTerm(
                     null,
                     term,
-                    resolvedTaxon,
-                    pair.getLeft());
+                    pair.getLeft(),
+                    resolvedTaxon
+            );
 
         }
     }
@@ -95,8 +97,9 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         termMatchListener.foundTaxonForTerm(
                 null,
                 term,
-                new TaxonImpl(term.getName(), term.getId()),
-                NameType.NONE);
+                NameType.NONE,
+                new TaxonImpl(term.getName(), term.getId())
+        );
     }
 
     private void lazyInit() throws IOException {
@@ -128,7 +131,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         nameMap = db.createTreeMap(MAP_NAME).make();
         DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 List<Pair<NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
                 List<Pair<NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
                 pairs.add(Pair.of(nameType, TaxonUtil.taxonToMap(resolvedTaxon)));

@@ -56,12 +56,17 @@ public class TermMatcherHierarchical implements TermMatcher {
 
         matcher.match(unpacked, new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term term, Taxon resolvedTaxon, NameType nameType) {
-                Long derivedRequestId = requestId == null ? (term instanceof TermRequestImpl ? ((TermRequestImpl)term).getNodeId() : requestId) : requestId;
+            public void foundTaxonForTerm(Long requestId, Term term, NameType nameType, Taxon resolvedTaxon) {
+                Long derivedRequestId = requestId == null ? (term instanceof TermRequestImpl ? ((TermRequestImpl) term).getNodeId() : requestId) : requestId;
                 Taxon providedTaxon = providedTaxonForId.get(derivedRequestId);
                 Term origTerm = origTermForId.get(derivedRequestId);
                 NameType matchType = providedTaxon == null ? nameType : getMatchType(providedTaxon, resolvedTaxon, nameType);
-                termMatchListener.foundTaxonForTerm(derivedRequestId, origTerm == null ? term : origTerm, resolvedTaxon, matchType);
+                termMatchListener.foundTaxonForTerm(
+                        derivedRequestId,
+                        origTerm == null ? term : origTerm,
+                        matchType,
+                        resolvedTaxon
+                );
             }
 
             private NameType getMatchType(Taxon providedTaxon, Taxon resolvedTaxon, NameType nameType) {

@@ -49,7 +49,7 @@ public class TermMatcherDOIFactoryTest {
         TermMatcher termMatcher = new TermMatcherDOIFactory()
                 .createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(Collections.singletonList(new TermImpl(null, "some citation")), (nodeId, name, taxon, nameType) -> {
+        termMatcher.match(Collections.singletonList(new TermImpl(null, "some citation")), (nodeId, name, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), Is.is("https://doi.org/10.123/456"));
             found.set(true);
         });
@@ -129,7 +129,7 @@ public class TermMatcherDOIFactoryTest {
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl(null, "Kalka, Margareta, and Elisabeth K. V. Kalko. Gleaning Bats as Underestimated Predators of Herbivorous Insects: Diet of Micronycteris Microtis (Phyllostomidae) in Panama. Journal of Tropical Ecology 1 (2006): 1-10.")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long nodeId, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId, Term term, NameType nameType, Taxon taxon) {
                 try {
                     if (null != expectedDOI) {
                         assertThat(DOI.create(taxon.getId()), Is.is(expectedDOI));

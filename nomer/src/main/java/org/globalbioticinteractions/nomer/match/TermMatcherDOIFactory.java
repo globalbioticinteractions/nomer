@@ -58,7 +58,12 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
                             NameType matchType = null == doi
                                     ? NameType.NONE
                                     : NameType.SAME_AS;
-                            termMatchListener.foundTaxonForTerm(null, term, found, matchType);
+                            termMatchListener.foundTaxonForTerm(
+                                    null,
+                                    term,
+                                    matchType,
+                                    found
+                            );
                         }
                     } catch (IOException e) {
                         throw new PropertyEnricherException("failed to resolver doi for [" + term.getName() + "]", e);

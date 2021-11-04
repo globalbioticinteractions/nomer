@@ -33,7 +33,7 @@ public class TermMatcherWikidataFactoryTest {
                 new TermMatcherWikidataFactory().createTermMatcher(testContext());
         termMatcher.match(Collections.singletonList(new TermImpl("NCBI:9606", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 resolveTaxa.add(resolvedTaxon);
                 matchesOnly.set(NameType.SAME_AS.equals(nameType) && matchesOnly.get());
 
@@ -52,7 +52,7 @@ public class TermMatcherWikidataFactoryTest {
                 new TermMatcherWikidataFactory().createTermMatcher(testContext());
         termMatcher.match(Collections.singletonList(new TermImpl("WD:Q140", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 resolveTaxa.add(resolvedTaxon);
                 matchesOnly.set(NameType.SAME_AS.equals(nameType) && matchesOnly.get());
 

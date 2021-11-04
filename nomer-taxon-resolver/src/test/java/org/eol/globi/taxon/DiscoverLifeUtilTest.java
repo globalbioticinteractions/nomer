@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNull;
 
 public class DiscoverLifeUtilTest {
 
@@ -48,7 +49,9 @@ public class DiscoverLifeUtilTest {
     @Test
     public void parseNameRelationsAndrenaAccepta() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
         // see https://github.com/globalbioticinteractions/nomer/issues/42
-        String xmlSnippet = "<tr><td>\n" +
+        String xmlSnippet = "<table>\n" +
+
+                "<tr><td>\n" +
                 "                 \n" +
                 "              <i>\n" +
                 "                <a href=\"/mp/20q?search=Andrena+accepta\" target=\"_self\">\n" +
@@ -71,7 +74,149 @@ public class DiscoverLifeUtilTest {
                 "                Andrena accepta \n" +
                 "              </i>\n" +
                 "              Viereck, 1916, replacement name\n" +
-                "            </td></tr>\n";
+                "            </td></tr>\n" +
+                "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Ceylalictus+variegatus\" target=\"_self\">\n" +
+                "                  Ceylalictus variegatus\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                (Olivier, 1789)\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Andrena variegata \n" +
+                "              </i>\n" +
+                "              Olivier, 1789; \n" +
+                "              <i>\n" +
+                "                Andrena pulchella \n" +
+                "              </i>\n" +
+                "              Jurine, 1807; \n" +
+                "              <i>\n" +
+                "                Allodape syrphoides \n" +
+                "              </i>\n" +
+                "              Walker, 1871; \n" +
+                "              <i>\n" +
+                "                Andrena flavo-picta \n" +
+                "              </i>\n" +
+                "              Dours, 1873; \n" +
+                "              <i>\n" +
+                "                Andrena flavopicta \n" +
+                "              </i>\n" +
+                "              Dours, 1873; \n" +
+                "              <i>\n" +
+                "                Nomioides jucunda \n" +
+                "              </i>\n" +
+                "              Morawitz, 1874; \n" +
+                "              <i>\n" +
+                "                Nomioides fasciatus var intermedius \n" +
+                "              </i>\n" +
+                "              Alfken, 1924; \n" +
+                "              <i>\n" +
+                "                Nomioides variegata var simplex \n" +
+                "              </i>\n" +
+                "              Blüthgen, 1925; \n" +
+                "              <i>\n" +
+                "                Nomioides variegata var unifasciata \n" +
+                "              </i>\n" +
+                "              Blüthgen, 1925; \n" +
+                "              <i>\n" +
+                "                Nomioides labiatarum \n" +
+                "              </i>\n" +
+                "              Cockerell, 1931; \n" +
+                "              <i>\n" +
+                "                Nomioides variegata var nigrita \n" +
+                "              </i>\n" +
+                "              Blüthgen, 1934; \n" +
+                "              <i>\n" +
+                "                Nomioides variegata var pseudocerea \n" +
+                "              </i>\n" +
+                "              Blüthgen, 1934; \n" +
+                "              <i>\n" +
+                "                Nomioides variegata var nigriventris \n" +
+                "              </i>\n" +
+                "              Blüthgen, 1934\n" +
+                "            </td>\n" +
+                "          </tr>\n" +
+                "</table>";
+
+        NodeList nodes = (NodeList) XmlUtil.applyXPath(
+                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
+                "//tr/td/b/a | //tr/td/i/a",
+                XPathConstants.NODESET
+        );
+
+        assertThat(nodes.getLength(), Is.is(2));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(4));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
+
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Andrena pulchella"));
+        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
+        assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("Robertson, 1891"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
+        assertNull(secondNameRelation.getRight());
+
+        Triple<Term, NameType, Taxon> thirdNameRelation = relatedTaxa.get(2);
+        assertThat(thirdNameRelation.getLeft().getName(), Is.is("Pterandrena pulchella"));
+        assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("(Robertson, 1891)"));
+        assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(thirdNameRelation.getRight().getName(), Is.is("Andrena accepta"));
+
+        Triple<Term, NameType, Taxon> fourthNameRelation = relatedTaxa.get(3);
+        //assertThat(fourthRelatedName.getName(), Is.is("synonym"));
+        assertThat(fourthNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
+        assertThat(((Taxon) fourthNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
+        assertThat(fourthNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(fourthNameRelation.getRight().getName(), Is.is("Andrena accepta"));
+
+
+    }
+
+    @Test
+    public void parseHomonymAllodapeClypeata() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/53
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Allodape+obscuripennis\" target=\"_self\">\n" +
+                "                  Allodape obscuripennis\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                Strand, 1915\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Allodape clypeata \n" +
+                "              </i>\n" +
+                "              Strand, 1915; \n" +
+                "              <i>\n" +
+                "                Allodape clypeata_homonym \n" +
+                "              </i>\n" +
+                "              Friese, 1924\n" +
+                "            </td>\n" +
+                "          </tr>\n";
 
         NodeList nodes = (NodeList) XmlUtil.applyXPath(
                 IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
@@ -86,41 +231,31 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
 
-        assertThat(relatedTaxa.size(), Is.is(4));
+        assertThat(relatedTaxa.size(), Is.is(3));
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
-        //assertThat(firstRelatedName.get("status"), Is.is("accepted"));
-        assertThat(firstNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
-        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Allodape obscuripennis"));
         assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
-        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Strand, 1915"));
 
         Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
-        assertThat(secondNameRelation.getLeft().getName(), Is.is("Andrena pulchella"));
-        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
-        assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("Robertson, 1891"));
-        //assertThat(secondRelatedName.get("status"), Is.is("homonym"));
-        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.NONE));
-        assertThat(secondNameRelation.getRight().getName(), Is.is("Andrena accepta"));
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Allodape clypeata"));
+        assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("Strand, 1915"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(secondNameRelation.getRight().getName(), Is.is("Allodape obscuripennis"));
+        assertThat(secondNameRelation.getRight().getAuthorship(), Is.is("Strand, 1915"));
 
         Triple<Term, NameType, Taxon> thirdNameRelation = relatedTaxa.get(2);
-        // assertThat(thirdRelatedName.get("status"), Is.is("synonym"));
-        assertThat(thirdNameRelation.getLeft().getName(), Is.is("Pterandrena pulchella"));
-        assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("(Robertson, 1891)"));
-        assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
-        assertThat(thirdNameRelation.getRight().getName(), Is.is("Andrena accepta"));
-
-        Triple<Term, NameType, Taxon> fourthNameRelation = relatedTaxa.get(3);
-        //assertThat(fourthRelatedName.getName(), Is.is("synonym"));
-        assertThat(fourthNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
-        assertThat(((Taxon) fourthNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
-        assertThat(fourthNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
-        assertThat(fourthNameRelation.getRight().getName(), Is.is("Andrena accepta"));
+        assertThat(thirdNameRelation.getLeft().getName(), Is.is("Allodape clypeata"));
+        assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("Strand, 1915"));
+        assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
+        assertThat(thirdNameRelation.getRight().getName(), Is.is("Allodape clypeata"));
+        assertThat(thirdNameRelation.getRight().getAuthorship(), Is.is("Friese, 1924"));
 
 
     }
@@ -168,7 +303,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -226,7 +361,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -290,7 +425,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -344,7 +479,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -374,7 +509,7 @@ public class DiscoverLifeUtilTest {
         TermMatchListener listener = new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 int index = counter.getAndIncrement();
                 if (index == 0) {
                     firstTaxon.set(resolvedTaxon);

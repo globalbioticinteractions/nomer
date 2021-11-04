@@ -102,11 +102,13 @@ public class DiscoverLifeUtil {
             currentNode = authorshipNode;
 
             focalTaxon.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
-            listener.foundTaxonForTerm(null, focalTaxon, focalTaxon, NameType.HAS_ACCEPTED_NAME);
+            listener.foundTaxonForTerm(null, focalTaxon, NameType.HAS_ACCEPTED_NAME, focalTaxon);
         }
 
 
         if (focalTaxon != null) {
+
+            Map<String, Taxon> parsedNonHomonyms = new TreeMap<String, Taxon>();
 
             while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
 
@@ -121,21 +123,27 @@ public class DiscoverLifeUtil {
                     enrichFromAuthorString(StringUtils.trim(authorshipString), relatedName);
 
                     String status = relatedName.get("status");
-                    NameType nameType = NameType.SYNONYM_OF;
                     if (StringUtils.equals(status, "homonym")) {
-                        nameType = NameType.NONE;
-                        //nameType = NameType.HOMONYM_OF;
+                        Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
+                        relatedTaxon.setExternalId(urlForName(relatedTaxon));
+                        Taxon taxon = parsedNonHomonyms.get(relatedTaxon.getName());
+                        listener.foundTaxonForTerm(
+                                null,
+                                relatedTaxon,
+                                NameType.HOMONYM_OF,
+                                taxon
+                        );
+                    } else {
+                        Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
+                        relatedTaxon.setExternalId(urlForName(relatedTaxon));
+                        parsedNonHomonyms.put(relatedTaxon.getName(), relatedTaxon);
+                        listener.foundTaxonForTerm(
+                                null,
+                                relatedTaxon,
+                                NameType.SYNONYM_OF,
+                                focalTaxon
+                        );
                     }
-
-
-                    Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
-                    relatedTaxon.setExternalId(urlForName(relatedTaxon));
-                    listener.foundTaxonForTerm(
-                            null,
-                            relatedTaxon,
-                            focalTaxon,
-                            nameType
-                    );
                 }
             }
         }
@@ -148,7 +156,7 @@ public class DiscoverLifeUtil {
 
     public static String urlForName(String name) {
         return URL_ENDPOINT_DISCOVER_LIFE_SEARCH
-                        + StringUtils.replace(name, " ", "+");
+                + StringUtils.replace(name, " ", "+");
     }
 
     private static void enrichFromAuthorString(String authorshipString, Map<String, String> relatedName) {

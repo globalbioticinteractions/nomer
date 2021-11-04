@@ -47,9 +47,18 @@ public class TermMatcherOpenBiodivFactory implements TermMatcherFactory {
                             final Taxon taxon = OpenBiodivUtil
                                     .retrieveTaxonHierarchyById(term.getId(), sparqlClient);
                             if (taxon == null) {
-                                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
+                                termMatchListener.foundTaxonForTerm(
+                                        null,
+                                        term,
+                                        NameType.NONE,
+                                        new TaxonImpl(term.getName(), term.getId()));
                             } else {
-                                termMatchListener.foundTaxonForTerm(null, term, taxon, NameType.SAME_AS);
+                                termMatchListener.foundTaxonForTerm(
+                                        null,
+                                        term,
+                                        NameType.SAME_AS,
+                                        taxon
+                                );
                             }
                         } catch (IOException e) {
                             throw new PropertyEnricherException("failed to query openbiodiv with [" + term.getId() + "]", e);

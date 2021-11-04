@@ -66,7 +66,7 @@ public class TermMatcherOpenBiodivFactoryTest {
         final TermMatcher termMatcher =
                 new TermMatcherOpenBiodivFactory().createTermMatcher(testContext());
         termMatcher.match(Collections.singletonList(
-                term), (requestId, providedTerm, resolvedTaxon, nameType) -> {
+                term), (requestId, providedTerm, nameType, resolvedTaxon) -> {
                     resolveTaxa.add(resolvedTaxon);
                     matchesOnly.set(NameType.SAME_AS.equals(nameType) && matchesOnly.get());
 

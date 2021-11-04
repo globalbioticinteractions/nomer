@@ -85,7 +85,7 @@ public class ReplacingRowHandler implements RowHandler {
         return rowMerged;
     }
 
-    private Map<String, String> mergeTaxon(Taxon taxon, Taxon otherTaxon, NameType nameType) {
+    private Map<String, String> mergeTaxon(Taxon taxon, NameType nameType, Taxon otherTaxon) {
         return new TreeMap<String, String>() {{
             putAll(TaxonUtil.taxonToMap(taxon));
             if (NameType.SAME_AS.equals(nameType)) {
@@ -105,13 +105,13 @@ public class ReplacingRowHandler implements RowHandler {
             Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMapEntry.getValue());
             List<Term> terms = Collections.singletonList(providedTaxon);
             AtomicBoolean replacedOne = new AtomicBoolean(false);
-            termMatcher.match(terms, (id, nameToBeReplaced, resolvedTaxon, nameType) -> {
+            termMatcher.match(terms, (id, nameToBeReplaced, nameType, resolvedTaxon) -> {
                 if (!replacedOne.get()) {
                     replacedOne.set(true);
                     Taxon taxonToBeReplaced = new TaxonImpl(nameToBeReplaced.getName(), nameToBeReplaced.getId());
                     taxonReplaced.put(
                             taxonMapEntry.getKey(),
-                            mergeTaxon(taxonToBeReplaced, resolvedTaxon, nameType)
+                            mergeTaxon(taxonToBeReplaced, nameType, resolvedTaxon)
                     );
                 }
             });

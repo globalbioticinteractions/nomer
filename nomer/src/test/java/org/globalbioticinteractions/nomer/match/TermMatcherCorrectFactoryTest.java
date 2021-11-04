@@ -126,7 +126,7 @@ public class TermMatcherCorrectFactoryTest {
         Term batVirusTerm = new TermImpl(null, nameToBeCorrected);
         termMatcher.match(
                 Collections.singletonList(batVirusTerm),
-                (nodeId, name1, taxon, nameType) -> {
+                (nodeId, name1, nameType, taxon) -> {
                     assertThat(taxon.getName(), Is.is(expectedCorrection));
                     found.set(true);
                 });

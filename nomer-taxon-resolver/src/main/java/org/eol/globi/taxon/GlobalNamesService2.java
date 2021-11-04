@@ -79,7 +79,10 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
         findTermsForNames(Collections.singletonList(termRequested), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long nodeId, Term termRequested, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId,
+                                          Term termRequested,
+                                          NameType nameType,
+                                          Taxon taxon) {
                 if (NameType.SAME_AS.equals(nameType)) {
                     exactMatches.add(taxon);
                 } else if (NameType.SYNONYM_OF.equals(nameType)) {
@@ -252,8 +255,9 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
         Term termRequested = createTermRequested(termService, suppliedNameString, requestId);
         termMatchListener.foundTaxonForTerm(requestId,
                 termRequested,
-                new TaxonImpl(suppliedNameString),
-                NameType.NONE);
+                NameType.NONE,
+                new TaxonImpl(suppliedNameString)
+        );
     }
 
     private Term createTermRequested(RequestedTermService termService, String suppliedNameString, Long requestId) {
@@ -374,8 +378,9 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                     termMatchListener.foundTaxonForTerm(
                             requestId,
                             termRequested,
-                            taxon,
-                            nameType);
+                            nameType,
+                            taxon
+                    );
                 }
             }
         }

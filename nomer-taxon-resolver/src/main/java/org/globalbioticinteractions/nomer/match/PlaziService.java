@@ -53,8 +53,8 @@ public class PlaziService implements TermMatcher {
                 termMatchListener.foundTaxonForTerm(
                         null,
                         term,
-                        new TaxonImpl(term.getName(), term.getId()),
-                        NameType.NONE
+                        NameType.NONE,
+                        new TaxonImpl(term.getName(), term.getId())
                 );
             } else {
                 for (Taxon taxon : taxons) {
@@ -64,7 +64,12 @@ public class PlaziService implements TermMatcher {
                         taxonToBeSubmitted = new TaxonImpl(taxon.getExternalId(), taxon.getExternalId());
                         taxonToBeSubmitted.setPath(taxon.getExternalId());
                     }
-                    termMatchListener.foundTaxonForTerm(null, term, taxonToBeSubmitted, NameType.SAME_AS);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.SAME_AS,
+                            taxonToBeSubmitted
+                    );
                 }
             }
         }

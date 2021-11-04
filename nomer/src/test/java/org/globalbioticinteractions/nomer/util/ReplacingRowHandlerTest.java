@@ -204,7 +204,7 @@ public class ReplacingRowHandlerTest {
             @Override
             public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
                 for (Term term : terms) {
-                    termMatchListener.foundTaxonForTerm(null, term, taxon, sameAs);
+                    termMatchListener.foundTaxonForTerm(null, term, sameAs, taxon);
                 }
             }
         });

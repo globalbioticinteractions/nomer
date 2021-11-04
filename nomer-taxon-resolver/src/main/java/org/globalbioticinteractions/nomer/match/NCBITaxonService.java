@@ -95,16 +95,35 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
 
             if (matchedTaxa.isEmpty() && matchedSynonyms.isEmpty() && matchedCommonNames.isEmpty()) {
-                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
+                termMatchListener.foundTaxonForTerm(null,
+                        term,
+                        NameType.NONE,
+                        new TaxonImpl(term.getName(), term.getId())
+                );
             } else {
                 matchedTaxa.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SAME_AS);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.SAME_AS,
+                            matchedTerm
+                    );
                 });
                 matchedSynonyms.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SYNONYM_OF);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.SYNONYM_OF,
+                            matchedTerm
+                    );
                 });
                 matchedCommonNames.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.COMMON_NAME_OF);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.COMMON_NAME_OF,
+                            matchedTerm
+                    );
                 });
             }
         }

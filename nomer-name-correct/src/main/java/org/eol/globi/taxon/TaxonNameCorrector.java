@@ -83,7 +83,11 @@ public class TaxonNameCorrector implements CorrectionService, TermMatcher {
         Stream<TermImpl> correctedTerms = terms.stream()
                 .map(term -> new TermImpl(term.getId(), correct(term.getName())));
         correctedTerms.forEach(term -> {
-            listener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.SAME_AS);
+            listener.foundTaxonForTerm(null,
+                    term,
+                    NameType.SAME_AS,
+                    new TaxonImpl(term.getName(), term.getId())
+            );
         });
 
     }

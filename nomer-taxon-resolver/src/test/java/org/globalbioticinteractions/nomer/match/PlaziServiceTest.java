@@ -44,7 +44,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl(null, "Carvalhoma")), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
                     }
                 });
@@ -67,7 +67,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
                     }
                 });
@@ -90,7 +90,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
                     }
                 });
@@ -111,7 +111,7 @@ public class PlaziServiceTest {
         List<Taxon> found = new ArrayList<>();
         service.match(
                 Collections.singletonList(new TermImpl("doi:10.5281/zenodo.3854772", null)),
-                (aLong, term, taxon, nameType) -> found.add(taxon));
+                (aLong, term, nameType , taxon) -> found.add(taxon));
 
 
         assertThat(found.size(), is(1));
@@ -131,7 +131,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("ITIS:999999999", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         counter.getAndIncrement();
                         assertThat(nameType, is(NameType.NONE));
                     }
@@ -148,7 +148,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("FOO:2", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         counter.getAndIncrement();
                         assertThat(nameType, is(NameType.NONE));
                     }

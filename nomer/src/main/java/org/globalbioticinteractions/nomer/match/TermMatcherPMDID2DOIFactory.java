@@ -87,7 +87,11 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
                         Taxon found = doi == null
                                 ? new TaxonImpl(term.getName(), term.getId())
                                 : new TaxonImpl(null, doi.toString());
-                        termMatchListener.foundTaxonForTerm(null, term, found, doi == null ? NameType.NONE : NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(
+                                null,
+                                term,
+                                doi == null ? NameType.NONE : NameType.SAME_AS,
+                                found);
                     }
                 }
 

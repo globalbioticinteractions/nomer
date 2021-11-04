@@ -7,9 +7,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.match.TermMatcherCacheFactory;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 
 public class TermMatcherCacheFactoryTest {
 
@@ -38,7 +36,7 @@ public class TermMatcherCacheFactoryTest {
         TermMatcher termMatcher = new TermMatcherCacheFactory().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
         AtomicBoolean hasMatch = new AtomicBoolean(false);
-        termMatcher.match(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), (Long id, Term name, Taxon taxon, NameType nameType) -> {
+        termMatcher.match(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), (Long id, Term name, NameType nameType, Taxon taxon) -> {
             assertThat(taxon.getId(), is("EOL:1276240"));
             assertThat(taxon.getName(), is(not("bla")));
             hasMatch.set(true);
@@ -79,7 +77,7 @@ public class TermMatcherCacheFactoryTest {
         });
 
         AtomicInteger numberOfResults = new AtomicInteger(0);
-        termMatcher.match(Collections.singletonList(new TermImpl("", "Homo sapiens")), (id, name, taxon, nameType) -> {
+        termMatcher.match(Collections.singletonList(new TermImpl("", "Homo sapiens")), (id, name, nameType, taxon) -> {
             assertThat(taxon.getName(), is("Homo sapiens"));
             numberOfResults.incrementAndGet();
             assertThat(Arrays.asList("EOL:327955", "NCBI:9606").contains(taxon.getId()), is(true));
