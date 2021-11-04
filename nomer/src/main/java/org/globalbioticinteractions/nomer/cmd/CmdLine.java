@@ -20,16 +20,14 @@ public class CmdLine {
     }
 
     public static void run(String[] args) throws Throwable {
-        JCommander jc = new CmdLine().buildCommander();
+        final JCommander jc = new CmdLine().buildCommander();
+        jc.addCommand("help", new CmdHelp(jc), "usage");
         jc.setProgramName("nomer");
         try {
             jc.parse(args);
             CmdLine.run(jc.getCommands().get(jc.getParsedCommand()));
         } catch (Throwable ex) {
             LOG.error(ex.getMessage(), ex);
-            StringBuilder out = new StringBuilder();
-            jc.usage(out);
-            System.err.append(out.toString());
             throw ex;
         }
     }

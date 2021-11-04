@@ -66,7 +66,7 @@ public class TermMatcherRegistry {
             put("globi-taxon-rank", "globi-rank");
             put("gulfbase-taxon", "gulfbase");
             put("inaturalist-taxon-id", "inaturalist-id");
-            put("itis-taxon", "itis");
+            put("itis-taxon-id", "itis");
             put("itis-taxon-id-web", "itis-web");
             put("nbn-taxon-id", "nbn");
             put("ncbi-taxon", "ncbi");
@@ -151,7 +151,10 @@ public class TermMatcherRegistry {
 
     public static String getMatcherLongName(String shortName) {
         Stream<Map.Entry<String, String>> entryStream
-                = MATCH_NAME_MAPPER.entrySet().stream().filter(e -> StringUtils.equals(e.getValue(), shortName));
+                = MATCH_NAME_MAPPER
+                .entrySet()
+                .stream()
+                .filter(e -> StringUtils.equals(e.getValue(), shortName));
 
         List<String> matchingNames = entryStream
                 .map(Map.Entry::getKey)

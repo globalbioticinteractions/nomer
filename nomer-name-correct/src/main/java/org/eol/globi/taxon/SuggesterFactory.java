@@ -20,9 +20,10 @@ public class SuggesterFactory {
 
     private static void initWith(Initializing service, String propertyName, TermMatcherContext ctx) {
         try {
-            URI property = null == ctx ? null : CacheUtil.getValueURI(ctx, propertyName);
-            if (property != null) {
-                service.init(ctx.retrieve(property));
+            if (ctx != null && StringUtils.isNoneBlank(ctx.getProperty(propertyName))) {
+                service.init(ctx.retrieve(
+                        CacheUtil.getValueURI(ctx, propertyName))
+                );
             }
         } catch (IOException | PropertyEnricherException e) {
             throw new IllegalArgumentException("failed to instantiate name service [" + service.getClass().getSimpleName() + "] using property [" + propertyName + "]", e);

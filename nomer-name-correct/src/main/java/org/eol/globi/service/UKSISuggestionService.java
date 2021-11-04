@@ -33,6 +33,7 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
 
     @Override
     public String suggest(String name) {
+        lazyInit();
         String suggestion = null;
         try {
             Taxon match = findMatch(name);
@@ -43,8 +44,15 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
         return suggestion;
     }
 
+    private void lazyInit() {
+        if (service == null) {
+            init();
+        }
+    }
+
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
+        lazyInit();
         Map<String, String> enrichedProperties = new HashMap<String, String>(properties);
         Taxon match = findMatch(enrichedProperties.get(PropertyAndValueDictionary.NAME));
         if (match != null) {
@@ -57,9 +65,6 @@ public class UKSISuggestionService extends PropertyEnricherSimple implements Nam
     private Taxon findMatch(String taxonName) throws PropertyEnricherException {
         Taxon match = null;
         try {
-            if (service == null) {
-                init();
-            }
             Taxon[] taxonTerms = service.lookupTermsByName(taxonName);
             if (taxonTerms.length > 0) {
                 // pick the first one

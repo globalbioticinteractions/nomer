@@ -58,7 +58,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
             } else {
                 Taxon taxon = new TaxonImpl(term.getName(), term.getId());
                 TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(term.getId());
-                if (taxonomyProvider.equals(getTaxonomyProvider())) {
+                if (getTaxonomyProvider().equals(taxonomyProvider)) {
                     String id = term.getId();
                     enrichMatches(TaxonUtil.taxonToMap(taxon), getIdOrNull(id, getTaxonomyProvider()), termMatchListener);
                 } else if (StringUtils.isNoneBlank(term.getName())) {
