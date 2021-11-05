@@ -36,7 +36,7 @@ public class DiscoverLifeUtil {
             .stream()
             .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
             .collect(Collectors.toList());
-    private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family", "species");
+    private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family");
     static final String DISCOVER_LIFE_URL
             = URL_ENDPOINT_DISCOVER_LIFE +
             "/mp/20q" +
@@ -73,7 +73,8 @@ public class DiscoverLifeUtil {
         Node currentNode = nameNodeCandidate.getParentNode();
         if (StringUtils.equals("i", currentNode.getNodeName())) {
             Map<String, String> taxonMap = new TreeMap<>();
-            taxonMap.put("name", trimNameNodeTextContent(nameNodeCandidate));
+            String taxonName = trimNameNodeTextContent(nameNodeCandidate);
+            taxonMap.put("name", taxonName);
 
             Node expectedTextNode = currentNode.getNextSibling();
             Node authorshipNode = expectedTextNode == null ? null : expectedTextNode.getNextSibling();
@@ -90,8 +91,11 @@ public class DiscoverLifeUtil {
                     .getNamedItem("href")
                     .getTextContent());
 
-
-            taxonMap.put("rank", "species");
+            String trimmedName = DiscoverLifeUtil.trimScientificName(taxonName);
+            String rankName = guessRankFromName(trimmedName);
+            if (StringUtils.isNoneBlank(rankName)) {
+                taxonMap.put("rank", rankName);
+            }
 
             Taxon parsedTaxon = TaxonUtil.mapToTaxon(taxonMap);
             parsedTaxon.setExternalId(id);
@@ -144,6 +148,34 @@ public class DiscoverLifeUtil {
                 }
             }
         }
+    }
+
+    public static String guessRankFromName(String trimmedName) {
+        String rankName = "";
+        String[] s = StringUtils.split(trimmedName, " ");
+        if (s != null) {
+            boolean isVariety = isVariety(trimmedName);
+            String[] nameAndVar = StringUtils.splitByWholeSeparator(trimmedName, " var ");
+            int wordCount = StringUtils.split(nameAndVar[0], " ").length;
+            if (wordCount == 2) {
+                if (isVariety) {
+                    rankName = "variety";
+                } else {
+                    rankName = "species";
+                }
+            } else if (wordCount == 3) {
+                if (isVariety) {
+                    rankName = "subvariety";
+                } else {
+                    rankName = "subspecies";
+                }
+            }
+        }
+        return rankName;
+    }
+
+    private static boolean isVariety(String trimmedName) {
+        return StringUtils.contains(trimmedName, " var ");
     }
 
     public static String urlForName(Taxon relatedTaxon) {
@@ -255,7 +287,11 @@ public class DiscoverLifeUtil {
 
         targetTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
 
-        targetTaxon.setPathNames(StringUtils.join(PATH_NAMES_STATIC, CharsetConstant.SEPARATOR));
+        ArrayList<String> pathList = new ArrayList<String>(PATH_NAMES_STATIC) {{
+            add(targetTaxon.getRank());
+        }};
+
+        targetTaxon.setPathNames(StringUtils.join(pathList, CharsetConstant.SEPARATOR));
         return targetTaxon;
     }
 

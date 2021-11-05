@@ -156,7 +156,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -231,7 +231,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -302,7 +302,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -360,7 +360,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -424,7 +424,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -443,6 +443,7 @@ public class DiscoverLifeUtilTest {
         assertThat(secondNameRelation.getRight().getName(), Is.is("Andrena apicata"));
 
     }
+
     @Test
     public void parseNameRelationsWithSicSuffix2() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
         // see https://github.com/globalbioticinteractions/nomer/issues/51
@@ -478,7 +479,7 @@ public class DiscoverLifeUtilTest {
         DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
         });
@@ -508,7 +509,7 @@ public class DiscoverLifeUtilTest {
         TermMatchListener listener = new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 int index = counter.getAndIncrement();
                 if (index == 0) {
                     firstTaxon.set(resolvedTaxon);
@@ -538,6 +539,26 @@ public class DiscoverLifeUtilTest {
 
         String localCopy = IOUtils.toString(DiscoverLifeUtil.getStreamOfBees(), StandardCharsets.UTF_8);
         assertThat(actual, Is.is(localCopy));
+    }
+
+    @Test
+    public void guessRank() throws IOException {
+        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla"), Is.is("species"));
+    }
+
+   @Test
+    public void guessRankSubspecies() throws IOException {
+        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla"), Is.is("subspecies"));
+    }
+
+   @Test
+    public void guessRankVariant() throws IOException {
+        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla var bla"), Is.is("variety"));
+    }
+
+   @Test
+    public void guessRankSubvariant() throws IOException {
+        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla var bla"), Is.is("subvariety"));
     }
 
 

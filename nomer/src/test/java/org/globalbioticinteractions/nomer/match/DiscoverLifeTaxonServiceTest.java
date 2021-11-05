@@ -99,7 +99,6 @@ public class DiscoverLifeTaxonServiceTest {
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         final String providedName = "Xylocopa (Proxylocopa) sinensis";
-//        final String providedName = "Xylocopa sinensis";
         List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
@@ -142,6 +141,78 @@ public class DiscoverLifeTaxonServiceTest {
                             assertThat(nameType, Is.is(NameType.HOMONYM_OF));
                             assertThat(resolvedTaxon.getName(), Is.is(PropertyAndValueDictionary.NO_MATCH));
                             assertThat(resolvedTaxon.getId(), Is.is(PropertyAndValueDictionary.NO_MATCH));
+                            homonymCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+    @Test
+    public void lookupSubspecies() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+
+        String providedName = "Pseudopanurgus nebrascensis timberlakei";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
+                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getRank(), Is.is("subspecies"));
+                            homonymCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+    @Test
+    public void lookupVariety() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+
+        String providedName = "Pseudopanurgus nebrascensis timberlakei";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
+                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getRank(), Is.is("subspecies"));
+                            homonymCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+    @Test
+    public void lookupSubvariety() throws PropertyEnricherException {
+        DiscoverLifeTaxonService discoverLifeTaxonService
+                = new DiscoverLifeTaxonService(getTmpContext());
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+
+        String providedName = "Pseudopanurgus nebrascensis timberlakei";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
+                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
+                            assertThat(resolvedTaxon.getRank(), Is.is("subspecies"));
                             homonymCounter.getAndIncrement();
                         }
                     }
