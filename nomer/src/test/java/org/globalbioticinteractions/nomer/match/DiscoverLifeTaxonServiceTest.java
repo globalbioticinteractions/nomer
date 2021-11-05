@@ -5,11 +5,16 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.DiscoverLifeUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -17,6 +22,7 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,18 +36,33 @@ public class DiscoverLifeTaxonServiceTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
+    private DiscoverLifeTaxonService discoverLifeTaxonService;
+
+    @Before
+    public void init() throws PropertyEnricherException {
+        discoverLifeTaxonService = new DiscoverLifeTaxonService(getTmpContext());
+        discoverLifeTaxonService.match(Arrays.asList(new TermImpl(null, "Apis mellifera"))
+                , new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+
+                    }
+                });
+    }
+
+    @After
+    public void close() {
+        discoverLifeTaxonService.close();
+    }
+
     @Test
     public void lookupByName() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         assertLookup(discoverLifeTaxonService);
         assertLookup(discoverLifeTaxonService);
     }
 
     @Test
     public void lookupByNullName() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger counter = new AtomicInteger(0);
 
         String providedName = null;
@@ -49,7 +70,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         counter.getAndIncrement();
                     }
                 });
@@ -59,8 +80,6 @@ public class DiscoverLifeTaxonServiceTest {
 
     @Test
     public void lookupBySynonym() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         assertLookupSynonym(discoverLifeTaxonService);
         assertLookupSynonym(discoverLifeTaxonService);
     }
@@ -68,8 +87,6 @@ public class DiscoverLifeTaxonServiceTest {
 
     @Test
     public void lookupByHomonym() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         String providedName = "Andrena proxima";
@@ -77,10 +94,9 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HOMONYM_OF.equals(nameType)) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(((Taxon)providedTerm).getAuthorship(), Is.is("Smith, 1847"));
                             assertThat(nameType, Is.is(NameType.HOMONYM_OF));
                             assertThat(resolvedTaxon.getName(), Is.is(providedName));
                             assertThat(resolvedTaxon.getAuthorship(), Is.is("(Kirby, 1802)"));
@@ -94,8 +110,6 @@ public class DiscoverLifeTaxonServiceTest {
 
     @Test
     public void lookupByHomonymWithParenthesis() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         final String providedName = "Xylocopa (Proxylocopa) sinensis";
@@ -103,7 +117,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HOMONYM_OF.equals(nameType)) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
                             assertThat(nameType, Is.is(NameType.HOMONYM_OF));
@@ -126,8 +140,6 @@ public class DiscoverLifeTaxonServiceTest {
 
     @Test
     public void lookupByNoMatchHomonym() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         String providedName = "Apis muraria";
@@ -135,7 +147,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HOMONYM_OF.equals(nameType)) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
                             assertThat(nameType, Is.is(NameType.HOMONYM_OF));
@@ -149,10 +161,9 @@ public class DiscoverLifeTaxonServiceTest {
         assertThat(homonymCounter.get(), Is.is(1));
     }
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/57")
     @Test
     public void lookupSubspecies() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         String providedName = "Pseudopanurgus nebrascensis timberlakei";
@@ -160,7 +171,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
                             assertThat(resolvedTaxon.getName(), Is.is(providedName));
@@ -173,10 +184,9 @@ public class DiscoverLifeTaxonServiceTest {
         assertThat(homonymCounter.get(), Is.is(1));
     }
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/57")
     @Test
     public void lookupVariety() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         String providedName = "Pseudopanurgus nebrascensis timberlakei";
@@ -184,7 +194,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
                             assertThat(resolvedTaxon.getName(), Is.is(providedName));
@@ -197,10 +207,9 @@ public class DiscoverLifeTaxonServiceTest {
         assertThat(homonymCounter.get(), Is.is(1));
     }
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/57")
     @Test
     public void lookupSubvariety() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         String providedName = "Pseudopanurgus nebrascensis timberlakei";
@@ -208,7 +217,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
                             assertThat(providedTerm.getName(), Is.is(providedName));
                             assertThat(resolvedTaxon.getName(), Is.is(providedName));
@@ -223,19 +232,16 @@ public class DiscoverLifeTaxonServiceTest {
 
     @Test
     public void matchAll() throws PropertyEnricherException {
-        DiscoverLifeTaxonService discoverLifeTaxonService
-                = new DiscoverLifeTaxonService(getTmpContext());
         assertMatchAll(discoverLifeTaxonService);
     }
 
     @Test
     public void lookupByNonExistingName() throws PropertyEnricherException {
         AtomicReference<NameType> noMatch = new AtomicReference<>(null);
-        DiscoverLifeTaxonService discoverLifeTaxonService = new DiscoverLifeTaxonService(getTmpContext());
         discoverLifeTaxonService.match(Collections.singletonList(new TaxonImpl("Donald duck")), new TermMatchListener() {
 
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 noMatch.set(nameType);
             }
         });
@@ -251,7 +257,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
                         assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
@@ -275,7 +281,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.SYNONYM_OF));
                         assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
@@ -295,7 +301,7 @@ public class DiscoverLifeTaxonServiceTest {
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (counter.get() == 0) {
                             assertThat(providedTerm.getName(), Is.is("Acamptopoeum argentinum"));
                             assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
@@ -315,7 +321,7 @@ public class DiscoverLifeTaxonServiceTest {
                     }
                 });
 
-        assertThat(counter.get(), Is.is(50590));
+        assertThat(counter.get(), Is.is(50075));
     }
 
     private TermMatcherContext getTmpContext() {
@@ -323,9 +329,9 @@ public class DiscoverLifeTaxonServiceTest {
             @Override
             public String getCacheDir() {
                 try {
-                    return folder.newFolder("cacheDir").getAbsolutePath();
+                    return folder.newFolder().getAbsolutePath();
                 } catch (IOException e) {
-                    throw new IllegalStateException("kaboom!");
+                    throw new IllegalStateException("kaboom!", e);
                 }
             }
 

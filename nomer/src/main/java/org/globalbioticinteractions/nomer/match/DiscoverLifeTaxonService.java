@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -106,8 +108,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
 
     private void lazyInit() throws IOException {
         if (nameMap == null) {
-            File discoverLifeCacheDir = new File(ctx.getCacheDir(), "discover-life");
-            FileUtils.forceMkdirParent(discoverLifeCacheDir);
+            File discoverLifeCacheDir = getCacheDir();
             DB db = DBMaker
                     .newFileDB(discoverLifeCacheDir)
                     .mmapFileEnableIfSupported()
@@ -125,29 +126,53 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         }
     }
 
+    private File getCacheDir() throws IOException {
+        File discoverLifeCacheDir = new File(ctx.getCacheDir(), "discover-life");
+        FileUtils.forceMkdirParent(discoverLifeCacheDir);
+        return discoverLifeCacheDir;
+    }
+
     private void initCache(DB db) throws IOException {
         LOG.info("DiscoverLife name indexing started...");
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         AtomicLong nameCounter = new AtomicLong();
         nameMap = db.createTreeMap(MAP_NAME).make();
-        List<Term> homonymsToBeResolved = new ArrayList<>();
-        DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
-                if (resolvedTaxon == null && NameType.HOMONYM_OF.equals(nameType)) {
-                    homonymsToBeResolved.add(providedTerm);
-                } else {
-                    List<Pair<NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
-                    List<Pair<NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
-                    pairs.add(Pair.of(nameType, TaxonUtil.taxonToMap(resolvedTaxon)));
-                    nameMap.put(providedTerm.getName(), pairs);
-                }
-                nameCounter.incrementAndGet();
-            }
-        });
 
-        attemptToResolveHomonyms(homonymsToBeResolved);
+        DB tmpDb = null;
+        try {
+            tmpDb = DBMaker
+                    .newFileDB(getCacheDir())
+                    .mmapFileEnableIfSupported()
+                    .compressionEnable()
+                    .deleteFilesAfterClose()
+                    .closeOnJvmShutdown()
+                    .transactionDisable()
+                    .make();
+
+            NavigableSet<String> homonymsToBeResolved = tmpDb.createTreeSet("honomyns").makeStringSet();
+
+            DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), new TermMatchListener() {
+                @Override
+                public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                    if (resolvedTaxon == null && NameType.HOMONYM_OF.equals(nameType)) {
+                        homonymsToBeResolved.add(providedTerm.getName());
+                    } else if (resolvedTaxon != null) {
+                        List<Pair<NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
+                        List<Pair<NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
+                        pairs.add(Pair.of(nameType, TaxonUtil.taxonToMap(resolvedTaxon)));
+                        nameMap.put(providedTerm.getName(), pairs);
+                    }
+                    nameCounter.incrementAndGet();
+                }
+            });
+
+            attemptToResolveHomonyms(homonymsToBeResolved);
+        } finally {
+            if (tmpDb != null) {
+                tmpDb.close();
+            }
+        }
 
 
         stopWatch.stop();
@@ -155,9 +180,9 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         LOG.info("[" + nameCounter.get() + "] DiscoverLife names were indexed in " + time + "s (@ " + (nameCounter.get() / time) + " names/s)");
     }
 
-    private void attemptToResolveHomonyms(List<Term> homonymsToBeResolved) {
-        for (Term homonymToBeResolved : homonymsToBeResolved) {
-            List<Pair<NameType, Map<String, String>>> candidatePairs = nameMap.get(homonymToBeResolved.getName());
+    private void attemptToResolveHomonyms(Set<String> homonymsToBeResolved) {
+        for (String homonymToBeResolved : homonymsToBeResolved) {
+            List<Pair<NameType, Map<String, String>>> candidatePairs = nameMap.get(homonymToBeResolved);
 
             if (candidatePairs != null) {
                 List<Pair<NameType, Map<String, String>>> candidates = new ArrayList<>();
@@ -167,9 +192,10 @@ public class DiscoverLifeTaxonService implements TermMatcher {
                     }
                 }
                 candidatePairs.addAll(candidates);
-                nameMap.put(homonymToBeResolved.getName(), candidatePairs);
+                nameMap.put(homonymToBeResolved, candidatePairs);
             } else {
-                List<Pair<NameType, Map<String, String>>> candidatePairsTrimmed = nameMap.get(DiscoverLifeUtil.trimScientificName(homonymToBeResolved.getName()));
+                List<Pair<NameType, Map<String, String>>> candidatePairsTrimmed
+                        = nameMap.get(DiscoverLifeUtil.trimScientificName(homonymToBeResolved));
                 List<Pair<NameType, Map<String, String>>> candidates = new ArrayList<>();
 
                 if (candidatePairsTrimmed == null) {
@@ -182,8 +208,14 @@ public class DiscoverLifeTaxonService implements TermMatcher {
                     }
 
                 }
-                nameMap.put(homonymToBeResolved.getName(), candidates);
+                nameMap.put(homonymToBeResolved, candidates);
             }
+        }
+    }
+
+    public void close() {
+        if (nameMap != null) {
+            nameMap.getEngine().close();
         }
     }
 }
