@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.globalbioticinteractions</groupId>
         <artifactId>nomer-parent</artifactId>
-        <version>0.2.6</version>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath>../nomer-parent/pom.xml</relativePath>
     </parent>
 
