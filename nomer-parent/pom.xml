@@ -15,6 +15,7 @@
         <project.build.testResourceEncoding>UTF-8</project.build.testResourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <globi.version>0.23.0</globi.version>
+        <jena.version>2.13.0</jena.version>
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
     </properties>
 
