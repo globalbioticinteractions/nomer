@@ -296,6 +296,6 @@ public class DiscoverLifeUtil {
     }
 
     public static String trimScientificName(String actual) {
-        return StringUtils.replacePattern(actual, " \\(.*\\) ", " ");
+        return RegExUtils.replacePattern(actual, " \\(.*\\) ", " ");
     }
 }
