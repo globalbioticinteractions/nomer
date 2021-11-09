@@ -81,7 +81,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                             TaxonUtil.mapToTaxon(names.get(0)),
                             NameType.HAS_ACCEPTED_NAME,
                             TaxonUtil.mapToTaxon(names.get(0))
-                            );
+                    );
                 }
             } else {
                 List<Map<String, String>> synonyms = denormalizedNodeIds.get(id);
@@ -124,7 +124,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
     private TermMatchListener noopListener() {
         return new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
 
             }
         };
@@ -132,34 +132,54 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
 
     private Map<String, String> enrichMatches(Map<String, String> enriched, Long key, TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
-        Long idForLookup = mergedNodes.getOrDefault(key, key);
+        if (key == null) {
+            emitNoMatch(enriched, listener);
+        } else {
+            Long idForLookup = mergedNodes.getOrDefault(key, key);
 
-        List<Map<String, String>> enrichedProperties = denormalizedNodeIds.get(idForLookup);
+            List<Map<String, String>> enrichedProperties = denormalizedNodeIds.get(idForLookup);
 
-        if (enrichedProperties != null && enrichedProperties.size() > 0) {
-            NameType type = (key.equals(idForLookup))
-                    ? NameType.HAS_ACCEPTED_NAME
-                    : NameType.SYNONYM_OF;
-            for (Map<String, String> enrichedProperty : enrichedProperties) {
-                listener.foundTaxonForTerm(
-                        null,
-                        TaxonUtil.mapToTaxon(enriched),
-                        type,
-                        TaxonUtil.mapToTaxon(enrichedProperty)
-                );
+            if (enrichedProperties != null && enrichedProperties.size() > 0) {
+                NameType type = (key.equals(idForLookup))
+                        ? NameType.HAS_ACCEPTED_NAME
+                        : NameType.SYNONYM_OF;
+                for (Map<String, String> enrichedProperty : enrichedProperties) {
+                    listener.foundTaxonForTerm(
+                            null,
+                            TaxonUtil.mapToTaxon(enriched),
+                            type,
+                            TaxonUtil.mapToTaxon(enrichedProperty)
+                    );
+                }
+                enriched = new TreeMap<>(enrichedProperties.get(0));
+            } else {
+                emitNoMatch(enriched, listener);
             }
-            enriched = new TreeMap<>(enrichedProperties.get(0));
         }
         return enriched;
     }
 
+    private void emitNoMatch(Map<String, String> enriched, TermMatchListener listener) {
+        listener.foundTaxonForTerm(
+                null,
+                TaxonUtil.mapToTaxon(enriched),
+                NameType.NONE,
+                TaxonUtil.mapToTaxon(enriched));
+    }
+
     private Map<String, String> enrichMatches(Map<String, String> enriched, String key, TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
-        List<Map<String, String>> enrichedProperties = denormalizedNodes.get(key);
+        if (StringUtils.isBlank(key)) {
+            emitNoMatch(enriched, listener);
+        } else {
+            List<Map<String, String>> enrichedProperties = denormalizedNodes.get(key);
 
-        if (enrichedProperties != null && enrichedProperties.size() > 0) {
-            Map<String, String> resolved = new TreeMap<>(enrichedProperties.get(0));
-            enriched = resolveAcceptedNameIfAvailable(listener, TaxonUtil.mapToTaxon(resolved), TaxonUtil.mapToTaxon(resolved));
+            if (enrichedProperties != null && enrichedProperties.size() > 0) {
+                Map<String, String> resolved = new TreeMap<>(enrichedProperties.get(0));
+                enriched = resolveAcceptedNameIfAvailable(listener, TaxonUtil.mapToTaxon(resolved), TaxonUtil.mapToTaxon(resolved));
+            } else {
+                emitNoMatch(enriched, listener);
+            }
         }
         return enriched;
     }
@@ -204,8 +224,9 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
 
     private static Long getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider) {
         TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
-        return matchingTaxonomyProvider.equals(taxonomyProvider)
-                ? Long.parseLong(ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key))
+        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key);
+        return (matchingTaxonomyProvider.equals(taxonomyProvider) && NumberUtils.isCreatable(idString))
+                ? Long.parseLong(idString)
                 : null;
     }
 

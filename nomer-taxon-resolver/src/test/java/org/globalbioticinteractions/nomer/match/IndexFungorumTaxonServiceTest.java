@@ -1,9 +1,15 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.TermMatchListener;
+import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,10 +18,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -38,15 +46,6 @@ public class IndexFungorumTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Leucocybe candicans"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(nullValue()));
         assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Pers.) Vizzini, P. Alvarado, G. Moreno & Consiglio, 2015"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Fungi | Basidiomycota | Agaricomycotina | Agaricomycetes | Agaricomycetidae | Agaricales | Incertae sedis"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | subphylum | class | subclass | order | family"));
-    }
-
-    private void assertIF177054(Map<String, String> enriched) {
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("IF:177054"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Clitocybe candicans"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(nullValue()));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Pers.) P. Kumm., 1871"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Fungi | Basidiomycota | Agaricomycotina | Agaricomycetes | Agaricomycetidae | Agaricales | Incertae sedis"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | subphylum | class | subclass | order | family"));
     }
@@ -86,6 +85,40 @@ public class IndexFungorumTaxonServiceTest {
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(new TaxonImpl(null, "FOO:177054")));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
+    }
+
+    @Test
+    public void matchNoMatchByName() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean();
+        PropertyEnricher service = createService();
+
+        ((TermMatcher) service).match(Arrays.asList(new TermImpl(null, "Homo sapiens")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(NameType.NONE, is(nameType));
+                foundMatch.set(true);
+            }
+        });
+
+        assertThat(foundMatch.get(), is(true));
+    }
+
+    @Test
+    public void matchNoMatchByID() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        PropertyEnricher service = createService();
+
+        ((TermMatcher) service).match(Arrays.asList(new TermImpl("IF:FFFFFF", "Homo sapiens")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(NameType.NONE, is(nameType));
+                foundMatch.set(true);
+            }
+        });
+
+        assertThat(foundMatch.get(), is(true));
     }
 
     private PropertyEnricher createService() {
