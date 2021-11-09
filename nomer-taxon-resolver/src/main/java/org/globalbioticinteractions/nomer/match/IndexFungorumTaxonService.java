@@ -76,8 +76,8 @@ public class IndexFungorumTaxonService extends CommonTaxonService {
                         String authorship = StringUtils.join(new String[]{author, year}, ", ");
                         taxon.setAuthorship(authorship);
                     }
-                    taxon.setPath(StringUtils.join(new String[]{kingdomName, phylumName, subphylumName, className, subclassName, orderName, familyName}, CharsetConstant.SEPARATOR));
-                    taxon.setPathNames(StringUtils.join(new String[]{"kingdom", "phylum", "subphylum", "class", "subclass", "order", "family"}, CharsetConstant.SEPARATOR));
+                    taxon.setPath(StringUtils.join(new String[]{kingdomName, phylumName, subphylumName, className, subclassName, orderName, familyName, completeName}, CharsetConstant.SEPARATOR));
+                    taxon.setPathNames(StringUtils.join(new String[]{"kingdom", "phylum", "subphylum", "class", "subclass", "order", "family", ""}, CharsetConstant.SEPARATOR));
                     if (NumberUtils.isCreatable(taxId)) {
                         taxonMap.put(Long.parseLong(taxId), TaxonUtil.taxonToMap(taxon));
                         if (NumberUtils.isCreatable(acceptedTaxId)) {

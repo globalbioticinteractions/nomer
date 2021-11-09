@@ -46,8 +46,8 @@ public class IndexFungorumTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Leucocybe candicans"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(nullValue()));
         assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Pers.) Vizzini, P. Alvarado, G. Moreno & Consiglio, 2015"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Fungi | Basidiomycota | Agaricomycotina | Agaricomycetes | Agaricomycetidae | Agaricales | Incertae sedis"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | subphylum | class | subclass | order | family"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Fungi | Basidiomycota | Agaricomycotina | Agaricomycetes | Agaricomycetidae | Agaricales | Incertae sedis | Leucocybe candicans"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | subphylum | class | subclass | order | family | "));
     }
 
     @Test
