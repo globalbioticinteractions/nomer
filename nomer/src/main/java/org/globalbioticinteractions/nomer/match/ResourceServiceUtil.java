@@ -40,7 +40,7 @@ public class ResourceServiceUtil {
         if (StringUtils.isBlank(provenanceVersion)) {
             cacheDir = new File(ctx.getCacheDir());
         }  else {
-            cacheDir = new File(ctx.getCacheDir(), provenanceVersion);
+            cacheDir = new File(ctx.getCacheDir(), StringUtils.replace(provenanceVersion, ":", ""));
         }
         return getCachedFileName(cacheDir, resource);
     }

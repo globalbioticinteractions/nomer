@@ -54,7 +54,7 @@ public class ResourceServiceUtilTest {
         assertThat(cachedFileName.exists(), Is.is(false));
         assertThat(
                 cachedFileName.getAbsolutePath(),
-                endsWith("7f607bb8389e3d6ba1f2e9d2c9b5a1c6ad4fd7421cbe8ad858b05721a9dc8273/f0607a4e7cee76dd4be14b7f1f1fa46a1ac4c2426db2387ab0c8b2d99644ab46.gz")
+                endsWith("hash/sha256/7f607bb8389e3d6ba1f2e9d2c9b5a1c6ad4fd7421cbe8ad858b05721a9dc8273/f0607a4e7cee76dd4be14b7f1f1fa46a1ac4c2426db2387ab0c8b2d99644ab46.gz")
         );
     }
 
