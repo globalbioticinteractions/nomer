@@ -58,6 +58,11 @@ public class TermMatchEnsembleFactoryTest {
                 }
 
                 @Override
+                public String getOutputFormat() {
+                    return null;
+                }
+
+                @Override
                 public String getProperty(String key) {
                     return null;
                 }

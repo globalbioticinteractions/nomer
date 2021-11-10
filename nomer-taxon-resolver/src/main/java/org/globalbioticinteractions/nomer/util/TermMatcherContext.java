@@ -19,4 +19,6 @@ public interface TermMatcherContext extends PropertyContext, ResourceService {
 
     Map<Integer, String> getOutputSchema();
 
+    String getOutputFormat();
+
 }

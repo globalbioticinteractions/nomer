@@ -130,6 +130,11 @@ public class IndexFungorumTaxonServiceTest {
             }
 
             @Override
+            public String getOutputFormat() {
+                return null;
+            }
+
+            @Override
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {

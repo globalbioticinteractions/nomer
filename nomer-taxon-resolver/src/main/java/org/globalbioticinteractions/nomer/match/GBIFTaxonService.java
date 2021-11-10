@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -225,9 +226,14 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                     public boolean hasNext() {
                         try {
                             if (reader == null) {
+                                InputStream retrieve = ctx.retrieve(gbifNameResource);
+                                if (retrieve == null) {
+                                    throw new IOException("failed to retrieve [" + gbifNameResource + "]");
+                                }
+
                                 reader = new BufferedReader(
                                         new InputStreamReader(
-                                                ctx.retrieve(gbifNameResource),
+                                                retrieve,
                                                 StandardCharsets.UTF_8)
                                 );
                             }
@@ -294,7 +300,12 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                     public boolean hasNext() {
                         try {
                             if (reader == null) {
-                                reader = new BufferedReader(new InputStreamReader(ctx.retrieve(gbifIdResource), StandardCharsets.UTF_8));
+                                InputStream retrieve = ctx.retrieve(gbifIdResource);
+                                if (retrieve == null) {
+                                    throw new IOException("failed to retrieve [" + gbifIdResource + "]");
+                                }
+
+                                reader = new BufferedReader(new InputStreamReader(retrieve, StandardCharsets.UTF_8));
                             }
                             if (idRelation == null) {
                                 String line = reader.readLine();
@@ -335,7 +346,11 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                     public boolean hasNext() {
                         try {
                             if (reader == null) {
-                                reader = new BufferedReader(new InputStreamReader(ctx.retrieve(gbifIdResource), StandardCharsets.UTF_8));
+                                InputStream retrieve = ctx.retrieve(gbifIdResource);
+                                if (retrieve == null) {
+                                    throw new IOException("failed to retrieve [" + gbifIdResource + "]");
+                                }
+                                reader = new BufferedReader(new InputStreamReader(retrieve, StandardCharsets.UTF_8));
                             }
 
                             if (idNameRank == null) {

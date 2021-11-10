@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -11,8 +10,9 @@ import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,31 +21,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
 
 public class TermMatchEnsembleFactoryEnricherTest {
 
-
-    private final File cacheDir = new File("./target/nomer-cache");
-
-    @Before
-    public void clean() throws IOException {
-        FileUtils.deleteQuietly(cacheDir);
-        FileUtils.forceMkdir(cacheDir);
-    }
+    @Rule
+    public TemporaryFolder cacheDir = new TemporaryFolder();
 
     @Test
-    public void nodc() throws PropertyEnricherException {
+    public void nodc() throws PropertyEnricherException, IOException {
         String testArchivePath = "/org/eol/globi/taxon/nodc_archive.zip";
         final URL nodcTestArchive = getClass().getResource(testArchivePath);
         assertNotNull("failed to find [" + testArchivePath + "]", nodcTestArchive);
+
+        File dir = cacheDir.newFolder();
 
         TermMatcherContext ctx = new TermMatcherContextCaching() {
 
             @Override
             public String getCacheDir() {
-                return cacheDir.getAbsolutePath();
+                return dir.getAbsolutePath();
             }
 
             @Override
@@ -71,6 +67,8 @@ public class TermMatchEnsembleFactoryEnricherTest {
             public Map<Integer, String> getOutputSchema() {
                 return null;
             }
+
+
 
         };
         TermMatcher termMatcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(ctx);

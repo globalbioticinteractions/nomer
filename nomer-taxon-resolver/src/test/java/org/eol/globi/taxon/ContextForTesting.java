@@ -39,4 +39,9 @@ public class ContextForTesting implements TermMatcherContext {
         return null;
     }
 
+    @Override
+    public String getOutputFormat() {
+        return null;
+    }
+
 }
