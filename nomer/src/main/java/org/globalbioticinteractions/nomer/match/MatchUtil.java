@@ -9,13 +9,19 @@ import org.eol.globi.service.TermMatcherHierarchical;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
-import org.globalbioticinteractions.nomer.match.TermMatcherRegistry;
+import org.globalbioticinteractions.nomer.cmd.CmdMatcherParams;
+import org.globalbioticinteractions.nomer.util.Appender;
+import org.globalbioticinteractions.nomer.util.AppenderJSON;
+import org.globalbioticinteractions.nomer.util.AppenderTSV;
+import org.globalbioticinteractions.nomer.util.AppendingRowHandler;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,5 +85,23 @@ public class MatchUtil {
 
     public static boolean shouldMatchAll(Term term) {
         return TermMatchUtil.shouldMatchAll(term);
+    }
+
+    public static RowHandler getRowHandler(TermMatcherContext ctx, OutputStream out) {
+        TermMatcher matcher = getTermMatcher(ctx.getMatchers(), ctx);
+
+        Appender appender;
+        if ("json".equalsIgnoreCase(ctx.getOutputFormat())) {
+            appender = new AppenderJSON();
+        } else {
+            String property = ctx.getProperty("nomer.append.schema.output");
+            if (StringUtils.isNotBlank(property)) {
+                appender = new AppenderTSV(CmdMatcherParams.parseSchema(property));
+            } else {
+                appender = new AppenderTSV();
+            }
+        }
+
+        return new AppendingRowHandler(out, matcher, ctx, appender);
     }
 }

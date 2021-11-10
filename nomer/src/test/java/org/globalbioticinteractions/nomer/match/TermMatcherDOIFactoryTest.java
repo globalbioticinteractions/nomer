@@ -98,6 +98,11 @@ public class TermMatcherDOIFactoryTest {
             }
 
             @Override
+            public String getOutputFormat() {
+                return null;
+            }
+
+            @Override
             public String getProperty(String key) {
                 return testPropertyMap.get(key);
             }

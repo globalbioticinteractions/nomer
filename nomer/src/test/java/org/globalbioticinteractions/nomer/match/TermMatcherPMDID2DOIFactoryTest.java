@@ -90,6 +90,11 @@ public class TermMatcherPMDID2DOIFactoryTest {
             }
 
             @Override
+            public String getOutputFormat() {
+                return null;
+            }
+
+            @Override
             public String getProperty(String key) {
                 return "some:url";
             }

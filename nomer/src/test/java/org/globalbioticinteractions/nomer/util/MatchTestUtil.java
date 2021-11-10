@@ -65,5 +65,10 @@ public class MatchTestUtil {
             return null;
         }
 
+        @Override
+        public String getOutputFormat() {
+            return null;
+        }
+
     }
 }

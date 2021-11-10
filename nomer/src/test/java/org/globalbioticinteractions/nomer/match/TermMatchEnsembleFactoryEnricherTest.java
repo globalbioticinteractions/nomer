@@ -68,6 +68,10 @@ public class TermMatchEnsembleFactoryEnricherTest {
                 return null;
             }
 
+            @Override
+            public String getOutputFormat() {
+                return null;
+            }
 
 
         };

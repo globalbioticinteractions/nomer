@@ -19,6 +19,11 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
     private List<String> matchers = new ArrayList<>();
 
     @Override
+    public String getOutputFormat() {
+        return CmdOutput.OUTPUT_FORMAT_DEFAULT;
+    }
+
+    @Override
     public List<String> getMatchers() {
         return matchers;
     }

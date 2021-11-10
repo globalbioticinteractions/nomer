@@ -81,6 +81,11 @@ public class TermMatcherCorrectFactoryTest {
             }
 
             @Override
+            public String getOutputFormat() {
+                return null;
+            }
+
+            @Override
             public String getProperty(String key) {
                 return new HashMap<String, String>() {{
                     put(SuggesterFactory.NOMER_TAXON_NAME_CORRECTION_URL, "map");

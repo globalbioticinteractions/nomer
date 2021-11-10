@@ -8,7 +8,7 @@ public class CmdAppend extends CmdOutput {
 
     @Override
     public void run() {
-        MatchUtil.match(getRowHandler(this));
+        MatchUtil.match(MatchUtil.getRowHandler(this, System.out));
     }
 
 }

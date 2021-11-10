@@ -9,31 +9,21 @@ import org.globalbioticinteractions.nomer.util.AppenderJSON;
 import org.globalbioticinteractions.nomer.util.AppenderTSV;
 import org.globalbioticinteractions.nomer.util.AppendingRowHandler;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 public abstract class CmdOutput extends CmdMatcherParams {
 
+    public static final String OUTPUT_FORMAT_DEFAULT = "tsv";
+
     @Parameter(names = {"-o", "--output-format"}, description = "tsv, json", validateWith = JsonTsvFormatValidator.class)
-    private String outputFormat = "tsv";
+    private String outputFormat = OUTPUT_FORMAT_DEFAULT;
+
+    @Override
+    public String getOutputFormat() {
+        return outputFormat;
+    }
 
     @Override
     abstract public void run();
-
-    public static RowHandler getRowHandler(CmdOutput ctx) {
-        TermMatcher matcher = MatchUtil.getTermMatcher(ctx.getMatchers(), ctx);
-
-        Appender appender;
-        if ("json".equalsIgnoreCase(ctx.outputFormat)) {
-            appender = new AppenderJSON();
-        } else {
-            String property = ctx.getProperty("nomer.append.schema.output");
-            if (StringUtils.isNotBlank(property)) {
-                appender = new AppenderTSV(parseSchema(property));
-            } else {
-                appender = new AppenderTSV();
-            }
-        }
-
-        return new AppendingRowHandler(System.out, matcher, ctx, appender);
-    }
 
 }
