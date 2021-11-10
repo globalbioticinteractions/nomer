@@ -8,9 +8,12 @@ import org.globalbioticinteractions.nomer.match.ResourceServiceFactoryImpl;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -69,10 +72,33 @@ public class MatchUtilTest {
             Map<String, String> properties = new TreeMap<>();
             properties.put("nomer.gbif.ids", "gz:https://example.org/ids.gz!/ids");
             properties.put("nomer.gbif.names", "gz:https://example.org/ids.gz!/names");
-            properties.put("nomer.preston.version", "hash://sha256/bb6dac6461b66212c5b1826447d7765529ff5cbadeac1915f7c3be9748eda991");
-            properties.put("nomer.preston.remotes", "https://zenodo.org/record/5639794/files");
+            properties.put("nomer.preston.version", "hash://sha256/7f607bb8389e3d6ba1f2e9d2c9b5a1c6ad4fd7421cbe8ad858b05721a9dc8273");
+            properties.put("nomer.preston.remotes", "file://" + getDataDir());
             return properties.get(key);
         }
+
+        @Override
+        public String getCacheDir() {
+            return getDataDir();
+
+        }
+
+        private String getDataDir() {
+            URL resource = getClass().getResource("/org/globalbioticinteractions/nomer/match/preston/data/2a/5d/2a5de79372318317a382ea9a2cef069780b852b01210ef59e06b640a3539cb5a");
+
+            try {
+                File dataDir = new File(resource.toURI())
+                        .getParentFile()
+                        .getParentFile()
+                        .getParentFile();
+                String absolutePath = dataDir.getAbsolutePath();
+                System.out.println(absolutePath);
+                return absolutePath;
+            } catch (URISyntaxException e) {
+                throw new IllegalArgumentException(e);
+            }
+        }
+
 
         @Override
         public List<String> getMatchers() {
