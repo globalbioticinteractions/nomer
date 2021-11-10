@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import bio.guoda.preston.RefNodeFactory;
 import bio.guoda.preston.cmd.CmdGet;
 import bio.guoda.preston.store.HashKeyUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.PropertyEnricherException;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
@@ -60,18 +61,23 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
     public InputStream retrieve(URI resource) throws IOException {
         CmdGet cmdGet = createCmdGet();
         cmdGet.setContentIdsOrAliases(Collections.singletonList(resource.toString()));
-        File cachedFileName = ResourceServiceUtil.getCachedFileName(resource, new File(ctx.getCacheDir()));
-        String location = "[" + resource + "] at [" + cachedFileName.getAbsolutePath() + "]";
+        File parentDir = new File(ctx.getCacheDir(), "tmp");
+        FileUtils.forceMkdir(parentDir);
+        File tmpFile = File.createTempFile("nomer", ".gz", parentDir);
+        String location = "[" + resource + "] at [" + tmpFile.getAbsolutePath() + "]";
 
-        try (OutputStream outputStream = ResourceServiceUtil.getOutputStreamForCache(cachedFileName)) {
-                String msg = "caching " + location;
-                LOG.info(msg + "...");
-                cmdGet.setOutputStream(outputStream);
-                cmdGet.run();
-                outputStream.flush();
-                LOG.info(msg + " done.");
-                LOG.info(msg + " done.");
-            }
+        try (OutputStream outputStream = ResourceServiceUtil.getOutputStreamForCache(tmpFile)) {
+            String msg = "caching " + location;
+            LOG.info(msg + "...");
+            cmdGet.setOutputStream(outputStream);
+            cmdGet.run();
+            outputStream.flush();
+            LOG.info(msg + " done.");
+            File destFile = ResourceServiceUtil.getCachedFileName(new File(ctx.getCacheDir()), resource);
+            FileUtils.moveFile(tmpFile, destFile);
+        } finally {
+            FileUtils.deleteQuietly(tmpFile);
+        }
         return super.retrieve(resource);
     }
 }

@@ -17,7 +17,7 @@ import java.util.zip.GZIPOutputStream;
 
 public class ResourceServiceUtil {
 
-    public static File getCachedFileName(URI resource, File cacheDir) throws IOException {
+    public static File getCachedFileName(File cacheDir, URI resource) throws IOException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(resource.toString().getBytes(StandardCharsets.UTF_8));

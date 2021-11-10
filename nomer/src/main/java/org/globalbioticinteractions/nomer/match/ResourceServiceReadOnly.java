@@ -22,8 +22,7 @@ public class ResourceServiceReadOnly implements ResourceService {
     @Override
     public InputStream retrieve(URI resource) throws IOException {
         File cachedFile = ResourceServiceUtil.getCachedFileName(
-                resource,
-                new File(ctx.getCacheDir())
+                new File(ctx.getCacheDir()), resource
         );
 
         InputStream is = null;
