@@ -33,9 +33,7 @@ public class ResourceServiceLocationBased extends ResourceServiceReadOnly {
     }
 
     private void cacheResource(URI resource) throws IOException {
-        File cachedFile = ResourceServiceUtil.getCachedFileName(
-                new File(ctx.getCacheDir()), resource
-        );
+        File cachedFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
 
         String location = "[" + resource + "] at [" + cachedFile.getAbsolutePath() + "]";
         String msg = "caching " + location;

@@ -10,6 +10,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.globalbioticinteractions.nomer.match.ResourceServiceUtil.NOMER_PRESTON_VERSION;
+
 public class ResourceServiceFactoryImpl implements ResourceServiceFactory {
 
     private final TermMatcherContext ctx;
@@ -24,7 +26,7 @@ public class ResourceServiceFactoryImpl implements ResourceServiceFactory {
 
         services.add(new ResourceServiceReadOnly(ctx));
 
-        if (StringUtils.isBlank(ctx.getProperty("nomer.preston.version"))) {
+        if (StringUtils.isBlank(ctx.getProperty(NOMER_PRESTON_VERSION))) {
             services.add(new ResourceServiceLocationBased(ctx));
         } else {
             services.add(new ResourceServiceContentBased(ctx));

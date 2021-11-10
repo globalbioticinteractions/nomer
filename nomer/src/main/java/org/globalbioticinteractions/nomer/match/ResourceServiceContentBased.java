@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.globalbioticinteractions.nomer.match.ResourceServiceUtil.NOMER_PRESTON_VERSION;
+
 public class ResourceServiceContentBased extends ResourceServiceReadOnly {
     private final static Logger LOG = LoggerFactory.getLogger(ResourceServiceContentBased.class);
 
@@ -34,7 +36,7 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
     private CmdGet createCmdGet() throws IOException {
         CmdGet cmdGet = new CmdGet();
         try {
-            URI hash = CacheUtil.getValueURI(ctx, "nomer.preston.version");
+            URI hash = CacheUtil.getValueURI(ctx, NOMER_PRESTON_VERSION);
             if (!HashKeyUtil.isValidHashKey(RefNodeFactory.toIRI(hash))) {
                 throw new IOException("expected sha256 hash uri, but found [" + hash + "]");
             }
@@ -74,7 +76,7 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
             cmdGet.run();
             outputStream.flush();
             LOG.info(msg + " done.");
-            File destFile = ResourceServiceUtil.getCachedFileName(new File(ctx.getCacheDir()), resource);
+            File destFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
             FileUtils.moveFile(tmpFile, destFile);
         } finally {
             FileUtils.deleteQuietly(tmpFile);

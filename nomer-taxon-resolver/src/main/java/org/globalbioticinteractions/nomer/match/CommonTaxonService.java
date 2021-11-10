@@ -35,7 +35,6 @@ import java.util.TreeMap;
 
 public abstract class CommonTaxonService extends PropertyEnricherSimple implements TermMatcher {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CommonTaxonService.class);
     protected static final String DENORMALIZED_NODES = "denormalizedNodes";
     protected static final String DENORMALIZED_NODE_IDS = "denormalizedNodeIds";
     protected static final String MERGED_NODES = "mergedNodes";

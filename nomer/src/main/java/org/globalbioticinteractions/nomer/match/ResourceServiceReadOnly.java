@@ -21,9 +21,8 @@ public class ResourceServiceReadOnly implements ResourceService {
 
     @Override
     public InputStream retrieve(URI resource) throws IOException {
-        File cachedFile = ResourceServiceUtil.getCachedFileName(
-                new File(ctx.getCacheDir()), resource
-        );
+        TermMatcherContext ctx = this.ctx;
+        File cachedFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
 
         InputStream is = null;
         if (cachedFile.exists()) {
@@ -32,4 +31,5 @@ public class ResourceServiceReadOnly implements ResourceService {
         }
         return is;
     }
+
 }
