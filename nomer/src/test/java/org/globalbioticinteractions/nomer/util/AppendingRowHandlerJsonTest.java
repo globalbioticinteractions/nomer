@@ -100,7 +100,7 @@ public class AppendingRowHandlerJsonTest {
         InputStream is = IOUtils.toInputStream(inputString, StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();
+        TermMatcherContext ctx = new TestTermMatcherContextDefault();
         TermMatcher matcher = new MappingTermMatcher(termMapper);
         RowHandler rowHandler = new AppendingRowHandler(os, matcher, ctx, new AppenderJSON());
         MatchUtil.apply(is, rowHandler);

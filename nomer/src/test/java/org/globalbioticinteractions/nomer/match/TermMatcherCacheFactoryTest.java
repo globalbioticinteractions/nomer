@@ -9,6 +9,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
+import org.globalbioticinteractions.nomer.util.TestTermMatcherContextDefault;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class TermMatcherCacheFactoryTest {
 
     @Before
     public void clean() {
-        FileUtils.deleteQuietly(new File(new MatchTestUtil.TermMatcherContextDefault().getCacheDir()));
+        FileUtils.deleteQuietly(new File(new TestTermMatcherContextDefault().getCacheDir()));
     }
 
     @Test
@@ -61,7 +62,7 @@ public class TermMatcherCacheFactoryTest {
     }
 
     private void assertNumberOfHits(String maxLinksPerTerm, int expectedNumberOfLinks) throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCacheFactory().createTermMatcher(new MatchTestUtil.TermMatcherContextDefault() {
+        TermMatcher termMatcher = new TermMatcherCacheFactory().createTermMatcher(new TestTermMatcherContextDefault() {
 
             @Override
             public String getProperty(String key) {

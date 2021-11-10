@@ -6,6 +6,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
+import org.globalbioticinteractions.nomer.util.TestTermMatcherContextDefault;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class TermMatcherFactoryTaxonRanksTest {
 
     @Before
     public void init() {
-        FileUtils.deleteQuietly(new File(new MatchTestUtil.TermMatcherContextDefault().getCacheDir()));
+        FileUtils.deleteQuietly(new File(new TestTermMatcherContextDefault().getCacheDir()));
         termMatcher = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
     }
 

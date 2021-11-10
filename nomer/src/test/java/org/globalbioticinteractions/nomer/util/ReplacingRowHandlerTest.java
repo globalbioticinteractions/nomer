@@ -33,7 +33,7 @@ public class ReplacingRowHandlerTest {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
-        MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault()));
+        MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new TestTermMatcherContextDefault()));
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("EOL:327955\tHomo sapiens"));
@@ -42,14 +42,14 @@ public class ReplacingRowHandlerTest {
     @Test
     public void noReplaceOnMissingSchemas() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens", StandardCharsets.UTF_8);
-        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault());
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault());
         assertThat(os.toString(), Is.is("EOL:1276240\tHomo sapiens\n"));
     }
 
     @Test
     public void resolveTaxonCacheMatchFirstLineByNameOnly() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tGreen-winged teal", StandardCharsets.UTF_8);
-        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -63,7 +63,7 @@ public class ReplacingRowHandlerTest {
     @Test
     public void replaceCommonNameWithFamilyName() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tGreen-winged teal", StandardCharsets.UTF_8);
-        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -77,7 +77,7 @@ public class ReplacingRowHandlerTest {
     @Test
     public void replacePipedValues() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tGreen-winged teal | Anas crecca carolinensis", StandardCharsets.UTF_8);
-        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -91,7 +91,7 @@ public class ReplacingRowHandlerTest {
     @Test
     public void replaceOnlyMatchingPipedValues() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tJohnny Bravo | Anas crecca carolinensis", StandardCharsets.UTF_8);
-        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -105,7 +105,7 @@ public class ReplacingRowHandlerTest {
     @Test
     public void replaceWithKingdomOnlyMatchingPipedValues() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tJohnny Bravo | Anas crecca carolinensis", StandardCharsets.UTF_8);
-        ByteArrayOutputStream os = replace(is, new MatchTestUtil.TermMatcherContextDefault() {
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getOutputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -119,7 +119,7 @@ public class ReplacingRowHandlerTest {
     @Test
     public void resolveTaxonCacheMatchFirstLineByIdOnly() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tJohnny Bravo", StandardCharsets.UTF_8);
-        TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault() {
+        TermMatcherContext ctx = new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -186,7 +186,7 @@ public class ReplacingRowHandlerTest {
     }
 
     private ByteArrayOutputStream applyWithMatch(Taxon taxon, NameType sameAs, InputStream is, final Map<Integer, String> outputSchema) throws IOException, PropertyEnricherException {
-        TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault() {
+        TermMatcherContext ctx = new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
                 return new TreeMap<Integer, String>() {{
@@ -225,7 +225,7 @@ public class ReplacingRowHandlerTest {
     public void resolveGlobalNamesAppendFuzzyMatch() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tHomo saliens\tone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchUtil.apply(is, new ReplacingRowHandler(os, new GlobalNamesService2(), new MatchTestUtil.TermMatcherContextDefault() {
+        MatchUtil.apply(is, new ReplacingRowHandler(os, new GlobalNamesService2(), new TestTermMatcherContextDefault() {
         }));
         assertThat(os.toString(), Is.is("\tHomo saliens\tone\n"));
     }

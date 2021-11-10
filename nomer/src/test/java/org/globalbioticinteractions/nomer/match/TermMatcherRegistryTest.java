@@ -1,7 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.util.MatchTestUtil;
+import org.globalbioticinteractions.nomer.util.TestTermMatcherContextDefault;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class TermMatcherRegistryTest {
     public void createNonExistingMatcher() {
         try {
             TermMatcherRegistry.termMatcherFor("this doesn't exist",
-                    new MatchTestUtil.TermMatcherContextDefault()
+                    new TestTermMatcherContextDefault()
             );
         } catch (Throwable ex) {
             assertThat(ex.getMessage(), is("unknown matcher [this doesn't exist]"));
@@ -63,7 +63,7 @@ public class TermMatcherRegistryTest {
     @Test
     public void createExistingMatcher() {
         assertNotNull(TermMatcherRegistry.termMatcherFor("itis-taxon-id",
-                new MatchTestUtil.TermMatcherContextDefault())
+                new TestTermMatcherContextDefault())
         );
     }
 
@@ -74,7 +74,7 @@ public class TermMatcherRegistryTest {
             assertNotNull("failed to get supported matcher [" + matcherName + "]",
                     TermMatcherRegistry.termMatcherFor(
                             matcherName,
-                            new MatchTestUtil.TermMatcherContextDefault())
+                            new TestTermMatcherContextDefault())
             );
         }
     }
@@ -105,7 +105,7 @@ public class TermMatcherRegistryTest {
             if (longName != null) {
                 foundMatcher = TermMatcherRegistry.termMatcherFor(
                         longName,
-                        new MatchTestUtil.TermMatcherContextDefault());
+                        new TestTermMatcherContextDefault());
             }
 
             assertNotNull("failed to find supported matcher for  [" + supportedMatcher + "]",

@@ -1,11 +1,15 @@
 package org.globalbioticinteractions.nomer.util;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.globalbioticinteractions.nomer.match.ResourceServiceFactoryImpl;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -27,16 +31,27 @@ import static org.hamcrest.core.IsNull.notNullValue;
 
 public class MatchUtilTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+    private File tmpDataDir;
+
+
+    @Before
+    public void init() throws IOException {
+        tmpDataDir = folder.newFolder();
+        FileUtils.copyDirectory(getDataDir(), tmpDataDir);
+    }
+
     @Test
     public void defaultOnEmpty() {
-        TermMatcher termMatcher = MatchUtil.getTermMatcher(Collections.emptyList(), new MatchTestUtil.TermMatcherContextDefault());
+        TermMatcher termMatcher = MatchUtil.getTermMatcher(Collections.emptyList(), new TestTermMatcherContextDefault());
         assertThat(termMatcher, is(notNullValue()));
     }
 
     @Test(expected = RuntimeException.class)
     public void defaultWithGBIFLiteMissingResource() throws IOException, PropertyEnricherException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchTestUtil.TermMatcherContextDefault ctx = getGBIFContext();
+        TestTermMatcherContextDefault ctx = getGBIFContext();
         MatchUtil.apply(IOUtils.toInputStream("\tHomo sapiens", StandardCharsets.UTF_8),
                 MatchUtil.getRowHandler(ctx, os));
 
@@ -46,7 +61,7 @@ public class MatchUtilTest {
     @Test
     public void defaultWithGBIFLite() throws IOException, PropertyEnricherException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        MatchTestUtil.TermMatcherContextDefault ctx = new TermMatcherContextGBIF() {
+        TestTermMatcherContextDefault ctx = new TermMatcherContextGBIF(getTmpDataDir()) {
             @Override
             public InputStream retrieve(URI uri) throws IOException {
                 return new ResourceServiceFactoryImpl(this)
@@ -61,44 +76,25 @@ public class MatchUtilTest {
         assertThat(os.toString(StandardCharsets.UTF_8.name()), is("bla"));
     }
 
-    private MatchTestUtil.TermMatcherContextDefault getGBIFContext() {
-        return new TermMatcherContextGBIF();
+    private TestTermMatcherContextDefault getGBIFContext() {
+        return new TermMatcherContextGBIF(getTmpDataDir());
     }
 
-    private static class TermMatcherContextGBIF extends MatchTestUtil.TermMatcherContextDefault {
+    public class TermMatcherContextGBIF extends TestTermMatcherContextDefault {
+
+        TermMatcherContextGBIF(File dataDir) {
+            super(dataDir);
+        }
 
         @Override
         public String getProperty(String key) {
             Map<String, String> properties = new TreeMap<>();
             properties.put("nomer.gbif.ids", "gz:https://example.org/ids.gz!/ids");
-            properties.put("nomer.gbif.names", "gz:https://example.org/ids.gz!/names");
+            properties.put("nomer.gbif.names", "gz:https://example.org/names.gz!/names");
             properties.put("nomer.preston.version", "hash://sha256/7f607bb8389e3d6ba1f2e9d2c9b5a1c6ad4fd7421cbe8ad858b05721a9dc8273");
-            properties.put("nomer.preston.remotes", "file://" + getDataDir());
+            properties.put("nomer.preston.remotes", "file://" + getCacheDir());
             return properties.get(key);
         }
-
-        @Override
-        public String getCacheDir() {
-            return getDataDir();
-
-        }
-
-        private String getDataDir() {
-            URL resource = getClass().getResource("/org/globalbioticinteractions/nomer/match/preston/data/2a/5d/2a5de79372318317a382ea9a2cef069780b852b01210ef59e06b640a3539cb5a");
-
-            try {
-                File dataDir = new File(resource.toURI())
-                        .getParentFile()
-                        .getParentFile()
-                        .getParentFile();
-                String absolutePath = dataDir.getAbsolutePath();
-                System.out.println(absolutePath);
-                return absolutePath;
-            } catch (URISyntaxException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-
 
         @Override
         public List<String> getMatchers() {
@@ -106,4 +102,24 @@ public class MatchUtilTest {
         }
 
     }
+
+    private File getTmpDataDir() {
+        return MatchUtilTest.this.tmpDataDir;
+    }
+
+
+    private File getDataDir() {
+        URL resource = getClass().getResource("/org/globalbioticinteractions/nomer/match/preston/data/2a/5d/2a5de79372318317a382ea9a2cef069780b852b01210ef59e06b640a3539cb5a");
+
+        try {
+            File dataDir = new File(resource.toURI())
+                    .getParentFile()
+                    .getParentFile()
+                    .getParentFile();
+            return dataDir;
+        } catch (URISyntaxException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
 }

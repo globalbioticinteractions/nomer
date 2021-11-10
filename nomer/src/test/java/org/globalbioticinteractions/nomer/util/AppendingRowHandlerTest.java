@@ -36,7 +36,7 @@ public class AppendingRowHandlerTest {
     }
 
     private void applyMatcher(InputStream is, ByteArrayOutputStream os, TermMatcher matcher) throws IOException, PropertyEnricherException {
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault(), new AppenderTSV()));
+        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault(), new AppenderTSV()));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class AppendingRowHandlerTest {
         InputStream is = IOUtils.toInputStream("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new MatchTestUtil.TermMatcherContextDefault() {
+        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
                 return new TreeMap<Integer, String>() {{

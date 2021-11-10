@@ -62,9 +62,8 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
         cmdGet.setContentIdsOrAliases(Collections.singletonList(resource.toString()));
         File cachedFileName = ResourceServiceUtil.getCachedFileName(resource, new File(ctx.getCacheDir()));
         String location = "[" + resource + "] at [" + cachedFileName.getAbsolutePath() + "]";
-        if (!cachedFileName.exists()) {
 
-            try (OutputStream outputStream = ResourceServiceUtil.getOutputStreamForCache(cachedFileName)) {
+        try (OutputStream outputStream = ResourceServiceUtil.getOutputStreamForCache(cachedFileName)) {
                 String msg = "caching " + location;
                 LOG.info(msg + "...");
                 cmdGet.setOutputStream(outputStream);
@@ -73,7 +72,6 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
                 LOG.info(msg + " done.");
                 LOG.info(msg + " done.");
             }
-        }
         return super.retrieve(resource);
     }
 }
