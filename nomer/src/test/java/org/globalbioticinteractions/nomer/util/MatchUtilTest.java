@@ -39,7 +39,7 @@ public class MatchUtilTest {
     @Before
     public void init() throws IOException {
         tmpDataDir = folder.newFolder();
-        FileUtils.copyDirectory(getDataDir(), tmpDataDir);
+        FileUtils.copyDirectory(getDataDir(), new File(tmpDataDir, "data"));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class MatchUtilTest {
         MatchUtil.apply(IOUtils.toInputStream("\tHomo sapiens", StandardCharsets.UTF_8),
                 MatchUtil.getRowHandler(ctx, os));
 
-        assertThat(os.toString(StandardCharsets.UTF_8.name()), is("bla"));
+        assertThat(os.toString(StandardCharsets.UTF_8.name()), is("\tHomo sapiens\tNONE\t\tHomo sapiens\t\t\t\t\t\t\t\n"));
     }
 
     private TestTermMatcherContextDefault getGBIFContext() {
