@@ -173,11 +173,6 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
         watch.start();
 
         indexIfNeeded(watch);
-
-
-        LOG.info("reading taxa done.");
-
-        LOG.info("GBIF taxonomy imported.");
     }
 
     private void indexIfNeeded(StopWatch watch) throws PropertyEnricherException {
@@ -197,161 +192,179 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
             idRelations = db.getTreeMap(ID_RELATION);
             nameIds = db.getTreeMap(NAME_ID);
         } else {
-            URI taxonUrl = CacheUtil.getValueURI(ctx, "nomer.gbif.ids");
+            URI gbifIdResource = CacheUtil.getValueURI(ctx, "nomer.gbif.ids");
             LOG.info("indexing GBIF taxonomy ids...");
 
-            idNameRanks = db
-                    .createTreeMap(ID_NAME_RANK)
-                    .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<String, GBIFRank>>>() {
-                        BufferedReader reader = null;
-                        Triple<Long, String, GBIFRank> idNameRank = null;
-
-                        @Override
-                        public boolean hasNext() {
-                            try {
-                                if (reader == null) {
-                                    reader = new BufferedReader(new InputStreamReader(ctx.retrieve(taxonUrl), StandardCharsets.UTF_8));
-                                }
-
-                                if (idNameRank == null) {
-                                    String line = reader.readLine();
-                                    idNameRank =
-                                            StringUtils.isBlank(line) ? null : GBIFUtil.parseIdNameRank(line);
-                                }
-                                return idNameRank != null;
-                            } catch (IOException e) {
-                                throw new RuntimeException("failed to access [" + taxonUrl + "]", e);
-                            }
-                        }
-
-                        @Override
-                        public Fun.Tuple2<Long, Pair<String, GBIFRank>> next() {
-                            Fun.Tuple2<Long, Pair<String, GBIFRank>> current = idNameRank == null
-                                    ? null
-                                    : new Fun.Tuple2<>(idNameRank.getLeft(), Pair.of(idNameRank.getMiddle(), idNameRank.getRight()));
-                            idNameRank = null;
-                            return current;
-                        }
-
-
-                    })
-                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                    .make();
-
-            watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), idNameRanks.size(), LOG);
+            indexIds(watch, db, gbifIdResource);
 
             watch.reset();
-            watch.start();
-
-
-            idRelations = db
-                    .createTreeMap(ID_RELATION)
-                    .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>>>() {
-                        BufferedReader reader = null;
-                        Pair<Long, Pair<GBIFNameRelationType, Long>> idRelation = null;
-
-                        @Override
-                        public boolean hasNext() {
-                            try {
-                                if (reader == null) {
-                                    reader = new BufferedReader(new InputStreamReader(ctx.retrieve(taxonUrl), StandardCharsets.UTF_8));
-                                }
-                                if (idRelation == null) {
-                                    String line = reader.readLine();
-                                    idRelation = GBIFUtil.parseIdRelation(line);
-                                }
-                                return idRelation != null;
-                            } catch (IOException e) {
-                                throw new RuntimeException("failed to access [" + taxonUrl + "]", e);
-                            }
-                        }
-
-                        @Override
-                        public Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>> next() {
-                            Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>> next
-                                    = idRelation == null ? null : new Fun.Tuple2<>(idRelation.getLeft(), idRelation.getRight());
-                            idRelation = null;
-                            return next;
-
-                        }
-
-
-                    })
-                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                    .make();
-
-            watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), idRelations.size(), LOG);
+            indexIdRelations(watch, db, gbifIdResource);
 
             watch.reset();
-            watch.start();
 
+            indexNames(watch, db);
 
-            URI nameUrl = CacheUtil.getValueURI(ctx, "nomer.gbif.names");
-
-            nameIds = db
-                    .createTreeMap(NAME_ID)
-                    .pumpSource(new Iterator<Fun.Tuple2<String, List<Long>>>() {
-                        BufferedReader reader = null;
-                        Pair<String, Long> nameId = null;
-
-                        @Override
-                        public boolean hasNext() {
-                            try {
-                                if (reader == null) {
-                                    reader = new BufferedReader(new InputStreamReader(ctx.retrieve(nameUrl), StandardCharsets.UTF_8));
-                                }
-
-                                if (nameId == null) {
-                                    readNext();
-                                }
-                                return nameId != null;
-                            } catch (IOException e) {
-                                throw new RuntimeException("failed to access [" + nameUrl + "]", e);
-                            }
-                        }
-
-                        public void readNext() throws IOException {
-                            String line = reader.readLine();
-                            nameId =
-                                    StringUtils.isBlank(line) ? null : GBIFUtil.parseNameId(line);
-                        }
-
-                        @Override
-                        public Fun.Tuple2<String, List<Long>> next() {
-                            List<Long> idsForName = new ArrayList<>();
-
-                            String currentName = null;
-                            if (nameId != null) {
-                                currentName = nameId.getLeft();
-                                do {
-                                    idsForName.add(nameId.getRight());
-                                    try {
-                                        readNext();
-                                    } catch (IOException e) {
-                                        throw new RuntimeException("failed to access [" + nameUrl + "]", e);
-                                    }
-                                }
-                                while (nameId != null && StringUtils.equals(currentName, nameId.getLeft()));
-                            }
-
-                            return StringUtils.isNotBlank(currentName)
-                                    && idsForName.size() == 0
-                                    ? null
-                                    : new Fun.Tuple2<>(currentName, idsForName);
-                        }
-
-
-                    })
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-            watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), idNameRanks.size(), LOG);
-
+            LOG.info("GBIF taxonomy indexed.");
 
         }
+    }
+
+    private void indexNames(StopWatch watch, DB db) throws PropertyEnricherException {
+        watch.start();
+
+
+        URI gbifNameResource = CacheUtil.getValueURI(ctx, "nomer.gbif.names");
+
+        nameIds = db
+                .createTreeMap(NAME_ID)
+                .pumpSource(new Iterator<Fun.Tuple2<String, List<Long>>>() {
+                    BufferedReader reader = null;
+                    Pair<String, Long> nameId = null;
+
+                    @Override
+                    public boolean hasNext() {
+                        try {
+                            if (reader == null) {
+                                reader = new BufferedReader(
+                                        new InputStreamReader(
+                                                ctx.retrieve(gbifNameResource),
+                                                StandardCharsets.UTF_8)
+                                );
+                            }
+
+                            if (nameId == null) {
+                                readNext();
+                            }
+                            return nameId != null;
+                        } catch (IOException e) {
+                            throw new RuntimeException("failed to access [" + gbifNameResource + "]", e);
+                        }
+                    }
+
+                    public void readNext() throws IOException {
+                        String line = reader.readLine();
+                        nameId =
+                                StringUtils.isBlank(line) ? null : GBIFUtil.parseNameId(line);
+                    }
+
+                    @Override
+                    public Fun.Tuple2<String, List<Long>> next() {
+                        List<Long> idsForName = new ArrayList<>();
+
+                        String currentName = null;
+                        if (nameId != null) {
+                            currentName = nameId.getLeft();
+                            do {
+                                idsForName.add(nameId.getRight());
+                                try {
+                                    readNext();
+                                } catch (IOException e) {
+                                    throw new RuntimeException("failed to access [" + gbifNameResource + "]", e);
+                                }
+                            }
+                            while (nameId != null && StringUtils.equals(currentName, nameId.getLeft()));
+                        }
+
+                        return StringUtils.isNotBlank(currentName)
+                                && idsForName.size() == 0
+                                ? null
+                                : new Fun.Tuple2<>(currentName, idsForName);
+                    }
+
+
+                })
+                .keySerializer(BTreeKeySerializer.STRING)
+                .make();
+
+        watch.stop();
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), idNameRanks.size(), LOG);
+    }
+
+    private void indexIdRelations(StopWatch watch, DB db, URI gbifIdResource) {
+        watch.start();
+
+
+        idRelations = db
+                .createTreeMap(ID_RELATION)
+                .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>>>() {
+                    BufferedReader reader = null;
+                    Pair<Long, Pair<GBIFNameRelationType, Long>> idRelation = null;
+
+                    @Override
+                    public boolean hasNext() {
+                        try {
+                            if (reader == null) {
+                                reader = new BufferedReader(new InputStreamReader(ctx.retrieve(gbifIdResource), StandardCharsets.UTF_8));
+                            }
+                            if (idRelation == null) {
+                                String line = reader.readLine();
+                                idRelation = GBIFUtil.parseIdRelation(line);
+                            }
+                            return idRelation != null;
+                        } catch (IOException e) {
+                            throw new RuntimeException("failed to access [" + gbifIdResource + "]", e);
+                        }
+                    }
+
+                    @Override
+                    public Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>> next() {
+                        Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>> next
+                                = idRelation == null ? null : new Fun.Tuple2<>(idRelation.getLeft(), idRelation.getRight());
+                        idRelation = null;
+                        return next;
+
+                    }
+
+
+                })
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .make();
+
+        watch.stop();
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), idRelations.size(), LOG);
+    }
+
+    private void indexIds(StopWatch watch, DB db, URI gbifIdResource) {
+        idNameRanks = db
+                .createTreeMap(ID_NAME_RANK)
+                .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<String, GBIFRank>>>() {
+                    BufferedReader reader = null;
+                    Triple<Long, String, GBIFRank> idNameRank = null;
+
+                    @Override
+                    public boolean hasNext() {
+                        try {
+                            if (reader == null) {
+                                reader = new BufferedReader(new InputStreamReader(ctx.retrieve(gbifIdResource), StandardCharsets.UTF_8));
+                            }
+
+                            if (idNameRank == null) {
+                                String line = reader.readLine();
+                                idNameRank =
+                                        StringUtils.isBlank(line) ? null : GBIFUtil.parseIdNameRank(line);
+                            }
+                            return idNameRank != null;
+                        } catch (IOException e) {
+                            throw new RuntimeException("failed to access [" + gbifIdResource + "]", e);
+                        }
+                    }
+
+                    @Override
+                    public Fun.Tuple2<Long, Pair<String, GBIFRank>> next() {
+                        Fun.Tuple2<Long, Pair<String, GBIFRank>> current = idNameRank == null
+                                ? null
+                                : new Fun.Tuple2<>(idNameRank.getLeft(), Pair.of(idNameRank.getMiddle(), idNameRank.getRight()));
+                        idNameRank = null;
+                        return current;
+                    }
+
+
+                })
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .make();
+
+        watch.stop();
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), idNameRanks.size(), LOG);
     }
 
     private boolean needsInit() {
