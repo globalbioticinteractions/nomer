@@ -54,7 +54,14 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
             cmdGet.setRemotes(remotesList);
         }
 
-        String cacheDir = new File(ctx.getCacheDir(), "data").getAbsolutePath();
+        String prestonDataDir = ctx.getProperty("nomer.preston.dir");
+        File prestonDataDirFile;
+        if (StringUtils.isBlank(prestonDataDir)) {
+            prestonDataDirFile = new File(ctx.getCacheDir(), "data");
+        } else {
+            prestonDataDirFile = new File(prestonDataDir);
+        }
+        String cacheDir = prestonDataDirFile.getAbsolutePath();
         LOG.info("using local Preston data dir: [" + cacheDir + "]");
         cmdGet.setLocalDataDir(cacheDir);
         return cmdGet;
