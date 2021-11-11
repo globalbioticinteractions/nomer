@@ -56,5 +56,16 @@ public class AppenderUtilTest {
         assertThat(pathIds, is("foo:1 | foo:2"));
     }
 
+    @Test
+    public void getAuthorshipFromTaxon() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setAuthorship("Duck 1931");
+        String pathIds = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "authorship");
+
+        assertThat(pathIds, is("Duck 1931"));
+    }
+
 
 }
