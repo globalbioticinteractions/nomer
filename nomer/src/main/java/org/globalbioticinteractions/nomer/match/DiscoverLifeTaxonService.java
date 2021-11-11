@@ -108,9 +108,8 @@ public class DiscoverLifeTaxonService implements TermMatcher {
 
     private void lazyInit() throws IOException {
         if (nameMap == null) {
-            File discoverLifeCacheDir = getCacheDir();
             DB db = DBMaker
-                    .newFileDB(discoverLifeCacheDir)
+                    .newFileDB(new File(getCacheDir(), "names"))
                     .mmapFileEnableIfSupported()
                     .compressionEnable()
                     .closeOnJvmShutdown()
@@ -127,8 +126,8 @@ public class DiscoverLifeTaxonService implements TermMatcher {
     }
 
     private File getCacheDir() throws IOException {
-        File discoverLifeCacheDir = new File(ctx.getCacheDir(), "discover-life");
-        FileUtils.forceMkdirParent(discoverLifeCacheDir);
+        File discoverLifeCacheDir = new File(ctx.getCacheDir(), "discoverlife");
+        FileUtils.forceMkdir(discoverLifeCacheDir);
         return discoverLifeCacheDir;
     }
 
@@ -142,7 +141,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         DB tmpDb = null;
         try {
             tmpDb = DBMaker
-                    .newFileDB(getCacheDir())
+                    .newFileDB(new File(getCacheDir(), "tmp"))
                     .mmapFileEnableIfSupported()
                     .compressionEnable()
                     .deleteFilesAfterClose()
