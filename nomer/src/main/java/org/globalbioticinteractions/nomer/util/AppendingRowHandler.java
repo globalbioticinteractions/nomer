@@ -33,19 +33,26 @@ public class AppendingRowHandler implements RowHandler {
         Taxon taxonProvided = MatchUtil.asTaxon(row, ctx.getInputSchema());
         termMatcher.match(Collections.singletonList(taxonProvided), (id, termToBeResolved, nameType, taxonResolved) -> {
             Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxonResolved));
-            Taxon taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
 
-            String[] replacedRow = row;
+            Taxon taxonToBeResolved;
+            if (termToBeResolved instanceof Taxon) {
+                taxonToBeResolved = TaxonUtil.copy((Taxon) termToBeResolved);
+            } else {
+                taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
+            }
+
+            String[] rowToBeAppended = row;
             if (isWildcardMatch(row)) {
-                replacedRow = new String[]{
+                rowToBeAppended = new String[]{
                         StringUtils.defaultString(termToBeResolved.getId(), ""),
                         StringUtils.defaultString(termToBeResolved.getName(), "")
                 };
             }
             appender.appendLinesForRow(
-                    replacedRow,
+                    rowToBeAppended,
                     taxonToBeResolved,
-                    taxon1 -> nameType, Stream.of(taxonWithServiceInfo),
+                    taxon1 -> nameType,
+                    Stream.of(taxonWithServiceInfo),
                     out
             );
         });

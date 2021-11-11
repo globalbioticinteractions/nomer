@@ -1,10 +1,16 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.GlobalNamesService2;
 import org.eol.globi.taxon.GlobalNamesSources2;
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.globalbioticinteractions.nomer.match.TermMatcherFactoryEnsembleEnricher;
@@ -16,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -56,7 +63,10 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCacheMatchFirstLine() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
+        final TermMatcher matcher = new TaxonCacheService(
+                "classpath:/org/eol/globi/taxon/taxonCache.tsv.gz",
+                "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz"
+        );
         applyMatcher(is, os, matcher);
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
@@ -105,6 +115,57 @@ public class AppendingRowHandlerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         applyMatcher(is, os, new GlobalNamesService2(GlobalNamesSources2.NCBI));
         assertThat(os.toString(), startsWith("NCBI:9606\tDonald duck\tone\tNONE\t\tDonald duck"));
+    }
+
+
+    @Test
+    public void termMatcherWithCustomSchemaIncludingAuthorshipAndRank() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream(
+                "id:123" +
+                        "\tAcamptopoeum argentinum" +
+                        "\tDoe, 2021" +
+                        "\tspecies", StandardCharsets.UTF_8);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        MatchUtil.apply(is,
+                new AppendingRowHandler(
+                        os,
+                        new TermMatcher() {
+                            @Override
+                            public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                                for (Term term : terms) {
+                                    termMatchListener.foundTaxonForTerm(null, term, NameType.NONE, ((Taxon) term));
+                                }
+                            }
+                        },
+                        new TestTermMatcherContextDefault() {
+
+                            @Override
+                            public Map<Integer, String> getInputSchema() {
+                                return new TreeMap<Integer, String>() {{
+                                    put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                                    put(1, PropertyAndValueDictionary.NAME);
+                                    put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                                    put(3, PropertyAndValueDictionary.RANK);
+                                }};
+                            }
+
+                        },
+                        new AppenderTSV(new TreeMap<Integer, String>() {{
+                            put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                            put(1, PropertyAndValueDictionary.NAME);
+                            put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                            put(3, PropertyAndValueDictionary.RANK);
+                        }})
+                )
+        );
+        assertThat(os.toString(), Is.is(
+                "id:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies" +
+                        "\tNONE" +
+                        "\tid:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies\n")
+        );
+
+
     }
 
 }
