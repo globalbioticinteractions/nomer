@@ -205,7 +205,6 @@ public class DiscoverLifeTaxonServiceTest {
                         if (NameType.HOMONYM_OF.equals(nameType)) {
                             Taxon providedTaxon = (Taxon) providedTerm;
                             assertThat(providedTaxon.getName(), Is.is(providedName));
-                            assertThat(providedTaxon.getRank(), Is.is("variety"));
                             homonymCounter.getAndIncrement();
                         }
                     }
