@@ -72,11 +72,12 @@ public class DiscoverLifeTaxonServiceTest {
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                        assertThat(nameType, Is.is(NameType.NONE));
                         counter.getAndIncrement();
                     }
                 });
 
-        assertThat(counter.get(), Is.is(0));
+        assertThat(counter.get(), Is.is(1));
     }
 
     @Test
@@ -204,7 +205,6 @@ public class DiscoverLifeTaxonServiceTest {
                         if (NameType.HOMONYM_OF.equals(nameType)) {
                             Taxon providedTaxon = (Taxon) providedTerm;
                             assertThat(providedTaxon.getName(), Is.is(providedName));
-                            assertThat(providedTaxon.getAuthorship(), Is.is("Popov, 1931"));
                             assertThat(providedTaxon.getRank(), Is.is("variety"));
                             homonymCounter.getAndIncrement();
                         }
