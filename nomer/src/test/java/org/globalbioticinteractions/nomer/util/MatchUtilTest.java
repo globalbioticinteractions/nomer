@@ -6,6 +6,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.globalbioticinteractions.nomer.match.ResourceServiceFactoryImpl;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -75,6 +77,8 @@ public class MatchUtilTest {
 
         assertThat(os.toString(StandardCharsets.UTF_8.name()), is("\tHomo sapiens\tNONE\t\tHomo sapiens\t\t\t\t\t\t\t\n"));
     }
+
+
 
     private TestTermMatcherContextDefault getGBIFContext() {
         return new TermMatcherContextGBIF(getTmpDataDir());

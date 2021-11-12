@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -83,10 +82,6 @@ public class MatchUtil {
         }
     }
 
-    public static boolean shouldMatchAll(Term term) {
-        return TermMatchUtil.shouldMatchAll(term);
-    }
-
     public static RowHandler getRowHandler(TermMatcherContext ctx, OutputStream out) {
         TermMatcher matcher = getTermMatcher(ctx.getMatchers(), ctx);
 
@@ -104,4 +99,5 @@ public class MatchUtil {
 
         return new AppendingRowHandler(out, matcher, ctx, appender);
     }
+
 }

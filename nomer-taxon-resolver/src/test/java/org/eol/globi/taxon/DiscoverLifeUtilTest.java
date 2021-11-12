@@ -1,6 +1,7 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -166,8 +167,9 @@ public class DiscoverLifeUtilTest {
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
         assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
-        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
         assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getRank(), Is.is("species"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
 
         Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
         assertThat(secondNameRelation.getLeft().getName(), Is.is("Andrena pulchella"));
@@ -380,6 +382,106 @@ public class DiscoverLifeUtilTest {
         assertThat(secondNameRelation.getRight().getName(), Is.is("Ceratina moricei"));
 
     }
+    @Test
+    public void parseNameRelationsWithHomonym() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/52
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Pseudopanurgus+aestivalis\" target=\"_self\">\n" +
+                "                  Pseudopanurgus aestivalis\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                (Provancher, 1882)\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Panurgus aestivalis \n" +
+                "              </i>\n" +
+                "              Provancher, 1882; \n" +
+                "              <i>\n" +
+                "                Panurginus nebrascensis \n" +
+                "              </i>\n" +
+                "              Crawford, 1903; \n" +
+                "              <i>\n" +
+                "                Pseudopanurgus nebrascensis timberlakei_homonym \n" +
+                "              </i>\n" +
+                "              Michener, 1947; \n" +
+                "              <i>\n" +
+                "                Pseudopanurgus (Heterosarus) nebrascensis muesebecki \n" +
+                "              </i>\n" +
+                "              Michener, 1951, replacement name; \n" +
+                "              <i>\n" +
+                "                Pterosarus nebrascensis \n" +
+                "              </i>\n" +
+                "              (Crawford, 1903); \n" +
+                "              <i>\n" +
+                "                Pterosarus nebrascensis muesbecki \n" +
+                "              </i>\n" +
+                "              (Michener, 1951); \n" +
+                "              <i>\n" +
+                "                Pterosarus aestivalis \n" +
+                "              </i>\n" +
+                "              (Provancher, 1882); \n" +
+                "              <i>\n" +
+                "                Heterosarus (Pterosarus) nebrascensis \n" +
+                "              </i>\n" +
+                "              (Crawford, 1903); \n" +
+                "              <i>\n" +
+                "                Heterosarus (Pterosarus) nebrascensis muesbecki \n" +
+                "              </i>\n" +
+                "              (Michener, 1951); \n" +
+                "              <i>\n" +
+                "                Protandrena (Pterosarus) nebrascensis \n" +
+                "              </i>\n" +
+                "              (Crawford, 1903); \n" +
+                "              <i>\n" +
+                "                Pseudopanurgus nebrascensis nebrascensis \n" +
+                "              </i>\n" +
+                "              (Crawford, 1903); \n" +
+                "              <i>\n" +
+                "                Protandrena (Pterosarus) nebrascensis muesbecki \n" +
+                "              </i>\n" +
+                "              (Michener, 1951); \n" +
+                "              <i>\n" +
+                "                Pseudopanurgus aestivalis muesbecki \n" +
+                "              </i>\n" +
+                "              (Michener, 1951), valid subspecies\n" +
+                "            </td>\n" +
+                "          </tr>\n";
+
+        NodeList nodes = (NodeList) XmlUtil.applyXPath(
+                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
+                "//tr/td/b/a | //tr/td/i/a",
+                XPathConstants.NODESET
+        );
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                if (StringUtils.equals("Pseudopanurgus nebrascensis timberlakei", providedTerm.getName())) {
+                    relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+                }
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(1));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
+        Taxon providedTaxon = (Taxon) firstNameRelation.getLeft();
+        assertThat(providedTaxon.getName(), Is.is("Pseudopanurgus nebrascensis timberlakei"));
+        assertThat(providedTaxon.getAuthorship(), Is.is("Michener, 1947"));
+        assertThat(providedTaxon.getRank(), Is.is("subspecies"));
+
+    }
 
     @Test
     public void parseNameRelationsWithSicSuffix() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
@@ -487,9 +589,11 @@ public class DiscoverLifeUtilTest {
         assertThat(relatedTaxa.size(), Is.is(2));
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
-        assertThat(firstNameRelation.getLeft().getName(), Is.is("Coelioxys pasteeli"));
+        Taxon firstTaxonLeft = (Taxon) firstNameRelation.getLeft();
+        assertThat(firstTaxonLeft.getName(), Is.is("Coelioxys pasteeli"));
+        assertThat(firstTaxonLeft.getRank(), Is.is("species"));
+        assertThat(firstTaxonLeft.getAuthorship(), Is.is("Gupta, 1992"));
         assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
-        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Gupta, 1992"));
 
         Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
         assertThat(secondNameRelation.getLeft().getName(), Is.is("Coelioxys (Coelioxys) pasteeli"));
@@ -544,6 +648,11 @@ public class DiscoverLifeUtilTest {
     @Test
     public void guessRank() throws IOException {
         assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla"), Is.is("species"));
+    }
+
+    @Test
+    public void guessRankFamily() throws IOException {
+        assertThat(DiscoverLifeUtil.guessRankFromName("Bla (Bla) bla"), Is.is("species"));
     }
 
    @Test

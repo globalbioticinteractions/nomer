@@ -53,7 +53,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
     @Override
     public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
         for (Term term : terms) {
-            if (TermMatchUtil.shouldMatchAll(term)) {
+            if (TermMatchUtil.shouldMatchAll(term, getCtx().getInputSchema())) {
                 matchAll(termMatchListener);
             } else {
                 Taxon taxon = new TaxonImpl(term.getName(), term.getId());

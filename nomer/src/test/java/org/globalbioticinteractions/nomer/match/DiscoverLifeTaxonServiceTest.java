@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -96,7 +97,8 @@ public class DiscoverLifeTaxonServiceTest {
                     @Override
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         if (NameType.HOMONYM_OF.equals(nameType)) {
-                            assertThat(providedTerm.getName(), Is.is(providedName));
+                            Taxon providedTaxon = (Taxon) providedTerm;
+                            assertThat(providedTaxon.getName(), Is.is(providedName));
                             assertThat(nameType, Is.is(NameType.HOMONYM_OF));
                             assertThat(resolvedTaxon.getName(), Is.is(providedName));
                             assertThat(resolvedTaxon.getAuthorship(), Is.is("(Kirby, 1802)"));
@@ -161,21 +163,26 @@ public class DiscoverLifeTaxonServiceTest {
         assertThat(homonymCounter.get(), Is.is(1));
     }
 
-    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/57")
     @Test
     public void lookupSubspecies() throws PropertyEnricherException {
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
         String providedName = "Pseudopanurgus nebrascensis timberlakei";
-        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(".*", ".*"));
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
-                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
-                            assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
-                            assertThat(resolvedTaxon.getRank(), Is.is("subspecies"));
+                        if (NameType.HOMONYM_OF.equals(nameType)
+                                && StringUtils.equals(providedTerm.getName(), providedName)) {
+                            Taxon providedTaxon = (Taxon) providedTerm;
+                            assertThat(providedTaxon.getName(), Is.is(providedName));
+                            assertThat(providedTaxon.getRank(), Is.is("subspecies"));
+                            assertThat(providedTaxon.getAuthorship(), Is.is("Michener, 1947"));
+
+                            assertThat(resolvedTaxon.getName(), Is.is("no:match"));
+                            assertThat(resolvedTaxon.getId(), Is.is("no:match"));
+
                             homonymCounter.getAndIncrement();
                         }
                     }
@@ -184,44 +191,21 @@ public class DiscoverLifeTaxonServiceTest {
         assertThat(homonymCounter.get(), Is.is(1));
     }
 
-    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/57")
     @Test
     public void lookupVariety() throws PropertyEnricherException {
         final AtomicInteger homonymCounter = new AtomicInteger(0);
 
-        String providedName = "Pseudopanurgus nebrascensis timberlakei";
+        String providedName = "Psithyrus (Allopsithyrus) barbutellus var bimaculatus";
         List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
         discoverLifeTaxonService
                 .match(termsToBeMatched, new TermMatchListener() {
                     @Override
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
-                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
-                            assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
-                            assertThat(resolvedTaxon.getRank(), Is.is("subspecies"));
-                            homonymCounter.getAndIncrement();
-                        }
-                    }
-                });
-
-        assertThat(homonymCounter.get(), Is.is(1));
-    }
-
-    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/57")
-    @Test
-    public void lookupSubvariety() throws PropertyEnricherException {
-        final AtomicInteger homonymCounter = new AtomicInteger(0);
-
-        String providedName = "Pseudopanurgus nebrascensis timberlakei";
-        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
-        discoverLifeTaxonService
-                .match(termsToBeMatched, new TermMatchListener() {
-                    @Override
-                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
-                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
-                            assertThat(providedTerm.getName(), Is.is(providedName));
-                            assertThat(resolvedTaxon.getName(), Is.is(providedName));
-                            assertThat(resolvedTaxon.getRank(), Is.is("subspecies"));
+                        if (NameType.HOMONYM_OF.equals(nameType)) {
+                            Taxon providedTaxon = (Taxon) providedTerm;
+                            assertThat(providedTaxon.getName(), Is.is(providedName));
+                            assertThat(providedTaxon.getAuthorship(), Is.is("Popov, 1931"));
+                            assertThat(providedTaxon.getRank(), Is.is("variety"));
                             homonymCounter.getAndIncrement();
                         }
                     }
@@ -321,7 +305,7 @@ public class DiscoverLifeTaxonServiceTest {
                     }
                 });
 
-        assertThat(counter.get(), Is.is(50075));
+        assertThat(counter.get(), Is.is(50099));
     }
 
     private TermMatcherContext getTmpContext() {

@@ -1,10 +1,10 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.GlobalNamesService2;
@@ -27,8 +27,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.core.StringStartsWith.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 
 public class AppendingRowHandlerTest {
 
@@ -162,6 +162,65 @@ public class AppendingRowHandlerTest {
         assertThat(os.toString(), Is.is(
                 "id:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies" +
                         "\tNONE" +
+                        "\tid:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies\n")
+        );
+
+
+    }
+
+    @Test
+    public void termMatcherWithCustomSchemaIncludingAuthorshipAndRankAndWildcard() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream(
+                ".*" +
+                        "\t.*" +
+                        "\t.*" +
+                        "\t.*", StandardCharsets.UTF_8);
+
+        Taxon singleMatch = new TaxonImpl("Acamptopoeum argentinum", "id:123");
+        singleMatch.setRank("species");
+        singleMatch.setAuthorship("Doe, 2021");
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        MatchUtil.apply(is,
+                new AppendingRowHandler(
+                        os,
+                        new TermMatcher() {
+                            @Override
+                            public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                                for (Term term : terms) {
+                                    termMatchListener.foundTaxonForTerm(
+                                            null,
+                                            singleMatch,
+                                            NameType.HAS_ACCEPTED_NAME,
+                                            singleMatch
+                                    );
+                                }
+                            }
+                        },
+                        new TestTermMatcherContextDefault() {
+
+                            @Override
+                            public Map<Integer, String> getInputSchema() {
+                                return new TreeMap<Integer, String>() {{
+                                    put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                                    put(1, PropertyAndValueDictionary.NAME);
+                                    put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                                    put(3, PropertyAndValueDictionary.RANK);
+                                }};
+                            }
+
+                        },
+                        new AppenderTSV(new TreeMap<Integer, String>() {{
+                            put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                            put(1, PropertyAndValueDictionary.NAME);
+                            put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                            put(3, PropertyAndValueDictionary.RANK);
+                        }})
+                )
+        );
+        assertThat(os.toString(), Is.is(
+                "id:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies" +
+                        "\tHAS_ACCEPTED_NAME" +
                         "\tid:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies\n")
         );
 

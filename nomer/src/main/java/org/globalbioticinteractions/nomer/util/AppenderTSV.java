@@ -27,7 +27,12 @@ public class AppenderTSV implements Appender {
 
 
     @Override
-    public void appendLinesForRow(String[] row, Taxon taxonProvided, NameTypeOf nameTypeOf, Stream<Taxon> resolvedTaxa, PrintStream out) {
+    public void appendLinesForRow(String[] row,
+                                  Taxon providedTaxon,
+                                  NameTypeOf nameTypeOf,
+                                  Stream<Taxon> resolvedTaxa,
+                                  PrintStream out) {
+
         Stream<String> provided = Stream.of(row);
 
         Stream<Stream<String>> appended = hasDefaultSchema()

@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -40,7 +41,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
     public static final Map<String, String> NO_MATCH_TAXON_MAP = TaxonUtil.taxonToMap(new TaxonImpl(PropertyAndValueDictionary.NO_MATCH, PropertyAndValueDictionary.NO_MATCH));
     private final TermMatcherContext ctx;
 
-    private BTreeMap<String, List<Pair<NameType, Map<String, String>>>> nameMap = null;
+    private BTreeMap<String, List<Triple<Map<String, String>, NameType, Map<String, String>>>> nameMap = null;
 
     public DiscoverLifeTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -52,15 +53,17 @@ public class DiscoverLifeTaxonService implements TermMatcher {
             lazyInit();
 
             for (Term term : terms) {
-                if (MatchUtil.shouldMatchAll(term)) {
+                if (TermMatchUtil.shouldMatchAll(term, ctx.getInputSchema())) {
                     matchAll(termMatchListener);
                 } else if (StringUtils.isNoneBlank(term.getName())) {
-                    List<Pair<NameType, Map<String, String>>> pairs = nameMap.get(term.getName());
+                    List<Triple<Map<String, String>, NameType, Map<String, String>>> pairs = nameMap.get(term.getName());
                     if (pairs == null || pairs.isEmpty()) {
                         noMatch(termMatchListener, term);
                     } else {
                         foundMatches(termMatchListener, term, pairs);
                     }
+                } else {
+                    noMatch(termMatchListener, term);
                 }
             }
         } catch (IOException e) {
@@ -71,11 +74,20 @@ public class DiscoverLifeTaxonService implements TermMatcher {
 
     private void matchAll(TermMatchListener termMatchListener) {
         nameMap.forEach((provided, resolvedPairs) -> {
-            for (Pair<NameType, Map<String, String>> resolvedPair : resolvedPairs) {
+            for (Triple<Map<String, String>, NameType, Map<String, String>> resolvedPair : resolvedPairs) {
+                if (NameType.HOMONYM_OF.equals(resolvedPair.getMiddle())) {
+                    Map<String, String> right = resolvedPair.getRight();
+                    Taxon taxon = TaxonUtil.mapToTaxon(right);
+                    if (StringUtils.equals(taxon.getName(), "no:match")) {
+                        System.out.println(resolvedPair.getLeft());
+                    }
+                }
+
+
                 termMatchListener.foundTaxonForTerm(
                         null,
-                        new TaxonImpl(provided, DiscoverLifeUtil.urlForName(provided)),
-                        resolvedPair.getLeft(),
+                        TaxonUtil.mapToTaxon(resolvedPair.getLeft()),
+                        resolvedPair.getMiddle(),
                         TaxonUtil.mapToTaxon(resolvedPair.getRight())
                 );
 
@@ -84,13 +96,15 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         });
     }
 
-    private void foundMatches(TermMatchListener termMatchListener, Term term, List<Pair<NameType, Map<String, String>>> pairs) {
-        for (Pair<NameType, Map<String, String>> pair : pairs) {
+    private void foundMatches(TermMatchListener termMatchListener,
+                              Term term,
+                              List<Triple<Map<String, String>, NameType, Map<String, String>>> pairs) {
+        for (Triple<Map<String, String>, NameType, Map<String, String>> pair : pairs) {
             Taxon resolvedTaxon = TaxonUtil.mapToTaxon(pair.getRight());
             termMatchListener.foundTaxonForTerm(
                     null,
                     term,
-                    pair.getLeft(),
+                    pair.getMiddle(),
                     resolvedTaxon
             );
 
@@ -149,24 +163,28 @@ public class DiscoverLifeTaxonService implements TermMatcher {
                     .transactionDisable()
                     .make();
 
-            NavigableSet<String> homonymsToBeResolved = tmpDb.createTreeSet("honomyns").makeStringSet();
+            Map<String, List<Pair<String, Map<String, String>>>> homonymsToBeResolved = tmpDb.createTreeMap("honomyns").make();
 
             DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), new TermMatchListener() {
                 @Override
                 public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                     if (resolvedTaxon == null && NameType.HOMONYM_OF.equals(nameType)) {
-                        homonymsToBeResolved.add(providedTerm.getName());
+                        List<Pair<String, Map<String, String>>> list = homonymsToBeResolved.getOrDefault(providedTerm.getName(), new ArrayList<>());
+                        list.add(Pair.of(providedTerm.getName(), TaxonUtil.taxonToMap((Taxon) providedTerm)));
+                        homonymsToBeResolved.put(providedTerm.getName(), list);
                     } else if (resolvedTaxon != null) {
-                        List<Pair<NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
-                        List<Pair<NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
-                        pairs.add(Pair.of(nameType, TaxonUtil.taxonToMap(resolvedTaxon)));
+                        List<Triple<Map<String, String>, NameType, Map<String, String>>> matches = nameMap.getOrDefault(providedTerm.getName(), new ArrayList<>());
+                        List<Triple<Map<String, String>, NameType, Map<String, String>>> pairs = new ArrayList<>(matches);
+                        pairs.add(Triple.of(TaxonUtil.taxonToMap((Taxon) providedTerm), nameType, TaxonUtil.taxonToMap(resolvedTaxon)));
                         nameMap.put(providedTerm.getName(), pairs);
                     }
                     nameCounter.incrementAndGet();
                 }
             });
 
-            attemptToResolveHomonyms(homonymsToBeResolved);
+            for (List<Pair<String, Map<String, String>>> value : homonymsToBeResolved.values()) {
+                attemptToResolveHomonyms(value);
+            }
         } finally {
             if (tmpDb != null) {
                 tmpDb.close();
@@ -179,35 +197,37 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         LOG.info("[" + nameCounter.get() + "] DiscoverLife names were indexed in " + time + "s (@ " + (nameCounter.get() / time) + " names/s)");
     }
 
-    private void attemptToResolveHomonyms(Set<String> homonymsToBeResolved) {
-        for (String homonymToBeResolved : homonymsToBeResolved) {
-            List<Pair<NameType, Map<String, String>>> candidatePairs = nameMap.get(homonymToBeResolved);
+    private void attemptToResolveHomonyms(List<Pair<String, Map<String, String>>> homonymsToBeResolved) {
+        for (Pair<String, Map<String, String>> homonymToBeResolved : homonymsToBeResolved) {
+            Taxon homonymToBeResolvedTaxon = TaxonUtil.mapToTaxon(homonymToBeResolved.getRight());
+            List<Triple<Map<String, String>, NameType, Map<String, String>>> candidatePairs
+                    = nameMap.get(homonymToBeResolvedTaxon.getName());
 
             if (candidatePairs != null) {
-                List<Pair<NameType, Map<String, String>>> candidates = new ArrayList<>();
-                for (Pair<NameType, Map<String, String>> nameTypeMapPair : candidatePairs) {
-                    if (NameType.HAS_ACCEPTED_NAME.equals(nameTypeMapPair.getLeft())) {
-                        candidates.add(Pair.of(NameType.HOMONYM_OF, nameTypeMapPair.getRight()));
+                List<Triple<Map<String, String>, NameType, Map<String, String>>> candidates = new ArrayList<>();
+                for (Triple<Map<String, String>, NameType, Map<String, String>> nameTypeMapPair : candidatePairs) {
+                    if (NameType.HAS_ACCEPTED_NAME.equals(nameTypeMapPair.getMiddle())) {
+                        candidates.add(Triple.of(homonymToBeResolved.getRight(), NameType.HOMONYM_OF, nameTypeMapPair.getRight()));
                     }
                 }
                 candidatePairs.addAll(candidates);
-                nameMap.put(homonymToBeResolved, candidatePairs);
+                nameMap.put(homonymToBeResolvedTaxon.getName(), candidatePairs);
             } else {
-                List<Pair<NameType, Map<String, String>>> candidatePairsTrimmed
-                        = nameMap.get(DiscoverLifeUtil.trimScientificName(homonymToBeResolved));
-                List<Pair<NameType, Map<String, String>>> candidates = new ArrayList<>();
+                List<Triple<Map<String, String>, NameType, Map<String, String>>> candidatePairsTrimmed
+                        = nameMap.get(DiscoverLifeUtil.trimScientificName(homonymToBeResolvedTaxon.getName()));
+                List<Triple<Map<String, String>, NameType, Map<String, String>>> candidates = new ArrayList<>();
 
                 if (candidatePairsTrimmed == null) {
-                    candidates.add(Pair.of(NameType.HOMONYM_OF, NO_MATCH_TAXON_MAP));
+                    candidates.add(Triple.of(homonymToBeResolved.getRight(), NameType.HOMONYM_OF, NO_MATCH_TAXON_MAP));
                 } else {
-                    for (Pair<NameType, Map<String, String>> nameTypeMapPair : candidatePairsTrimmed) {
-                        if (NameType.HAS_ACCEPTED_NAME.equals(nameTypeMapPair.getLeft())) {
-                            candidates.add(Pair.of(NameType.HOMONYM_OF, nameTypeMapPair.getRight()));
+                    for (Triple<Map<String, String>, NameType, Map<String, String>> nameTypeMapPair : candidatePairsTrimmed) {
+                        if (NameType.HAS_ACCEPTED_NAME.equals(nameTypeMapPair.getMiddle())) {
+                            candidates.add(Triple.of(homonymToBeResolved.getRight(), NameType.HOMONYM_OF, nameTypeMapPair.getRight()));
                         }
                     }
 
                 }
-                nameMap.put(homonymToBeResolved, candidates);
+                nameMap.put(homonymToBeResolvedTaxon.getName(), candidates);
             }
         }
     }

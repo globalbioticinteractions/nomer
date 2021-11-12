@@ -13,6 +13,7 @@ import org.globalbioticinteractions.nomer.match.TermMatchUtil;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class AppendingRowHandler implements RowHandler {
@@ -29,39 +30,50 @@ public class AppendingRowHandler implements RowHandler {
     }
 
     @Override
-    public void onRow(final String[] row) throws PropertyEnricherException {
-        Taxon taxonProvided = MatchUtil.asTaxon(row, ctx.getInputSchema());
-        termMatcher.match(Collections.singletonList(taxonProvided), (id, termToBeResolved, nameType, taxonResolved) -> {
-            Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxonResolved));
+    public void onRow(final String[] rowOrig) throws PropertyEnricherException {
+        Taxon providedTaxon = MatchUtil.asTaxon(rowOrig, ctx.getInputSchema());
+        termMatcher.match(
+                Collections.singletonList(providedTaxon),
+                (id, termToBeResolved, nameType, taxonResolved) -> {
+                    Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxonResolved));
 
-            Taxon taxonToBeResolved;
-            if (termToBeResolved instanceof Taxon) {
-                taxonToBeResolved = TaxonUtil.copy((Taxon) termToBeResolved);
-            } else {
-                taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
-            }
+                    Taxon taxonToBeResolved;
+                    if (termToBeResolved instanceof Taxon) {
+                        taxonToBeResolved = TaxonUtil.copy((Taxon) termToBeResolved);
+                    } else {
+                        taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
+                    }
 
-            String[] rowToBeAppended = row;
-            if (isWildcardMatch(row)) {
-                rowToBeAppended = new String[]{
-                        StringUtils.defaultString(termToBeResolved.getId(), ""),
-                        StringUtils.defaultString(termToBeResolved.getName(), "")
-                };
+                    String[] rowToBeAppended = isWildcardMatch(rowOrig)
+                            ? fillProvidedTaxon(rowOrig, taxonToBeResolved)
+                            : rowOrig;
+
+                    appender.appendLinesForRow(
+                            rowToBeAppended,
+                            taxonToBeResolved,
+                            taxon1 -> nameType,
+                            Stream.of(taxonWithServiceInfo),
+                            out
+                    );
+
+                });
+    }
+
+    private String[] fillProvidedTaxon(String[] rowOrig, Taxon taxonToBeResolved) {
+        String[] rowNew = new String[rowOrig.length];
+        Map<Integer, String> inputSchema = ctx.getInputSchema();
+        Map<String, String> providedTaxonMap = TaxonUtil.taxonToMap(taxonToBeResolved);
+        for (Integer index : inputSchema.keySet()) {
+            if (index < rowOrig.length) {
+                rowNew[index] = providedTaxonMap.get(StringUtils.defaultString(inputSchema.get(index)));
             }
-            appender.appendLinesForRow(
-                    rowToBeAppended,
-                    taxonToBeResolved,
-                    taxon1 -> nameType,
-                    Stream.of(taxonWithServiceInfo),
-                    out
-            );
-        });
+        }
+        return rowNew;
     }
 
     private boolean isWildcardMatch(String[] row) {
-        return row.length == 2
-                && StringUtils.equals(row[0], TermMatchUtil.WILDCARD_MATCH)
-                && StringUtils.equals(row[1], TermMatchUtil.WILDCARD_MATCH);
+        Map<Integer, String> inputSchema = ctx.getInputSchema();
+        return TermMatchUtil.isWildcardMatch(row, inputSchema);
     }
 
 }

@@ -91,8 +91,7 @@ public class DiscoverLifeUtil {
                     .getNamedItem("href")
                     .getTextContent());
 
-            String trimmedName = DiscoverLifeUtil.trimScientificName(taxonName);
-            String rankName = guessRankFromName(trimmedName);
+            String rankName = guessRankFromName(taxonName);
             if (StringUtils.isNoneBlank(rankName)) {
                 taxonMap.put("rank", rankName);
             }
@@ -110,47 +109,50 @@ public class DiscoverLifeUtil {
             listener.foundTaxonForTerm(null, focalTaxon, NameType.HAS_ACCEPTED_NAME, focalTaxon);
         }
 
-
         if (focalTaxon != null) {
+            handleRelatedNames(listener, focalTaxon, currentNode);
+        }
+    }
 
-            while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
+    private static void handleRelatedNames(TermMatchListener listener, Taxon focalTaxon, Node currentNode) {
+        while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
 
-                if ("i".equals(currentNode.getNodeName())) {
+            if ("i".equals(currentNode.getNodeName())) {
 
-                    Map<String, String> relatedName = new TreeMap<>();
+                Map<String, String> relatedName = new TreeMap<>();
 
-                    String authorshipString = enrichFromNameString(currentNode, relatedName);
+                String authorshipString = enrichFromNameString(currentNode, relatedName);
 
-                    currentNode = currentNode.getNextSibling();
+                currentNode = currentNode.getNextSibling();
 
-                    enrichFromAuthorString(StringUtils.trim(authorshipString), relatedName);
+                enrichFromAuthorString(StringUtils.trim(authorshipString), relatedName);
 
-                    String status = relatedName.get("status");
-                    if (StringUtils.equals(status, "homonym")) {
-                        Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
-                        relatedTaxon.setExternalId(urlForName(relatedTaxon));
-                        listener.foundTaxonForTerm(
-                                null,
-                                relatedTaxon,
-                                NameType.HOMONYM_OF,
-                                null
-                        );
-                    } else {
-                        Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
-                        relatedTaxon.setExternalId(urlForName(relatedTaxon));
-                        listener.foundTaxonForTerm(
-                                null,
-                                relatedTaxon,
-                                NameType.SYNONYM_OF,
-                                focalTaxon
-                        );
-                    }
+                Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
+                relatedTaxon.setExternalId(urlForName(relatedTaxon));
+                relatedTaxon.setRank(guessRankFromName(relatedTaxon.getName()));
+
+                String status = relatedName.get("status");
+                if (StringUtils.equals(status, "homonym")) {
+                    listener.foundTaxonForTerm(
+                            null,
+                            relatedTaxon,
+                            NameType.HOMONYM_OF,
+                            null
+                    );
+                } else {
+                    listener.foundTaxonForTerm(
+                            null,
+                            relatedTaxon,
+                            NameType.SYNONYM_OF,
+                            focalTaxon
+                    );
                 }
             }
         }
     }
 
-    public static String guessRankFromName(String trimmedName) {
+    public static String guessRankFromName(String name) {
+        String trimmedName = trimScientificName(name);
         String rankName = "";
         String[] s = StringUtils.split(trimmedName, " ");
         if (s != null) {
