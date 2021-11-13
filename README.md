@@ -41,7 +41,7 @@ Note that a python wrapper was made available by [nleguillarme](https://github.c
 
 ## Prerequisites
 
-Nomer needs Java 8+. 
+Nomer needs Java 8+, and is developed and tested on OpenJDK 8. [Why OpenJDK 8?](https://adoptopenjdk.net/support.html). Because OpenJDK 8 is Long Term Supported (LTS), and (at time of writing Nov 2021) supported until at least May 2026, longer than any of the newer OpenJDK versions.
 
 Please see [https://github.com/nleguillarme/pynomer](https://github.com/nleguillarme/pynomer) for a python wrapper.
 
