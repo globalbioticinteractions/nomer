@@ -75,15 +75,6 @@ public class DiscoverLifeTaxonService implements TermMatcher {
     private void matchAll(TermMatchListener termMatchListener) {
         nameMap.forEach((provided, resolvedPairs) -> {
             for (Triple<Map<String, String>, NameType, Map<String, String>> resolvedPair : resolvedPairs) {
-                if (NameType.HOMONYM_OF.equals(resolvedPair.getMiddle())) {
-                    Map<String, String> right = resolvedPair.getRight();
-                    Taxon taxon = TaxonUtil.mapToTaxon(right);
-                    if (StringUtils.equals(taxon.getName(), "no:match")) {
-                        System.out.println(resolvedPair.getLeft());
-                    }
-                }
-
-
                 termMatchListener.foundTaxonForTerm(
                         null,
                         TaxonUtil.mapToTaxon(resolvedPair.getLeft()),
