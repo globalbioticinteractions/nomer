@@ -44,6 +44,7 @@ public class DiscoverLifeUtil {
             "&guide=Apoidea_species" +
             "&flags=HAS";
     private static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
+    public static final String HOMONYM_SUFFIX = "_homonym";
 
     public static String getBeeNamesAsXmlString() throws IOException {
         final WebClient webClient = new WebClient();
@@ -77,7 +78,10 @@ public class DiscoverLifeUtil {
             taxonMap.put("name", taxonName);
 
             Node expectedTextNode = currentNode.getNextSibling();
-            Node authorshipNode = expectedTextNode == null ? null : expectedTextNode.getNextSibling();
+            Node authorshipNode =
+                    expectedTextNode == null
+                    ? null
+                    : expectedTextNode.getNextSibling();
 
             if (authorshipNode != null) {
                 enrichFromAuthorString(StringUtils.trim(authorshipNode.getTextContent()), taxonMap);
@@ -91,12 +95,8 @@ public class DiscoverLifeUtil {
                     .getNamedItem("href")
                     .getTextContent());
 
-            String rankName = guessRankFromName(taxonName);
-            if (StringUtils.isNoneBlank(rankName)) {
-                taxonMap.put("rank", rankName);
-            }
 
-            Taxon parsedTaxon = TaxonUtil.mapToTaxon(taxonMap);
+            Taxon parsedTaxon = toTaxon(taxonMap);
             parsedTaxon.setExternalId(id);
 
             focalTaxon = familyNameNode == null
@@ -127,9 +127,9 @@ public class DiscoverLifeUtil {
 
                 enrichFromAuthorString(StringUtils.trim(authorshipString), relatedName);
 
-                Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
-                relatedTaxon.setExternalId(urlForName(relatedTaxon));
-                relatedTaxon.setRank(guessRankFromName(relatedTaxon.getName()));
+                Taxon relatedTaxon = toTaxon(relatedName);
+                String id = urlForName(relatedTaxon);
+                relatedTaxon.setExternalId(id);
 
                 String status = relatedName.get("status");
                 if (StringUtils.equals(status, "homonym")) {
@@ -139,7 +139,7 @@ public class DiscoverLifeUtil {
                             NameType.HOMONYM_OF,
                             null
                     );
-                } else {
+                } else if (StringUtils.equals(status, "synonym")) {
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
@@ -149,6 +149,13 @@ public class DiscoverLifeUtil {
                 }
             }
         }
+    }
+
+    private static Taxon toTaxon(Map<String, String> relatedName) {
+        Taxon relatedTaxon = TaxonUtil.mapToTaxon(relatedName);
+        relatedTaxon.setRank(guessRankFromName(relatedTaxon.getName()));
+        relatedTaxon.setName(RegExUtils.replacePattern(relatedTaxon.getName(), "_[a-z]+", ""));
+        return relatedTaxon;
     }
 
     public static String guessRankFromName(String name) {
@@ -203,7 +210,7 @@ public class DiscoverLifeUtil {
         }
     }
 
-    public static String enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
+    private static String enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
         String altName = trimNameNodeTextContent(currentNode);
 
         String authorship = null;
@@ -222,7 +229,8 @@ public class DiscoverLifeUtil {
             }
         }
 
-        String[] nameAndStatus = StringUtils.splitByWholeSeparatorPreserveAllTokens(altName, "_homonym");
+        String[] nameAndStatus = StringUtils
+                .splitByWholeSeparatorPreserveAllTokens(altName, HOMONYM_SUFFIX);
         if (nameAndStatus.length == 2) {
             relatedName.put("status", "homonym");
         } else {

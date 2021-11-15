@@ -144,11 +144,7 @@ public class DiscoverLifeUtilTest {
                 "          </tr>\n" +
                 "</table>";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(2));
 
@@ -220,11 +216,7 @@ public class DiscoverLifeUtilTest {
                 "            </td>\n" +
                 "          </tr>\n";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(1));
 
@@ -291,11 +283,7 @@ public class DiscoverLifeUtilTest {
                 "            </td>\n" +
                 "          </tr>";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(1));
 
@@ -349,11 +337,7 @@ public class DiscoverLifeUtilTest {
                 "            </td>\n" +
                 "          </tr>\n";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(1));
 
@@ -382,6 +366,65 @@ public class DiscoverLifeUtilTest {
         assertThat(secondNameRelation.getRight().getName(), Is.is("Ceratina moricei"));
 
     }
+
+    @Test
+    public void parseNameAcceptedHomonym() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/63
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Anthidiellum+boreale_homonym\" target=\"_self\">\n" +
+                "                  Anthidiellum boreale_homonym\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                Wu, 2004\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Anthidiellum (Anthidiellum) borealis_homonym \n" +
+                "              </i>\n" +
+                "              Wu, 2004\n" +
+                "            </td>\n" +
+                "          </tr>\n";
+
+        NodeList nodes = selectNameRelations(xmlSnippet);
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(2));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(firstNameRelation.getRight().getName(), Is.is("Anthidiellum boreale"));
+        assertThat(firstNameRelation.getRight().getAuthorship(), Is.is("Wu, 2004"));
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Anthidiellum boreale"));
+
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Anthidiellum (Anthidiellum) borealis"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
+        assertNull(secondNameRelation.getRight());
+    }
+
+    private NodeList selectNameRelations(String xmlSnippet) throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+        return (NodeList) XmlUtil.applyXPath(
+                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
+                "//tr/td/b/a | //tr/td/i/a",
+                XPathConstants.NODESET
+        );
+    }
+
     @Test
     public void parseNameRelationsWithHomonym() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
         // see https://github.com/globalbioticinteractions/nomer/issues/52
@@ -452,11 +495,7 @@ public class DiscoverLifeUtilTest {
                 "            </td>\n" +
                 "          </tr>\n";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(1));
 
@@ -513,11 +552,7 @@ public class DiscoverLifeUtilTest {
                 "            </td>\n" +
                 "          </tr>\n";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(1));
 
@@ -568,11 +603,7 @@ public class DiscoverLifeUtilTest {
                 "            </td>\n" +
                 "          </tr>\n";
 
-        NodeList nodes = (NodeList) XmlUtil.applyXPath(
-                IOUtils.toInputStream(xmlSnippet, StandardCharsets.UTF_8),
-                "//tr/td/b/a | //tr/td/i/a",
-                XPathConstants.NODESET
-        );
+        NodeList nodes = selectNameRelations(xmlSnippet);
 
         assertThat(nodes.getLength(), Is.is(1));
 
