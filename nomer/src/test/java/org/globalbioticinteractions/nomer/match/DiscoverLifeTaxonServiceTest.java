@@ -228,14 +228,6 @@ public class DiscoverLifeTaxonServiceTest {
                             assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
                         }
 
-                        if (counter.get() == 45609) {
-                            assertThat(providedTerm.getName(), Is.is("Zonalictus zaleucus"));
-                            assertThat(nameType, Is.is(NameType.SYNONYM_OF));
-                            assertThat(resolvedTaxon.getName(), Is.is("Patellapis zaleuca"));
-                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Patellapis+zaleuca"));
-                        }
-
-
                         counter.getAndIncrement();
                     }
                 });
