@@ -406,10 +406,10 @@ public class DiscoverLifeUtilTest {
         assertThat(relatedTaxa.size(), Is.is(2));
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
-        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
-        assertThat(firstNameRelation.getRight().getName(), Is.is("Anthidiellum boreale"));
-        assertThat(firstNameRelation.getRight().getAuthorship(), Is.is("Wu, 2004"));
+        assertThat(((Taxon)firstNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Anthidiellum boreale"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
+        assertNull(firstNameRelation.getRight());
 
         Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
         assertThat(secondNameRelation.getLeft().getName(), Is.is("Anthidiellum (Anthidiellum) borealis"));

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
@@ -69,19 +70,18 @@ public class DiscoverLifeUtil {
 
     static void parseNames(Node familyNameNode, Node nameNodeCandidate, TermMatchListener listener) throws XPathExpressionException {
 
-        Taxon focalTaxon = null;
-
         Node currentNode = nameNodeCandidate.getParentNode();
+
         if (StringUtils.equals("i", currentNode.getNodeName())) {
             Map<String, String> taxonMap = new TreeMap<>();
             String taxonName = trimNameNodeTextContent(nameNodeCandidate);
-            taxonMap.put("name", taxonName);
+            taxonMap.put(PropertyAndValueDictionary.NAME, taxonName);
 
             Node expectedTextNode = currentNode.getNextSibling();
             Node authorshipNode =
                     expectedTextNode == null
-                    ? null
-                    : expectedTextNode.getNextSibling();
+                            ? null
+                            : expectedTextNode.getNextSibling();
 
             if (authorshipNode != null) {
                 enrichFromAuthorString(StringUtils.trim(authorshipNode.getTextContent()), taxonMap);
@@ -99,19 +99,38 @@ public class DiscoverLifeUtil {
             Taxon parsedTaxon = toTaxon(taxonMap);
             parsedTaxon.setExternalId(id);
 
-            focalTaxon = familyNameNode == null
+            Taxon focalTaxon = familyNameNode == null
                     ? parsedTaxon
                     : getTaxonForNode(familyNameNode, parsedTaxon);
 
             currentNode = authorshipNode;
 
             focalTaxon.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
-            listener.foundTaxonForTerm(null, focalTaxon, NameType.HAS_ACCEPTED_NAME, focalTaxon);
-        }
 
-        if (focalTaxon != null) {
+            if (isHomonym(taxonMap)) {
+                listener.foundTaxonForTerm(
+                        null,
+                        focalTaxon,
+                        NameType.HOMONYM_OF,
+                        null
+                );
+            } else {
+                listener.foundTaxonForTerm(
+                        null,
+                        focalTaxon,
+                        NameType.HAS_ACCEPTED_NAME,
+                        focalTaxon
+                );
+
+            }
             handleRelatedNames(listener, focalTaxon, currentNode);
         }
+
+    }
+
+    private static boolean isHomonym(Map<String, String> taxonMap) {
+        String name = taxonMap.get(PropertyAndValueDictionary.NAME);
+        return StringUtils.contains(name, HOMONYM_SUFFIX);
     }
 
     private static void handleRelatedNames(TermMatchListener listener, Taxon focalTaxon, Node currentNode) {
@@ -131,15 +150,14 @@ public class DiscoverLifeUtil {
                 String id = urlForName(relatedTaxon);
                 relatedTaxon.setExternalId(id);
 
-                String status = relatedName.get("status");
-                if (StringUtils.equals(status, "homonym")) {
+                if (isHomonym(relatedName)) {
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
                             NameType.HOMONYM_OF,
                             null
                     );
-                } else if (StringUtils.equals(status, "synonym")) {
+                } else {
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
@@ -229,15 +247,7 @@ public class DiscoverLifeUtil {
             }
         }
 
-        String[] nameAndStatus = StringUtils
-                .splitByWholeSeparatorPreserveAllTokens(altName, HOMONYM_SUFFIX);
-        if (nameAndStatus.length == 2) {
-            relatedName.put("status", "homonym");
-        } else {
-            relatedName.put("status", "synonym");
-        }
-
-        relatedName.put("name", nameAndStatus[0]);
+        relatedName.put("name", altName);
 
         return authorship;
     }
