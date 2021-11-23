@@ -6,16 +6,26 @@ import org.eol.globi.taxon.RowHandler;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.globalbioticinteractions.nomer.match.TermMatchUtil;
 
+import java.util.List;
+
 @Parameters(separators = "= ", commandDescription = "Dumps all terms into the defined output schema.")
 public class CmdDump extends CmdOutput {
 
     @Override
     public void run() {
-        RowHandler rowHandler = MatchUtil.getRowHandler(this, System.out);
+        List<RowHandler> handlers = MatchUtil.getAppendingRowHandlers(
+                this,
+                getIncludeHeader(),
+                getOutputFormat(),
+                System.out
+        );
+
         try {
-            rowHandler.onRow(
-                    TermMatchUtil.wildcardRowForSchema(getInputSchema())
-            );
+            for (RowHandler handler : handlers) {
+                handler.onRow(
+                        TermMatchUtil.wildcardRowForSchema(getInputSchema())
+                );
+            }
         } catch (PropertyEnricherException e) {
             throw new RuntimeException("failed to dump term list", e);
         }

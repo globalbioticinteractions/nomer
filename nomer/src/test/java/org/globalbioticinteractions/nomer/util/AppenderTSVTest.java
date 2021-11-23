@@ -20,21 +20,21 @@ public class AppenderTSVTest {
         TaxonImpl provided = new TaxonImpl("providedName", "providedId");
         TaxonImpl resolved = new TaxonImpl("resolvedName", "resolvedId");
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new AppenderTSV().appendLinesForRow(row, provided, taxon1 -> NameType.SAME_AS, Stream.of(resolved), new PrintStream(out));
+        new AppenderTSV(MatchTestUtil.appenderSchemaDefault()).appendLinesForRow(row, provided, taxon1 -> NameType.SAME_AS, Stream.of(resolved), new PrintStream(out));
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\t\t\t\t\t\t\t\n"));
     }
 
     @Test
     public void appendWithPath() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        appendTo(new AppenderTSV(), out);
+        appendTo(new AppenderTSV(MatchTestUtil.appenderSchemaDefault()), out);
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\tresolvedRank\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
     }
 
     @Test
     public void appendWithSeparateRanks() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        appendTo(new AppenderTSV(), out);
+        appendTo(new AppenderTSV(MatchTestUtil.appenderSchemaDefault()), out);
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tresolvedId\tresolvedName\tresolvedRank\t\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\t\t\n"));
     }
 

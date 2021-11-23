@@ -4,6 +4,7 @@ import com.beust.jcommander.Parameter;
 import org.apache.commons.collections4.MapUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.globalbioticinteractions.nomer.match.TermMatcherContextCaching;
 
@@ -46,10 +47,12 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
     public static Map<Integer, String> parseSchema(String schema) {
         Map<Integer, String> schemaMap = new TreeMap<>();
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(schema);
-            if (jsonNode.isArray() && jsonNode.size() > 0) {
-                for (JsonNode node : jsonNode) {
-                    schemaMap.put(node.get("column").asInt(), node.get("type").asText());
+            if (StringUtils.isNoneBlank(schema)) {
+                JsonNode jsonNode = new ObjectMapper().readTree(schema);
+                if (jsonNode.isArray() && jsonNode.size() > 0) {
+                    for (JsonNode node : jsonNode) {
+                        schemaMap.put(node.get("column").asInt(), node.get("type").asText());
+                    }
                 }
             }
         } catch (IOException e) {

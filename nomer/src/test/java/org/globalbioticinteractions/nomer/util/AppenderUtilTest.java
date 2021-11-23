@@ -3,6 +3,17 @@ package org.globalbioticinteractions.nomer.util;
 import org.eol.globi.domain.TaxonImpl;
 import org.junit.Test;
 
+import java.util.TreeMap;
+
+import static org.eol.globi.domain.PropertyAndValueDictionary.COMMON_NAMES;
+import static org.eol.globi.domain.PropertyAndValueDictionary.EXTERNAL_ID;
+import static org.eol.globi.domain.PropertyAndValueDictionary.EXTERNAL_URL;
+import static org.eol.globi.domain.PropertyAndValueDictionary.NAME;
+import static org.eol.globi.domain.PropertyAndValueDictionary.PATH;
+import static org.eol.globi.domain.PropertyAndValueDictionary.PATH_IDS;
+import static org.eol.globi.domain.PropertyAndValueDictionary.PATH_NAMES;
+import static org.eol.globi.domain.PropertyAndValueDictionary.RANK;
+import static org.eol.globi.domain.PropertyAndValueDictionary.THUMBNAIL_URL;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 

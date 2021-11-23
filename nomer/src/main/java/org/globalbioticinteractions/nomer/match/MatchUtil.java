@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.service.TermMatcherHierarchical;
@@ -10,10 +9,12 @@ import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
 import org.globalbioticinteractions.nomer.cmd.CmdMatcherParams;
+import org.globalbioticinteractions.nomer.cmd.CmdOutput;
 import org.globalbioticinteractions.nomer.util.Appender;
 import org.globalbioticinteractions.nomer.util.AppenderJSON;
 import org.globalbioticinteractions.nomer.util.AppenderTSV;
 import org.globalbioticinteractions.nomer.util.AppendingRowHandler;
+import org.globalbioticinteractions.nomer.util.HeaderRowHandler;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.BufferedReader;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +32,7 @@ import java.util.stream.Stream;
 
 public class MatchUtil {
 
-    public static void match(RowHandler handler) {
+    public static void match(RowHandler... handler) {
         try {
             apply(System.in, handler);
         } catch (IOException | PropertyEnricherException e) {
@@ -73,31 +76,50 @@ public class MatchUtil {
         return TaxonUtil.mapToTaxon(taxonMap);
     }
 
-    public static void apply(InputStream is, RowHandler rowHandler) throws IOException, PropertyEnricherException {
+    public static void apply(InputStream is, RowHandler... rowHandler) throws IOException, PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
         while ((line = reader.readLine()) != null) {
             String[] row = CSVTSVUtil.splitTSV(line);
-            rowHandler.onRow(row);
+            for (RowHandler handler : rowHandler) {
+                handler.onRow(row);
+            }
         }
     }
 
-    public static RowHandler getRowHandler(TermMatcherContext ctx, OutputStream out) {
+    public static RowHandler getAppendingRowHandler(TermMatcherContext ctx, OutputStream out) {
         TermMatcher matcher = getTermMatcher(ctx.getMatchers(), ctx);
 
         Appender appender;
         if ("json".equalsIgnoreCase(ctx.getOutputFormat())) {
             appender = new AppenderJSON();
         } else {
-            String property = ctx.getProperty("nomer.append.schema.output");
-            if (StringUtils.isNotBlank(property)) {
-                appender = new AppenderTSV(CmdMatcherParams.parseSchema(property));
-            } else {
-                appender = new AppenderTSV();
-            }
+            appender = new AppenderTSV(getAppenderOutputSchema(ctx));
         }
 
         return new AppendingRowHandler(out, matcher, ctx, appender);
     }
 
+    public static Map<Integer, String> getAppenderOutputSchema(TermMatcherContext ctx) {
+        return CmdMatcherParams.parseSchema(
+                ctx.getProperty("nomer.append.schema.output")
+        );
+    }
+
+    public static List<RowHandler> getAppendingRowHandlers(
+            TermMatcherContext ctx,
+            Boolean includeHeader,
+            String outputFormat, PrintStream out) {
+
+        RowHandler rowHandler = getAppendingRowHandler(ctx, out);
+        List<RowHandler> handlers = new ArrayList<>();
+        if (includeHeader
+                && StringUtils.equals(outputFormat, CmdOutput.OUTPUT_FORMAT_DEFAULT)) {
+            handlers.add(new HeaderRowHandler(out,
+                    ctx.getInputSchema(),
+                    getAppenderOutputSchema(ctx)));
+        }
+        handlers.add(rowHandler);
+        return handlers;
+    }
 }

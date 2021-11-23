@@ -6,7 +6,6 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.globalbioticinteractions.nomer.match.ResourceServiceFactoryImpl;
-import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,7 +20,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,7 +34,6 @@ public class MatchUtilTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
     private File tmpDataDir;
-
 
     @Before
     public void init() throws IOException {
@@ -55,7 +52,7 @@ public class MatchUtilTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         TestTermMatcherContextDefault ctx = getGBIFContext();
         MatchUtil.apply(IOUtils.toInputStream("\tHomo sapiens", StandardCharsets.UTF_8),
-                MatchUtil.getRowHandler(ctx, os));
+                MatchUtil.getAppendingRowHandler(ctx, os));
 
         assertThat(os.toString(StandardCharsets.UTF_8.name()), is("bla"));
     }
@@ -73,7 +70,7 @@ public class MatchUtilTest {
 
         };
         MatchUtil.apply(IOUtils.toInputStream("\tHomo sapiens", StandardCharsets.UTF_8),
-                MatchUtil.getRowHandler(ctx, os));
+                MatchUtil.getAppendingRowHandler(ctx, os));
 
         assertThat(os.toString(StandardCharsets.UTF_8.name()), is("\tHomo sapiens\tNONE\t\tHomo sapiens\t\t\t\t\t\t\t\n"));
     }
@@ -95,6 +92,7 @@ public class MatchUtilTest {
             Map<String, String> properties = new TreeMap<>();
             properties.put("nomer.gbif.ids", "gz:https://example.org/ids.gz!/ids");
             properties.put("nomer.gbif.names", "gz:https://example.org/names.gz!/names");
+            properties.put("nomer.append.schema.output", "[{\"column\":0,\"type\":\"externalId\"},{\"column\": 1,\"type\":\"name\"},{\"column\": 2,\"type\":\"rank\"},{\"column\": 3,\"type\":\"commonNames\"},{\"column\": 4,\"type\":\"path\"},{\"column\": 5,\"type\":\"pathIds\"},{\"column\": 6,\"type\":\"pathNames\"},{\"column\": 7,\"type\":\"externalUrl\"},{\"column\": 8,\"type\":\"thumbnailUrl\"}]\n");
             properties.put("nomer.preston.version", "hash://sha256/7f607bb8389e3d6ba1f2e9d2c9b5a1c6ad4fd7421cbe8ad858b05721a9dc8273");
             properties.put("nomer.preston.remotes", "file://" + getCacheDir());
             return properties.get(key);

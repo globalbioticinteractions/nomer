@@ -43,7 +43,7 @@ public class AppendingRowHandlerTest {
     }
 
     private void applyMatcher(InputStream is, ByteArrayOutputStream os, TermMatcher matcher) throws IOException, PropertyEnricherException {
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault(), new AppenderTSV()));
+        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault(), new AppenderTSV(MatchTestUtil.appenderSchemaDefault())));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class AppendingRowHandlerTest {
                     put(3, "name");
                 }};
             }
-        }, new AppenderTSV()));
+        }, new AppenderTSV(MatchTestUtil.appenderSchemaDefault())));
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));

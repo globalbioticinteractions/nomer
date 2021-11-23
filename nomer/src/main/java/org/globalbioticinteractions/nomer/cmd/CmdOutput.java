@@ -18,6 +18,9 @@ public abstract class CmdOutput extends CmdMatcherParams {
     @Parameter(names = {"-o", "--output-format"}, description = "tsv, json", validateWith = JsonTsvFormatValidator.class)
     private String outputFormat = OUTPUT_FORMAT_DEFAULT;
 
+    @Parameter(names = {"--include-header", "--with-header"}, description = "include table header")
+    private Boolean includeHeader = false;
+
     @Override
     public String getOutputFormat() {
         return outputFormat;
@@ -26,4 +29,7 @@ public abstract class CmdOutput extends CmdMatcherParams {
     @Override
     abstract public void run();
 
+    public Boolean getIncludeHeader() {
+        return includeHeader;
+    }
 }
