@@ -80,8 +80,8 @@ public class TabularTaxonUtilTest {
         Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertNull(taxon.getAuthorship());
-        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Acari | Parasitiformes | Holothyrida | Holothyroidea | Allothyridae"));
-        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | subclass | superorder | order | superfamily | family"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Holothyrida | Holothyroidea | Allothyridae"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | subclass | superorder | order | superfamily | family"));
         assertThat(taxon.getId(), Is.is("TPT:6995"));
         assertThat(taxon.getName(), Is.is("Allothyridae"));
         assertThat(taxon.getRank(), Is.is("family"));
@@ -124,8 +124,8 @@ public class TabularTaxonUtilTest {
         Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertThat(taxon.getAuthorship(), Is.is("HOOGSTRAAL  MCCARTHY 1965"));
-        assertThat(taxon.getPath(), Is.is("Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | abdussalami"));
-        assertThat(taxon.getPathNames(), Is.is("subclass | superorder | order | superfamily | family | genus | specificEpithet"));
+        assertThat(taxon.getPath(), Is.is("Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | abdussalami"));
+        assertThat(taxon.getPathNames(), Is.is("class | subclass | superorder | order | superfamily | family | genus | specificEpithet"));
         assertNull(taxon.getId());
         assertThat(taxon.getName(), Is.is("Argas abdussalami"));
         assertThat(taxon.getRank(), Is.is("species"));
@@ -136,8 +136,8 @@ public class TabularTaxonUtilTest {
         taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertThat(taxon.getAuthorship(), Is.is("HOOGSTRAAL  KAISER  WALKER  LEDGER"));
-        assertThat(taxon.getPath(), Is.is("Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | africolumbae"));
-        assertThat(taxon.getPathNames(), Is.is("subclass | superorder | order | superfamily | family | genus | specificEpithet"));
+        assertThat(taxon.getPath(), Is.is("Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | africolumbae"));
+        assertThat(taxon.getPathNames(), Is.is("class | subclass | superorder | order | superfamily | family | genus | specificEpithet"));
         assertNull(taxon.getId());
         assertThat(taxon.getName(), Is.is("Argas africolumbae"));
         assertThat(taxon.getRank(), Is.is("species"));
@@ -167,8 +167,8 @@ public class TabularTaxonUtilTest {
         Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertThat(taxon.getAuthorship(), Is.is("Lewis, 1968"));
-        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Siphonaptera | Ancistropsyllidae | Ancistropsylla | nepalensis"));
-        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | order | family | genus | specificEpithet"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Siphonaptera | Ancistropsyllidae | Ancistropsylla | nepalensis"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
         assertThat(taxon.getId(), Is.is("224"));
         assertThat(taxon.getName(), Is.is("Ancistropsylla nepalensis"));
         assertThat(taxon.getRank(), Is.is("species"));
@@ -179,12 +179,56 @@ public class TabularTaxonUtilTest {
         taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertThat(taxon.getAuthorship(), Is.is("Toumanoff & Fuller, 1947"));
-        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Siphonaptera | Ancistropsyllidae | Ancistropsylla | roubaudi"));
-        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | order | family | genus | specificEpithet"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Siphonaptera | Ancistropsyllidae | Ancistropsylla | roubaudi"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
         assertThat(taxon.getId(), Is.is("225"));
         assertThat(taxon.getName(), Is.is("Ancistropsylla roubaudi"));
         assertThat(taxon.getRank(), Is.is("species"));
         assertThat(taxon.getNameSource(), Is.is("Lewis, CoL, GBIF"));
+
+
+    }
+
+
+    @Test
+    public void indexMammaliaTable() throws IOException {
+        String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
+                ",,,,,,,,,Abrocomidae,,Rodentia,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,,,,,,,,,,,,140, \n" +
+                ",,,,,,,,,Abrocoma bennettii,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,bennettii,,,,,,,,,220,Abrocoma bennettii\n" +
+                ",,,,,,,,,Abrocoma boliviensis,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,boliviensis,,,,,,,,,220,Abrocoma boliviensis\n" +
+                ",,,,,,,,,Abrocoma budini,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,budini,,,,,,,,,220,Abrocoma budini\n" +
+                ",,,,,,,,,Abrocoma cinerea,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,cinerea,,,,,,,,,220,Abrocoma cinerea\n" +
+                ",,,,,,,,,Abrocoma famatina,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,famatina,,,,,,,,,220,Abrocoma famatina\n" +
+                ",,,,,,,,,Abrocoma schistacea,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,schistacea,,,,,,,,,220,Abrocoma schistacea\n" +
+                ",,,,,,,,,Abrocoma uspallata,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,uspallata,,,,,,,,,220,Abrocoma uspallata\n" +
+                ",,,,,,,,,Abrocoma vaccarum,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,vaccarum,,,,,,,,,220,Abrocoma vaccarum\n";
+
+        InputStream inputStream = IOUtils.toInputStream(table, StandardCharsets.UTF_8);
+        LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(inputStream);
+
+        labeledCSVParser.getLine();
+
+        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+
+        assertThat(taxon.getPath(), Is.is("Mammalia | Rodentia | Abrocomidae"));
+        assertThat(taxon.getPathNames(), Is.is("class | order | family"));
+        assertNull(taxon.getAuthorship());
+        assertNull(taxon.getId());
+        assertThat(taxon.getName(), Is.is("Abrocomidae"));
+        assertThat(taxon.getRank(), Is.is("family"));
+        assertNull(taxon.getNameSource());
+
+        labeledCSVParser.getLine();
+
+        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+
+        assertNull(taxon.getAuthorship());
+        assertThat(taxon.getPath(), Is.is("Mammalia | Rodentia | Abrocomidae | Abrocoma | bennettii"));
+        assertThat(taxon.getPathNames(), Is.is("class | order | family | genus | specificEpithet"));
+        assertNull(taxon.getId());
+        assertThat(taxon.getName(), Is.is("Abrocoma bennettii"));
+        assertThat(taxon.getRank(), Is.is("species"));
+        assertNull(taxon.getNameSource());
 
 
     }

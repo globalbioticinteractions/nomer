@@ -100,11 +100,11 @@ public class TabularTaxonUtil {
         List<String> pathNames = new ArrayList<>();
 
         for (TabularColumn orderedRank : ORDERED_RANKS) {
-            String value = labeledCSVParser.getValueByLabel(orderedRank.name());
+            String value = labeledCSVParser.getValueByLabel(orderedRank.getColumnName());
             if (StringUtils.isNoneBlank(value)
                     && !StringUtils.equals(value, "NA")) {
                 path.add(value);
-                pathNames.add(orderedRank.name());
+                pathNames.add(orderedRank.getColumnName());
             }
         }
 
@@ -112,7 +112,7 @@ public class TabularTaxonUtil {
         for (TabularColumn tabularColumn : tabularColumns) {
             String key = TRANSLATION_TABLE.get(tabularColumn);
             if (key != null) {
-                String value = labeledCSVParser.getValueByLabel(tabularColumn.name());
+                String value = labeledCSVParser.getValueByLabel(tabularColumn.getColumnName());
                 if (StringUtils.isNoneBlank(value)) {
                     taxonMap.put(key, value);
                 }

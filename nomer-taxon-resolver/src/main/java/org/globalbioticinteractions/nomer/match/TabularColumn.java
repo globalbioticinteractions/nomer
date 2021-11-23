@@ -1,5 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
+
 public enum TabularColumn {
     source,
     taxonID,
@@ -20,7 +22,7 @@ public enum TabularColumn {
     higherClassification,
     kingdom,
     phylum,
-    clazz,
+    clazz("class"),
     subclass,
     superorder,
     order,
@@ -45,6 +47,22 @@ public enum TabularColumn {
     taxonomicStatus,
     nomenclaturalStatus,
     taxonRemarks,
-    canonical
+    canonical;
+
+    public String getColumnName() {
+        return StringUtils.isBlank(columnName) ? name() : columnName;
+    }
+
+    private String columnName;
+
+    TabularColumn(String columnName) {
+        this.columnName = columnName;
+    }
+
+    TabularColumn() {
+    }
+
+
+
 
 }
