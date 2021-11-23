@@ -232,7 +232,7 @@ public class DiscoverLifeTaxonServiceTest {
                     }
                 });
 
-        assertThat(counter.get(), Is.is(50107));
+        assertThat(counter.get(), Is.is(50112));
     }
 
     @Test
