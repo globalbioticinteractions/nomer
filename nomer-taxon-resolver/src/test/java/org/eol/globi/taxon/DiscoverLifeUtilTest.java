@@ -403,7 +403,7 @@ public class DiscoverLifeUtilTest {
             }
         });
 
-        assertThat(relatedTaxa.size(), Is.is(2));
+        assertThat(relatedTaxa.size(), Is.is(3));
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         assertThat(((Taxon)firstNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
@@ -415,6 +415,12 @@ public class DiscoverLifeUtilTest {
         assertThat(secondNameRelation.getLeft().getName(), Is.is("Anthidiellum (Anthidiellum) borealis"));
         assertThat(secondNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
         assertNull(secondNameRelation.getRight());
+
+        Triple<Term, NameType, Taxon> thirdNameRelation = relatedTaxa.get(2);
+        assertThat(thirdNameRelation.getLeft().getName(), Is.is("Anthidiellum boreale"));
+        assertThat(((Taxon)thirdNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
+        assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
+        assertNull(thirdNameRelation.getRight());
     }
 
     private NodeList selectNameRelations(String xmlSnippet) throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
@@ -655,7 +661,7 @@ public class DiscoverLifeUtilTest {
 
         DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), listener);
 
-        assertThat(counter.get(), Is.is(50590));
+        assertThat(counter.get(), Is.is(50620));
 
         Taxon taxon = firstTaxon.get();
 
