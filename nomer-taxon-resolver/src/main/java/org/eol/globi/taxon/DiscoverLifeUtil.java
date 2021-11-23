@@ -123,7 +123,7 @@ public class DiscoverLifeUtil {
                 );
 
             }
-            handleRelatedNames(listener, focalTaxon, currentNode);
+            handleRelatedNames(listener, taxonMap, currentNode, focalTaxon);
         }
 
     }
@@ -133,7 +133,11 @@ public class DiscoverLifeUtil {
         return StringUtils.contains(name, HOMONYM_SUFFIX);
     }
 
-    private static void handleRelatedNames(TermMatchListener listener, Taxon focalTaxon, Node currentNode) {
+    private static void handleRelatedNames(
+            TermMatchListener listener,
+            Map<String, String> taxonMap,
+            Node currentNode,
+            Taxon focalTaxon) {
         while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
 
             if ("i".equals(currentNode.getNodeName())) {
@@ -150,14 +154,27 @@ public class DiscoverLifeUtil {
                 String id = urlForName(relatedTaxon);
                 relatedTaxon.setExternalId(id);
 
-                if (isHomonym(relatedName)) {
+                boolean relatedNameIsHomonym = isHomonym(relatedName);
+                if (relatedNameIsHomonym) {
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
                             NameType.HOMONYM_OF,
                             null
                     );
-                } else {
+                }
+
+                boolean focalTaxonIsHomonym = isHomonym(taxonMap);
+                if (focalTaxonIsHomonym) {
+                    listener.foundTaxonForTerm(
+                            null,
+                            focalTaxon,
+                            NameType.HOMONYM_OF,
+                            null
+                    );
+                }
+
+                if (!relatedNameIsHomonym && !focalTaxonIsHomonym) {
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
