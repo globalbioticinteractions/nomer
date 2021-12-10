@@ -714,7 +714,7 @@ public class GlobalNamesService2Test {
                     assertThat(nameType, is(NameType.NONE));
                 });
 
-        assertThat(taxa.size(), is(203));
+        assertThat(taxa.size(), is(202));
 
     }
 
