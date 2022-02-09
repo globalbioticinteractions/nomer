@@ -1,7 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
@@ -13,19 +12,12 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TermMatchListener;
-import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-public abstract class CommonTaxonService extends PropertyEnricherSimple implements TermMatcher {
+public abstract class CommonTaxonService<T> extends PropertyEnricherSimple implements TermMatcher {
 
     protected static final String DENORMALIZED_NODES = "denormalizedNodes";
     protected static final String DENORMALIZED_NODE_IDS = "denormalizedNodeIds";
@@ -42,9 +34,9 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
 
     private final TermMatcherContext ctx;
 
-    protected BTreeMap<Long, Long> mergedNodes = null;
+    protected BTreeMap<T, T> mergedNodes = null;
     protected BTreeMap<String, List<Map<String, String>>> denormalizedNodes = null;
-    protected BTreeMap<Long, List<Map<String, String>>> denormalizedNodeIds = null;
+    protected BTreeMap<T, List<Map<String, String>>> denormalizedNodeIds = null;
 
     public CommonTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -62,7 +54,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                     String id = term.getId();
                     enrichMatches(TaxonUtil.taxonToMap(taxon), getIdOrNull(id, getTaxonomyProvider()), termMatchListener);
                 } else if (StringUtils.isNoneBlank(term.getName())) {
-                    enrichMatches(TaxonUtil.taxonToMap(taxon), term.getName(), termMatchListener);
+                    enrichNameMatches(TaxonUtil.taxonToMap(taxon), term.getName(), termMatchListener);
                 }
             }
         }
@@ -71,7 +63,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
     private void matchAll(TermMatchListener termMatchListener) throws PropertyEnricherException {
         checkInit();
         denormalizedNodeIds.forEach((id, taxonMap) -> {
-            Long acceptedNameId = mergedNodes.get(id);
+            T acceptedNameId = mergedNodes.get(id);
             if (acceptedNameId == null) {
                 List<Map<String, String>> names = denormalizedNodeIds.get(id);
                 if (names != null && names.size() > 0) {
@@ -107,7 +99,7 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
         } else {
             String name = properties.get(PropertyAndValueDictionary.NAME);
             if (StringUtils.isNoneBlank(name)) {
-                enriched = enrichMatches(enriched, name, noopListener());
+                enriched = enrichNameMatches(enriched, name, noopListener());
             }
         }
         return enriched;
@@ -129,14 +121,19 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
         };
     }
 
-    private Map<String, String> enrichMatches(Map<String, String> enriched, Long key, TermMatchListener listener) throws PropertyEnricherException {
+    private Map<String, String> enrichMatches(Map<String, String> enriched, T key, TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
         if (key == null) {
             emitNoMatch(enriched, listener);
         } else {
-            Long idForLookup = mergedNodes.getOrDefault(key, key);
+            T idForLookup = mergedNodes == null
+                    ? key
+                    : mergedNodes.getOrDefault(key, key);
 
-            List<Map<String, String>> enrichedProperties = denormalizedNodeIds.get(idForLookup);
+            List<Map<String, String>> enrichedProperties =
+                    idForLookup == null
+                            ? Collections.emptyList()
+                            : denormalizedNodeIds.get(idForLookup);
 
             if (enrichedProperties != null && enrichedProperties.size() > 0) {
                 NameType type = (key.equals(idForLookup))
@@ -166,7 +163,9 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                 TaxonUtil.mapToTaxon(enriched));
     }
 
-    private Map<String, String> enrichMatches(Map<String, String> enriched, String key, TermMatchListener listener) throws PropertyEnricherException {
+    private Map<String, String> enrichNameMatches(Map<String, String> enriched,
+                                                  String key,
+                                                  TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
         if (StringUtils.isBlank(key)) {
             emitNoMatch(enriched, listener);
@@ -187,10 +186,10 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
                                                                Taxon resolvedTaxon,
                                                                Taxon providedTerm) {
         Map<String, String> enriched = null;
-        Long providedId = getIdOrNull(resolvedTaxon.getExternalId(), getTaxonomyProvider());
+        T providedId = getIdOrNull(resolvedTaxon.getExternalId(), getTaxonomyProvider());
 
         if (providedId != null) {
-            final Long acceptedExternalId = mergedNodes.getOrDefault(providedId, providedId);
+            final T acceptedExternalId = mergedNodes.getOrDefault(providedId, providedId);
             if (acceptedExternalId.equals(providedId)) {
                 listener.foundTaxonForTerm(null,
                         providedTerm,
@@ -221,13 +220,8 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
         }
     }
 
-    private static Long getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider) {
-        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
-        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key);
-        return (matchingTaxonomyProvider.equals(taxonomyProvider) && NumberUtils.isCreatable(idString))
-                ? Long.parseLong(idString)
-                : null;
-    }
+    abstract public T getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider);
+
 
     abstract protected void lazyInit() throws PropertyEnricherException;
 
@@ -245,5 +239,94 @@ public abstract class CommonTaxonService extends PropertyEnricherSimple implemen
         cacheDir.mkdirs();
         return cacheDir;
     }
+
+    void denormalizeTaxa(Map<T, Map<String, String>> taxonMap,
+                         Map<String, List<Map<String, String>>> taxonMapDenormalized,
+                         Map<T, List<Map<String, String>>> taxonMapIdDenormalized,
+                         Map<T, T> childParent) {
+        Set<Map.Entry<T, Map<String, String>>> taxa = taxonMap.entrySet();
+        for (Map.Entry<T, Map<String, String>> taxon : taxa) {
+            denormalizeTaxa(taxonMap,
+                    taxonMapDenormalized,
+                    taxonMapIdDenormalized,
+                    childParent,
+                    taxon,
+                    getTaxonomyProvider());
+        }
+    }
+
+    protected void denormalizeTaxa(Map<T, Map<String, String>> taxonMap,
+                                   Map<String, List<Map<String, String>>> taxonEnrichMap,
+                                   Map<T, List<Map<String, String>>> taxonEnrichIdMap,
+                                   Map<T, T> childParent,
+                                   Map.Entry<T, Map<String, String>> taxon,
+                                   TaxonomyProvider taxonProvider) {
+        Map<String, String> childTaxon = taxon.getValue();
+        List<String> pathNames = new ArrayList<>();
+        List<String> pathIds = new ArrayList<>();
+        List<String> path = new ArrayList<>();
+
+        Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);
+
+        path.add(StringUtils.defaultIfBlank(origTaxon.getName(), ""));
+
+        pathIds.add(origTaxon.getExternalId());
+
+        pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
+
+        T parent = childParent.get(taxon.getKey());
+        while (parent != null && !pathIds.contains(taxonProvider.getIdPrefix() + parent)) {
+            Map<String, String> parentTaxonProperties = taxonMap.get(parent);
+            if (parentTaxonProperties != null) {
+                Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);
+                path.add(StringUtils.defaultIfBlank(parentTaxon.getName(), ""));
+                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
+                pathIds.add(parentTaxon.getExternalId());
+            }
+            parent = childParent.get(parent);
+        }
+
+        Collections.reverse(pathNames);
+        Collections.reverse(pathIds);
+        Collections.reverse(path);
+
+        origTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
+        origTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
+        origTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
+
+        updateId(taxonEnrichIdMap,
+                taxon.getKey(),
+                origTaxon);
+        update(taxonEnrichMap, origTaxon.getName(), origTaxon);
+    }
+
+    private void update(Map<String, List<Map<String, String>>> taxonEnrichMap,
+                        String key,
+                        Taxon origTaxon) {
+        List<Map<String, String>> existing = taxonEnrichMap.get(key);
+
+        List<Map<String, String>> updated = existing == null
+                ? new ArrayList<>()
+                : new ArrayList<>(existing);
+
+        updated.add(TaxonUtil.taxonToMap(origTaxon));
+        taxonEnrichMap.put(key, updated);
+    }
+
+    private void updateId(
+            Map<T, List<Map<String, String>>> taxonEnrichIdMap,
+            T key,
+            Taxon origTaxon
+    ) {
+        List<Map<String, String>> existing = taxonEnrichIdMap.get(key);
+
+        List<Map<String, String>> updated = existing == null
+                ? new ArrayList<>()
+                : new ArrayList<>(existing);
+
+        updated.add(TaxonUtil.taxonToMap(origTaxon));
+        taxonEnrichIdMap.put(key, updated);
+    }
+
 
 }

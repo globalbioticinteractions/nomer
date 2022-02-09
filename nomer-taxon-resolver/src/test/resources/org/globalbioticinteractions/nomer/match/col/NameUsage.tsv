@@ -1,0 +1,10 @@
+col:ID	col:sourceID	col:parentID	col:basionymID	col:status	col:scientificName	col:authorship	col:rankcol:uninomial	col:genericName	col:infragenericEpithet	col:specificEpithet	col:infraspecificEpithet	col:cultivarEpithet	col:namePhrase	col:nameReferenceID	col:publishedInYear	col:publishedInPage	col:publishedInPageLink	col:code	col:nameStatus	col:accordingToID	col:referenceID	col:scrutinizer	col:scrutinizerID	col:scrutinizerDate	col:extinct	col:temporalRangeStart	col:temporalRangeEnd	col:environment	col:species	col:section	col:subgenus	col:genus	col:subtribe	col:tribe	col:subfamily	col:family	col:superfamily	col:suborder	col:order	col:subclass	col:class	col:subphylum	col:phylum	col:kingdom	col:sequenceIndex	col:link	col:nameRemarks	col:remarks
+63MJH		625ZT		accepted	Phryganella		genus	Phryganella				acceptable			CoL
+44X9		98C		accepted	Dictyacantha		genus	Dictyacantha				acceptable			CoL
+3NFM		62569		accepted	Chlamydaster		genus	Chlamydaster				acceptable			CoL
+WKY		FZK		accepted	Annandaleum		genus	Annandaleum				acceptable			CoL
+37YZ		FZK		accepted	Barbascalpellum		genus	Barbascalpellum				acceptable			CoL
+4RX3		FZK		accepted	Gymnoscalpellum		genus	Gymnoscalpellum				acceptable			CoL
+6QJK		FZK		accepted	Pilsbryiscalpellum		genus	Pilsbryiscalpellum		acceptable			CoL
+7YWS		FZK		accepted	Trianguloscalpellum		genus	Trianguloscalpellum		acceptable			CoL
+62YCV		C3R		accepted	Linguatula		genus	Linguatula				acceptable			CoL

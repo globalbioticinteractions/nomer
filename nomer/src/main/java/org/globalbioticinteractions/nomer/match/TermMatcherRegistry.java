@@ -47,7 +47,8 @@ public class TermMatcherRegistry {
             "remove-stop-words",
             "translate-names",
             "wikidata-web",
-            "worms"));
+            "worms",
+            "col"));
 
     static final Map<String, String> MATCH_NAME_MAPPER = Collections.unmodifiableMap(new TreeMap<String, String>() {
         {
@@ -81,6 +82,7 @@ public class TermMatcherRegistry {
             put("wikidata-taxon-id-web", "wikidata-web");
             put("worms-taxon", "worms");
             put("indexfungorum", "indexfungorum");
+            put("col", "col");
         }
     });
 
@@ -109,6 +111,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherDiscoverLifeTaxonFactory());
         add(new TermMatcherITISFactory());
         add(new TermMatcherIndexFungorumFactory());
+        add(new TermMatcherCatalogOfLifeFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

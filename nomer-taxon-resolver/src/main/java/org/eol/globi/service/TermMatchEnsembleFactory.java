@@ -14,6 +14,7 @@ import org.eol.globi.taxon.NODCTaxonService;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.WoRMSService;
+import org.globalbioticinteractions.nomer.match.CatalogueOfLifeTaxonService;
 import org.globalbioticinteractions.nomer.match.EOLTaxonService;
 import org.globalbioticinteractions.nomer.match.GBIFTaxonService;
 import org.globalbioticinteractions.nomer.match.ITISTaxonService;
@@ -54,6 +55,7 @@ public class TermMatchEnsembleFactory {
                 add(new GulfBaseService(ctx));
                 add(new AtlasOfLivingAustraliaService());
                 add(new ITISService());
+                add(new CatalogueOfLifeTaxonService(ctx));
             }
         };
     }

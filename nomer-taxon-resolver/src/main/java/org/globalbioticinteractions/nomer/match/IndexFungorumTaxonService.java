@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class IndexFungorumTaxonService extends CommonTaxonService {
+public class IndexFungorumTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(IndexFungorumTaxonService.class);
     public static final String INDEXFUNGORUM_EXPORT_PROPERTY_NAME = "nomer.indexfungorum.export";
 

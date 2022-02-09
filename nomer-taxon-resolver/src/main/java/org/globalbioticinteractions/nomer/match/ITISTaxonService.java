@@ -3,8 +3,6 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.eol.globi.data.CharsetConstant;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
@@ -25,13 +23,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ITISTaxonService extends CommonTaxonService {
+public class ITISTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(ITISTaxonService.class);
 
     public ITISTaxonService(TermMatcherContext ctx) {
@@ -102,87 +98,6 @@ public class ITISTaxonService extends CommonTaxonService {
         }
     }
 
-    static void denormalizeTaxa(Map<Long, Map<String, String>> taxonMap,
-                                Map<String, List<Map<String, String>>> taxonMapDenormalized,
-                                Map<Long, List<Map<String, String>>> taxonMapIdDenormalized,
-                                Map<Long, Long> childParent) {
-        Set<Map.Entry<Long, Map<String, String>>> taxa = taxonMap.entrySet();
-        for (Map.Entry<Long, Map<String, String>> taxon : taxa) {
-            denormalizeTaxa(taxonMap, taxonMapDenormalized, taxonMapIdDenormalized, childParent, taxon);
-        }
-    }
-
-    private static void denormalizeTaxa(Map<Long, Map<String, String>> taxonMap,
-                                        Map<String, List<Map<String, String>>> taxonEnrichMap,
-                                        Map<Long, List<Map<String, String>>> taxonEnrichIdMap,
-                                        Map<Long, Long> childParent,
-                                        Map.Entry<Long, Map<String, String>> taxon) {
-        Map<String, String> childTaxon = taxon.getValue();
-        List<String> pathNames = new ArrayList<>();
-        List<String> pathIds = new ArrayList<>();
-        List<String> path = new ArrayList<>();
-
-        Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);
-
-        path.add(StringUtils.defaultIfBlank(origTaxon.getName(), ""));
-
-        pathIds.add(origTaxon.getExternalId());
-
-        pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
-
-        Long parent = childParent.get(taxon.getKey());
-        while (parent != null && !pathIds.contains(TaxonomyProvider.ID_PREFIX_ITIS + parent)) {
-            Map<String, String> parentTaxonProperties = taxonMap.get(parent);
-            if (parentTaxonProperties != null) {
-                Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);
-                path.add(StringUtils.defaultIfBlank(parentTaxon.getName(), ""));
-                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
-                pathIds.add(parentTaxon.getExternalId());
-            }
-            parent = childParent.get(parent);
-        }
-
-        Collections.reverse(pathNames);
-        Collections.reverse(pathIds);
-        Collections.reverse(path);
-
-        origTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
-        origTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
-        origTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
-
-        updateId(taxonEnrichIdMap,
-                taxon.getKey(),
-                origTaxon);
-        update(taxonEnrichMap, origTaxon.getName(), origTaxon);
-    }
-
-    private static void update(Map<String, List<Map<String, String>>> taxonEnrichMap,
-                               String key,
-                               Taxon origTaxon) {
-        List<Map<String, String>> existing = taxonEnrichMap.get(key);
-
-        List<Map<String, String>> updated = existing == null
-                ? new ArrayList<>()
-                : new ArrayList<>(existing);
-
-        updated.add(TaxonUtil.taxonToMap(origTaxon));
-        taxonEnrichMap.put(key, updated);
-    }
-
-    private static void updateId(
-            Map<Long, List<Map<String, String>>> taxonEnrichIdMap,
-            Long key,
-            Taxon origTaxon
-    ) {
-        List<Map<String, String>> existing = taxonEnrichIdMap.get(key);
-
-        List<Map<String, String>> updated = existing == null
-                ? new ArrayList<>()
-                : new ArrayList<>(existing);
-
-        updated.add(TaxonUtil.taxonToMap(origTaxon));
-        taxonEnrichIdMap.put(key, updated);
-    }
 
     static void parseMerged(Map<Long, Long> mergedMap, InputStream resourceAsStream) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));

@@ -89,7 +89,7 @@ public class ITISTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
 
-    private PropertyEnricher createService() {
+    private ITISTaxonService createService() {
         File file = new File("target/cache" + UUID.randomUUID());
         return new ITISTaxonService(new TermMatcherContext() {
             @Override
@@ -195,8 +195,7 @@ public class ITISTaxonServiceTest {
             put(1L, 2L);
         }};
 
-
-        ITISTaxonService.denormalizeTaxa(
+        createService().denormalizeTaxa(
                 taxonMap,
                 taxonMapDenormalized,
                 taxonMapDenormalizedIds,

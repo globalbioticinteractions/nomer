@@ -85,7 +85,10 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
             LOG.info(msg + " done.");
             File destFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
             FileUtils.moveFile(tmpFile, destFile);
-        } finally {
+        } catch (IOException ex) {
+            throw new IOException("failed to access [" + resource + "] in preston verse [", ex);
+        }
+        finally {
             FileUtils.deleteQuietly(tmpFile);
         }
         return super.retrieve(resource);
