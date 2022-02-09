@@ -1,5 +1,6 @@
 col:ID	col:sourceID	col:parentID	col:basionymID	col:status	col:scientificName	col:authorship	col:rankcol:uninomial	col:genericName	col:infragenericEpithet	col:specificEpithet	col:infraspecificEpithet	col:cultivarEpithet	col:namePhrase	col:nameReferenceID	col:publishedInYear	col:publishedInPage	col:publishedInPageLink	col:code	col:nameStatus	col:accordingToID	col:referenceID	col:scrutinizer	col:scrutinizerID	col:scrutinizerDate	col:extinct	col:temporalRangeStart	col:temporalRangeEnd	col:environment	col:species	col:section	col:subgenus	col:genus	col:subtribe	col:tribe	col:subfamily	col:family	col:superfamily	col:suborder	col:order	col:subclass	col:class	col:subphylum	col:phylum	col:kingdom	col:sequenceIndex	col:link	col:nameRemarks	col:remarks
 63MJH		625ZT		accepted	Phryganella		genus	Phryganella				acceptable			CoL
+625ZT		QM		accepted	Phryganellidae		family	Phryganellidae									acceptable			CoL
 44X9		98C		accepted	Dictyacantha		genus	Dictyacantha				acceptable			CoL
 3NFM		62569		accepted	Chlamydaster		genus	Chlamydaster				acceptable			CoL
 WKY		FZK		accepted	Annandaleum		genus	Annandaleum				acceptable			CoL
@@ -8,3 +9,5 @@ WKY		FZK		accepted	Annandaleum		genus	Annandaleum				acceptable			CoL
 6QJK		FZK		accepted	Pilsbryiscalpellum		genus	Pilsbryiscalpellum		acceptable			CoL
 7YWS		FZK		accepted	Trianguloscalpellum		genus	Trianguloscalpellum		acceptable			CoL
 62YCV		C3R		accepted	Linguatula		genus	Linguatula				acceptable			CoL
+4BP2T	1029	6TH9B		synonym	Ozyptila schusteri	Schick, 1965	species		Ozyptila		schusteri				zoological
+6TH9B	1029	6BLZ		accepted	Ozyptila yosemitica	Schick, 1965	species		Ozyptila		yosemitica			733ff4f4-5b16-4fe0-8420-a94040a8952b				zoological	acceptable			WSC editorial team		2018-07-15	false										https://wsc.nmbe.ch/species/41331

@@ -66,10 +66,13 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                 .make();
 
         if (db.exists(DENORMALIZED_NODES)
-                && db.exists(DENORMALIZED_NODE_IDS)) {
+                && db.exists(DENORMALIZED_NODE_IDS)
+                && db.exists(MERGED_NODES)
+        ) {
             LOG.info("[Catalogue of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             denormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
             denormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
+            mergedNodes = db.getTreeMap(MERGED_NODES);
         } else {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
             StopWatch watch = new StopWatch();
@@ -95,6 +98,11 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                     .keySerializer(BTreeKeySerializer.STRING)
                     .make();
 
+            mergedNodes = db
+                    .createTreeMap(MERGED_NODES)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .make();
+
             try {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(resource));
@@ -106,11 +114,18 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                     if (rowValues.length > 8) {
                         String taxId = rowValues[0];
                         String parentTaxId = rowValues[2];
-                        String rank = rowValues[7];
+
+                        addSynonymRelationIfPresent(rowValues[4], taxId, parentTaxId);
 
                         String completeName = rowValues[5];
 
                         TaxonImpl taxon = new TaxonImpl(completeName, getTaxonomyProvider().getIdPrefix() + taxId);
+                        String authorship = rowValues[6];
+                        if (StringUtils.isNoneBlank(authorship)) {
+                            taxon.setAuthorship(StringUtils.trim(authorship));
+                        }
+
+                        String rank = rowValues[7];
                         taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
                         if (StringUtils.isNoneBlank(taxId)) {
                             ((Map<String, Map<String, String>>) nodes).put(taxId, TaxonUtil.taxonToMap(taxon));
@@ -148,6 +163,12 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
 
+        }
+    }
+
+    private void addSynonymRelationIfPresent(String statusValue, String taxId, String parentTaxId) {
+        if (StringUtils.contains(statusValue, "synonym")) {
+            mergedNodes.put(taxId, parentTaxId);
         }
     }
 
