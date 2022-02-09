@@ -63,7 +63,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     private void matchAll(TermMatchListener termMatchListener) throws PropertyEnricherException {
         checkInit();
         denormalizedNodeIds.forEach((id, taxonMap) -> {
-            T acceptedNameId = mergedNodes.get(id);
+            T acceptedNameId = mergedNodeOrDefault(null);
             if (acceptedNameId == null) {
                 List<Map<String, String>> names = denormalizedNodeIds.get(id);
                 if (names != null && names.size() > 0) {
@@ -126,9 +126,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         if (key == null) {
             emitNoMatch(enriched, listener);
         } else {
-            T idForLookup = mergedNodes == null
-                    ? key
-                    : mergedNodes.getOrDefault(key, key);
+            T idForLookup = mergedNodeOrDefault(key);
 
             List<Map<String, String>> enrichedProperties =
                     idForLookup == null
@@ -153,6 +151,12 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             }
         }
         return enriched;
+    }
+
+    private T mergedNodeOrDefault(T defaultKey) {
+        return mergedNodes == null
+                ? defaultKey
+                : mergedNodes.getOrDefault(defaultKey, defaultKey);
     }
 
     private void emitNoMatch(Map<String, String> enriched, TermMatchListener listener) {
@@ -189,7 +193,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         T providedId = getIdOrNull(resolvedTaxon.getExternalId(), getTaxonomyProvider());
 
         if (providedId != null) {
-            final T acceptedExternalId = mergedNodes.getOrDefault(providedId, providedId);
+            final T acceptedExternalId = mergedNodeOrDefault(providedId);
             if (acceptedExternalId.equals(providedId)) {
                 listener.foundTaxonForTerm(null,
                         providedTerm,
