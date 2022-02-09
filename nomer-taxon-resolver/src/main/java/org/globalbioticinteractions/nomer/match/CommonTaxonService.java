@@ -259,12 +259,12 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         }
     }
 
-    protected void denormalizeTaxa(Map<T, Map<String, String>> taxonMap,
-                                   Map<String, List<Map<String, String>>> taxonEnrichMap,
-                                   Map<T, List<Map<String, String>>> taxonEnrichIdMap,
-                                   Map<T, T> childParent,
-                                   Map.Entry<T, Map<String, String>> taxon,
-                                   TaxonomyProvider taxonProvider) {
+    private void denormalizeTaxa(Map<T, Map<String, String>> taxonMap,
+                                 Map<String, List<Map<String, String>>> taxonEnrichMap,
+                                 Map<T, List<Map<String, String>>> taxonEnrichIdMap,
+                                 Map<T, T> childParent,
+                                 Map.Entry<T, Map<String, String>> taxon,
+                                 TaxonomyProvider taxonProvider) {
         Map<String, String> childTaxon = taxon.getValue();
         List<String> pathNames = new ArrayList<>();
         List<String> pathIds = new ArrayList<>();
@@ -301,6 +301,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         updateId(taxonEnrichIdMap,
                 taxon.getKey(),
                 origTaxon);
+
         update(taxonEnrichMap, origTaxon.getName(), origTaxon);
     }
 

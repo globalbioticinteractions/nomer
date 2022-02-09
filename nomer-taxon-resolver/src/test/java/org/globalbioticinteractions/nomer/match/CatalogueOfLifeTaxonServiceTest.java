@@ -7,9 +7,6 @@ import org.eol.globi.service.TaxonUtil;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -22,7 +19,19 @@ public class CatalogueOfLifeTaxonServiceTest {
     @Test
     public void enrichById() throws PropertyEnricherException {
         CatalogueOfLifeTaxonService service = createService();
+        assertEnrichById(service);
+    }
 
+    @Test
+    public void enrichByIdReverseSorted() throws PropertyEnricherException {
+        CatalogueOfLifeTaxonService service = createService(
+                "/org/globalbioticinteractions/nomer/match/col/NameUsageReverseSorted.tsv");
+        service.setReverseSorted(true);
+
+        assertEnrichById(service);
+    }
+
+    public void assertEnrichById(CatalogueOfLifeTaxonService service) throws PropertyEnricherException {
         TaxonImpl taxon = new TaxonImpl(null, "COL:63MJH");
         Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
 
@@ -101,9 +110,7 @@ public class CatalogueOfLifeTaxonServiceTest {
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {
-                        put("nomer.col.name_usage",
-                                "/org/globalbioticinteractions/nomer/match/col/NameUsage.tsv"
-                        );
+                        put("nomer.col.name_usage", nameUrl);
                     }
                 }.get(key);
             }
