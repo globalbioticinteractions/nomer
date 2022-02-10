@@ -36,7 +36,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
 
     public CatalogueOfLifeTaxonService(TermMatcherContext ctx) {
         super(ctx);
-        reverseSorted = StringUtils.equalsIgnoreCase("true", ctx.getProperty("nomer.col.name_usage.reverse_sorted"));
+        reverseSorted = ctx != null && (StringUtils.equalsIgnoreCase("true", ctx.getProperty("nomer.col.name_usage.reverse_sorted")));
     }
 
     @Override
