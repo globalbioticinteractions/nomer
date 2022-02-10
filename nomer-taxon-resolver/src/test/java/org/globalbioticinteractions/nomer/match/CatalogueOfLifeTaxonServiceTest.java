@@ -110,7 +110,7 @@ public class CatalogueOfLifeTaxonServiceTest {
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {
-                        put("nomer.col.name_usage", nameUrl);
+                        put("nomer.col.name_usage.url", nameUrl);
                     }
                 }.get(key);
             }
