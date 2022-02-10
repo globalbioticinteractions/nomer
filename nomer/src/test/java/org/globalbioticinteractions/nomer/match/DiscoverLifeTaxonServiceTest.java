@@ -28,7 +28,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 
 public class DiscoverLifeTaxonServiceTest {
 
@@ -209,6 +212,44 @@ public class DiscoverLifeTaxonServiceTest {
                 });
 
         assertThat(homonymCounter.get(), Is.is(1));
+    }
+
+
+    @Test
+    // see https://github.com/GlobalNamesArchitecture/dwca_hunter/issues/53
+    // see https://github.com/globalbioticinteractions/nomer/issues/72
+    public void ignoreSelfReferentialSynonyms() throws PropertyEnricherException {
+        final AtomicInteger homonymCounter = new AtomicInteger(0);
+        final AtomicInteger synonymCounter = new AtomicInteger(0);
+        final AtomicInteger acceptedNameCounter = new AtomicInteger(0);
+
+        String providedName = "Pseudapis neumayeri";
+        List<Term> termsToBeMatched = Collections.singletonList(new TaxonImpl(providedName));
+        discoverLifeTaxonService
+                .match(termsToBeMatched, new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                        if (NameType.HOMONYM_OF.equals(nameType)) {
+                            homonymCounter.getAndIncrement();
+                        }
+                        if (NameType.SYNONYM_OF.equals(nameType)) {
+                            Taxon providedTaxon = (Taxon) providedTerm;
+                            assertFalse(DiscoverLifeUtil.isSelfReferential(providedTaxon, resolvedTaxon));
+                            synonymCounter.getAndIncrement();
+                        }
+                        if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
+                            Taxon providedTaxon = (Taxon) providedTerm;
+                            assertThat(resolvedTaxon.getName(), Is.is(providedTaxon.getName()));
+                            assertThat(resolvedTaxon.getExternalId(), Is.is("https://www.discoverlife.org/mp/20q?search=Pseudapis+neumayeri"));
+                            assertThat(resolvedTaxon.getAuthorship(), Is.is("Bossert and Pauly, 2019"));
+                            acceptedNameCounter.getAndIncrement();
+                        }
+                    }
+                });
+
+        assertThat(synonymCounter.get(), Is.is(0));
+        assertThat(homonymCounter.get(), Is.is(0));
+        assertThat(acceptedNameCounter.get(), Is.is(1));
     }
 
     @Test

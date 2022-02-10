@@ -174,7 +174,10 @@ public class DiscoverLifeUtil {
                     );
                 }
 
-                if (!relatedNameIsHomonym && !focalTaxonIsHomonym) {
+                if (!relatedNameIsHomonym
+                        && !focalTaxonIsHomonym
+                        && !isSelfReferential(relatedTaxon, focalTaxon)) {
+
                     listener.foundTaxonForTerm(
                             null,
                             relatedTaxon,
@@ -184,6 +187,18 @@ public class DiscoverLifeUtil {
                 }
             }
         }
+    }
+
+    public static boolean isSelfReferential(Taxon relatedTaxon, Taxon focalTaxon) {
+        boolean isSelfReference = false;
+        if (relatedTaxon != null && focalTaxon != null) {
+            isSelfReference =
+                    StringUtils.equals(relatedTaxon.getExternalId(), focalTaxon.getExternalId())
+                    && StringUtils.equals(relatedTaxon.getName(), focalTaxon.getName())
+                    && StringUtils.equals(relatedTaxon.getAuthorship(), focalTaxon.getAuthorship());
+
+        }
+        return isSelfReference;
     }
 
     private static Taxon toTaxon(Map<String, String> relatedName) {
