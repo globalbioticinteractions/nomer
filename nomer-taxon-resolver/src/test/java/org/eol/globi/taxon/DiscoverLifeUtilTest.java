@@ -159,7 +159,7 @@ public class DiscoverLifeUtilTest {
             }
         });
 
-        assertThat(relatedTaxa.size(), Is.is(4));
+        assertThat(relatedTaxa.size(), Is.is(3));
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
@@ -180,14 +180,6 @@ public class DiscoverLifeUtilTest {
         assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("(Robertson, 1891)"));
         assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
         assertThat(thirdNameRelation.getRight().getName(), Is.is("Andrena accepta"));
-
-        Triple<Term, NameType, Taxon> fourthNameRelation = relatedTaxa.get(3);
-        //assertThat(fourthRelatedName.getName(), Is.is("synonym"));
-        assertThat(fourthNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
-        assertThat(((Taxon) fourthNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
-        assertThat(fourthNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
-        assertThat(fourthNameRelation.getRight().getName(), Is.is("Andrena accepta"));
-
 
     }
 
@@ -662,7 +654,7 @@ public class DiscoverLifeUtilTest {
 
         DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), listener);
 
-        assertThat(counter.get(), Is.is(50620));
+        assertThat(counter.get(), Is.is(50219));
 
         Taxon taxon = firstTaxon.get();
 

@@ -48,7 +48,8 @@ public class TermMatcherRegistry {
             "translate-names",
             "wikidata-web",
             "worms",
-            "col"));
+            "col",
+            "ott"));
 
     static final Map<String, String> MATCH_NAME_MAPPER = Collections.unmodifiableMap(new TreeMap<String, String>() {
         {
@@ -86,6 +87,7 @@ public class TermMatcherRegistry {
             put("gn-parse", "gn-parse");
             put("uksi-current-name", "uksi-current-name");
             put("gbif-parse", "gbif-parse");
+            put("ott", "ott");
         }
     });
 

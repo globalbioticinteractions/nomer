@@ -75,22 +75,6 @@ public class OpenTreeTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is(" |  | domain | phylum | class | order | family"));
     }
 
-    @Test
-    public void enrichBySynonymName() throws PropertyEnricherException {
-        OpenTreeTaxonService service = createService();
-
-        TaxonImpl taxon = new TaxonImpl("Ozyptila schusteri", null);
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
-
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("COL:6TH9B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ozyptila yosemitica"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Ozyptila yosemitica"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Schick, 1965"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("COL:6TH9B"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));
-    }
-
     private OpenTreeTaxonService createService() {
         return createService("/org/globalbioticinteractions/nomer/match/ott/taxonomy.tsv");
     }

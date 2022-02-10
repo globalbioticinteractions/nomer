@@ -55,7 +55,10 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
 
     @Override
     public String getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider) {
-        return key;
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
+        return getTaxonomyProvider().equals(taxonomyProvider)
+                ? ExternalIdUtil.stripPrefix(taxonomyProvider, key)
+                : key;
     }
 
     @Override

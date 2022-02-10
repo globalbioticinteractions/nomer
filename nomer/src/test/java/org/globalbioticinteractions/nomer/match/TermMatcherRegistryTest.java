@@ -17,7 +17,8 @@ import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 public class TermMatcherRegistryTest {
 
-    private static final List<String> SUPPORTED_LONG_NAMES = Collections.unmodifiableList(Arrays.asList(
+    private static final List<String> SUPPORTED_LONG_NAMES
+            = Collections.unmodifiableList(Arrays.asList(
             "ala-taxon",
             "bold-web",
             "crossref-doi",
@@ -50,7 +51,8 @@ public class TermMatcherRegistryTest {
             "worms-taxon",
             "uksi-current-name",
             "gn-parse",
-            "gbif-parse"));
+            "gbif-parse",
+            "ott"));
 
     @Test(expected = IllegalArgumentException.class)
     public void createNonExistingMatcher() {
