@@ -51,7 +51,7 @@ public class WoRMSService extends PropertyEnricherSimple {
     }
 
     private String getResponse(String methodName, String paramName, String paramValue) throws PropertyEnricherException {
-        HttpPost post = new HttpPost("http://www.marinespecies.org/aphia.php?p=soap");
+        HttpPost post = new HttpPost("https://www.marinespecies.org/aphia.php?p=soap");
         post.setHeader("SOAPAction", "http://tempuri.org/getAphiaID");
         post.setHeader("Content-Type", "text/xml;charset=utf-8");
         String requestBody = "<?xml version=\"1.0\" ?>";
