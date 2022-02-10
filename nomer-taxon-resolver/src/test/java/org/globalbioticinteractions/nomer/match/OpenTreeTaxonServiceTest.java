@@ -1,0 +1,122 @@
+package org.globalbioticinteractions.nomer.match;
+
+import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TaxonUtil;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
+public class OpenTreeTaxonServiceTest {
+
+    @Test
+    public void enrichById() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+        Map<String, String> enriched = service.enrich(
+                TaxonUtil.taxonToMap(
+                        new TaxonImpl(null, "OTT:1098176")
+                )
+        );
+
+        assertPasteurellaceae(enriched);
+    }
+
+    @Test
+    public void enrichByName() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+        Taxon phryganella = new TaxonImpl("Pasteurellaceae", null);
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(phryganella));
+        assertPasteurellaceae(enriched);
+    }
+
+    @Test
+    public void enrichBySynonymId() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+
+        Map<String, String> enriched = service.enrich(
+                TaxonUtil.taxonToMap(new TaxonImpl(null, "OTT:1098176")));
+
+        assertPasteurellaceae(enriched);
+    }
+
+    @Test
+    public void enrichBySynonymIdGBIF() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+
+        Map<String, String> enriched = service.enrich(
+                TaxonUtil.taxonToMap(new TaxonImpl(null, "GBIF:9536")));
+
+        assertPasteurellaceae(enriched);
+    }
+
+    @Test
+    public void enrichBySynonymIdWORMS() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+
+        Map<String, String> enriched = service.enrich(
+                TaxonUtil.taxonToMap(new TaxonImpl(null, "WORMS:394200")));
+
+        assertPasteurellaceae(enriched);
+    }
+
+    public void assertPasteurellaceae(Map<String, String> enriched) {
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("OTT:1098176"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Pasteurellaceae"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("family"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("life | cellular organisms | Bacteria | Proteobacteria | Gammaproteobacteria | Pasteurellales | Pasteurellaceae"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("OTT:805080 | OTT:93302 | OTT:844192 | OTT:248067 | OTT:822744 | OTT:767311 | OTT:1098176"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is(" |  | domain | phylum | class | order | family"));
+    }
+
+    @Test
+    public void enrichBySynonymName() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+
+        TaxonImpl taxon = new TaxonImpl("Ozyptila schusteri", null);
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("COL:6TH9B"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ozyptila yosemitica"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Ozyptila yosemitica"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Schick, 1965"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("COL:6TH9B"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));
+    }
+
+    private OpenTreeTaxonService createService() {
+        return createService("/org/globalbioticinteractions/nomer/match/ott/taxonomy.tsv");
+    }
+
+    private OpenTreeTaxonService createService(final String nameUrl) {
+        return new OpenTreeTaxonService(new TermMatcherContextClasspath() {
+            @Override
+            public String getCacheDir() {
+                return new File("target/ottCache" + UUID.randomUUID()).getAbsolutePath();
+            }
+
+            @Override
+            public String getOutputFormat() {
+                return null;
+            }
+
+            @Override
+            public String getProperty(String key) {
+                return new TreeMap<String, String>() {
+                    {
+                        put("nomer.ott.taxonomy", nameUrl);
+                    }
+                }.get(key);
+            }
+        });
+    }
+
+
+}

@@ -90,12 +90,16 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         });
     }
 
+    protected boolean isIdSchemeSupported(String externalId) {
+        return StringUtils.startsWith(externalId, getTaxonomyProvider().getIdPrefix());
+    }
+
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enriched = new TreeMap<>(properties);
         String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, getTaxonomyProvider().getIdPrefix())) {
-            enriched = enrichMatches(enriched, getIdOrNull(externalId, getTaxonomyProvider()), noopListener());
+        if (isIdSchemeSupported(externalId)) {
+            enriched = enrichMatches(enriched, getIdOrNull(externalId, ExternalIdUtil.taxonomyProviderFor(externalId)), noopListener());
         } else {
             String name = properties.get(PropertyAndValueDictionary.NAME);
             if (StringUtils.isNoneBlank(name)) {

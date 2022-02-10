@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOfLifeTaxonService.class);
-    private boolean reverseSorted = false;
+    private boolean reverseSorted;
 
 
     public CatalogueOfLifeTaxonService(TermMatcherContext ctx) {
