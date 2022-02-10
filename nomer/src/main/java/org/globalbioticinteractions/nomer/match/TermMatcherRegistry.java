@@ -84,6 +84,7 @@ public class TermMatcherRegistry {
             put("indexfungorum", "indexfungorum");
             put("col", "col");
             put("gn-parse", "gn-parse");
+            put("uksi-current-name", "uksi-current-name");
         }
     });
 
@@ -114,6 +115,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherIndexFungorumFactory());
         add(new TermMatcherCatalogOfLifeFactory());
         add(new TermMatcherGNParseFactory());
+        add(new TermMatcherUSKIFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
