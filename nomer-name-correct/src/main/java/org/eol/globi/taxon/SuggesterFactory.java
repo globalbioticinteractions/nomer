@@ -17,25 +17,20 @@ public class SuggesterFactory {
         final NameSuggester manualSuggestor = createManualSuggester(ctx);
 
         final NameSuggester stopwordRemover = createStopwordRemover(ctx);
-        final GlobalNamesCanon gnCanon = new GlobalNamesCanon();
 
         return new ArrayList<NameSuggester>() {
             {
                 // give manual suggestions first try
+                addSuggesters();
+                addSuggesters();
+            }
+
+            private void addSuggesters() {
                 add(manualSuggestor);
                 add(stopwordRemover);
                 add(new SnakeCaseUndoer());
                 add(new PeriodAsWhitespaceUndoer());
                 add(new AllCapsUndoer());
-
-                // attempt to extract canonical name
-                add(gnCanon);
-                // manual suggestions again
-                add(manualSuggestor);
-                add(stopwordRemover);
-                add(new NameScrubber());
-                add(gnCanon);
-                add(manualSuggestor);
                 add(new NameScrubber());
             }
         };
