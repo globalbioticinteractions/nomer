@@ -10,8 +10,8 @@ public class GlobalNamesCanon implements NameSuggester {
 
     @Override
     public String suggest(String name) {
-        // names ending with a capital V are likely virus names
-        return StringUtils.endsWith(name, "V")
+        // names ending with a capital V or containing "virus" are likely virus names
+        return StringUtils.endsWith(name, "V") || StringUtils.containsIgnoreCase(name,"virus")
                 ? name
                 : parse(name);
     }

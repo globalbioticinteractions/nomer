@@ -83,6 +83,7 @@ public class TermMatcherRegistry {
             put("worms-taxon", "worms");
             put("indexfungorum", "indexfungorum");
             put("col", "col");
+            put("gn-parse", "gn-parse");
         }
     });
 
@@ -112,6 +113,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherITISFactory());
         add(new TermMatcherIndexFungorumFactory());
         add(new TermMatcherCatalogOfLifeFactory());
+        add(new TermMatcherGNParseFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

@@ -10,7 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GlobalNamesCanonTest {
 
-    protected NameSuggester getNameSuggester() {
+    private NameSuggester getNameSuggester() {
         return new GlobalNamesCanon();
     }
 
@@ -106,6 +106,12 @@ public class GlobalNamesCanonTest {
     public void batVirusName() {
         // see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/672#issuecomment-867149488
         assertThat(getNameSuggester().suggest("Bat SARS CoV"), is("Bat SARS CoV"));
+    }
+
+    @Test
+    public void batVirusName2() {
+        // see https://github.com/globalbioticinteractions/globalbioticinteractions/issues/672#issuecomment-867149488
+        assertThat(getNameSuggester().suggest("Homo sapiensvirus Linneaus, 1758"), is("Homo sapiensvirus Linneaus, 1758"));
     }
 
 
