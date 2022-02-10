@@ -10,16 +10,10 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.globalbioticinteractions.nomer.util.TermMatcherContext;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -56,6 +50,16 @@ public class IndexFungorumTaxonServiceTest {
         TaxonImpl taxon = new TaxonImpl("Clitocybe candicans", null);
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
         assertIF808518(enriched);
+    }
+
+    @Test
+    public void enrichByMismatchName() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+        TaxonImpl taxon = new TaxonImpl("Donald duck", null);
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is(nullValue()));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Donald duck"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(nullValue()));
     }
 
     @Test

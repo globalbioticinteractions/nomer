@@ -202,14 +202,16 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 );
             } else {
                 List<Map<String, String>> acceptedNameMap = denormalizedNodeIds.get(acceptedExternalId);
-                for (Map<String, String> hasSynonym : acceptedNameMap) {
-                    listener.foundTaxonForTerm(null,
-                            providedTerm,
-                            NameType.SYNONYM_OF,
-                            TaxonUtil.mapToTaxon(hasSynonym)
-                    );
+                if (acceptedNameMap != null) {
+                    for (Map<String, String> hasSynonym : acceptedNameMap) {
+                        listener.foundTaxonForTerm(null,
+                                providedTerm,
+                                NameType.SYNONYM_OF,
+                                TaxonUtil.mapToTaxon(hasSynonym)
+                        );
+                    }
+                    enriched = acceptedNameMap.size() == 0 ? enriched : acceptedNameMap.get(0);
                 }
-                enriched = acceptedNameMap.size() == 0 ? enriched : acceptedNameMap.get(0);
             }
         }
         return enriched == null ? TaxonUtil.taxonToMap(providedTerm) : enriched;
