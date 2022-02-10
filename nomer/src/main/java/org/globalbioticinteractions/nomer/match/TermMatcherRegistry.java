@@ -85,6 +85,7 @@ public class TermMatcherRegistry {
             put("col", "col");
             put("gn-parse", "gn-parse");
             put("uksi-current-name", "uksi-current-name");
+            put("gbif-parse", "gbif-parse");
         }
     });
 
@@ -116,6 +117,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherCatalogOfLifeFactory());
         add(new TermMatcherGNParseFactory());
         add(new TermMatcherUSKIFactory());
+        add(new TermMatcherGBIFParseFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

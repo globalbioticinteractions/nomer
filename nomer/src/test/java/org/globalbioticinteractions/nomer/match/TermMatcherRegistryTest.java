@@ -47,7 +47,10 @@ public class TermMatcherRegistryTest {
             "wikidata-taxon-id-web",
             "indexfungorum",
             "col",
-            "worms-taxon"));
+            "worms-taxon",
+            "uksi-current-name",
+            "gn-parse",
+            "gbif-parse"));
 
     @Test(expected = IllegalArgumentException.class)
     public void createNonExistingMatcher() {
