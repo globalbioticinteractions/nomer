@@ -29,7 +29,6 @@ import java.util.Map;
 
 public class OpenTreeTaxonService extends CommonTaxonService<String> {
     private static final Logger LOG = LoggerFactory.getLogger(OpenTreeTaxonService.class);
-    private boolean reverseSorted;
 
 
     public OpenTreeTaxonService(TermMatcherContext ctx) {
@@ -48,7 +47,6 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
                 TaxonomyProvider.GBIF,
                 TaxonomyProvider.WORMS,
                 TaxonomyProvider.NCBI,
-                TaxonomyProvider.ITIS,
                 TaxonomyProvider.INTERIM_REGISTER_OF_MARINE_AND_NONMARINE_GENERA,
                 TaxonomyProvider.INDEX_FUNGORUM)
                 .contains(ExternalIdUtil.taxonomyProviderFor(externalId));

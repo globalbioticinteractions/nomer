@@ -118,6 +118,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherGNParseFactory());
         add(new TermMatcherUSKIFactory());
         add(new TermMatcherGBIFParseFactory());
+        add(new TermMatcherOpenTreeOfLifeFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
