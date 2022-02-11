@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class TermMatcherRegistryITISTest {
+public class TermMatcherRegistryITISIT {
 
     @Test
     public void createTermMatcher() throws PropertyEnricherException {
