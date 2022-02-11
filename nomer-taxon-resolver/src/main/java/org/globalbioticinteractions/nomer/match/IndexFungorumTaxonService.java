@@ -5,7 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eol.globi.data.CharsetConstant;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
@@ -15,7 +14,6 @@ import org.eol.globi.util.CSVTSVUtil;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
-import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.slf4j.Logger;
@@ -27,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class IndexFungorumTaxonService extends CommonLongTaxonService {
@@ -44,9 +40,9 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
         return TaxonomyProvider.INDEX_FUNGORUM;
     }
 
-    static void parseNodes(Map<Long, Map<String, String>> taxonMap,
-                           Map<Long, Long> acceptedNameMap,
-                           InputStream resourceAsStream) throws PropertyEnricherException {
+    private void parseNodes(Map<Long, Map<String, String>> nodes,
+                                   Map<Long, Long> mergedNodes,
+                                   InputStream resourceAsStream) throws PropertyEnricherException {
 
         if (resourceAsStream != null) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
@@ -79,10 +75,12 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
                     taxon.setPath(StringUtils.join(new String[]{kingdomName, phylumName, subphylumName, className, subclassName, orderName, familyName, completeName}, CharsetConstant.SEPARATOR));
                     taxon.setPathNames(StringUtils.join(new String[]{"kingdom", "phylum", "subphylum", "class", "subclass", "order", "family", ""}, CharsetConstant.SEPARATOR));
                     if (NumberUtils.isCreatable(taxId)) {
-                        taxonMap.put(Long.parseLong(taxId), TaxonUtil.taxonToMap(taxon));
+                        Long taxonKey = Long.parseLong(taxId);
+                        registerIdForName(taxonKey, taxon.getName(), name2nodeIds);
+                        nodes.put(taxonKey, TaxonUtil.taxonToMap(taxon));
                         if (NumberUtils.isCreatable(acceptedTaxId)) {
-                            acceptedNameMap.put(
-                                    Long.parseLong(taxId),
+                            mergedNodes.put(
+                                    taxonKey,
                                     Long.parseLong(acceptedTaxId)
                             );
                         }
@@ -113,13 +111,14 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES)
-                && db.exists(DENORMALIZED_NODE_IDS)
+        if (db.exists(NODES)
+                && db.exists(NODES)
                 && db.exists(MERGED_NODES)) {
             LOG.info("[" + getProviderShortName() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            denormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
-            denormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
+            name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
         } else {
             index(db);
         }
@@ -131,14 +130,18 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
         watch.start();
 
 
-        BTreeMap<Long, Map<String, String>> nodes = db
-                .createTreeMap("nodes")
+        nodes = db
+                .createTreeMap(NODES)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
 
         mergedNodes = db
                 .createTreeMap(MERGED_NODES)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .make();
+
+        name2nodeIds = db
+                .createTreeMap(NAME_TO_NODE_IDS)
                 .make();
 
         try {
@@ -150,27 +153,6 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS nodes", e);
         }
-
-        denormalizedNodes = db
-                .createTreeMap(DENORMALIZED_NODES)
-                .keySerializer(BTreeKeySerializer.STRING)
-                .make();
-
-        denormalizedNodeIds = db
-                .createTreeMap(DENORMALIZED_NODE_IDS)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .make();
-
-        nodes.forEach((id, record) -> {
-            Taxon taxon = TaxonUtil.mapToTaxon(record);
-            List<Map<String, String>> taxa = denormalizedNodes.getOrDefault(taxon.getName(), new ArrayList<>());
-            taxa.add(record);
-            denormalizedNodes.put(taxon.getName(), taxa);
-
-            taxa = denormalizedNodeIds.getOrDefault(id, new ArrayList<>());
-            taxa.add(record);
-            denormalizedNodeIds.put(id, taxa);
-        });
 
         watch.stop();
         TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);

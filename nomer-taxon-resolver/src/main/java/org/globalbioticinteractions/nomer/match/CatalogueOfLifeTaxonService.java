@@ -72,20 +72,18 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES)
-                && db.exists(DENORMALIZED_NODE_IDS)
+        if (db.exists(NODES)
+                && db.exists(CHILD_PARENT)
                 && db.exists(MERGED_NODES)
         ) {
             LOG.info("[Catalogue of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            denormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
-            denormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
         } else {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
             StopWatch watch = new StopWatch();
             watch.start();
-            BTreeMap<String, Map<String, String>> nodes;
-            BTreeMap<String, String> childParent;
             if (reverseSorted) {
                 LOG.info("indexing taxon names...");
                 nodes = populateNodes(db, watch);
@@ -103,13 +101,18 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                 try (InputStream resource = getNameUsageStream()) {
 
                     nodes = db
-                            .createTreeMap("nodes")
+                            .createTreeMap(NODES)
                             .keySerializer(BTreeKeySerializer.STRING)
                             .make();
 
 
                     childParent = db
-                            .createTreeMap("childParent")
+                            .createTreeMap(CHILD_PARENT)
+                            .keySerializer(BTreeKeySerializer.STRING)
+                            .make();
+
+                    name2nodeIds = db
+                            .createTreeMap(NAME_TO_NODE_IDS)
                             .keySerializer(BTreeKeySerializer.STRING)
                             .make();
 
@@ -125,23 +128,6 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                 }
             }
 
-            denormalizedNodes = db
-                    .createTreeMap(DENORMALIZED_NODES)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-            denormalizedNodeIds = db
-                    .createTreeMap(DENORMALIZED_NODE_IDS)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-
-            LOG.info("building denormalized taxon lookups...");
-            denormalizeTaxa(
-                    nodes,
-                    denormalizedNodes,
-                    denormalizedNodeIds,
-                    childParent);
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
 
             watch.stop();
@@ -159,7 +145,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
         try {
             skipFirstLine(reader);
             nodes = db
-                    .createTreeMap("nodes")
+                    .createTreeMap(NODES)
                     .pumpSource(new Iterator<Fun.Tuple2<String, Map<String, String>>>() {
                         String taxonStatus;
                         String taxonChildId;
@@ -216,7 +202,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
         try {
             skipFirstLine(reader);
             childParent = db
-                    .createTreeMap("childParent")
+                    .createTreeMap(CHILD_PARENT)
                     .pumpSource(new Iterator<Fun.Tuple2<String, String>>() {
                         String taxonChildId;
                         String taxonParentId;
@@ -394,7 +380,9 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
         private final Map<String, Map<String, String>> nodes;
         private final Map<String, String> childParent;
 
-        public NameUsageListenerImpl(Map<String, String> mergedNodes, Map<String, Map<String, String>> nodes, Map<String, String> childParent) {
+        public NameUsageListenerImpl(Map<String, String> mergedNodes,
+                                     Map<String, Map<String, String>> nodes,
+                                     Map<String, String> childParent) {
             this.mergedNodes = mergedNodes;
             this.nodes = nodes;
             this.childParent = childParent;
@@ -402,6 +390,8 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
 
         @Override
         public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+            registerIdForName(childTaxId, taxon.getName(), CatalogueOfLifeTaxonService.this.name2nodeIds);
+
             NameType nameType = getNameType(status);
             if (NameType.SYNONYM_OF.equals(nameType)) {
                 mergedNodes.put(childTaxId, parentTaxId);

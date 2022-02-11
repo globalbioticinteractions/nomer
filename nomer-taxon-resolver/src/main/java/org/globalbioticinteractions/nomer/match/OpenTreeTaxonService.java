@@ -12,7 +12,6 @@ import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
-import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.slf4j.Logger;
@@ -25,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class OpenTreeTaxonService extends CommonTaxonService<String> {
@@ -79,30 +79,30 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES)
-                && db.exists(DENORMALIZED_NODE_IDS)
+        if (db.exists(NODES)
+                && db.exists(CHILD_PARENT)
                 && db.exists(MERGED_NODES)
+                && db.exists(NAME_TO_NODE_IDS)
         ) {
             LOG.info("[Open Tree of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            denormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
-            denormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
+            name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
         } else {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
             StopWatch watch = new StopWatch();
             watch.start();
-            BTreeMap<String, Map<String, String>> nodes;
-            BTreeMap<String, String> childParent;
             try (InputStream resource = getNameUsageStream()) {
 
                 nodes = db
-                        .createTreeMap("nodes")
+                        .createTreeMap(NODES)
                         .keySerializer(BTreeKeySerializer.STRING)
                         .make();
 
 
                 childParent = db
-                        .createTreeMap("childParent")
+                        .createTreeMap(CHILD_PARENT)
                         .keySerializer(BTreeKeySerializer.STRING)
                         .make();
 
@@ -111,29 +111,17 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
                         .keySerializer(BTreeKeySerializer.STRING)
                         .make();
 
-                NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent);
+                name2nodeIds = db
+                        .createTreeMap(NAME_TO_NODE_IDS)
+                        .keySerializer(BTreeKeySerializer.STRING)
+                        .make();
+
+                NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent, name2nodeIds);
                 parseNameUsage(resource, nameUsageListener);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse taxon", e);
             }
 
-            denormalizedNodes = db
-                    .createTreeMap(DENORMALIZED_NODES)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-            denormalizedNodeIds = db
-                    .createTreeMap(DENORMALIZED_NODE_IDS)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-
-            LOG.info("building denormalized taxon lookups...");
-            denormalizeTaxa(
-                    nodes,
-                    denormalizedNodes,
-                    denormalizedNodeIds,
-                    childParent);
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
 
             watch.stop();
@@ -212,15 +200,21 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
         private final Map<String, String> mergedNodes;
         private final Map<String, Map<String, String>> nodes;
         private final Map<String, String> childParent;
+        private final Map<String, List<String>> name2ids;
 
-        public NameUsageListenerImpl(Map<String, String> mergedNodes, Map<String, Map<String, String>> nodes, Map<String, String> childParent) {
+        public NameUsageListenerImpl(Map<String, String> mergedNodes,
+                                     Map<String, Map<String, String>> nodes,
+                                     Map<String, String> childParent,
+                                     Map<String, List<String>> name2ids) {
             this.mergedNodes = mergedNodes;
             this.nodes = nodes;
             this.childParent = childParent;
+            this.name2ids = name2ids;
         }
 
         @Override
         public void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon) {
+            registerIdForName(childTaxId, taxon.getName(), OpenTreeTaxonService.this.name2nodeIds);
             if (NameType.SAME_AS.equals(status)) {
                 mergedNodes.put(childTaxId, parentTaxId);
             }
@@ -235,5 +229,7 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
             }
 
         }
+
     }
+
 }

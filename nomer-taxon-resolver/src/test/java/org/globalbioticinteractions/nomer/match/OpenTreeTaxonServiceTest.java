@@ -1,20 +1,54 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.TermMatchListener;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsCollectionContaining.hasItem;
 
 public class OpenTreeTaxonServiceTest {
+
+    @Test
+    public void queryAll() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+        AtomicLong counter = new AtomicLong();
+        Collection<String> ids = new TreeSet<>();
+        service.match(Collections.singletonList(
+                new TaxonImpl(".*", ".*")), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                        counter.incrementAndGet();
+                        ids.add(taxon.getExternalId());
+                    }
+                });
+
+        assertThat(counter.get(), is(45L));
+
+        assertThat(ids.size(), is(8));
+
+        assertThat(ids, hasItem("OTT:470454"));
+//        assertThat(ids, hasItem("OTT:525972"));
+    }
+
 
     @Test
     public void enrichById() throws PropertyEnricherException {

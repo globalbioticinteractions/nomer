@@ -25,7 +25,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ITISTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(ITISTaxonService.class);
@@ -39,10 +38,11 @@ public class ITISTaxonService extends CommonLongTaxonService {
         return TaxonomyProvider.ITIS;
     }
 
-    static void parseNodes(Map<Long, Map<String, String>> taxonMap,
-                           Map<Long, Long> childParent,
-                           Map<String, String> rankIdNameMap,
-                           InputStream is) throws PropertyEnricherException {
+    void parseNodes(Map<Long, Map<String, String>> taxonMap,
+                    Map<Long, Long> childParent,
+                    Map<String, String> rankIdNameMap,
+                    Map<String, List<Long>> name2nodeIds,
+                    InputStream is) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
         String line;
@@ -62,10 +62,12 @@ public class ITISTaxonService extends CommonLongTaxonService {
                     TaxonImpl taxon = new TaxonImpl(completeName, TaxonomyProvider.ID_PREFIX_ITIS + taxId);
                     taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
                     if (NumberUtils.isCreatable(taxId)) {
-                        taxonMap.put(Long.parseLong(taxId), TaxonUtil.taxonToMap(taxon));
+                        Long taxonKey = Long.parseLong(taxId);
+                        registerIdForName(taxonKey, taxon.getName(), name2nodeIds);
+                        taxonMap.put(taxonKey, TaxonUtil.taxonToMap(taxon));
                         if (NumberUtils.isCreatable(parentTaxId)) {
                             childParent.put(
-                                    Long.parseLong(taxId),
+                                    taxonKey,
                                     Long.parseLong(parentTaxId)
                             );
                         }
@@ -139,13 +141,14 @@ public class ITISTaxonService extends CommonLongTaxonService {
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES)
-                && db.exists(DENORMALIZED_NODE_IDS)
+        if (db.exists(NODES)
+                && db.exists(CHILD_PARENT)
                 && db.exists(MERGED_NODES)) {
             LOG.info("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            denormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
-            denormalizedNodeIds = db.getTreeMap(DENORMALIZED_NODE_IDS);
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
+            name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
         } else {
             indexITIS(db);
         }
@@ -171,18 +174,22 @@ public class ITISTaxonService extends CommonLongTaxonService {
             throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
         }
 
-        BTreeMap<Long, Map<String, String>> itisNodes = db
-                .createTreeMap("nodes")
+        nodes = db
+                .createTreeMap(NODES)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
 
-        BTreeMap<Long, Long> childParent = db
-                .createTreeMap("childParent")
+        childParent = db
+                .createTreeMap(CHILD_PARENT)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .make();
+
+        name2nodeIds = db
+                .createTreeMap(NAME_TO_NODE_IDS)
                 .make();
 
         try {
-            parseNodes(itisNodes, childParent, rankIdNameMap, getCtx().retrieve(getNodesUrl()));
+            parseNodes(nodes, childParent, rankIdNameMap, name2nodeIds, getCtx().retrieve(getNodesUrl()));
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS nodes", e);
         }
@@ -199,24 +206,8 @@ public class ITISTaxonService extends CommonLongTaxonService {
             throw new PropertyEnricherException("failed to parse ITIS nodes", e);
         }
 
-        denormalizedNodes = db
-                .createTreeMap(DENORMALIZED_NODES)
-                .keySerializer(BTreeKeySerializer.STRING)
-                .make();
-
-        denormalizedNodeIds = db
-                .createTreeMap(DENORMALIZED_NODE_IDS)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .make();
-
-        denormalizeTaxa(
-                itisNodes,
-                denormalizedNodes,
-                denormalizedNodeIds,
-                childParent);
-
         watch.stop();
-        TaxonCacheService.logCacheLoadStats(watch.getTime(), itisNodes.size(), LOG);
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
         LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
     }
 
