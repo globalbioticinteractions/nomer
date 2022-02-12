@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
@@ -22,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public abstract class CommonTaxonService<T> extends PropertyEnricherSimple implements TermMatcher {
 
@@ -47,8 +50,14 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     public void registerIdForName(T childTaxId, String name, Map<String, List<T>> name2nodeIds) {
         if (StringUtils.isNoneBlank(name)) {
             List<T> ids = name2nodeIds.get(name);
-            List<T> updatedIds = new ArrayList<>(ids == null ? Collections.singletonList(childTaxId) : ids);
-            updatedIds.add(childTaxId);
+            List<T> updatedIds;
+            if (ids == null) {
+                updatedIds = Collections.singletonList(childTaxId);
+            } else {
+                TreeSet<T> ts = new TreeSet<>(ids);
+                ts.add(childTaxId);
+                updatedIds = new TreeList<>(ts);
+            }
             name2nodeIds.put(name, updatedIds);
         }
     }
@@ -74,7 +83,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         checkInit();
 
         nodes.forEach((id, taxonMap) -> {
-            Taxon taxonFrom = TaxonUtil.mapToTaxon(taxonMap);
+            Taxon taxonFrom = resolveTaxon(id, childParent, nodes, getTaxonomyProvider());
             Taxon taxonTo;
             NameType nameType;
             T acceptedId = mergedNodes.get(id);
@@ -82,7 +91,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 taxonTo = taxonFrom;
                 nameType = NameType.HAS_ACCEPTED_NAME;
             } else {
-                taxonTo = TaxonUtil.mapToTaxon(nodes.get(acceptedId));
+                taxonTo = resolveTaxon(acceptedId, childParent, nodes, getTaxonomyProvider());
                 nameType = NameType.SYNONYM_OF;
             }
             termMatchListener.foundTaxonForTerm(
@@ -218,10 +227,12 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 emitNoMatch(providedTaxon, listener);
             } else {
 
-                for (T taxonKey : taxonKeys) {
+                for (T taxonKey : new TreeSet<>(taxonKeys)) {
                     final T acceptedExternalId = mergedNodeOrDefault(taxonKey);
                     if (acceptedExternalId != null) {
-                        Taxon resolvedTaxon = resolveTaxon(acceptedExternalId, childParent, nodes, getTaxonomyProvider());
+                        Taxon resolvedTaxon = resolveTaxon(
+                                acceptedExternalId, childParent, nodes, getTaxonomyProvider()
+                        );
                         if (resolvedTaxon != null) {
                             enriched = TaxonUtil.taxonToMap(resolvedTaxon);
 

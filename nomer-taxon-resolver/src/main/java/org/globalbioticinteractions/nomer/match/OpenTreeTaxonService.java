@@ -214,7 +214,7 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
 
         @Override
         public void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon) {
-            registerIdForName(childTaxId, taxon.getName(), OpenTreeTaxonService.this.name2nodeIds);
+            registerIdForName(childTaxId, taxon.getName(), this.name2ids);
             if (NameType.SAME_AS.equals(status)) {
                 mergedNodes.put(childTaxId, parentTaxId);
             }
