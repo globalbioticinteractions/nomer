@@ -56,7 +56,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             } else {
                 TreeSet<T> ts = new TreeSet<>(ids);
                 ts.add(childTaxId);
-                updatedIds = new TreeList<>(ts);
+                updatedIds = new ArrayList<>(ts);
             }
             name2nodeIds.put(name, updatedIds);
         }
@@ -69,8 +69,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 matchAll(termMatchListener);
             } else {
                 Taxon providedTaxon = new TaxonImpl(term.getName(), term.getId());
-                TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(term.getId());
-                if (getTaxonomyProvider().equals(taxonomyProvider)) {
+                if (isIdSchemeSupported(term.getId())) {
                     enrichIdMatches(providedTaxon, termMatchListener);
                 } else if (StringUtils.isNoneBlank(term.getName())) {
                     enrichNameMatches(providedTaxon, termMatchListener);
