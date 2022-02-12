@@ -18,8 +18,7 @@ public class CatalogueOfLifeTaxonServiceTest {
 
     @Test
     public void enrichById() throws PropertyEnricherException {
-        CatalogueOfLifeTaxonService service = createService();
-        assertEnrichById(service);
+        assertEnrichById(createService());
     }
 
     @Test

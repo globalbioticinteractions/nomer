@@ -26,9 +26,9 @@ import java.util.TreeMap;
 
 public abstract class CommonTaxonService<T> extends PropertyEnricherSimple implements TermMatcher {
 
-    public static final String NODES = "nodes";
-    public static final String CHILD_PARENT = "childParent";
-    protected static final String MERGED_NODES = "mergedNodes";
+    static final String NODES = "nodes";
+    static final String CHILD_PARENT = "childParent";
+    static final String MERGED_NODES = "mergedNodes";
     static final String NAME_TO_NODE_IDS = "name2node";
 
 
@@ -62,7 +62,6 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 Taxon providedTaxon = new TaxonImpl(term.getName(), term.getId());
                 TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(term.getId());
                 if (getTaxonomyProvider().equals(taxonomyProvider)) {
-                    String id = term.getId();
                     enrichIdMatches(providedTaxon, termMatchListener);
                 } else if (StringUtils.isNoneBlank(term.getName())) {
                     enrichNameMatches(providedTaxon, termMatchListener);
