@@ -4,6 +4,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.junit.Test;
 
 import java.io.File;
@@ -101,7 +102,7 @@ public class CatalogueOfLifeTaxonServiceTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

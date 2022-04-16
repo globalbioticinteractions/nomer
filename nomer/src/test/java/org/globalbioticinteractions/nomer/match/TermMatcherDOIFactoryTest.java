@@ -11,6 +11,7 @@ import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.doi.DOI;
 import org.globalbioticinteractions.doi.MalformedDOIException;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Rule;
@@ -98,7 +99,7 @@ public class TermMatcherDOIFactoryTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

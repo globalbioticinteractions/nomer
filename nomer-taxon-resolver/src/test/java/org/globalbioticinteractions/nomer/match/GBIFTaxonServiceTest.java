@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
@@ -136,7 +137,7 @@ public class GBIFTaxonServiceTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

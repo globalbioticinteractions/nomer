@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import com.google.protobuf.ByteString;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
@@ -10,6 +11,7 @@ import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.CSVTSVUtil;
 import org.globalbioticinteractions.nomer.cmd.CmdMatcherParams;
 import org.globalbioticinteractions.nomer.cmd.CmdOutput;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.Appender;
 import org.globalbioticinteractions.nomer.util.AppenderJSON;
 import org.globalbioticinteractions.nomer.util.AppenderTSV;
@@ -91,7 +93,7 @@ public class MatchUtil {
         TermMatcher matcher = getTermMatcher(ctx.getMatchers(), ctx);
 
         Appender appender;
-        if ("json".equalsIgnoreCase(ctx.getOutputFormat())) {
+        if (OutputFormat.json.equals(ctx.getOutputFormat())) {
             appender = new AppenderJSON();
         } else {
             appender = new AppenderTSV(getAppenderOutputSchema(ctx));
@@ -109,12 +111,13 @@ public class MatchUtil {
     public static List<RowHandler> getAppendingRowHandlers(
             TermMatcherContext ctx,
             Boolean includeHeader,
-            String outputFormat, PrintStream out) {
+            OutputFormat outputFormat,
+            PrintStream out) {
 
         RowHandler rowHandler = getAppendingRowHandler(ctx, out);
         List<RowHandler> handlers = new ArrayList<>();
         if (includeHeader
-                && StringUtils.equals(outputFormat, CmdOutput.OUTPUT_FORMAT_DEFAULT)) {
+                && CmdOutput.OUTPUT_FORMAT_DEFAULT.equals(outputFormat)) {
             handlers.add(new HeaderRowHandler(out,
                     ctx.getInputSchema(),
                     getAppenderOutputSchema(ctx)));

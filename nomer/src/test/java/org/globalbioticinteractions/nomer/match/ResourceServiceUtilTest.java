@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Before;
@@ -80,7 +81,7 @@ public class ResourceServiceUtilTest {
         }
 
         @Override
-        public String getOutputFormat() {
+        public OutputFormat getOutputFormat() {
             return null;
         }
 

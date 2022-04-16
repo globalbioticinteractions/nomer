@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class TestTermMatcherContextDefault implements TermMatcherContext {
     }
 
     @Override
-    public String getOutputFormat() {
+    public OutputFormat getOutputFormat() {
         return null;
     }
 

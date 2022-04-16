@@ -10,6 +10,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.DiscoverLifeUtil;
 import org.eol.globi.taxon.TermMatchListener;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.After;
@@ -366,7 +367,7 @@ public class DiscoverLifeTaxonServiceTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

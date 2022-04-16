@@ -21,7 +21,7 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
     private List<String> matchers = new ArrayList<>();
 
     @Override
-    public String getOutputFormat() {
+    public OutputFormat getOutputFormat() {
         return CmdOutput.OUTPUT_FORMAT_DEFAULT;
     }
 

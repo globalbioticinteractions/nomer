@@ -7,6 +7,7 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Ignore;
@@ -106,7 +107,7 @@ public class TermMatcherOpenBiodivFactoryTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

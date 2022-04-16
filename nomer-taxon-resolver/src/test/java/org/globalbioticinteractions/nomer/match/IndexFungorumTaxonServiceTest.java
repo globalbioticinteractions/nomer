@@ -10,6 +10,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.junit.Test;
 
 import java.io.File;
@@ -134,7 +135,7 @@ public class IndexFungorumTaxonServiceTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

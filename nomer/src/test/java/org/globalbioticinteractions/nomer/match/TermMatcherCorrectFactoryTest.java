@@ -10,6 +10,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.SuggesterFactory;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public class TermMatcherCorrectFactoryTest {
             }
 
             @Override
-            public String getOutputFormat() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

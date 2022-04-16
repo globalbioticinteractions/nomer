@@ -3,6 +3,7 @@ package org.eol.globi.service;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.taxon.TaxonEnricherImpl;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.match.TermMatcherContextClasspath;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.After;
@@ -58,7 +59,7 @@ public class TermMatchEnsembleFactoryTest {
                 }
 
                 @Override
-                public String getOutputFormat() {
+                public OutputFormat getOutputFormat() {
                     return null;
                 }
 

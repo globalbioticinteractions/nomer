@@ -1,5 +1,6 @@
 package org.eol.globi.taxon;
 
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class ContextForTesting implements TermMatcherContext {
     }
 
     @Override
-    public String getOutputFormat() {
+    public OutputFormat getOutputFormat() {
         return null;
     }
 
