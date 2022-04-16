@@ -23,6 +23,7 @@ Note that a python wrapper was made available by [nleguillarme](https://github.c
 
 - [Prerequisites](#prerequisites)
 - [Install](#install)
+- [Documentation](docs/nomer.adoc)
 - [Usage](#usage)
 - [Examples](#examples)
   - [`show version`](#show-version)
@@ -86,6 +87,10 @@ Please use [maven](https://maven.apache.org) version 3.3+ , otherwise you might 
 * Run tests using `mvn test` (optional).
 * Run `mvn package -DskipTests` to build (standalone) jar
 * Copy `nomer/target/nomer-[version]-jar-with-dependencies.jar` to ```[some dir]/nomer.jar```
+
+## Documentation
+
+For documentation see [docs/nomer.adoc](docs/nomer.adoc).
 
 ## Usage
 
