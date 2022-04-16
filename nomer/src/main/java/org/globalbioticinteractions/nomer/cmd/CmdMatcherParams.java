@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.globalbioticinteractions.nomer.match.TermMatcherContextCaching;
+import picocli.CommandLine;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.TreeMap;
 
 public abstract class CmdMatcherParams extends TermMatcherContextCaching implements Runnable {
 
-    @Parameter(description = "[matcher]")
+    @CommandLine.Parameters(description = "[matcher]")
     private List<String> matchers = new ArrayList<>();
 
     @Override

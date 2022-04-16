@@ -1,10 +1,11 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameters;
+import picocli.CommandLine;
 
-import java.util.Properties;
-
-@Parameters(separators = "= ", commandDescription = "Show input schema in JSON.")
+@CommandLine.Command(
+        name = "input-schema",
+        description = "Show input schema in JSON."
+)
 public class CmdInputSchema extends CmdProperties {
 
     @Override

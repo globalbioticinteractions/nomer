@@ -1,9 +1,9 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameter;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.PropertyContext;
+import picocli.CommandLine;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,7 +15,9 @@ public abstract class CmdDefaultParams implements PropertyContext {
     public static final String PROPERTIES_DEFAULT = "classpath:/org/globalbioticinteractions/nomer/default.properties";
     private Properties properties = null;
 
-    @Parameter(names = {"-p", "--properties"}, description = "Path to properties file to override defaults.")
+    @CommandLine.Option(
+            names = {"-p", "--properties"},
+            description = "Path to properties file to override defaults.")
     private String propertiesResource = "";
 
 

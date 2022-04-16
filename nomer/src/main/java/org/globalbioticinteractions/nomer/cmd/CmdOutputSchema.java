@@ -1,8 +1,8 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameters;
+import picocli.CommandLine;
 
-@Parameters(separators = "= ", commandDescription = "Show output schema in JSON.")
+@CommandLine.Command(name = "output-schema", description = "Show output schema in JSON.")
 public class CmdOutputSchema extends CmdProperties {
 
     @Override

@@ -1,13 +1,15 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameters;
+import org.globalbioticinteractions.nomer.Nomer;
+import picocli.CommandLine;
 
-@Parameters(separators = "= ", commandDescription = "Show Version.")
+@CommandLine.Command(description = "Show Version.")
 public class CmdVersion implements Runnable {
 
     @Override
     public void run() {
-        String version = CmdVersion.class.getPackage().getImplementationVersion();
+        String version = Nomer.getVersionString();
         System.out.println(version == null ? "dev" : version);
     }
+
 }

@@ -1,10 +1,10 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameters;
 import org.apache.commons.lang3.tuple.Pair;
 import org.globalbioticinteractions.nomer.util.TermValidator;
 import org.globalbioticinteractions.nomer.util.TermValidatorFactory;
 import org.globalbioticinteractions.nomer.util.TermValidatorPredicates;
+import picocli.CommandLine;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import static org.globalbioticinteractions.nomer.util.TermValidatorPredicates.allFor;
 
-@Parameters(separators = "= ", commandDescription = "Validate term links.")
+@CommandLine.Command(name = "validate-term-link", description = "Validate term links.")
 public class CmdValidateLinks extends CmdDefaultParams implements Runnable {
 
     static void validate(Stream<String> lines, List<Pair<Predicate<String>, String>> mapPredicates) {
