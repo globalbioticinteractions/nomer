@@ -3,7 +3,7 @@ package org.globalbioticinteractions.nomer.cmd;
 import org.globalbioticinteractions.nomer.Nomer;
 import picocli.CommandLine;
 
-@CommandLine.Command(description = "Show Version.")
+@CommandLine.Command(name = "version", description = "Show Version")
 public class CmdVersion implements Runnable {
 
     @Override

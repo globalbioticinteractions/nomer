@@ -9,7 +9,7 @@ import picocli.CommandLine;
 import java.util.List;
 
 @CommandLine.Command(name = "list",
-        aliases = {"ls", "dump", "peruse-all", "crawl-full-lexicon", "show-all-terms", "terms", "show", "export"},
+        aliases = {"ls", "dump", "export"},
         description = "Dumps all terms into the defined output schema."
 )
 public class CmdDump extends CmdOutput {

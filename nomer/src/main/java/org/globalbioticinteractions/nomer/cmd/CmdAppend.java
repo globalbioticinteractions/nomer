@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameters;
 import org.eol.globi.taxon.RowHandler;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import picocli.CommandLine;

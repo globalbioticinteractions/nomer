@@ -1,8 +1,6 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameters;
 import picocli.CommandLine;
-import scala.tools.nsc.Global;
 
 import java.util.Properties;
 
@@ -17,7 +15,7 @@ public class CmdProperties extends CmdDefaultParams implements Runnable {
         printOnlyWithPrefix("nomer.");
     }
 
-    protected void printOnlyWithPrefix(String prefixFilter) {
+    private void printOnlyWithPrefix(String prefixFilter) {
         Properties properties = getProperties();
         properties.stringPropertyNames().stream()
                 .filter(key -> key.startsWith(prefixFilter))

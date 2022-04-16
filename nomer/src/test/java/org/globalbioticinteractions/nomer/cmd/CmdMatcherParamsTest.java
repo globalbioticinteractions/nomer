@@ -6,8 +6,6 @@ import org.junit.Test;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CmdMatcherParamsTest {
