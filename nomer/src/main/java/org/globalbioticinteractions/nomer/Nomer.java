@@ -24,7 +24,7 @@ import static java.lang.System.exit;
                 CmdVersion.class,
                 CmdReplace.class,
                 CmdAppend.class,
-//                CmdDump.class,
+                CmdDump.class,
                 CmdMatchers.class,
                 CmdProperties.class,
                 CmdInputSchema.class,
