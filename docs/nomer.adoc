@@ -1,0 +1,97 @@
+// tag::picocli-generated-full-manpage[]
+// tag::picocli-generated-man-section-header[]
+:doctype: manpage
+:revnumber: 0.0.1-SNAPSHOT
+:manmanual: Nomer Manual
+:mansource: 0.0.1-SNAPSHOT
+:man-linkstyle: pass:[blue R < >]
+= nomer(1)
+
+// end::picocli-generated-man-section-header[]
+
+// tag::picocli-generated-man-section-name[]
+== Name
+
+nomer - nomer - maps identifiers and names to other identifiers and names
+
+// end::picocli-generated-man-section-name[]
+
+// tag::picocli-generated-man-section-synopsis[]
+== Synopsis
+
+*nomer* [*-hV*] [COMMAND]
+
+// end::picocli-generated-man-section-synopsis[]
+
+// tag::picocli-generated-man-section-description[]
+== Description
+
+nomer - maps identifiers and names to other identifiers and names
+
+// end::picocli-generated-man-section-description[]
+
+// tag::picocli-generated-man-section-options[]
+== Options
+
+*-h*, *--help*::
+  Show this help message and exit.
+
+*-V*, *--version*::
+  Print version information and exit.
+
+// end::picocli-generated-man-section-options[]
+
+// tag::picocli-generated-man-section-arguments[]
+// end::picocli-generated-man-section-arguments[]
+
+// tag::picocli-generated-man-section-commands[]
+== Commands
+
+xref:nomer-version.adoc[*version*]::
+  Show Version
+
+xref:nomer-replace.adoc[*replace*]::
+  Replace exact term matches in row. The input schema is used to select the id and/or name to match to. The output schema is used to select the columns to write into. If a term has multiple matches, first match is used.
+
+xref:nomer-append.adoc[*append*]::
+  Append term match to row using id and name columns specified in input schema. Multiple matches result in multiple rows.
+
+xref:nomer-list.adoc[*list*, *ls*, *dump*, *export*]::
+  Dumps all terms into the defined output schema.
+
+xref:nomer-matchers.adoc[*matchers*]::
+  Lists supported matcher and (optionally) their descriptions.
+
+xref:nomer-properties.adoc[*properties*]::
+  Lists configuration properties. Can be used to make a local copy and override default settings using the [--properties=[local copy]] option.
+
+xref:nomer-input-schema.adoc[*input-schema*]::
+  Show input schema in JSON.
+
+xref:nomer-output-schema.adoc[*output-schema*]::
+  Show output schema in JSON.
+
+xref:nomer-validate-terms.adoc[*validate-terms*]::
+  Validate terms.
+
+xref:nomer-validate-term-link.adoc[*validate-term-link*]::
+  Validate term links.
+
+xref:nomer-clean.adoc[*clean*]::
+  Cleans term matcher cache.
+
+xref:nomer-gen-manpage.adoc[*gen-manpage*]::
+  Generates man pages for all commands in the specified directory.
+
+xref:nomer-help.adoc[*help*]::
+  Displays help information about the specified command
+
+// end::picocli-generated-man-section-commands[]
+
+// tag::picocli-generated-man-section-exit-status[]
+// end::picocli-generated-man-section-exit-status[]
+
+// tag::picocli-generated-man-section-footer[]
+// end::picocli-generated-man-section-footer[]
+
+// end::picocli-generated-full-manpage[]
