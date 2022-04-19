@@ -1,9 +1,11 @@
 package org.globalbioticinteractions.nomer;
 
+import org.apache.commons.lang.StringUtils;
 import org.globalbioticinteractions.nomer.cmd.CmdAppend;
 import org.globalbioticinteractions.nomer.cmd.CmdClean;
 import org.globalbioticinteractions.nomer.cmd.CmdDump;
 import org.globalbioticinteractions.nomer.cmd.CmdInputSchema;
+import org.globalbioticinteractions.nomer.cmd.CmdInstallManual;
 import org.globalbioticinteractions.nomer.cmd.CmdMatchers;
 import org.globalbioticinteractions.nomer.cmd.CmdOutputSchema;
 import org.globalbioticinteractions.nomer.cmd.CmdProperties;
@@ -17,7 +19,7 @@ import picocli.codegen.docgen.manpage.ManPageGenerator;
 import static java.lang.System.exit;
 
 @CommandLine.Command(name = "nomer",
-        description = "nomer - maps identifiers and names to other identifiers and names",
+        description = "maps identifiers and names to other identifiers and names",
         versionProvider = Nomer.class,
         mixinStandardHelpOptions = true,
         subcommands = {
@@ -32,6 +34,7 @@ import static java.lang.System.exit;
                 CmdValidateTerms.class,
                 CmdValidateLinks.class,
                 CmdClean.class,
+                CmdInstallManual.class,
                 ManPageGenerator.class,
                 CommandLine.HelpCommand.class
         }
@@ -55,7 +58,8 @@ public class Nomer implements CommandLine.IVersionProvider {
     }
 
     public static String getVersionString() {
-        return CmdVersion.class.getPackage().getImplementationVersion();
+        String version = Nomer.class.getPackage().getImplementationVersion();
+        return StringUtils.isBlank(version) ? "dev" : version;
     }
 
     @Override

@@ -13,6 +13,13 @@
     <name>Nomer Commandline</name>
     <description>maps identifiers and names to taxonomic names and ontological terms</description>
 
+    <properties>
+        <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
+        <asciidoctorj.version>2.5.3</asciidoctorj.version>
+        <generated.docs.dir>${project.build.outputDirectory}/org/globalbioticinteractions/nomer/docs
+        </generated.docs.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -47,7 +54,7 @@
             <artifactId>commons-vfs2</artifactId>
             <version>2.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
@@ -101,6 +108,55 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>org.globalbioticinteractions.nomer.Nomer</argument>
+                        <argument>gen-manpage</argument>
+                        <argument>--outdir</argument>
+                        <argument>${generated.docs.dir}/adoc</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>${asciidoctor-maven-plugin.version}</version>
+                <configuration>
+                    <sourceDirectory>${generated.docs.dir}/adoc</sourceDirectory>
+                    <outputDirectory>${generated.docs.dir}/manpage</outputDirectory>
+                    <attributes>
+                        <sourcedir>${project.build.sourceDirectory}</sourcedir>
+                    </attributes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>asciidoc-to-manpage</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>manpage</backend>
+                            <sourceDocumentName>${project.artifactId}.adoc</sourceDocumentName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
