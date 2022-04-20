@@ -90,7 +90,7 @@ Please use [maven](https://maven.apache.org) version 3.3+ , otherwise you might 
 
 ## Documentation
 
-For documentation see [docs/nomer.adoc](docs/nomer.adoc).
+For documentation see [docs/nomer.adoc](docs/nomer.adoc) or type ```man nomer``` in the terminal after installing nomer.
 
 ## Usage
 
