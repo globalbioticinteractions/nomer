@@ -47,6 +47,12 @@
             <groupId>bio.guoda</groupId>
             <artifactId>preston-get</artifactId>
             <version>${preston.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.beust</groupId>
+                    <artifactId>jcommander</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

@@ -1,9 +1,8 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameter;
-import org.apache.commons.collections4.MapUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.globalbioticinteractions.nomer.match.TermMatcherContextCaching;
