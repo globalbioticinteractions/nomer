@@ -7,6 +7,7 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
 import org.hamcrest.core.Is;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -640,15 +641,10 @@ public class DiscoverLifeUtilTest {
 
         AtomicInteger counter = new AtomicInteger(0);
 
-        TermMatchListener listener = new TermMatchListener() {
-
-            @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
-                int index = counter.getAndIncrement();
-                if (index == 0) {
-                    firstTaxon.set(resolvedTaxon);
-                }
-
+        TermMatchListener listener = (requestId, providedTerm, nameType, resolvedTaxon) -> {
+            int index = counter.getAndIncrement();
+            if (index == 0) {
+                firstTaxon.set(resolvedTaxon);
             }
         };
 
@@ -667,6 +663,7 @@ public class DiscoverLifeUtilTest {
     }
 
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/80")
     @Test
     public void getCurrentBeeNames() throws IOException {
         String actual = DiscoverLifeUtil.getBeeNamesAsXmlString();
