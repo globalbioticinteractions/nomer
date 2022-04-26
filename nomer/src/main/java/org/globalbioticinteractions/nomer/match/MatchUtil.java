@@ -1,7 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import com.google.protobuf.ByteString;
-import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;

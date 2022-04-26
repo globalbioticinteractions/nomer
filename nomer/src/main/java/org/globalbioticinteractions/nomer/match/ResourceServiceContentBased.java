@@ -40,7 +40,7 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
             if (!HashKeyUtil.isValidHashKey(RefNodeFactory.toIRI(hash))) {
                 throw new IOException("expected sha256 hash uri, but found [" + hash + "]");
             }
-            cmdGet.setContentIdsOrAliases(Collections.singletonList(hash.toString()));
+            cmdGet.setContentIdsOrAliases(Collections.singletonList(RefNodeFactory.toIRI(hash)));
         } catch (PropertyEnricherException e) {
             throw new IOException("failed to access preston verse", e);
         }
@@ -70,7 +70,7 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
     @Override
     public InputStream retrieve(URI resource) throws IOException {
         CmdGet cmdGet = createCmdGet();
-        cmdGet.setContentIdsOrAliases(Collections.singletonList(resource.toString()));
+        cmdGet.setContentIdsOrAliases(Collections.singletonList(RefNodeFactory.toIRI(resource)));
         File parentDir = new File(ctx.getCacheDir(), "tmp");
         FileUtils.forceMkdir(parentDir);
         File tmpFile = File.createTempFile("nomer", ".gz", parentDir);
