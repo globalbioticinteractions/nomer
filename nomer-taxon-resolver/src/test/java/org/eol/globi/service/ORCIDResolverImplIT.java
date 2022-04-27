@@ -30,6 +30,15 @@ public class ORCIDResolverImplIT {
     }
 
     @Test
+    public void lookupNameProductionFailsOnSandbox2() throws IOException {
+        Map<String, String> name =  new ORCIDResolverImpl().findAuthor("0000-0002-6601-2165");
+        assertThat(name.get(PropertyAndValueDictionary.NAME), is("Christopher Mungall"));
+        assertThat(name.get(PropertyAndValueDictionary.PATH), is("Christopher | Mungall | Christopher Mungall"));
+        assertThat(name.get(PropertyAndValueDictionary.PATH_NAMES), is("given-names | family-name | name"));
+        assertThat(name.get(PropertyAndValueDictionary.PATH_IDS), is(" |  | http://orcid.org/0000-0002-6601-2165"));
+    }
+
+    @Test
     public void lookupNameProductionFailsOnSandboxHttps() throws IOException {
         Map<String, String> name =  new ORCIDResolverImpl().findAuthor("https://orcid.org/0000-0002-6601-2165");
         assertThat(name.get(PropertyAndValueDictionary.NAME), is("Christopher Mungall"));

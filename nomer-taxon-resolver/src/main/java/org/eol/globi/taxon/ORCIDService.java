@@ -14,17 +14,16 @@ import java.util.regex.Pattern;
 @PropertyEnricherInfo(name = "orcid-web", description = "Lookup ORCID by id with ORCID:* prefix.")
 public class ORCIDService extends PropertyEnricherSimple {
 
-    private static final Pattern PATTERN = Pattern.compile(".*orcid.*([0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}).*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern PATTERN = Pattern.compile(".*(orcid)*.*([0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}).*", Pattern.CASE_INSENSITIVE);
 
     @Override
     public Map<String, String> enrich(final Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enrichedProperties = new HashMap<String, String>(properties);
         String id = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        System.out.println("for [" + id + "]");
         Matcher matcher = PATTERN.matcher(id);
         if (matcher.matches()) {
             try {
-                String orcid = matcher.group(1);
+                String orcid = matcher.group(2);
                 Map<String, String> match = new ORCIDResolverImpl().findAuthor(orcid);
                 if (match.isEmpty()) {
                     throw new PropertyEnricherException("no match for orcid [" + orcid + "]");

@@ -18,10 +18,23 @@ public class ORCIDServiceTest {
             put(PropertyAndValueDictionary.EXTERNAL_ID, "http://orcid.org/0000-0002-6601-2165");
         }});
 
+        assertMungall(enriched);
+    }
+
+    public void assertMungall(Map<String, String> enriched) {
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("http://orcid.org/0000-0002-6601-2165"));
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Christopher Mungall"));
-        assertThat(enriched.get(PropertyAndValueDictionary.PATH_NAMES), is("given-names | family-name"));
-        assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Christopher | Mungall"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH_NAMES), is("given-names | family-name | name"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH), is("Christopher | Mungall | Christopher Mungall"));
+    }
+
+    @Test
+    public void lookupAuthorByIdBare() throws PropertyEnricherException {
+        Map<String, String> enriched = new ORCIDService().enrich(new TreeMap<String, String>() {{
+            put(PropertyAndValueDictionary.EXTERNAL_ID, "0000-0002-6601-2165");
+        }});
+
+        assertMungall(enriched);
     }
 
     @Test
