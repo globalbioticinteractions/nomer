@@ -20,13 +20,16 @@ public class ORCIDService extends PropertyEnricherSimple {
     public Map<String, String> enrich(final Map<String, String> properties) throws PropertyEnricherException {
         Map<String, String> enrichedProperties = new HashMap<String, String>(properties);
         String id = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
+        System.out.println("for [" + id + "]");
         Matcher matcher = PATTERN.matcher(id);
         if (matcher.matches()) {
             try {
-                enrichedProperties.put(
-                        PropertyAndValueDictionary.NAME,
-                        new ORCIDResolverImpl().findFullName(matcher.group(1))
-                );
+                String orcid = matcher.group(1);
+                Map<String, String> match = new ORCIDResolverImpl().findAuthor(orcid);
+                if (match.isEmpty()) {
+                    throw new PropertyEnricherException("no match for orcid [" + orcid + "]");
+                }
+                enrichedProperties.putAll(match);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to lookup name associated with ORCID [" + id + "]", e);
             }

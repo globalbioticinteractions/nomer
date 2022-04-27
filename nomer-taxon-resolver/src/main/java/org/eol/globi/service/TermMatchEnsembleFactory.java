@@ -11,6 +11,7 @@ import org.eol.globi.taxon.ITISService;
 import org.eol.globi.taxon.NBNService;
 import org.eol.globi.taxon.NCBIService;
 import org.eol.globi.taxon.NODCTaxonService;
+import org.eol.globi.taxon.ORCIDService;
 import org.eol.globi.taxon.TaxonEnricherImpl;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.taxon.WoRMSService;
@@ -56,6 +57,7 @@ public class TermMatchEnsembleFactory {
                 add(new AtlasOfLivingAustraliaService());
                 add(new ITISService());
                 add(new CatalogueOfLifeTaxonService(ctx));
+                add(new ORCIDService());
             }
         };
     }
