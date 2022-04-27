@@ -35,7 +35,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-public class GlobalNamesService2Test {
+public class GlobalNamesService2IT {
 
     @Test
     public void createTaxaListFromNameList() throws PropertyEnricherException {
