@@ -52,6 +52,7 @@ public class TermMatcherRegistryTest {
             "uksi-current-name",
             "gn-parse",
             "gbif-parse",
+            "orcid-web",
             "ott"));
 
     @Test(expected = IllegalArgumentException.class)
