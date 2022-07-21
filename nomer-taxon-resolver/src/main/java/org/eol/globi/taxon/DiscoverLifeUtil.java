@@ -47,21 +47,6 @@ public class DiscoverLifeUtil {
     private static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
     public static final String HOMONYM_SUFFIX = "_homonym";
 
-    public static String getBeeNamesAsXmlString() throws IOException {
-        final WebClient webClient = new WebClient();
-
-        final DomNode page = getBeePage(webClient);
-        return page.asXml();
-    }
-
-    private static DomNode getBeePage(WebClient webClient) throws IOException {
-        webClient
-                .getOptions()
-                .setUseInsecureSSL(true);
-
-        return webClient.getPage(DISCOVER_LIFE_URL);
-    }
-
     public static InputStream getStreamOfBees() throws IOException {
         return new GZIPInputStream(DiscoverLifeUtil.class
                 .getResourceAsStream(BEE_NAMES)

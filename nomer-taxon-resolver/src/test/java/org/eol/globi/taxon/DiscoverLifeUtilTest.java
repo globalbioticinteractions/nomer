@@ -15,7 +15,6 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -666,7 +665,7 @@ public class DiscoverLifeUtilTest {
     @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/80")
     @Test
     public void getCurrentBeeNames() throws IOException {
-        String actual = DiscoverLifeUtil.getBeeNamesAsXmlString();
+        String actual = HtmlUtil.getHtmlAsXmlString(DiscoverLifeUtil.DISCOVER_LIFE_URL);
 
         String localCopy = IOUtils.toString(DiscoverLifeUtil.getStreamOfBees(), StandardCharsets.UTF_8);
         assertThat(actual, Is.is(localCopy));

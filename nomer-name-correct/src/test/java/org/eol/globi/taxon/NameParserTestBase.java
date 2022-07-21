@@ -19,6 +19,13 @@ public abstract class NameParserTestBase {
     }
 
     @Test
+    public void parseBigString() {
+        // https://github.com/globalbioticinteractions/nomer/issues/89
+        assertThat(new GBIFParserCanon().suggest("Reithrodontomys FULVESCENS GRISEOFLAVUS"),
+                Is.is("Reithrodontomys FULVESCENS GRISEOFLAVUS"));
+    }
+
+    @Test
     public void subspecies() {
         assertThat(getNameSuggester().suggest("Aegathoa oculata spp"), is("Aegathoa oculata"));
         assertThat(getNameSuggester().suggest("Aegathoa oculata spp."), is("Aegathoa oculata"));
