@@ -19,6 +19,7 @@ public class BatNamesUtilIT {
 
         String patchedXml = BatNamesUtil.toPatchedXmlString(htmlAsXmlString);
 
+
         IOUtils.copy(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8), new FileOutputStream("/home/jorrit/proj/globi/nomer/nomer-taxon-resolver/src/test/resources/org/globalbioticinteractions/nomer/match/batnames/explore.xml"));
 
         String expectedPatchedXml = IOUtils.toString(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/batnames/explore.xml"), StandardCharsets.UTF_8);
@@ -28,15 +29,29 @@ public class BatNamesUtilIT {
     }
 
     @Test
-    public void getGenusPage() throws IOException {
-        String patchedXml = BatNamesUtil.getGenusXml("Rhinolophus");
+    public void getGenusPageRhinolophus() throws IOException {
+        compareGenusPage("Rhinolophus");
+    }
 
-        IOUtils.copy(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8), new FileOutputStream("/home/jorrit/proj/globi/nomer/nomer-taxon-resolver/src/test/resources/org/globalbioticinteractions/nomer/match/batnames/rhinolophus.xml"));
+    @Test
+    public void getGenusPageCistugo() throws IOException {
+        compareGenusPage("Cistugo");
+    }
 
-        String expectedPatchedXml = IOUtils.toString(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/batnames/rhinolophus.xml"), StandardCharsets.UTF_8);
+    @Test
+    public void getGenusPageMiniopterus() throws IOException {
+        compareGenusPage("Miniopterus");
+
+    }
+
+    public void compareGenusPage(String genusName) throws IOException {
+        String patchedXml = BatNamesUtil.getGenusXml(genusName);
+
+        IOUtils.copy(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8), new FileOutputStream("/home/jorrit/proj/globi/nomer/nomer-taxon-resolver/src/test/resources/org/globalbioticinteractions/nomer/match/batnames/" + genusName + ".xml"));
+
+        String expectedPatchedXml = IOUtils.toString(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/batnames/" + genusName + ".xml"), StandardCharsets.UTF_8);
 
         assertThat(patchedXml, Is.is(expectedPatchedXml));
-
     }
 
 

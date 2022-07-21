@@ -90,6 +90,7 @@ public class TermMatcherRegistry {
             put("gbif-parse", "gbif-parse");
             put("ott", "ott");
             put("orcid-web", "orcid-web");
+            put("batnames", "batnames");
         }
     });
 
@@ -123,6 +124,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherUSKIFactory());
         add(new TermMatcherGBIFParseFactory());
         add(new TermMatcherOpenTreeOfLifeFactory());
+        add(new TermMatcherBatNamesTaxonFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
