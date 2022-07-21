@@ -50,7 +50,7 @@ public class BatNamesUtilTest {
 
         Collection<String> genera = BatNamesUtil.extractGenera(is);
 
-        assertThat(genera.size(), Is.is(1239));
+        assertThat(genera.size(), Is.is(233));
         assertThat(genera, hasItem("Rhinolophus"));
 
     }
