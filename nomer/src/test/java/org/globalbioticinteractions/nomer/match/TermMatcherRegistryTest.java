@@ -53,7 +53,8 @@ public class TermMatcherRegistryTest {
             "gn-parse",
             "gbif-parse",
             "orcid-web",
-            "ott"));
+            "ott",
+            "batnames"));
 
     @Test(expected = IllegalArgumentException.class)
     public void createNonExistingMatcher() {
