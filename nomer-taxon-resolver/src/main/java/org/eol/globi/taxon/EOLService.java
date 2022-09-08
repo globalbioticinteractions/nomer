@@ -14,6 +14,7 @@ import org.apache.http.util.EntityUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.service.HttpTimedUtil;
 import org.eol.globi.service.PageInfo;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.PropertyEnrichmentFilter;
@@ -42,7 +43,7 @@ public class EOLService extends PropertyEnricherSimple {
     }});
 
 
-    private PropertyEnrichmentFilter filter = new PropertyEnrichmentFilterExternalId();
+    private PropertyEnrichmentFilter filter = new PropertyEnrichmentFilterWithPathOnly();
 
 
 
@@ -396,13 +397,11 @@ public class EOLService extends PropertyEnricherSimple {
         BasicResponseHandler responseHandler = new BasicResponseHandler();
         String response = null;
         try {
-            response = HttpUtil.executeWithTimer(get, responseHandler);
+            response = HttpTimedUtil.executeWithTimer(get, responseHandler);
         } catch (HttpResponseException e) {
             if (e.getStatusCode() != 406 && e.getStatusCode() != 404) {
                 throw new PropertyEnricherException("failed to lookup [" + uri.toString() + "]: http status [" + e.getStatusCode() + "]   ", e);
             }
-        } catch (ClientProtocolException e) {
-            throw new PropertyEnricherException("failed to lookup [" + uri.toString() + "]", e);
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to lookup [" + uri.toString() + "]", e);
         }

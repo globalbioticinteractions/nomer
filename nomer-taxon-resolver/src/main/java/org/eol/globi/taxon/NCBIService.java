@@ -7,6 +7,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.service.HttpTimedUtil;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
@@ -136,7 +137,7 @@ public class NCBIService extends PropertyEnricherSimple {
         BasicResponseHandler responseHandler = new BasicResponseHandler();
         String response;
         try {
-            response = HttpUtil.executeWithTimer(get, responseHandler);
+            response = HttpTimedUtil.executeWithTimer(get, responseHandler);
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to execute query to [" + uri.toString() + "]", e);
         }

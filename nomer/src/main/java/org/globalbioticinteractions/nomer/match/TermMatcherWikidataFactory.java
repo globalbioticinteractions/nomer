@@ -1,16 +1,10 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.service.DOIResolver;
-import org.eol.globi.service.DOIResolverCache;
-import org.eol.globi.service.DOIResolverImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.WikidataUtil;
 import org.eol.globi.taxon.TermMatchListener;
@@ -18,10 +12,7 @@ import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class TermMatcherWikidataFactory implements TermMatcherFactory {

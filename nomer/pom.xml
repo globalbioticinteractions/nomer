@@ -29,7 +29,7 @@
 
         <dependency>
             <groupId>org.eol</groupId>
-            <artifactId>eol-globi-doi-resolver</artifactId>
+            <artifactId>eol-globi-taxon-resolver</artifactId>
             <version>${globi.version}</version>
             <exclusions>
                 <exclusion>
