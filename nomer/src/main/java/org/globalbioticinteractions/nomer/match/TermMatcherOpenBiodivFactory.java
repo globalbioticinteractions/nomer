@@ -8,6 +8,7 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.ResourceServiceHTTP;
 import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.OpenBiodivUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -40,7 +41,7 @@ public class TermMatcherOpenBiodivFactory implements TermMatcherFactory {
                     if (UUIDUtil.isaUUID(term.getId())) {
                         try {
                             SparqlClient sparqlClient = new SparqlClientImpl(
-                                    resourceName -> ResourceUtil.asInputStream(resourceName, in -> in),
+                                    resourceName -> new ResourceServiceHTTP(in -> in).retrieve(resourceName),
                                     PropertyAndValueDictionary.SPARQL_ENDPOINT_OPEN_BIODIV
                             );
 

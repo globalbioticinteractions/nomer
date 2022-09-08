@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.service.CacheService;
 import org.eol.globi.service.CacheServiceUtil;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.util.ResourceServiceLocal;
 import org.globalbioticinteractions.nomer.match.TermMatcherCacheFactory;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
 import org.globalbioticinteractions.nomer.util.TermValidator;
@@ -51,7 +52,9 @@ public class TermValidatorFactoryTest {
 
     private void assertValidation(String termCacheUrl, String expectedResult) throws IOException {
         TermValidator cacheService = new TermValidatorFactory()
-                .createTermValidator(CacheServiceUtil.createBufferedReader(termCacheUrl).lines());
+                .createTermValidator(CacheServiceUtil
+                        .createBufferedReader(termCacheUrl, new ResourceServiceLocal())
+                        .lines());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Predicate<String> one = s -> true;

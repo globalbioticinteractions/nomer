@@ -3,6 +3,7 @@ package org.eol.globi.service;
 import com.Ostermiller.util.CSVParse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.eol.globi.util.ResourceServiceHTTP;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.util.CSVTSVUtil;
@@ -51,7 +52,8 @@ public class DOIResolverCache extends CacheService implements DOIResolver {
         if (doiCitationMap == null) {
             try {
                 LOG.info("loading doi cache at [" + doiCacheResource + "]");
-                BufferedReader bufferedReader = CacheServiceUtil.createBufferedReader(doiCacheResource);
+                BufferedReader bufferedReader = CacheServiceUtil
+                        .createBufferedReader(doiCacheResource, new ResourceServiceHTTP(is -> is));
                 init(bufferedReader);
             } catch (PropertyEnricherException | IOException e) {
                 LOG.warn("failed to initialize doi cache using [" + doiCacheResource + "], cache disabled", e);

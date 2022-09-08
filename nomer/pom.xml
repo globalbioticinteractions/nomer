@@ -28,6 +28,13 @@
         </dependency>
 
         <dependency>
+            <groupId>org.globalbioticinteractions</groupId>
+            <artifactId>wikidata</artifactId>
+            <version>${globi.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.eol</groupId>
             <artifactId>eol-globi-taxon-resolver</artifactId>
             <version>${globi.version}</version>
