@@ -49,6 +49,7 @@ public class TermMatcherRegistry {
             "wikidata-web",
             "worms",
             "col",
+            "wfo",
             "ott",
             "orcid-web"));
 
@@ -85,6 +86,7 @@ public class TermMatcherRegistry {
             put("worms-taxon", "worms");
             put("indexfungorum", "indexfungorum");
             put("col", "col");
+            put("wfo", "wfo");
             put("gn-parse", "gn-parse");
             put("uksi-current-name", "uksi-current-name");
             put("gbif-parse", "gbif-parse");
@@ -119,7 +121,8 @@ public class TermMatcherRegistry {
         add(new TermMatcherDiscoverLifeTaxonFactory());
         add(new TermMatcherITISFactory());
         add(new TermMatcherIndexFungorumFactory());
-        add(new TermMatcherCatalogOfLifeFactory());
+        add(new TermMatcherCatalogueOfLifeFactory());
+        add(new TermMatcherWorldOfFloraOnlineFactory());
         add(new TermMatcherGNParseFactory());
         add(new TermMatcherUSKIFactory());
         add(new TermMatcherGBIFParseFactory());
