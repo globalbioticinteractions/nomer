@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.apache.commons.collections4.list.TreeList;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
@@ -14,7 +13,6 @@ import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeMap;
 
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
