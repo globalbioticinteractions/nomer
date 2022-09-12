@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 public class LanguageCodeLookup {
 
-    private static final Map<String, String> iso_639_3_to_639_1 = new TreeMap<String, String>();
+    private static final Map<String, String> iso_639_3_to_639_1 = new TreeMap<>();
 
     public LanguageCodeLookup() {
         InputStream resourceAsStream = getClass().getResourceAsStream("language-codes.tab");
@@ -22,8 +22,9 @@ public class LanguageCodeLookup {
         try {
             while ((line = reader.readLine()) != null) {
                 String[] row = CSVTSVUtil.splitTSV(line);
-                if (row.length > 3) {
+                if (row.length > 6) {
                     iso_639_3_to_639_1.put(row[0], row[3]);
+                    iso_639_3_to_639_1.put(row[6], row[3]);
                 }
             }
         } catch (IOException e) {
