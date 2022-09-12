@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -35,7 +36,6 @@ public class AppendingRowHandler implements RowHandler {
         termMatcher.match(
                 Collections.singletonList(providedTaxon),
                 (id, termToBeResolved, nameType, taxonResolved) -> {
-                    Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(TaxonUtil.taxonToMap(taxonResolved));
 
                     Taxon taxonToBeResolved;
                     if (termToBeResolved instanceof Taxon) {
@@ -48,15 +48,23 @@ public class AppendingRowHandler implements RowHandler {
                             ? fillProvidedTaxon(rowOrig, taxonToBeResolved)
                             : rowOrig;
 
+
+                    NameTypeOf typeMapperOf = t -> taxonResolved == null ? NameType.NONE : nameType;
                     appender.appendLinesForRow(
                             rowToBeAppended,
                             taxonToBeResolved,
-                            taxon1 -> nameType,
-                            Stream.of(taxonWithServiceInfo),
+                            typeMapperOf,
+                            streamFor(taxonResolved == null ? taxonToBeResolved : taxonResolved),
                             out
                     );
 
                 });
+    }
+
+    public Stream<Taxon> streamFor(Taxon taxonResolved) {
+        Map<String, String> properties = TaxonUtil.taxonToMap(taxonResolved);
+        Taxon taxonWithServiceInfo = TaxonUtil.mapToTaxon(properties);
+        return Stream.of(taxonWithServiceInfo);
     }
 
     private String[] fillProvidedTaxon(String[] rowOrig, Taxon taxonToBeResolved) {

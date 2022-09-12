@@ -21,10 +21,12 @@ import org.junit.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -221,6 +223,69 @@ public class AppendingRowHandlerTest {
         assertThat(os.toString(), Is.is(
                 "id:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies" +
                         "\tHAS_ACCEPTED_NAME" +
+                        "\tid:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies\n")
+        );
+
+
+    }
+
+
+    @Test
+    public void foundNullResolvedTaxon() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream(
+                ".*" +
+                        "\t.*" +
+                        "\t.*" +
+                        "\t.*", StandardCharsets.UTF_8);
+
+
+        Taxon singleMatch = new TaxonImpl("Acamptopoeum argentinum", "id:123");
+        singleMatch.setRank("species");
+        singleMatch.setAuthorship("Doe, 2021");
+
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        AppendingRowHandler appendingRowHandler = new AppendingRowHandler(
+                os,
+                new TermMatcher() {
+                    @Override
+                    public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                        for (Term term : terms) {
+                            termMatchListener.foundTaxonForTerm(
+                                    null,
+                                    singleMatch,
+                                    NameType.HAS_ACCEPTED_NAME,
+                                    null
+                            );
+                        }
+
+                    }
+                },
+                new TestTermMatcherContextDefault() {
+
+                    @Override
+                    public Map<Integer, String> getInputSchema() {
+                        return new TreeMap<Integer, String>() {{
+                            put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                            put(1, PropertyAndValueDictionary.NAME);
+                            put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                            put(3, PropertyAndValueDictionary.RANK);
+                        }};
+                    }
+
+                },
+                new AppenderTSV(new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                    put(1, PropertyAndValueDictionary.NAME);
+                    put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                    put(3, PropertyAndValueDictionary.RANK);
+                }}));
+
+        MatchUtil.apply(is, appendingRowHandler);
+
+        assertThat(os.toString(), Is.is(
+                "id:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies" +
+                        "\tNONE" +
                         "\tid:123\tAcamptopoeum argentinum\tDoe, 2021\tspecies\n")
         );
 
