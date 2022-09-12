@@ -48,6 +48,7 @@ public class TermMatcherRegistryTest {
             "wikidata-taxon-id-web",
             "indexfungorum",
             "col",
+            "wfo",
             "worms-taxon",
             "uksi-current-name",
             "gn-parse",
