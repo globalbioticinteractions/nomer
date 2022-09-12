@@ -60,7 +60,7 @@ public class GBIFUtil {
                     if (preferred == null || (preferred.isBoolean() && preferred.asBoolean())) {
                         String commonName = result.get("vernacularName").asText();
                         String language = result.get("language").asText();
-                        String shortCode = languageCodeLookup.lookupLanguageCodeFor(language);
+                        String shortCode = languageCodeLookup.lookupLanguageCodeFor(StringUtils.capitalize(language));
                         if (StringUtils.isNotBlank(commonName) && StringUtils.isNotBlank(shortCode)) {
                             commonNames.add(commonName + " @" + shortCode);
                         }
