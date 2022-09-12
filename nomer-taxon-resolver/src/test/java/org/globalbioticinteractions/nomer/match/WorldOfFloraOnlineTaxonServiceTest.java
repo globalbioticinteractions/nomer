@@ -1,5 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -15,6 +17,7 @@ import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertFalse;
 
 public class WorldOfFloraOnlineTaxonServiceTest {
 
@@ -53,6 +56,31 @@ public class WorldOfFloraOnlineTaxonServiceTest {
     }
 
     @Test
+    public void enrichByUncheckedName() throws PropertyEnricherException {
+        WorldOfFloraOnlineTaxonService service = createService();
+
+        Taxon taxon = new TaxonImpl(null, "WFO:0000002017");
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WFO:0000002017"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Kyrsteniopsis spinaciifolia"));
+    }
+
+    @Test
+    public void enrichBySynonymOfVariety() throws PropertyEnricherException {
+        WorldOfFloraOnlineTaxonService service = createService();
+
+        Taxon taxon = new TaxonImpl("Hymenophyllum densifolium");
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WFO:0001111493"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("variety"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Serpyllopsis caespitosa var. caespitosa"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species | variety"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Serpyllopsis caespitosa | Serpyllopsis caespitosa var. caespitosa"));
+    }
+
+    @Test
     public void enrichBySynonymId() throws PropertyEnricherException {
         WorldOfFloraOnlineTaxonService service = createService();
 
@@ -85,6 +113,14 @@ public class WorldOfFloraOnlineTaxonServiceTest {
 
     private WorldOfFloraOnlineTaxonService createService() {
         return createService("/org/globalbioticinteractions/nomer/match/wfo/classification.txt");
+    }
+
+    @Test
+    public void checkForUncheckedNameType() {
+        NameType[] values = NameType.values();
+        for (NameType value : values) {
+            assertFalse("update integration to include unchecked mapping", StringUtils.equals(value.name(), "UNCHECKED"));
+        }
     }
 
     private WorldOfFloraOnlineTaxonService createService(final String nameUrl) {

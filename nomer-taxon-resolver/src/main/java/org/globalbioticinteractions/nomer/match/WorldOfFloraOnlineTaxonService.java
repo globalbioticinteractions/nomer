@@ -31,6 +31,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
 
     public static final String ACCEPTED_LABEL = "ACCEPTED";
     public static final String SYNONYM_LABEL = "SYNONYM";
+    public static final String UNCHECKED_LABEL = "UNCHECKED";
 
 
     public WorldOfFloraOnlineTaxonService(TermMatcherContext ctx) {
@@ -108,7 +109,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
                         .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                         .make();
 
-                NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent);
+                NameUsageListener<Long> nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent);
                 parseNameUsage(resource, nameUsageListener);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse taxon", e);
@@ -172,12 +173,13 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
             }
 
             taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
-            if (parentTaxId != null) {
-                nameUsageListener.handle(status, taxId, parentTaxId, taxon);
-            }
-            if (acceptedNameUsageId != null) {
-                nameUsageListener.handle(status, taxId, acceptedNameUsageId, taxon);
-            }
+
+            nameUsageListener.handle(
+                    status,
+                    taxId,
+                    acceptedNameUsageId == null ? parentTaxId : acceptedNameUsageId,
+                    taxon
+            );
 
         }
     }
@@ -195,6 +197,8 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
         if (StringUtils.equals(statusValue, SYNONYM_LABEL)) {
             nameType = NameType.SYNONYM_OF;
         } else if (StringUtils.equals(statusValue, ACCEPTED_LABEL)) {
+            nameType = NameType.HAS_ACCEPTED_NAME;
+        } else if (StringUtils.equals(statusValue, UNCHECKED_LABEL)) {
             nameType = NameType.HAS_ACCEPTED_NAME;
         }
         return nameType;
@@ -227,7 +231,9 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
             registerIdForName(childTaxId, taxon.getName(), WorldOfFloraOnlineTaxonService.this.name2nodeIds);
 
             NameType nameType = getNameType(status);
-            if (NameType.SYNONYM_OF.equals(nameType)) {
+            if (NameType.SYNONYM_OF.equals(nameType)
+                    && childTaxId != null
+                    && parentTaxId != null) {
                 mergedNodes.put(childTaxId, parentTaxId);
             }
 

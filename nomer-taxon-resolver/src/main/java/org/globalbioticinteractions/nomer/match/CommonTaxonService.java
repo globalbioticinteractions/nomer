@@ -311,7 +311,11 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             pathNames.add(StringUtils.defaultIfBlank(resolvedTaxon.getRank(), ""));
 
             T parent = childParent.get(focalTaxonKey);
-            while (parent != null && !pathIds.contains(primaryTaxonProvider.getIdPrefix() + parent)) {
+            List<T> visitedParents = new ArrayList<T>();
+            visitedParents.add(focalTaxonKey);
+            while (parent != null
+                    && !visitedParents.contains(parent)
+                    && !pathIds.contains(primaryTaxonProvider.getIdPrefix() + parent)) {
                 Map<String, String> parentTaxonProperties = nodes.get(parent);
                 if (parentTaxonProperties != null) {
                     Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);
@@ -319,6 +323,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                     pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
                     pathIds.add(parentTaxon.getExternalId());
                 }
+                visitedParents.add(parent);
                 parent = childParent.get(parent);
             }
 
