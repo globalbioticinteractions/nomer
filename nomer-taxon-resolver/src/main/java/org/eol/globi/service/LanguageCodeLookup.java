@@ -24,7 +24,6 @@ public class LanguageCodeLookup {
                 String[] row = CSVTSVUtil.splitTSV(line);
                 if (row.length > 6) {
                     iso_639_3_to_639_1.put(row[0], row[3]);
-                    iso_639_3_to_639_1.put(row[6], row[3]);
                 }
             }
         } catch (IOException e) {
