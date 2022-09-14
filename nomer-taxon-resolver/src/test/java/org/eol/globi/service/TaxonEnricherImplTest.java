@@ -15,12 +15,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyMap;
+import static org.hamcrest.core.Is.is;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class TaxonEnricherImplTest {
@@ -99,7 +99,7 @@ public class TaxonEnricherImplTest {
         assertThat(taxon.getPath(), is("one | two | three"));
         assertThat(taxon.getCommonNames(), is("four | five | six"));
         assertThat(taxon.getName(), is("Homo sapiens"));
-        verifyZeroInteractions(serviceB);
+        verifyNoMoreInteractions(serviceB);
     }
 
     private Taxon enrich(final String taxonName, PropertyEnricher serviceA, PropertyEnricher serviceB) throws PropertyEnricherException {
