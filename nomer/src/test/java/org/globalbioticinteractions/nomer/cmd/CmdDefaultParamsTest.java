@@ -88,4 +88,16 @@ public class CmdDefaultParamsTest {
 
     }
 
+    @Test(expected = RuntimeException.class)
+    public void withNonURIPropertyResource() throws URISyntaxException {
+        CmdDefaultParams cmdDefaultParams = new CmdDefaultParams() {
+
+        };
+
+        cmdDefaultParams.setPropertiesResource("some.properties");
+
+        assertThat(cmdDefaultParams.getProperty("foo"), Is.is("bar"));
+
+    }
+
 }
