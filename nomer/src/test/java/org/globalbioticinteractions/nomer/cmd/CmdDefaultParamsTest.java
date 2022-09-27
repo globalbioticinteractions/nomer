@@ -93,10 +93,13 @@ public class CmdDefaultParamsTest {
         CmdDefaultParams cmdDefaultParams = new CmdDefaultParams() {
 
         };
-
-        cmdDefaultParams.setPropertiesResource("some.properties");
-
-        assertThat(cmdDefaultParams.getProperty("foo"), Is.is("bar"));
+        try {
+            cmdDefaultParams.setPropertiesResource("some.properties");
+            cmdDefaultParams.getProperty("foo");
+        } catch (RuntimeException ex) {
+            assertThat(ex.getMessage(), Is.is("failed to load properties: please make sure that [some.properties] is a valid URI"));
+            throw ex;
+        }
 
     }
 

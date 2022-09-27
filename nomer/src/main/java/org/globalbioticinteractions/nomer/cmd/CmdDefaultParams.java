@@ -89,7 +89,7 @@ public abstract class CmdDefaultParams implements PropertyContext {
         } catch (IOException e) {
             throw new RuntimeException("failed to load properties from [" + getPropertiesResource() + "]", e);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("failed to load properties: likely invalid properties URI [" + getPropertiesResource() + "]", e);
+            throw new RuntimeException("failed to load properties: please make sure that [" + getPropertiesResource() + "] is a valid URI", e);
         }
         return props;
     }
