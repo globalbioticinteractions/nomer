@@ -14,15 +14,15 @@ public abstract class NameParserTestBase {
 
     @Test
     public void parseHumans() {
-        assertThat(new GBIFParserCanon().suggest("Homo sapiens Linneaus, 1758"),
+        assertThat(getNameSuggester().suggest("Homo sapiens Linneaus, 1758"),
                 Is.is("Homo sapiens"));
     }
 
     @Test
     public void parseBigString() {
         // https://github.com/globalbioticinteractions/nomer/issues/89
-        assertThat(new GBIFParserCanon().suggest("Reithrodontomys FULVESCENS GRISEOFLAVUS"),
-                Is.is("Reithrodontomys FULVESCENS GRISEOFLAVUS"));
+        assertThat(getNameSuggester().suggest("Reithrodontomys FULVESCENS GRISEOFLAVUS"),
+                Is.is("Reithrodontomys"));
     }
 
     @Test
