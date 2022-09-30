@@ -44,21 +44,21 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         this.ctx = ctx;
     }
 
-    public void registerIdForName(T childTaxId, Taxon name, Map<String, List<T>> name2nodeIds) {
+    public void registerIdForName(T childTaxId, Taxon taxon, Map<String, List<T>> name2nodeIds) {
         // include authorship in name indexing/matching if provided
         // https://github.com/globalbioticinteractions/nomer/issues/104
-        String nameAuthor = getNameAuthor(name);
+        String nameAuthor = getNameAuthor(taxon);
 
         registerIdForName(childTaxId, nameAuthor, name2nodeIds);
-        if (StringUtils.isNotBlank(name.getAuthorship())) {
-            registerIdForName(childTaxId, name.getName(), name2nodeIds);
+        if (StringUtils.isNotBlank(taxon.getAuthorship())) {
+            registerIdForName(childTaxId, taxon.getName(), name2nodeIds);
         }
     }
 
     private String getNameAuthor(Taxon name) {
         return StringUtils.isBlank(name.getAuthorship())
-                    ? name.getName()
-                    : name.getName() + name.getAuthorship();
+                ? name.getName()
+                : name.getName() + name.getAuthorship();
     }
 
 
@@ -83,7 +83,10 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             if (TermMatchUtil.shouldMatchAll(term, getCtx().getInputSchema())) {
                 matchAll(termMatchListener);
             } else {
-                Taxon providedTaxon = new TaxonImpl(term.getName(), term.getId());
+                Taxon providedTaxon =
+                        term instanceof Taxon
+                                ? (Taxon) term
+                                : new TaxonImpl(term.getName(), term.getId());
                 if (isIdSchemeSupported(term.getId())) {
                     enrichIdMatches(providedTaxon, termMatchListener);
                 } else if (StringUtils.isNoneBlank(term.getName())) {
@@ -233,6 +236,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         if (StringUtils.isBlank(taxonNameAndAuthorship)) {
             emitNoMatch(providedTaxon, listener);
         } else {
+            System.out.println("lookup: [" + taxonNameAndAuthorship + "]");
             List<T> taxonKeys = name2nodeIds == null
                     ? Collections.emptyList()
                     : name2nodeIds.get(taxonNameAndAuthorship);
