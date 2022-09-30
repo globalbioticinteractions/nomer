@@ -29,6 +29,8 @@ public abstract class CmdDefaultParams implements PropertyContext {
             description = "Path to properties file to override defaults.")
     private String propertiesResource = "";
 
+    private String workDir = null;
+
 
     @Override
     public String getProperty(String key) {
@@ -42,56 +44,31 @@ public abstract class CmdDefaultParams implements PropertyContext {
 
     private Properties initProperties() {
         Properties props = new Properties();
+        String propertiesOverride = getPropertiesResource();
         try {
-            URI resource = URI.create(PROPERTIES_DEFAULT);
+            URI propertiesDefault = URI.create(PROPERTIES_DEFAULT);
 
-            ResourceServiceFactory serviceFactory = new ResourceServiceFactory() {
-                private final InputStreamFactory factory = is -> is;
+            ResourceServiceFactory propertyFactory = new PropertyFactory(propertiesDefault, getWorkDir());
 
-
-                @Override
-                public ResourceService serviceForResource(URI uri) {
-                    ResourceService resourceService;
-
-                    if (ResourceUtil.isFileURI(uri)) {
-                        resourceService = new ResourceServiceLocalFile(factory);
-                    } else if (org.apache.commons.lang3.StringUtils.startsWith(resource.toString(), "jar:file:/")) {
-                        resourceService = new ResourceServiceLocalJarResource(factory);
-                    } else if (StringUtils.equals(uri.getScheme(), "classpath")) {
-                        resourceService = new ResourceServiceClasspathResource(factory, CmdDefaultParams.class);
-                    } else {
-                        resourceService = new ResourceServiceLocalFile(factory) {
-                            @Override
-                            public InputStream retrieve(URI uri) throws IOException {
-                                try {
-                                    return super.retrieve(new URI("file://" + uri.toString()));
-                                } catch (URISyntaxException e) {
-                                    throw new IOException("failed to handle [" + uri.toString() + "]", e);
-                                }
-                            }
-                        };
-                    }
-
-                    return new ResourceServiceGzipAware(resourceService);
-                }
-            };
-
-            ResourceService serviceLocal =
-                    serviceFactory
-                    .serviceForResource(resource);
-            props.load(serviceLocal.retrieve(resource));
+            ResourceService propertiesLocal =
+                    propertyFactory
+                            .serviceForResource(propertiesDefault);
+            props.load(propertiesLocal.retrieve(propertiesDefault));
             props = new Properties(props);
-            if (StringUtils.isNotBlank(getPropertiesResource())) {
-                URI propertiesResource = URI.create(getPropertiesResource());
-                try (InputStream inStream = serviceFactory.serviceForResource(propertiesResource).retrieve(propertiesResource)) {
+
+            if (StringUtils.isNotBlank(propertiesOverride)) {
+                URI propertiesResource = URI.create(propertiesOverride);
+                try (InputStream inStream = propertyFactory
+                        .serviceForResource(propertiesResource)
+                        .retrieve(propertiesResource)) {
                     props.load(inStream);
                 }
             }
             properties = props;
         } catch (IOException e) {
-            throw new RuntimeException("failed to load properties from [" + getPropertiesResource() + "]", e);
+            throw new RuntimeException("failed to load properties from [" + propertiesOverride + "]: resource not found", e);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("failed to load properties: please make sure that [" + getPropertiesResource() + "] is a valid URI", e);
+            throw new RuntimeException("failed to load properties: please make sure that [" + propertiesOverride + "] is a valid URI", e);
         }
         return props;
     }
@@ -104,5 +81,58 @@ public abstract class CmdDefaultParams implements PropertyContext {
         return StringUtils.trim(propertiesResource);
     }
 
+    public String getWorkDir() {
+        return StringUtils.isBlank(workDir)
+                ? System.getProperty("user.dir")
+                : workDir;
+    }
 
+    public void setWorkDir(String workDir) {
+        this.workDir = workDir;
+    }
+
+
+    private static class PropertyFactory implements ResourceServiceFactory {
+        private final InputStreamFactory factory;
+        private final URI resource;
+        private final String workDir;
+
+        public PropertyFactory(URI resource, String workDir) {
+            this.resource = resource;
+            this.workDir = workDir;
+            factory = is -> is;
+        }
+
+
+        @Override
+        public ResourceService serviceForResource(URI uri) {
+            ResourceService resourceService;
+
+            if (ResourceUtil.isFileURI(uri)) {
+                resourceService = new ResourceServiceLocalFile(factory);
+            } else if (org.apache.commons.lang3.StringUtils.startsWith(resource.toString(), "jar:file:/")) {
+                resourceService = new ResourceServiceLocalJarResource(factory);
+            } else if (StringUtils.equals(uri.getScheme(), "classpath")) {
+                resourceService = new ResourceServiceClasspathResource(factory, CmdDefaultParams.class);
+            } else {
+                resourceService = new ResourceServiceLocalFile(factory) {
+                    @Override
+                    public InputStream retrieve(URI uri) throws IOException {
+                        try {
+                            return super.retrieve(new URI("file://" + uri.toString()));
+                        } catch (IllegalArgumentException | URISyntaxException e) {
+                            // try to resolve relative path
+                            File file = new File(workDir, uri.toString());
+                            if (!file.exists()) {
+                                throw new IOException("failed to find local property file [" + uri.toString() + "]: resource not found");
+                            }
+                            return super.retrieve(file.toURI());
+                        }
+                    }
+                };
+            }
+
+            return new ResourceServiceGzipAware(resourceService);
+        }
+    }
 }
