@@ -392,7 +392,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
 
         @Override
         public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-            registerIdForName(childTaxId, taxon.getName(), CatalogueOfLifeTaxonService.this.name2nodeIds);
+            registerIdForName(childTaxId, taxon, CatalogueOfLifeTaxonService.this.name2nodeIds);
 
             NameType nameType = getNameType(status);
             if (NameType.SYNONYM_OF.equals(nameType)) {

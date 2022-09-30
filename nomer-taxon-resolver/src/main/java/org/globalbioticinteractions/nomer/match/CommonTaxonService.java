@@ -44,7 +44,25 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         this.ctx = ctx;
     }
 
-    public void registerIdForName(T childTaxId, String name, Map<String, List<T>> name2nodeIds) {
+    public void registerIdForName(T childTaxId, Taxon name, Map<String, List<T>> name2nodeIds) {
+        // include authorship in name indexing/matching if provided
+        // https://github.com/globalbioticinteractions/nomer/issues/104
+        String nameAuthor = getNameAuthor(name);
+
+        registerIdForName(childTaxId, nameAuthor, name2nodeIds);
+        if (StringUtils.isNotBlank(name.getAuthorship())) {
+            registerIdForName(childTaxId, name.getName(), name2nodeIds);
+        }
+    }
+
+    private String getNameAuthor(Taxon name) {
+        return StringUtils.isBlank(name.getAuthorship())
+                    ? name.getName()
+                    : name.getName() + name.getAuthorship();
+    }
+
+
+    private void registerIdForName(T childTaxId, String name, Map<String, List<T>> name2nodeIds) {
         if (StringUtils.isNoneBlank(name)) {
             List<T> ids = name2nodeIds.get(name);
             List<T> updatedIds;
@@ -211,18 +229,17 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                                                   TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
         Map<String, String> enriched = TaxonUtil.taxonToMap(providedTaxon);
-        String taxonName = providedTaxon.getName();
-        if (StringUtils.isBlank(taxonName)) {
+        String taxonNameAndAuthorship = getNameAuthor(providedTaxon);
+        if (StringUtils.isBlank(taxonNameAndAuthorship)) {
             emitNoMatch(providedTaxon, listener);
         } else {
             List<T> taxonKeys = name2nodeIds == null
                     ? Collections.emptyList()
-                    : name2nodeIds.get(taxonName);
+                    : name2nodeIds.get(taxonNameAndAuthorship);
 
             if (taxonKeys == null || taxonKeys.isEmpty()) {
                 emitNoMatch(providedTaxon, listener);
             } else {
-
                 for (T taxonKey : new TreeSet<>(taxonKeys)) {
                     final T acceptedExternalId = mergedNodeOrDefault(taxonKey);
                     if (acceptedExternalId != null) {

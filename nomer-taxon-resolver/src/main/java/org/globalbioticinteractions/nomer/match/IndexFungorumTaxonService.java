@@ -76,7 +76,7 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
                     taxon.setPathNames(StringUtils.join(new String[]{"kingdom", "phylum", "subphylum", "class", "subclass", "order", "family", ""}, CharsetConstant.SEPARATOR));
                     if (NumberUtils.isCreatable(taxId)) {
                         Long taxonKey = Long.parseLong(taxId);
-                        registerIdForName(taxonKey, taxon.getName(), name2nodeIds);
+                        registerIdForName(taxonKey, taxon, name2nodeIds);
                         nodes.put(taxonKey, TaxonUtil.taxonToMap(taxon));
                         if (NumberUtils.isCreatable(acceptedTaxId)) {
                             mergedNodes.put(

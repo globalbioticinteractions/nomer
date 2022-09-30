@@ -63,7 +63,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
                     taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
                     if (NumberUtils.isCreatable(taxId)) {
                         Long taxonKey = Long.parseLong(taxId);
-                        registerIdForName(taxonKey, taxon.getName(), name2nodeIds);
+                        registerIdForName(taxonKey, taxon, name2nodeIds);
                         taxonMap.put(taxonKey, TaxonUtil.taxonToMap(taxon));
                         if (NumberUtils.isCreatable(parentTaxId)) {
                             childParent.put(

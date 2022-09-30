@@ -228,7 +228,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
 
         @Override
         public void handle(String status, Long childTaxId, Long parentTaxId, Taxon taxon) {
-            registerIdForName(childTaxId, taxon.getName(), WorldOfFloraOnlineTaxonService.this.name2nodeIds);
+            registerIdForName(childTaxId, taxon, WorldOfFloraOnlineTaxonService.this.name2nodeIds);
 
             NameType nameType = getNameType(status);
             if (NameType.SYNONYM_OF.equals(nameType)

@@ -2,6 +2,8 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.builder.ToStringExclude;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
@@ -75,6 +77,18 @@ public class MatchUtilTest {
         assertThat(os.toString(StandardCharsets.UTF_8.name()), is("\tHomo sapiens\tNONE\t\tHomo sapiens\t\t\t\t\t\t\t\n"));
     }
 
+    @Test
+    public void readNameAndAuthorship() {
+        Taxon taxon = MatchUtil.asTaxon(new String[]{"id", "name", "author"}, new TreeMap<Integer, String>() {{
+            put(0, "externalId");
+            put(1, "name");
+            put(2, "authorship");
+        }});
+
+        assertThat(taxon.getExternalId(), is("id"));
+        assertThat(taxon.getName(), is("name"));
+        assertThat(taxon.getAuthorship(), is("author"));
+    }
 
 
     private TestTermMatcherContextDefault getGBIFContext() {

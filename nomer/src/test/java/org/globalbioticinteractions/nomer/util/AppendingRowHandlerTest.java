@@ -93,6 +93,57 @@ public class AppendingRowHandlerTest {
     }
 
     @Test
+    public void resolveTaxonCacheMatchFirstLineWithAuthorshipSchema() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens\tL.", StandardCharsets.UTF_8);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
+        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, "externalId");
+                    put(1, "name");
+                    put(2, "authorship");
+                }};
+            }
+
+
+        }, new AppenderTSV(new TreeMap<Integer, String>() {{
+            put(0, "externalId");
+            put(1, "name");
+            put(2, "authorship");
+        }})));
+        String[] lines = os.toString().split("\n");
+        assertThat(lines.length, Is.is(1));
+        assertThat(lines[0], Is.is("EOL:1276240\tHomo sapiens\tL.\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis\t"));
+    }
+
+    @Test
+    public void resolveTaxonCacheMatchFirstLineWithAuthorshipSchemaNoOutputAuthor() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens\tL.", StandardCharsets.UTF_8);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
+        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, "externalId");
+                    put(1, "name");
+                    put(2, "authorship");
+                }};
+            }
+
+
+        }, new AppenderTSV(new TreeMap<Integer, String>() {{
+            put(0, "externalId");
+            put(1, "name");
+        }})));
+        String[] lines = os.toString().split("\n");
+        assertThat(lines.length, Is.is(1));
+        assertThat(lines[0], Is.is("EOL:1276240\tHomo sapiens\tL.\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));
+    }
+
+    @Test
     public void resolveGlobalNamesAppendFuzzyMatch() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tHomo saliens\tone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();

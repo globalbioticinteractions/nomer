@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
@@ -44,15 +45,40 @@ public class WorldOfFloraOnlineTaxonServiceTest {
     public void enrichByName() throws PropertyEnricherException {
         WorldOfFloraOnlineTaxonService service = createService();
 
-        Taxon phryganella = new TaxonImpl("Syneilesis palmata", null);
-        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(phryganella));
+        Taxon taxon = new TaxonImpl("Syneilesis palmata", null);
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WFO:0000000100"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Syneilesis palmata"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Maxim."));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Syneilesis | Syneilesis palmata"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WFO:4000037295 | WFO:0000000100"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+    }
+
+    @Test
+    public void enrichByNameWithMismatchingAuthorship() throws PropertyEnricherException {
+        WorldOfFloraOnlineTaxonService service = createService();
+
+        Taxon taxon = new TaxonImpl("Syneilesis palmata", null);
+        taxon.setAuthorship("Duck 1935");
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is(not("Maxim.")));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is(not("WFO:0000000100")));
+    }
+
+    @Test
+    public void enrichByNameWithMatchingAuthorship() throws PropertyEnricherException {
+        WorldOfFloraOnlineTaxonService service = createService();
+
+        Taxon taxon = new TaxonImpl("Syneilesis palmata", null);
+        taxon.setAuthorship("Maxim.");
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Maxim."));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WFO:0000000100"));
     }
 
     @Test
