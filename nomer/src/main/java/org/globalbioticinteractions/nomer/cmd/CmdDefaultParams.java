@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.cmd;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.InputStreamFactory;
@@ -12,6 +13,7 @@ import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.PropertyContext;
 import picocli.CommandLine;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -101,4 +103,6 @@ public abstract class CmdDefaultParams implements PropertyContext {
     public String getPropertiesResource() {
         return StringUtils.trim(propertiesResource);
     }
+
+
 }
