@@ -236,7 +236,6 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         if (StringUtils.isBlank(taxonNameAndAuthorship)) {
             emitNoMatch(providedTaxon, listener);
         } else {
-            System.out.println("lookup: [" + taxonNameAndAuthorship + "]");
             List<T> taxonKeys = name2nodeIds == null
                     ? Collections.emptyList()
                     : name2nodeIds.get(taxonNameAndAuthorship);
