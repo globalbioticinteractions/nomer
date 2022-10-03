@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.eol.globi.service.ServiceUtil;
 import org.eol.globi.service.UKSISuggestionService;
-import org.eol.globi.taxon.GlobalNamesCanon;
 import org.eol.globi.taxon.TaxonNameCorrector;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
