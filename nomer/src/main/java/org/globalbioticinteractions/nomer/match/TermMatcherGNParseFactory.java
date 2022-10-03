@@ -12,9 +12,7 @@ public class TermMatcherGNParseFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return new TaxonNameCorrector(ctx) {{
-            setSuggestors(Collections.singletonList(new GlobalNamesCanon()));
-        }};
+        return new ParserServiceGlobalNames();
     }
 
     @Override
