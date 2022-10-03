@@ -19,9 +19,11 @@ import org.eol.globi.taxon.HtmlUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -122,6 +124,7 @@ public class BatNamesTaxonService implements TermMatcher {
             DB db = DBMaker
                     .newFileDB(new File(getCacheDir(), "names"))
                     .mmapFileEnableIfSupported()
+                    .mmapFileCleanerHackDisable()
                     .compressionEnable()
                     .closeOnJvmShutdown()
                     .transactionDisable()
@@ -147,20 +150,30 @@ public class BatNamesTaxonService implements TermMatcher {
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         AtomicLong nameCounter = new AtomicLong();
-        nameMap = db.createTreeMap(MAP_NAME).make();
+        nameMap = db
+                .createTreeMap(MAP_NAME)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
+                .make();
 
         DB tmpDb = null;
         try {
             tmpDb = DBMaker
                     .newFileDB(new File(getCacheDir(), "tmp"))
                     .mmapFileEnableIfSupported()
+                    .mmapFileCleanerHackDisable()
                     .compressionEnable()
                     .deleteFilesAfterClose()
                     .closeOnJvmShutdown()
                     .transactionDisable()
                     .make();
 
-            Map<String, List<Pair<String, Map<String, String>>>> homonymsToBeResolved = tmpDb.createTreeMap("honomyns").make();
+            Map<String, List<Pair<String, Map<String, String>>>> homonymsToBeResolved
+                    = tmpDb
+                    .createTreeMap("honomyns")
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
+                    .make();
 
 
             TermMatchListener termMatchListener = new TermMatchListener() {

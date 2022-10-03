@@ -15,6 +15,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -91,22 +93,26 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
                 nodes = db
                         .createTreeMap(NODES)
                         .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                        .valueSerializer(Serializer.JAVA)
                         .make();
 
 
                 childParent = db
                         .createTreeMap(CHILD_PARENT)
                         .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                        .valueSerializer(Serializer.LONG)
                         .make();
 
                 name2nodeIds = db
                         .createTreeMap(NAME_TO_NODE_IDS)
                         .keySerializer(BTreeKeySerializer.STRING)
+                        .valueSerializer(Serializer.JAVA)
                         .make();
 
                 mergedNodes = db
                         .createTreeMap(MERGED_NODES)
                         .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                        .valueSerializer(Serializer.LONG)
                         .make();
 
                 NameUsageListener<Long> nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent);

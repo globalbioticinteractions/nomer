@@ -21,6 +21,7 @@ import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,6 +210,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         DB db = DBMaker
                 .newFileDB(ncbiTaxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -230,11 +232,13 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             BTreeMap<String, Map<String, String>> ncbiNodes = db
                     .createTreeMap("nodes")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             BTreeMap<String, String> childParent = db
                     .createTreeMap("childParent")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             try {
@@ -246,21 +250,25 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             mergedNodes = db
                     .createTreeMap(MERGED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             nameIds = db
                     .createTreeMap(NAME_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             synonymIds = db
                     .createTreeMap(SYNONYM_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             commonNameIds = db
                     .createTreeMap(COMMON_NAME_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
 
@@ -273,6 +281,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             BTreeMap<String, String> ncbiNames = db
                     .createTreeMap("names")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             try {
@@ -285,6 +294,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             ncbiDenormalizedNodes = db
                     .createTreeMap(DENORMALIZED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
             denormalizeTaxa(ncbiNodes, ncbiDenormalizedNodes, childParent, ncbiNames);
 

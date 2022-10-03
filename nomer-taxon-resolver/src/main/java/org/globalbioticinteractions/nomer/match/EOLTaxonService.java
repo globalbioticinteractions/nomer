@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
@@ -165,6 +166,7 @@ public class EOLTaxonService extends PropertyEnricherSimple {
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -181,11 +183,13 @@ public class EOLTaxonService extends PropertyEnricherSimple {
             BTreeMap<String, Map<String, String>> eolNodes = db
                     .createTreeMap("nodes")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             BTreeMap<String, String> childParent = db
                     .createTreeMap("childParent")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             try {
@@ -198,6 +202,7 @@ public class EOLTaxonService extends PropertyEnricherSimple {
             eolDenormalizedNodes = db
                     .createTreeMap(DENORMALIZED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
             denormalizeTaxa(eolNodes, eolDenormalizedNodes, childParent);
 

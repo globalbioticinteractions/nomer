@@ -14,6 +14,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +75,7 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -98,22 +100,26 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
                 nodes = db
                         .createTreeMap(NODES)
                         .keySerializer(BTreeKeySerializer.STRING)
+                        .valueSerializer(Serializer.JAVA)
                         .make();
 
 
                 childParent = db
                         .createTreeMap(CHILD_PARENT)
                         .keySerializer(BTreeKeySerializer.STRING)
+                        .valueSerializer(Serializer.STRING)
                         .make();
 
                 mergedNodes = db
                         .createTreeMap(MERGED_NODES)
                         .keySerializer(BTreeKeySerializer.STRING)
+                        .valueSerializer(Serializer.STRING)
                         .make();
 
                 name2nodeIds = db
                         .createTreeMap(NAME_TO_NODE_IDS)
                         .keySerializer(BTreeKeySerializer.STRING)
+                        .valueSerializer(Serializer.JAVA)
                         .make();
 
                 NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent, name2nodeIds);

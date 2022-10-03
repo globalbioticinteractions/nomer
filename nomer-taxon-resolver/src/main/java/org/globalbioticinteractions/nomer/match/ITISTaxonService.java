@@ -14,6 +14,7 @@ import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +137,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -162,6 +164,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
         BTreeMap<String, String> rankIdNameMap = db
                 .createTreeMap("rankIdNameMap")
                 .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.STRING)
                 .make();
 
         try {
@@ -177,15 +180,19 @@ public class ITISTaxonService extends CommonLongTaxonService {
         nodes = db
                 .createTreeMap(NODES)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.JAVA)
                 .make();
 
         childParent = db
                 .createTreeMap(CHILD_PARENT)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.LONG)
                 .make();
 
         name2nodeIds = db
                 .createTreeMap(NAME_TO_NODE_IDS)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
                 .make();
 
         try {
@@ -197,6 +204,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
         mergedNodes = db
                 .createTreeMap(MERGED_NODES)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.LONG)
                 .make();
 
 

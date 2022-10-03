@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.PropertyAndValueDictionary;
@@ -91,6 +92,7 @@ public class NODCTaxonService extends PropertyEnricherSimple {
         DB db = DBMaker
                 .newFileDB(new File(getCacheDir(), "nodcLookup"))
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
                 .make();
@@ -101,6 +103,7 @@ public class NODCTaxonService extends PropertyEnricherSimple {
                 .pumpPresort(100000)
                 .pumpIgnoreDuplicates()
                 .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.STRING)
                 .make();
 
         watch.stop();

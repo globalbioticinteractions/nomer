@@ -4,6 +4,8 @@ import com.Ostermiller.util.CSVParse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eol.globi.util.ResourceServiceHTTP;
+import org.mapdb.BTreeKeySerializer;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.util.CSVTSVUtil;
@@ -79,6 +81,8 @@ public class DOIResolverCache extends CacheService implements DOIResolver {
             LOG.info("doi cache building...");
             doiCitationMap = db
                     .createTreeMap("doiCache")
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .pumpPresort(300000)
                     .pumpIgnoreDuplicates()
                     .pumpSource(new Iterator<Fun.Tuple2<String, DOI>>() {

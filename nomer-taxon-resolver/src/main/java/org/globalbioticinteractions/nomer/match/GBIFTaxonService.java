@@ -23,6 +23,7 @@ import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,6 +182,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
         DB db = DBMaker
                 .newFileDB(gbifTaxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -218,6 +220,8 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
         nameIds = db
                 .createTreeMap(NAME_ID)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
                 .pumpSource(new Iterator<Fun.Tuple2<String, List<Long>>>() {
                     BufferedReader reader = null;
                     Pair<String, Long> nameId = null;
@@ -279,7 +283,6 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
 
                 })
-                .keySerializer(BTreeKeySerializer.STRING)
                 .make();
 
         watch.stop();
@@ -292,6 +295,8 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
         idRelations = db
                 .createTreeMap(ID_RELATION)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.JAVA)
                 .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<GBIFNameRelationType, Long>>>() {
                     BufferedReader reader = null;
                     Pair<Long, Pair<GBIFNameRelationType, Long>> idRelation = null;
@@ -328,7 +333,6 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
 
                 })
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
 
         watch.stop();
@@ -338,6 +342,8 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
     private void indexIds(StopWatch watch, DB db, URI gbifIdResource) {
         idNameRanks = db
                 .createTreeMap(ID_NAME_RANK)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.JAVA)
                 .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<String, GBIFRank>>>() {
                     BufferedReader reader = null;
                     Triple<Long, String, GBIFRank> idNameRank = null;
@@ -375,7 +381,6 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
 
                 })
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .make();
 
         watch.stop();

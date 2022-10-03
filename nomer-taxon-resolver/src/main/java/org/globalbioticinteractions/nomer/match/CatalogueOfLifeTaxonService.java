@@ -16,6 +16,7 @@ import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +68,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -105,22 +107,26 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                     nodes = db
                             .createTreeMap(NODES)
                             .keySerializer(BTreeKeySerializer.STRING)
+                            .valueSerializer(Serializer.JAVA)
                             .make();
 
 
                     childParent = db
                             .createTreeMap(CHILD_PARENT)
                             .keySerializer(BTreeKeySerializer.STRING)
+                            .valueSerializer(Serializer.STRING)
                             .make();
 
                     name2nodeIds = db
                             .createTreeMap(NAME_TO_NODE_IDS)
                             .keySerializer(BTreeKeySerializer.STRING)
+                            .valueSerializer(Serializer.JAVA)
                             .make();
 
                     mergedNodes = db
                             .createTreeMap(MERGED_NODES)
                             .keySerializer(BTreeKeySerializer.STRING)
+                            .valueSerializer(Serializer.STRING)
                             .make();
 
                     NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent);
@@ -148,6 +154,8 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
             skipFirstLine(reader);
             nodes = db
                     .createTreeMap(NODES)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .pumpSource(new Iterator<Fun.Tuple2<String, Map<String, String>>>() {
                         String taxonStatus;
                         String taxonChildId;
@@ -186,7 +194,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                             );
                         }
                     })
-                    .makeStringMap();
+                    .make();
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
             return nodes;
         } catch (IOException e) {
@@ -205,6 +213,8 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
             skipFirstLine(reader);
             childParent = db
                     .createTreeMap(CHILD_PARENT)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .pumpSource(new Iterator<Fun.Tuple2<String, String>>() {
                         String taxonChildId;
                         String taxonParentId;
@@ -239,7 +249,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                             );
                         }
                     })
-                    .makeStringMap();
+                    .make();
             TaxonCacheService.logCacheLoadStats(watch.getTime(), childParent.size(), LOG);
             return childParent;
         } catch (IOException e) {
@@ -257,6 +267,8 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
             skipFirstLine(reader);
             mergedNodes = db
                     .createTreeMap(MERGED_NODES)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .pumpSource(new Iterator<Fun.Tuple2<String, String>>() {
                         String taxonParentId;
                         String taxonChildId;
@@ -296,7 +308,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                             );
                         }
                     })
-                    .makeStringMap();
+                    .make();
             TaxonCacheService.logCacheLoadStats(watch.getTime(), mergedNodes.size(), LOG);
             return mergedNodes;
         } catch (IOException e) {
