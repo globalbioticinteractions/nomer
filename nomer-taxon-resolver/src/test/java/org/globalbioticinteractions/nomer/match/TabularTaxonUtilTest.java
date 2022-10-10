@@ -2,7 +2,10 @@ package org.globalbioticinteractions.nomer.match;
 
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.tuple.Triple;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.CSVTSVUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
@@ -35,7 +38,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation1 = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        Taxon taxon = nameRelation1.getLeft();
 
         assertThat(taxon.getAuthorship(), Is.is("Ferris, 1933"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | acuticeps"));
@@ -47,7 +51,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        taxon = nameRelation.getLeft();
 
         assertThat(taxon.getAuthorship(), Is.is("Goureau, 1866"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | apri"));
@@ -78,7 +83,11 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation1 = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+
+        assertThat(TaxonUtil.isResolved(nameRelation1.getRight()), Is.is(true));
+        assertThat(nameRelation1.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        Taxon taxon = nameRelation1.getLeft();
 
         assertNull(taxon.getAuthorship());
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Holothyrida | Holothyroidea | Allothyridae"));
@@ -91,7 +100,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        taxon = nameRelation.getLeft();
 
         assertThat(taxon.getAuthorship(), Is.is("Gerlach, Lehtinen & Madl, 2010"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus"));
@@ -100,7 +110,28 @@ public class TabularTaxonUtilTest {
         assertThat(taxon.getName(), Is.is("Dicrogonatus"));
         assertThat(taxon.getRank(), Is.is("genus"));
         assertThat(taxon.getNameSource(), Is.is("GBIF"));
+        assertThat(TaxonUtil.isResolved(nameRelation.getRight()), Is.is(true));
 
+        for (int i = 0; i < 4; i++) {
+            labeledCSVParser.getLine();
+        }
+
+        nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+
+        assertThat(nameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+
+        Taxon resolvedTaxon = nameRelation.getRight();
+        assertThat(resolvedTaxon.getExternalId(), Is.is("6892347"));
+        assertThat(TaxonUtil.isResolved(resolvedTaxon), Is.is(false));
+        taxon = nameRelation.getLeft();
+
+        assertThat(taxon.getAuthorship(), Is.is("Berlese, 1923"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Holothyrus | expolitissimus"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
+        assertThat(taxon.getId(), Is.is("GBIF:acari_6892348"));
+        assertThat(taxon.getName(), Is.is("Holothyrus expolitissimus"));
+        assertThat(taxon.getRank(), Is.is("species"));
+        assertThat(taxon.getNameSource(), Is.is("GBIF"));
 
     }
 
@@ -123,7 +154,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation1 = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        Taxon taxon = nameRelation1.getLeft();
 
         assertNull(taxon.getId());
         assertThat(taxon.getName(), Is.is("Argas abdussalami"));
@@ -135,7 +167,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        taxon = nameRelation.getLeft();
 
         assertThat(taxon.getAuthorship(), Is.is("Hoogstraal, Kaiser, Walker & Ledger"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | africolumbae"));
@@ -166,7 +199,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation1 = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        Taxon taxon = nameRelation1.getLeft();
 
         assertThat(taxon.getAuthorship(), Is.is("Lewis, 1968"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Siphonaptera | Ancistropsyllidae | Ancistropsylla | nepalensis"));
@@ -178,7 +212,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        taxon = nameRelation.getLeft();
 
         assertThat(taxon.getAuthorship(), Is.is("Toumanoff & Fuller, 1947"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Siphonaptera | Ancistropsyllidae | Ancistropsylla | roubaudi"));
@@ -210,7 +245,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation1 = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        Taxon taxon = nameRelation1.getLeft();
 
         assertThat(taxon.getId(), Is.is("100"));
         assertThat(taxon.getName(), Is.is("Afrosoricida"));
@@ -222,7 +258,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        taxon = nameRelation.getLeft();
 
         assertNull(taxon.getAuthorship());
         assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Artiodactyla | Antilocapridae | Antilocapra | americana"));
@@ -234,6 +271,7 @@ public class TabularTaxonUtilTest {
 
 
     }
+
     @Test
     public void indexAvesTable() throws IOException {
         String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
@@ -252,7 +290,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation1 = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        Taxon taxon = nameRelation1.getLeft();
 
         assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Aves | Caprimulgiformes | Trochilidae | Abeillia"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
@@ -264,7 +303,8 @@ public class TabularTaxonUtilTest {
 
         labeledCSVParser.getLine();
 
-        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+        Triple<Taxon, NameType, Taxon> nameRelation = TabularTaxonUtil.parseNameRelations(labeledCSVParser);
+        taxon = nameRelation.getLeft();
 
         assertNull(taxon.getId());
         assertThat(taxon.getName(), Is.is("Abeillia abeillei"));
@@ -273,7 +313,6 @@ public class TabularTaxonUtilTest {
         assertNull(taxon.getAuthorship());
         assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Aves | Caprimulgiformes | Trochilidae | Abeillia | abeillei"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
-
 
     }
 

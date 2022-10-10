@@ -75,7 +75,7 @@ public class TabularTaxonUtil {
     public static final String ACCEPTED_NAME_USAGE_ID = "acceptedNameUsageID";
 
 
-    public static Taxon parseLine(LabeledCSVParser labeledCSVParser) {
+    public static Triple<Taxon, NameType, Taxon> parseNameRelations(LabeledCSVParser labeledCSVParser) {
         Set<TabularColumn> tabularColumns = TRANSLATION_TABLE.keySet();
 
         Map<String, String> taxonMap = new TreeMap<>();
@@ -151,23 +151,21 @@ public class TabularTaxonUtil {
             }
             acceptedTaxon.setExternalId(acceptedNameUsageID);
         }
-        Triple<Taxon, NameType, Taxon> nameRelation =
-                Triple.of(providedTaxon, nameType, acceptedTaxon);
-
-
-        return nameRelation.getLeft();
+        return Triple.of(providedTaxon, nameType, acceptedTaxon);
     }
 
     private static NameType parseNameType(LabeledCSVParser labeledCSVParser) {
         String taxonomicStatus = labeledCSVParser.getValueByLabel("taxonomicStatus");
         final Map<String, NameType> statusMap = new TreeMap<String, NameType>() {{
            put("accepted", NameType.HAS_ACCEPTED_NAME);
-           put("synonym", NameType.HAS_ACCEPTED_NAME);
-           put("heterotypic synonym", NameType.HAS_ACCEPTED_NAME);
+           put("synonym", NameType.SYNONYM_OF);
+           put("heterotypic synonym", NameType.SYNONYM_OF);
            put("doubtful", NameType.NONE);
         }};
 
-        return statusMap.getOrDefault(StringUtils.lowerCase(taxonomicStatus), NameType.NONE);
+        return StringUtils.isBlank(taxonomicStatus)
+                        ? NameType.HAS_ACCEPTED_NAME
+                        : statusMap.getOrDefault(StringUtils.lowerCase(taxonomicStatus), NameType.NONE);
     }
 
 
