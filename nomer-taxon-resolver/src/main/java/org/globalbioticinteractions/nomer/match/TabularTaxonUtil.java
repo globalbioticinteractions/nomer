@@ -2,8 +2,11 @@ package org.globalbioticinteractions.nomer.match;
 
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.data.CharsetConstant;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
 
 import java.util.ArrayList;
@@ -20,28 +23,6 @@ import static org.eol.globi.domain.PropertyAndValueDictionary.EXTERNAL_ID;
 import static org.eol.globi.domain.PropertyAndValueDictionary.NAME_SOURCE;
 import static org.eol.globi.domain.PropertyAndValueDictionary.PATH;
 import static org.eol.globi.domain.PropertyAndValueDictionary.PATH_NAMES;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.clazz;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.family;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.genus;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.infragenericEpithet;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.infraorder;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.infraspecificEpithet;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.kingdom;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.nanorder;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.order;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.parvorder;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.phylum;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.scientificNameAuthorship;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.source;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.specificEpithet;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.subclass;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.subfamily;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.suborder;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.subtribe;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.superfamily;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.superorder;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.taxonID;
-import static org.globalbioticinteractions.nomer.match.TabularColumn.tribe;
 
 public class TabularTaxonUtil {
     public static final Map<TabularColumn, String> TRANSLATION_TABLE = new TreeMap<TabularColumn, String>() {{
@@ -91,6 +72,8 @@ public class TabularTaxonUtil {
             TabularColumn.specificEpithet,
             TabularColumn.infraspecificEpithet
     );
+    public static final String ACCEPTED_NAME_USAGE_ID = "acceptedNameUsageID";
+
 
     public static Taxon parseLine(LabeledCSVParser labeledCSVParser) {
         Set<TabularColumn> tabularColumns = TRANSLATION_TABLE.keySet();
@@ -145,17 +128,47 @@ public class TabularTaxonUtil {
             }
         }
 
-        Taxon taxon = TaxonUtil.mapToTaxon(taxonMap);
-        String externalId = taxon.getExternalId();
-        String nameSource = taxon.getNameSource();
+        Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMap);
+        String externalId = providedTaxon.getExternalId();
+        String nameSource = providedTaxon.getNameSource();
 
-        if (StringUtils.isNoneBlank(externalId)){
+        if (StringUtils.isNoneBlank(externalId)) {
             if (StringUtils.startsWith(nameSource, "TPT")) {
-                taxon.setExternalId("TPT:" + externalId);
+                providedTaxon.setExternalId("TPT:" + externalId);
             } else if (StringUtils.startsWith(nameSource, "GBIF")) {
-                taxon.setExternalId("GBIF:" + externalId);
+                providedTaxon.setExternalId("GBIF:" + externalId);
             }
         }
-        return taxon;
+
+        NameType nameType = parseNameType(labeledCSVParser);
+
+        Taxon acceptedTaxon = providedTaxon;
+        if (NameType.SYNONYM_OF.equals(nameType)) {
+            acceptedTaxon = new TaxonImpl();
+            String acceptedNameUsageID = labeledCSVParser.getValueByLabel(ACCEPTED_NAME_USAGE_ID);
+            if (StringUtils.isBlank(acceptedNameUsageID)) {
+                throw new IllegalStateException("failed to resolve accepted name for [" + TaxonUtil.taxonToMap(providedTaxon) + "]: no [" + ACCEPTED_NAME_USAGE_ID + "]");
+            }
+            acceptedTaxon.setExternalId(acceptedNameUsageID);
+        }
+        Triple<Taxon, NameType, Taxon> nameRelation =
+                Triple.of(providedTaxon, nameType, acceptedTaxon);
+
+
+        return nameRelation.getLeft();
     }
+
+    private static NameType parseNameType(LabeledCSVParser labeledCSVParser) {
+        String taxonomicStatus = labeledCSVParser.getValueByLabel("taxonomicStatus");
+        final Map<String, NameType> statusMap = new TreeMap<String, NameType>() {{
+           put("accepted", NameType.HAS_ACCEPTED_NAME);
+           put("synonym", NameType.HAS_ACCEPTED_NAME);
+           put("heterotypic synonym", NameType.HAS_ACCEPTED_NAME);
+           put("doubtful", NameType.NONE);
+        }};
+
+        return statusMap.getOrDefault(StringUtils.lowerCase(taxonomicStatus), NameType.NONE);
+    }
+
+
 }
