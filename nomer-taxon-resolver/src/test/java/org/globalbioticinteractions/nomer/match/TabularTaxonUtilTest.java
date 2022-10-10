@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
 
@@ -18,16 +19,16 @@ public class TabularTaxonUtilTest {
 
     @Test
     public void indexPhthirapteraTable() throws IOException {
-        String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonical\n" +
-                "TPT_v1,1,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,acuticeps,NA,,,\"Ferris, 1933\",,,,,,Haematopinus acuticeps\n" +
-                "TPT_v1,2,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,apri,NA,,,\"Goureau, 1866\",,,,,,Haematopinus apri\n" +
-                "TPT_v1,3,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,asini,NA,,,\"(Linnaeus, 1758)\",,,,,,Haematopinus asini\n" +
-                "TPT_v1,4,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,breviculus,NA,,,\"Fahrenholz, 1939\",,,,,,Haematopinus breviculus\n" +
-                "TPT_v1,5,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,bufali,NA,,,\"(de Geer, 1778)\",,,,,,Haematopinus bufali\n" +
-                "TPT_v1,6,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,channabasavannai,NA,,,\"Krishna Rao, Khuddus & Kuppuswamy, 1977\",,,,,,Haematopinus channabasavannai\n" +
-                "TPT_v1,7,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,eurysternus,NA,,,\"Denny, 1842\",,,,,,Haematopinus eurysternus\n" +
-                "TPT_v1,8,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,gorgonis,NA,,,\"Werneck, 1952\",,,,,,Haematopinus gorgonis\n" +
-                "TPT_v1,9,,0,,,,,,,,,,,,,,,,,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,NA,Haematopinidae,,,,Haematopinus,NA,jeannereti,NA,,,\"Paulian & Pajot, 1966\",,,,,,Haematopinus jeannereti\n";
+        String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
+                "TPT_v1,1,,,,,,,,\"Haematopinus acuticeps Ferris, 1933\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,acuticeps,,species,,\"Ferris, 1933\",,,,,,Haematopinus acuticeps\n" +
+                "TPT_v1,2,,,,,,,,\"Haematopinus apri Goureau, 1866\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,apri,,species,,\"Goureau, 1866\",,,,,,Haematopinus apri\n" +
+                "TPT_v1,3,,,,,,,,\"Haematopinus asini (Linnaeus, 1758)\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,asini,,species,,\"(Linnaeus, 1758)\",,,,,,Haematopinus asini\n" +
+                "TPT_v1,4,,,,,,,,\"Haematopinus breviculus Fahrenholz, 1939\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,breviculus,,species,,\"Fahrenholz, 1939\",,,,,,Haematopinus breviculus\n" +
+                "TPT_v1,5,,,,,,,,\"Haematopinus bufali (de Geer, 1778)\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,bufali,,species,,\"(de Geer, 1778)\",,,,,,Haematopinus bufali\n" +
+                "TPT_v1,6,,,,,,,,\"Haematopinus channabasavannai Krishna Rao, Khuddus & Kuppuswamy, 1977\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,channabasavannai,,species,,\"Krishna Rao, Khuddus & Kuppuswamy, 1977\",,,,,,Haematopinus channabasavannai\n" +
+                "TPT_v1,7,,,,,,,,\"Haematopinus eurysternus Denny, 1842\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,eurysternus,,species,,\"Denny, 1842\",,,,,,Haematopinus eurysternus\n" +
+                "TPT_v1,8,,,,,,,,\"Haematopinus gorgonis Werneck, 1952\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,gorgonis,,species,,\"Werneck, 1952\",,,,,,Haematopinus gorgonis\n" +
+                "TPT_v1,9,,,,,,,,\"Haematopinus jeannereti Paulian & Pajot, 1966\",,,,,,,,Animalia,Arthropoda,Insecta,,,Psocodea,Troctomorpha,Nanopsocetae,Phthiraptera,Anoplura,,Haematopinidae,,,,Haematopinus,,jeannereti,,species,,\"Paulian & Pajot, 1966\",,,,,,Haematopinus jeannereti\n";
 
         InputStream inputStream = IOUtils.toInputStream(table, StandardCharsets.UTF_8);
         LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(inputStream);
@@ -37,8 +38,8 @@ public class TabularTaxonUtilTest {
         Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertThat(taxon.getAuthorship(), Is.is("Ferris, 1933"));
-        assertThat(taxon.getPath(), Is.is("Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | acuticeps"));
-        assertThat(taxon.getPathNames(), Is.is("order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | acuticeps"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
         assertThat(taxon.getId(), Is.is("TPT:1"));
         assertThat(taxon.getName(), Is.is("Haematopinus acuticeps"));
         assertThat(taxon.getRank(), Is.is("species"));
@@ -49,8 +50,8 @@ public class TabularTaxonUtilTest {
         taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertThat(taxon.getAuthorship(), Is.is("Goureau, 1866"));
-        assertThat(taxon.getPath(), Is.is("Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | apri"));
-        assertThat(taxon.getPathNames(), Is.is("order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | apri"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
         assertThat(taxon.getId(), Is.is("TPT:2"));
         assertThat(taxon.getName(), Is.is("Haematopinus apri"));
         assertThat(taxon.getRank(), Is.is("species"));
@@ -62,15 +63,15 @@ public class TabularTaxonUtilTest {
     @Test
     public void indexAcariTable() throws IOException {
         String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
-                "TPT,6995,,,,,,,,Allothyridae,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Holothyrida,,,,,Holothyroidea,Allothyridae,,,,,,,,family,,,,,,,,Allothyridae\n" +
-                "GBIF,10766101,,,10682343,,,,,\"Dicrogonatus gardineri (Warburton, 1912)\",,,,,,,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Dicrogonatus,,gardineri,,species,,\"(Warburton, 1912)\",,,accepted,,,Dicrogonatus gardineri\n" +
-                "GBIF,10857865,,,10682343,,,,,\"Dicrogonatus niger (Thon, 1906)\",,,,,,,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Dicrogonatus,,niger,,species,,\"(Thon, 1906)\",,,accepted,,,Dicrogonatus niger\n" +
-                "GBIF,6892347,,,4663001,6892348,,,,\"Haplothyrus expolitissimus (Berlese, 1923)\",,,,,,,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Haplothyrus,,expolitissimus,,species,,\"(Berlese, 1923)\",,,accepted,,,Haplothyrus expolitissimus\n" +
-                "GBIF,6892348,,6892347,4663001,,,,,\"Holothyrus expolitissimus Berlese, 1923\",Haplothyrus expolitissimus,,,,,,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Haplothyrus,,expolitissimus,,species,,\"Berlese, 1923\",,,synonym,,,Holothyrus expolitissimus\n" +
-                "GBIF,4664671,,,4664666,,,,,\"Holothyrus australasiae Womersley, 1935\",,,,,\"Womersley, Herbert. 1935. A species of Acarina of the genus Holothyrus from Australia and New Zealand. Annals and Magazine of Natural History, Including Zoology, Botany and Geology, Being a Continuation of the 'Magazine of Botany and Zoology', and of Louden and Charlesworth's 'Magazine of Natural History', Series 10 16(91): 154-157, plate VIII.\",,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,australasiae,,species,,\"Womersley, 1935\",,,accepted,,,Holothyrus australasiae\n" +
-                "GBIF,6892351,,,4664666,,,,,\"Holothyrus coccinella Gervais, 1842\",,,,,\"Gervais, F. L. P. 1842. Annales de la Soci̩t̩ Entomologique de France, S̩ries 1-6 11: xlv���xlviii.\",,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,coccinella,,species,,\"Gervais, 1842\",,,accepted,,,Holothyrus coccinella\n" +
-                "GBIF,4664673,,,4664666,,,,,\"Holothyrus constrictus Domrow, 1955\",,,,,\"Domrow, Robert. 1955. A second species of Holothyrus (Acarina: Holothyroidea) from Australia. Proceedings of the Linnean Society of New South Wales 79(375-376): 159-162.\",,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,constrictus,,species,,\"Domrow, 1955\",,,accepted,,,Holothyrus constrictus\n" +
-                "GBIF,6892349,,,4660398,,,,,\"Lindothyrus rubellus Lehtinen, 1995\",,,,,,,,Animalia,Arthropoda,,,,Holothyrida,,,,,,Holothyridae,,,,Lindothyrus,,rubellus,,species,,\"Lehtinen, 1995\",,,accepted,,,Lindothyrus rubellus\n";
+                "TPT,acari_6995,,,,,,,,Allothyridae,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Holothyrida,,,,,Holothyroidea,Allothyridae,,,,,,,,family,,,,,,,,Allothyridae\n" +
+                "GBIF,Acari_10682343,,,6996,,,,,\"Dicrogonatus Gerlach, Lehtinen & Madl, 2010\",,,,,\"Gerlach, J., & Marusik, Y. M. (Eds.). (2010). Arachnida and Myriapoda of the Seychelles islands. Siri Scientific Press.\",,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Dicrogonatus,,,,genus,,\"Gerlach, Lehtinen & Madl, 2010\",,,accepted,,,Dicrogonatus\n" +
+                "GBIF,acari_10766101,,,10682343,,,,,\"Dicrogonatus gardineri (Warburton, 1912)\",,,,,,,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Dicrogonatus,,gardineri,,species,,\"(Warburton, 1912)\",,,accepted,,,Dicrogonatus gardineri\n" +
+                "GBIF,acari_10857865,,,10682343,,,,,\"Dicrogonatus niger (Thon, 1906)\",,,,,,,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Dicrogonatus,,niger,,species,,\"(Thon, 1906)\",,,accepted,,,Dicrogonatus niger\n" +
+                "GBIF,acari_6892347,,,4663001,6892348,,,,\"Haplothyrus expolitissimus (Berlese, 1923)\",,,,,,,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Haplothyrus,,expolitissimus,,species,,\"(Berlese, 1923)\",,,accepted,,,Haplothyrus expolitissimus\n" +
+                "GBIF,acari_6892348,,6892347,4663001,,,,,\"Holothyrus expolitissimus Berlese, 1923\",Haplothyrus expolitissimus,,,,,,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,expolitissimus,,species,,\"Berlese, 1923\",,,synonym,,,Holothyrus expolitissimus\n" +
+                "GBIF,acari_4664671,,,4664666,,,,,\"Holothyrus australasiae Womersley, 1935\",,,,,\"Womersley, Herbert. 1935. A species of Acarina of the genus Holothyrus from Australia and New Zealand. Annals and Magazine of Natural History, Including Zoology, Botany and Geology, Being a Continuation of the 'Magazine of Botany and Zoology', and of Louden and Charlesworth's 'Magazine of Natural History', Series 10 16(91): 154-157, plate VIII. \",,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,australasiae,,species,,\"Womersley, 1935\",,,accepted,,,Holothyrus australasiae\n" +
+                "GBIF,acari_6892351,,,4664666,,,,,\"Holothyrus coccinella Gervais, 1842\",,,,,\"Gervais, F. L. P. 1842. Annales de la Société Entomologique de France, Series 1-6 11: xlv_��xlviii. \",,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,coccinella,,species,,\"Gervais, 1842\",,,accepted,,,Holothyrus coccinella\n" +
+                "GBIF,acari_4664673,,,4664666,,,,,\"Holothyrus constrictus Domrow, 1955\",,,,,\"Domrow, Robert. 1955. A second species of Holothyrus (Acarina: Holothyroidea) from Australia. Proceedings of the Linnean Society of New South Wales 79(375-376): 159-162. \",,,Animalia,Arthropoda,Arachnida,,,Holothyrida,,,,,,Holothyridae,,,,Holothyrus,,constrictus,,species,,\"Domrow, 1955\",,,accepted,,,Holothyrus constrictus\n";
 
         InputStream inputStream = IOUtils.toInputStream(table, StandardCharsets.UTF_8);
         LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(inputStream);
@@ -82,21 +83,22 @@ public class TabularTaxonUtilTest {
         assertNull(taxon.getAuthorship());
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Holothyrida | Holothyroidea | Allothyridae"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | subclass | superorder | order | superfamily | family"));
-        assertThat(taxon.getId(), Is.is("TPT:6995"));
+        assertThat(taxon.getId(), Is.is("TPT:acari_6995"));
         assertThat(taxon.getName(), Is.is("Allothyridae"));
         assertThat(taxon.getRank(), Is.is("family"));
+        assertThat(taxon.getAuthorship(), Is.is(nullValue()));
         assertThat(taxon.getNameSource(), Is.is("TPT"));
 
         labeledCSVParser.getLine();
 
         taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
-        assertThat(taxon.getAuthorship(), Is.is("(Warburton, 1912)"));
-        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Holothyrida | Holothyridae | Dicrogonatus | gardineri"));
-        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | order | family | genus | specificEpithet"));
-        assertThat(taxon.getId(), Is.is("GBIF:10766101"));
-        assertThat(taxon.getName(), Is.is("Dicrogonatus gardineri"));
-        assertThat(taxon.getRank(), Is.is("species"));
+        assertThat(taxon.getAuthorship(), Is.is("Gerlach, Lehtinen & Madl, 2010"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
+        assertThat(taxon.getId(), Is.is("GBIF:Acari_10682343"));
+        assertThat(taxon.getName(), Is.is("Dicrogonatus"));
+        assertThat(taxon.getRank(), Is.is("genus"));
         assertThat(taxon.getNameSource(), Is.is("GBIF"));
 
 
@@ -105,16 +107,16 @@ public class TabularTaxonUtilTest {
 
     @Test
     public void indexIxodesTable() throws IOException {
-        String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonical\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,abdussalami,,,,HOOGSTRAAL  MCCARTHY 1965,,,,,,Argas abdussalami\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,africolumbae,,,,HOOGSTRAAL  KAISER  WALKER  LEDGER,,,,,,Argas africolumbae\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,arboreus,,,,KAISER  HOOGSTRAAL  KOHLS 1964,,,,,,Argas arboreus\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,argas,,,,KOHLS  HOOGSTRAAL,,,,,,Argas argas\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,australiensis,,,,KOHLS HOOGSTRAL 1962,,,,,,Argas australiensis\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,boueti,,,,ROUBAUD  COLAS-BELCOUR,,,,,,Argas boueti\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,brevipes,,,,BANKS,,,,,,Argas brevipes\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,brumpti,,,,NEUMANN,,,,,,Argas brumpti\n" +
-                ",,,,,,,,,,,,,,,,,,,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,bubalornis,,,,,,,,,,Argas bubalornis\n";
+        String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
+                ",,,,,,,,,\"Argas abdussalami Hoogstraal & Mccarthy, 1965\",,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,abdussalami,,species,,\"Hoogstraal & Mccarthy, 1965\",,,,,,Argas abdussalami\n" +
+                ",,,,,,,,,\"Argas africolumbae Hoogstraal, Kaiser, Walker & Ledger\",,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,africolumbae,,species,,\"Hoogstraal, Kaiser, Walker & Ledger\",,,,,,Argas africolumbae\n" +
+                ",,,,,,,,,\"Argas arboreus Kaiser, Hoogstraal & Kohls, 1964\",,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,arboreus,,species,,\"Kaiser, Hoogstraal & Kohls, 1964\",,,,,,Argas arboreus\n" +
+                ",,,,,,,,,Argas argas Kohls & Hoogstraal,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,argas,,species,,Kohls & Hoogstraal,,,,,,Argas argas\n" +
+                ",,,,,,,,,\"Argas australiensis Kohls & Hoogstral, 1962\",,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,australiensis,,species,,\"Kohls & Hoogstral, 1962\",,,,,,Argas australiensis\n" +
+                ",,,,,,,,,Argas boueti Roubaud & Colas-Belcour,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,boueti,,species,,Roubaud & Colas-Belcour,,,,,,Argas boueti\n" +
+                ",,,,,,,,,Argas brevipes Banks,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,brevipes,,species,,Banks,,,,,,Argas brevipes\n" +
+                ",,,,,,,,,Argas brumpti Neumann,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,brumpti,,species,,Neumann,,,,,,Argas brumpti\n" +
+                ",,,,,,,,,Argas bubalornis ,,,,,,,,Animalia,Arthropoda,Arachnida,Acari,Parasitiformes,Ixodida,,,,,Ixodoidea,Argasidae,,,,Argas,,bubalornis,,species,,,,,,,,Argas bubalornis\n";
 
         InputStream inputStream = IOUtils.toInputStream(table, StandardCharsets.UTF_8);
         LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(inputStream);
@@ -123,21 +125,21 @@ public class TabularTaxonUtilTest {
 
         Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
-        assertThat(taxon.getAuthorship(), Is.is("HOOGSTRAAL  MCCARTHY 1965"));
-        assertThat(taxon.getPath(), Is.is("Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | abdussalami"));
-        assertThat(taxon.getPathNames(), Is.is("class | subclass | superorder | order | superfamily | family | genus | specificEpithet"));
         assertNull(taxon.getId());
         assertThat(taxon.getName(), Is.is("Argas abdussalami"));
         assertThat(taxon.getRank(), Is.is("species"));
+        assertThat(taxon.getAuthorship(), Is.is("Hoogstraal & Mccarthy, 1965"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | abdussalami"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | subclass | superorder | order | superfamily | family | genus | specificEpithet"));
         assertNull(taxon.getNameSource());
 
         labeledCSVParser.getLine();
 
         taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
-        assertThat(taxon.getAuthorship(), Is.is("HOOGSTRAAL  KAISER  WALKER  LEDGER"));
-        assertThat(taxon.getPath(), Is.is("Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | africolumbae"));
-        assertThat(taxon.getPathNames(), Is.is("class | subclass | superorder | order | superfamily | family | genus | specificEpithet"));
+        assertThat(taxon.getAuthorship(), Is.is("Hoogstraal, Kaiser, Walker & Ledger"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | africolumbae"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | subclass | superorder | order | superfamily | family | genus | specificEpithet"));
         assertNull(taxon.getId());
         assertThat(taxon.getName(), Is.is("Argas africolumbae"));
         assertThat(taxon.getRank(), Is.is("species"));
@@ -193,15 +195,15 @@ public class TabularTaxonUtilTest {
     @Test
     public void indexMammaliaTable() throws IOException {
         String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
-                ",,,,,,,,,Abrocomidae,,Rodentia,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,,,,,,,,,,,,140, \n" +
-                ",,,,,,,,,Abrocoma bennettii,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,bennettii,,,,,,,,,220,Abrocoma bennettii\n" +
-                ",,,,,,,,,Abrocoma boliviensis,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,boliviensis,,,,,,,,,220,Abrocoma boliviensis\n" +
-                ",,,,,,,,,Abrocoma budini,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,budini,,,,,,,,,220,Abrocoma budini\n" +
-                ",,,,,,,,,Abrocoma cinerea,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,cinerea,,,,,,,,,220,Abrocoma cinerea\n" +
-                ",,,,,,,,,Abrocoma famatina,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,famatina,,,,,,,,,220,Abrocoma famatina\n" +
-                ",,,,,,,,,Abrocoma schistacea,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,schistacea,,,,,,,,,220,Abrocoma schistacea\n" +
-                ",,,,,,,,,Abrocoma uspallata,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,uspallata,,,,,,,,,220,Abrocoma uspallata\n" +
-                ",,,,,,,,,Abrocoma vaccarum,,Abrocoma,,,,,,,,Mammalia,,,Rodentia,,,,,,Abrocomidae,,,,Abrocoma,,vaccarum,,,,,,,,,220,Abrocoma vaccarum\n";
+                "ASM,100,,,,,,,,Afrosoricida,,Mammalia,,,,,,Animalia,Chordata,Mammalia,,,Afrosoricida,,,,,,,,,,,,,,order,,,,,,,100, \n" +
+                "ASM,220,,,,,,,,Antilocapra americana,,Antilocapra,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Antilocapridae,,,,Antilocapra,,americana,,species,,,,,,,220,Antilocapra americana\n" +
+                "ASM,180,,,,,,,,Antilocapra,,Antilocapridae,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Antilocapridae,,,,Antilocapra,,,,genus,,,,,,,180,Antilocapra \n" +
+                "ASM,140,,,,,,,,Antilocapridae,,Artiodactyla,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Antilocapridae,,,,,,,,family,,,,,,,140, \n" +
+                "ASM,220,,,,,,,,Balaena mysticetus,,Balaena,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Balaenidae,,,,Balaena,,mysticetus,,species,,,,,,,220,Balaena mysticetus\n" +
+                "ASM,180,,,,,,,,Balaena,,Balaenidae,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Balaenidae,,,,Balaena,,,,genus,,,,,,,180,Balaena \n" +
+                "ASM,220,,,,,,,,Eubalaena australis,,Eubalaena,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Balaenidae,,,,Eubalaena,,australis,,species,,,,,,,220,Eubalaena australis\n" +
+                "ASM,220,,,,,,,,Eubalaena glacialis,,Eubalaena,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Balaenidae,,,,Eubalaena,,glacialis,,species,,,,,,,220,Eubalaena glacialis\n" +
+                "ASM,220,,,,,,,,Eubalaena japonica,,Eubalaena,,,,,,Animalia,Chordata,Mammalia,,,Artiodactyla,,,,,,Balaenidae,,,,Eubalaena,,japonica,,species,,,,,,,220,Eubalaena japonica\n";
 
         InputStream inputStream = IOUtils.toInputStream(table, StandardCharsets.UTF_8);
         LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(inputStream);
@@ -210,25 +212,67 @@ public class TabularTaxonUtilTest {
 
         Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
-        assertThat(taxon.getPath(), Is.is("Mammalia | Rodentia | Abrocomidae"));
-        assertThat(taxon.getPathNames(), Is.is("class | order | family"));
+        assertThat(taxon.getId(), Is.is("100"));
+        assertThat(taxon.getName(), Is.is("Afrosoricida"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Afrosoricida"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order"));
         assertNull(taxon.getAuthorship());
-        assertNull(taxon.getId());
-        assertThat(taxon.getName(), Is.is("Abrocomidae"));
-        assertThat(taxon.getRank(), Is.is("family"));
-        assertNull(taxon.getNameSource());
+        assertThat(taxon.getRank(), Is.is("order"));
+        assertThat(taxon.getNameSource(), Is.is("ASM"));
 
         labeledCSVParser.getLine();
 
         taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
 
         assertNull(taxon.getAuthorship());
-        assertThat(taxon.getPath(), Is.is("Mammalia | Rodentia | Abrocomidae | Abrocoma | bennettii"));
-        assertThat(taxon.getPathNames(), Is.is("class | order | family | genus | specificEpithet"));
-        assertNull(taxon.getId());
-        assertThat(taxon.getName(), Is.is("Abrocoma bennettii"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Artiodactyla | Antilocapridae | Antilocapra | americana"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
+        assertThat(taxon.getId(), Is.is("220"));
+        assertThat(taxon.getName(), Is.is("Antilocapra americana"));
         assertThat(taxon.getRank(), Is.is("species"));
-        assertNull(taxon.getNameSource());
+        assertThat(taxon.getNameSource(), Is.is("ASM"));
+
+
+    }
+    @Test
+    public void indexAvesTable() throws IOException {
+        String table = "source,taxonID,scientificNameID,acceptedNameUsageID,parentNameUsageID,originalNameUsageID,nameAccordingToID,namePublishedInID,taxonConceptID,scientificName,acceptedNameUsage,parentNameUsage,originalNameUsage,nameAccordingTo,namePublishedIn,namePublishedInYear,higherClassification,kingdom,phylum,class,subclass,superorder,order,suborder,infraorder,parvorder,nanorder,superfamily,family,subfamily,tribe,subtribe,genus,infragenericEpithet,specificEpithet,infraspecificEpithet,taxonRank,verbatimTaxonRank,scientificNameAuthorship,vernacularName,nomenclaturalCode,taxonomicStatus,nomenclaturalStatus,taxonRemarks,canonicalName\n" +
+                "IOC,,,,,,,,,Abeillia,,Trochilidae,,,,,,Animalia,Chordata,Aves,,,Caprimulgiformes,,,,,,Trochilidae,,,,Abeillia,,,,genus,,,,,accepted,180,,Abeillia\n" +
+                "IOC,,,,,,,,,Abeillia abeillei,,Abeillia,,,,,,Animalia,Chordata,Aves,,,Caprimulgiformes,,,,,,Trochilidae,,,,Abeillia,,abeillei,,species,,,,,accepted,220,,Abeillia abeillei\n" +
+                "IOC,,,,,,,,,Abeillia abeillei abeillei,,abeillei,,,,,,Animalia,Chordata,Aves,,,Caprimulgiformes,,,,,,Trochilidae,,,,Abeillia,,abeillei,abeillei,subspecies,,,,,accepted,230,,Abeillia abeillei abeillei\n" +
+                "IOC,,,,,,,,,Abeillia abeillei aurea,,abeillei,,,,,,Animalia,Chordata,Aves,,,Caprimulgiformes,,,,,,Trochilidae,,,,Abeillia,,abeillei,aurea,subspecies,,,,,accepted,230,,Abeillia abeillei aurea\n" +
+                "IOC,,,,,,,,,Abroscopus,,Scotocercidae,,,,,,Animalia,Chordata,Aves,,,Passeriformes,,,,,,Scotocercidae,,,,Abroscopus,,,,genus,,,,,accepted,180,,Abroscopus\n" +
+                "IOC,,,,,,,,,Abroscopus albogularis,,Abroscopus,,,,,,Animalia,Chordata,Aves,,,Passeriformes,,,,,,Scotocercidae,,,,Abroscopus,,albogularis,,species,,,,,accepted,220,,Abroscopus albogularis\n" +
+                "IOC,,,,,,,,,Abroscopus schisticeps,,Abroscopus,,,,,,Animalia,Chordata,Aves,,,Passeriformes,,,,,,Scotocercidae,,,,Abroscopus,,schisticeps,,species,,,,,accepted,220,,Abroscopus schisticeps\n" +
+                "IOC,,,,,,,,,Abroscopus superciliaris,,Abroscopus,,,,,,Animalia,Chordata,Aves,,,Passeriformes,,,,,,Scotocercidae,,,,Abroscopus,,superciliaris,,species,,,,,accepted,220,,Abroscopus superciliaris\n" +
+                "IOC,,,,,,,,,Abroscopus albogularis albogularis,,albogularis,,,,,,Animalia,Chordata,Aves,,,Passeriformes,,,,,,Scotocercidae,,,,Abroscopus,,albogularis,albogularis,subspecies,,,,,accepted,230,,Abroscopus albogularis albogularis\n";
+
+        InputStream inputStream = IOUtils.toInputStream(table, StandardCharsets.UTF_8);
+        LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(inputStream);
+
+        labeledCSVParser.getLine();
+
+        Taxon taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+
+        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Aves | Caprimulgiformes | Trochilidae | Abeillia"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
+        assertNull(taxon.getAuthorship());
+        assertNull(taxon.getId());
+        assertThat(taxon.getName(), Is.is("Abeillia"));
+        assertThat(taxon.getRank(), Is.is("genus"));
+        assertThat(taxon.getNameSource(), Is.is("IOC"));
+
+        labeledCSVParser.getLine();
+
+        taxon = TabularTaxonUtil.parseLine(labeledCSVParser);
+
+        assertNull(taxon.getId());
+        assertThat(taxon.getName(), Is.is("Abeillia abeillei"));
+        assertThat(taxon.getRank(), Is.is("species"));
+        assertThat(taxon.getNameSource(), Is.is("IOC"));
+        assertNull(taxon.getAuthorship());
+        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Aves | Caprimulgiformes | Trochilidae | Abeillia | abeillei"));
+        assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
 
 
     }
