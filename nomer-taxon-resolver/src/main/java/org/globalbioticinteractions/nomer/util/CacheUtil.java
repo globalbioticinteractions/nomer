@@ -40,6 +40,10 @@ public class CacheUtil {
 
     public static URI getValueURI(TermMatcherContext ctx, String key) throws PropertyEnricherException {
         String value = ctx.getProperty(key);
+        return parseURI(key, value);
+    }
+
+    public static URI parseURI(String key, String value) throws PropertyEnricherException {
         if (StringUtils.isBlank(value)) {
             throw new PropertyEnricherException("no uri for taxon resource [" + key + "] found");
         }
