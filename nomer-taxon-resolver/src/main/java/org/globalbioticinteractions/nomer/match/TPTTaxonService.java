@@ -4,7 +4,6 @@ import com.Ostermiller.util.CSVParser;
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
@@ -29,9 +28,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-public class TPTTaxonService extends CommonLongTaxonService {
+public class TPTTaxonService extends CommonTaxonService<String> {
     private static final Logger LOG = LoggerFactory.getLogger(TPTTaxonService.class);
 
     public TPTTaxonService(TermMatcherContext ctx) {
@@ -41,6 +39,11 @@ public class TPTTaxonService extends CommonLongTaxonService {
     @Override
     public TaxonomyProvider getTaxonomyProvider() {
         return TaxonomyProvider.GBIF;
+    }
+
+    @Override
+    public String getIdOrNull(Taxon taxon, TaxonomyProvider matchingTaxonomyProvider) {
+        return normalizeTaxonID(taxon);
     }
 
     @Override
@@ -83,14 +86,14 @@ public class TPTTaxonService extends CommonLongTaxonService {
 
         nodes = db
                 .createTreeMap(NODES)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .keySerializer(BTreeKeySerializer.STRING)
                 .valueSerializer(Serializer.JAVA)
                 .make();
 
         mergedNodes = db
                 .createTreeMap(MERGED_NODES)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .valueSerializer(Serializer.LONG)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.STRING)
                 .make();
 
         name2nodeIds = db
@@ -131,9 +134,9 @@ public class TPTTaxonService extends CommonLongTaxonService {
         return resourceList;
     }
 
-    private void parseNodes(Map<Long, Map<String, String>> taxonMap,
-                            Map<Long, Long> mergedNodes,
-                            Map<String, List<Long>> name2nodeIds,
+    private void parseNodes(Map<String, Map<String, String>> taxonMap,
+                            Map<String, String> mergedNodes,
+                            Map<String, List<String>> name2nodeIds,
                             InputStream is) throws PropertyEnricherException {
 
         try {
@@ -145,14 +148,14 @@ public class TPTTaxonService extends CommonLongTaxonService {
                         = TabularTaxonUtil.parseNameRelations(parser);
 
                 Taxon taxon = nameRelation.getLeft();
-                Long taxonId = normalizeTaxonID(taxon);
+                String taxonId = getIdOrNull(taxon, getTaxonomyProvider());
                 if (taxonId != null) {
                     taxonMap.put(taxonId, TaxonUtil.taxonToMap(taxon));
                     registerIdForName(
                             taxonId, taxon, name2nodeIds);
 
                     if (!NameType.HAS_ACCEPTED_NAME.equals(nameRelation.getMiddle())) {
-                        Long parentId = normalizeTaxonID(nameRelation.getRight());
+                        String parentId = getIdOrNull(nameRelation.getRight(), getTaxonomyProvider());
                         if (parentId != null) {
                             mergedNodes.put(taxonId, parentId);
                         }
@@ -164,16 +167,30 @@ public class TPTTaxonService extends CommonLongTaxonService {
         }
     }
 
-    private static Long normalizeTaxonID(Taxon taxon) throws PropertyEnricherException {
-        String taxonIdCandidate = RegExUtils.replaceAll(
+    private static String normalizeTaxonID(Taxon taxon) {
+        String taxonIdCandidate;
+
+        if (StringUtils.isBlank(taxon.getExternalId())) {
+            taxonIdCandidate = taxon.getName() + taxon.getAuthorship();
+        } else {
+            taxonIdCandidate = truncateKnownPrefixes(taxon);
+        }
+        return taxonIdCandidate;
+    }
+
+    private static String truncateKnownPrefixes(Taxon taxon) {
+        String taxonIdCandidate;
+        taxonIdCandidate = RegExUtils.replaceAll(
                 taxon.getExternalId(),
-                "(GBIF:){0,1}(TPT:){0,1}([Aa]cari_)",
+                "([Aa]cari_)",
                 ""
         );
 
-        return NumberUtils.isDigits(taxonIdCandidate)
-                ? Long.parseLong(taxonIdCandidate)
-                : null;
+
+        return RegExUtils.replaceAll(
+                taxonIdCandidate,
+                "^[A-Z:]+",
+                "");
     }
 
 }

@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
@@ -36,12 +37,12 @@ public class TPTTaxonServiceTest {
     }
 
     private void assertGardineri(Map<String, String> enriched) {
-        assertThat(mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus | gardineri"));
-        assertThat(mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus | specificEpithet"));
-        assertThat(mapToTaxon(enriched).getExternalId(), is("GBIF:acari_10766101"));
         assertThat(mapToTaxon(enriched).getName(), is("Dicrogonatus gardineri"));
+        assertThat(mapToTaxon(enriched).getExternalId(), is("GBIF:acari_10766101"));
         assertThat(mapToTaxon(enriched).getAuthorship(), is("(Warburton, 1912)"));
         assertThat(mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus | gardineri"));
+        assertThat(mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus | specificEpithet"));
     }
 
     @Test
@@ -67,6 +68,55 @@ public class TPTTaxonServiceTest {
         assertThat(mapToTaxon(enriched).getRank(), is("species"));
         assertThat(mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Haplothyrus | expolitissimus"));
         assertThat(mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus | specificEpithet"));
+    }
+
+    @Test
+    public void getIdOrNullGBIFPrefix() {
+        TPTTaxonService tptTaxonService = new TPTTaxonService(null);
+
+        String id = tptTaxonService.getIdOrNull(
+                new TaxonImpl("foo", "GBIF:123"),
+                tptTaxonService.getTaxonomyProvider()
+        );
+
+        assertThat(id, is("123"));
+
+    }
+
+    @Test
+    public void getIdOrNullTPTPrefix() {
+        TPTTaxonService tptTaxonService = new TPTTaxonService(null);
+
+        String id = tptTaxonService.getIdOrNull(
+                new TaxonImpl("foo", "TPT:123"),
+                tptTaxonService.getTaxonomyProvider()
+        );
+
+        assertThat(id, is("123"));
+
+    }
+
+    @Test
+    public void getIdOrNullAcariPrefix() {
+        TPTTaxonService tptTaxonService = new TPTTaxonService(null);
+
+        String id = tptTaxonService.getIdOrNull(
+                new TaxonImpl("foo", "Acari_123"),
+                tptTaxonService.getTaxonomyProvider()
+        );
+
+        assertThat(id, is("123"));
+
+    }
+
+    @Test
+    public void getIdOrNullacariPrefix() {
+        TPTTaxonService tptTaxonService = new TPTTaxonService(null);
+
+        String id = tptTaxonService.getIdOrNull(new TaxonImpl("foo", "acari_123"), tptTaxonService.getTaxonomyProvider());
+
+        assertThat(id, is("123"));
+
     }
 
     @Test
@@ -119,7 +169,7 @@ public class TPTTaxonServiceTest {
 
 
     @Test
-    public void matchMultipleIgnoreNamesWithoutTaxonId() throws PropertyEnricherException {
+    public void matchMultipleNamesSomeWithoutTaxonId() throws PropertyEnricherException {
         // Ixodida appears to not have taxonIDs, whereas other TPT taxa did.
         // https://github.com/njdowdy/tpt-taxonomy/issues/17
         PropertyEnricher service = getTptTaxonService(
@@ -129,13 +179,17 @@ public class TPTTaxonServiceTest {
         );
 
 
+        Taxon arcariTaxon = mapToTaxon(service
+                .enrichFirstMatch(
+                        taxonToMap(
+                                new TaxonImpl("Argas africolumbae")
+                        )
+                ));
         assertThat(
-                mapToTaxon(service
-                        .enrichFirstMatch(
-                                taxonToMap(
-                                        new TaxonImpl("Argas africolumbae")
-                                )
-                        )).getPath(),
+                arcariTaxon.getPath(),
+                is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Ixodida | Ixodoidea | Argasidae | Argas | africolumbae"));
+        assertThat(
+                arcariTaxon.getExternalId(),
                 is(nullValue()));
 
         assertThat(

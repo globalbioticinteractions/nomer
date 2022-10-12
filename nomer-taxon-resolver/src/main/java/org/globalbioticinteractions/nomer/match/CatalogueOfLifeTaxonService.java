@@ -46,9 +46,9 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
     }
 
     @Override
-    public String getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider) {
-        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
-        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key);
+    public String getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
+        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key.getExternalId());
         return (matchingTaxonomyProvider.equals(taxonomyProvider)
                 && StringUtils.isNoneBlank(idString))
                 ? idString

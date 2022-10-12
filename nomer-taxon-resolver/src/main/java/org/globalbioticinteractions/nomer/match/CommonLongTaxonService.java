@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -12,9 +13,9 @@ public abstract class CommonLongTaxonService extends CommonTaxonService<Long> {
     }
 
     @Override
-    public Long getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider) {
-        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
-        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key);
+    public Long getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
+        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key.getExternalId());
         return (matchingTaxonomyProvider.equals(taxonomyProvider)
                 && NumberUtils.isCreatable(idString))
                 ? Long.parseLong(idString)

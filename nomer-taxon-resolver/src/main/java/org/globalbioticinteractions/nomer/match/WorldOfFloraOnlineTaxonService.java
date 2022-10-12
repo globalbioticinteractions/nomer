@@ -45,9 +45,9 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
     }
 
     @Override
-    public Long getIdOrNull(String key, TaxonomyProvider matchingTaxonomyProvider) {
-        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key);
-        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key);
+    public Long getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
+        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key.getExternalId());
         return (matchingTaxonomyProvider.equals(taxonomyProvider)
                 && StringUtils.isNoneBlank(idString))
                 ? Long.parseLong(idString)
