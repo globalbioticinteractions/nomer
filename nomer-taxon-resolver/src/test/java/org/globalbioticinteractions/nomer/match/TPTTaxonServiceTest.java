@@ -8,6 +8,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,14 +32,14 @@ public class TPTTaxonServiceTest {
     public void enrichById() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        TaxonImpl taxon = new TaxonImpl(null, "GBIF:10766101");
+        TaxonImpl taxon = new TaxonImpl(null, "TPT:10766101");
         Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
         assertGardineri(enriched);
     }
 
     private void assertGardineri(Map<String, String> enriched) {
         assertThat(mapToTaxon(enriched).getName(), is("Dicrogonatus gardineri"));
-        assertThat(mapToTaxon(enriched).getExternalId(), is("GBIF:acari_10766101"));
+        assertThat(mapToTaxon(enriched).getExternalId(), is("acari_10766101"));
         assertThat(mapToTaxon(enriched).getAuthorship(), is("(Warburton, 1912)"));
         assertThat(mapToTaxon(enriched).getRank(), is("species"));
         assertThat(mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus | gardineri"));
@@ -56,13 +57,27 @@ public class TPTTaxonServiceTest {
     }
 
     @Test
+    public void enrichByHigherOrderByName() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl("Allothyridae", null);
+        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+
+        Taxon enrichedTaxon = mapToTaxon(enriched);
+
+        assertThat(enrichedTaxon.getName(), is("Allothyridae"));
+        assertThat(enrichedTaxon.getPath(), is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Holothyrida | Holothyroidea | Allothyridae"));
+
+    }
+
+    @Test
     public void enrichSynonym() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
-        TaxonImpl taxon = new TaxonImpl(null, "GBIF:6892348");
+        TaxonImpl taxon = new TaxonImpl(null, "TPT:6892348");
         Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
 
-        assertThat(mapToTaxon(enriched).getExternalId(), is("GBIF:acari_6892347"));
+        assertThat(mapToTaxon(enriched).getExternalId(), is("acari_6892347"));
         assertThat(mapToTaxon(enriched).getAuthorship(), is("(Berlese, 1923)"));
         assertThat(mapToTaxon(enriched).getName(), is("Haplothyrus expolitissimus"));
         assertThat(mapToTaxon(enriched).getRank(), is("species"));

@@ -129,16 +129,6 @@ public class TabularTaxonUtil {
         }
 
         Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMap);
-        String externalId = providedTaxon.getExternalId();
-        String nameSource = providedTaxon.getNameSource();
-
-        if (StringUtils.isNoneBlank(externalId)) {
-            if (StringUtils.startsWith(nameSource, "TPT")) {
-                providedTaxon.setExternalId("TPT:" + externalId);
-            } else if (StringUtils.startsWith(nameSource, "GBIF")) {
-                providedTaxon.setExternalId("GBIF:" + externalId);
-            }
-        }
 
         NameType nameType = parseNameType(labeledCSVParser);
 

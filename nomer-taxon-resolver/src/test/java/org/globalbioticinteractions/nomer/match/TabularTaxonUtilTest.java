@@ -44,7 +44,7 @@ public class TabularTaxonUtilTest {
         assertThat(taxon.getAuthorship(), Is.is("Ferris, 1933"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | acuticeps"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
-        assertThat(taxon.getId(), Is.is("TPT:1"));
+        assertThat(taxon.getId(), Is.is("1"));
         assertThat(taxon.getName(), Is.is("Haematopinus acuticeps"));
         assertThat(taxon.getRank(), Is.is("species"));
         assertThat(taxon.getNameSource(), Is.is("TPT_v1"));
@@ -57,7 +57,7 @@ public class TabularTaxonUtilTest {
         assertThat(taxon.getAuthorship(), Is.is("Goureau, 1866"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Anoplura | Haematopinidae | Haematopinus | apri"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
-        assertThat(taxon.getId(), Is.is("TPT:2"));
+        assertThat(taxon.getId(), Is.is("2"));
         assertThat(taxon.getName(), Is.is("Haematopinus apri"));
         assertThat(taxon.getRank(), Is.is("species"));
         assertThat(taxon.getNameSource(), Is.is("TPT_v1"));
@@ -92,7 +92,7 @@ public class TabularTaxonUtilTest {
         assertNull(taxon.getAuthorship());
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Acari | Parasitiformes | Holothyrida | Holothyroidea | Allothyridae"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | subclass | superorder | order | superfamily | family"));
-        assertThat(taxon.getId(), Is.is("TPT:acari_6995"));
+        assertThat(taxon.getId(), Is.is("acari_6995"));
         assertThat(taxon.getName(), Is.is("Allothyridae"));
         assertThat(taxon.getRank(), Is.is("family"));
         assertThat(taxon.getAuthorship(), Is.is(nullValue()));
@@ -106,7 +106,7 @@ public class TabularTaxonUtilTest {
         assertThat(taxon.getAuthorship(), Is.is("Gerlach, Lehtinen & Madl, 2010"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus"));
-        assertThat(taxon.getId(), Is.is("GBIF:Acari_10682343"));
+        assertThat(taxon.getId(), Is.is("Acari_10682343"));
         assertThat(taxon.getName(), Is.is("Dicrogonatus"));
         assertThat(taxon.getRank(), Is.is("genus"));
         assertThat(taxon.getNameSource(), Is.is("GBIF"));
@@ -128,7 +128,7 @@ public class TabularTaxonUtilTest {
         assertThat(taxon.getAuthorship(), Is.is("Berlese, 1923"));
         assertThat(taxon.getPath(), Is.is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Holothyrus | expolitissimus"));
         assertThat(taxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | specificEpithet"));
-        assertThat(taxon.getId(), Is.is("GBIF:acari_6892348"));
+        assertThat(taxon.getId(), Is.is("acari_6892348"));
         assertThat(taxon.getName(), Is.is("Holothyrus expolitissimus"));
         assertThat(taxon.getRank(), Is.is("species"));
         assertThat(taxon.getNameSource(), Is.is("GBIF"));

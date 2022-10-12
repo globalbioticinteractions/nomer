@@ -38,7 +38,7 @@ public class TPTTaxonService extends CommonTaxonService<String> {
 
     @Override
     public TaxonomyProvider getTaxonomyProvider() {
-        return TaxonomyProvider.GBIF;
+        return TaxonomyProvider.TERRESTRIAL_PARASITE_TRACKER;
     }
 
     @Override
