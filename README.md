@@ -189,47 +189,49 @@ $ nomer version
 ``` console
 $ nomer matchers -v
 ```
-Result as of v0.2.14 (Sept 2022) is formatted as a table below:
+Result as of v0.3.2 (Oct 2022) is formatted as a table below:
 
- name | description
- --- | ---
-ala|Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix.
-batnames|Lookup BatNames taxa by name, synonym using offline-enabled database dump
-bold-web|Use BOLD webservice to lookup taxa by bin/taxon id using BOLD:* and BOLDTaxon:* prefixes.
-col|Lookup Catalogue of Life taxon by name or COL:* prefixed ids using offline-enabled database dump
-crossref-doi|uses api.crossref.org to resolve doi associated with human readable citation
-discoverlife|Lookup DiscoverLife taxa by name, synonym using offline-enabled database dump
-envo|Lookup envo terms by name or by id using ENVO:* prefix.
-eol|Lookup EOL pages by id with EOL:* prefix using offline-enabled database dump
-gbif|Lookup GBIF taxa by name, synonym or id using offline-enabled database dump
-gbif-parse|Attempts extract canonical taxonomic name from name string using https://github.com/gbif/name-parser .
-gbif-web|Web-based taxon id/name lookup using GBIF backbone API and GBIF:* prefix.
-globalnames|Uses https://resolver.globalnames.org to match taxon names. Searches by name only (not id).
-globi|Uses GloBI's Taxon Graph to lookup terms by id or name across many taxonomies / ontologies. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information.
-globi-correct|Scrubs names using GloBI's (taxonomic) name scrubber. Scrubbing includes removing of stopwords (e.g., undefined), correcting common typos using a "crappy" names list, parse to canonical name using gnparser (see https://github.com/GlobalNamesArchitecture/gnparser), and more.
-globi-enrich|Uses GloBI's taxon enricher to find first term match by id or name. Uses various web apis like Encyclopedia of Life, World Registry of Marine Species (WoRMS), Integrated Taxonomic Information System (ITIS), National Biodiversity Network (NBN) and more.
-globi-rank|Finds taxonomic rank identifiers by rank commons name (e.g., species, order, soort). Uses Wikidata taxon rank items. Caches a copy locally on first usage to allow for subsequent offline usage.
-gn-parse|Attempts extract canonical taxonomic name from name string using https://github.com/GlobalNamesArchitecture/gnparser .
-gulfbase|Look up taxa of https://gulfbase.org by name or id with BioGoMx:* prefix.
-inaturalist-id|Lookup taxon in iNaturalist by id with INAT_TAXON:* prefix.
-indexfungorum|Lookup Index Fungorum taxon by name or id using offline-enabled database dump
-itis|Lookup ITIS taxon by name or id using offline-enabled database dump
-itis-web|Use itis webservice to lookup taxa by id using ITIS:* prefix.
-nbn|Lookup taxon of National Biodiversity Network by id with NBN:* prefix.
-ncbi|Lookup NCBI taxa by name, synonym or id using offline-enabled database dump
-ncbi-web|Lookup NCBI taxon by id with NCBI:* prefix using web apis.
-nodc|Lookup taxon in the Taxonomic Code of the National Oceanographic Data Center (NODC) by id with prefix NODC: . Maps to ITIS terms if possible.
-openbiodiv|uses openbiodiv sparql endpoint to resolve openbiodiv terms
-orcid-web|Lookup ORCID by id with ORCID:* prefix.
-ott|Lookup Open Tree of Life taxon by name or (OTT|GBIF|WORMS|IF|NCBI|IRMNG)* prefixed ids using offline-enabled database dump
-plazi|Lookup Plazi taxon treatment by name or id using offline-enabled database dump
-pmid-doi|resolves pubmed id to doi using https://www.ncbi.nlm.nih.gov/pmc/pmctopmid/
-remove-stop-words|Removes stop words (e.g., undefined) using a stop word list specified by property [nomer.taxon.name.stopword.url] .
-translate-names|Translates incoming names using a two column csv file specified by property [nomer.taxon.name.correction.url] .
-uksi-current-name|Use UK Species Inventory to find current taxonomic name.
-wfo|Lookup World of Flora Online taxon by name or WFO:* prefixed ids using offline-enabled database dump
-wikidata-web|uses wikidata to cross-walk taxon id across taxonomies
-worms|Lookup taxon in WoRMS by name or by id with WORMS:* prefix.
+
+| name | description |
+| --- | --- |
+| ala | Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix. |
+| batnames | Lookup BatNames taxa by name, synonym using offline-enabled database dump |
+| bold-web | Use BOLD webservice to lookup taxa by bin/taxon id using BOLD:* and BOLDTaxon:* prefixes. |
+| col | Lookup Catalogue of Life taxon by name or COL:* prefixed ids using offline-enabled database dump |
+| crossref-doi | uses api.crossref.org to resolve doi associated with human readable citation |
+| discoverlife | Lookup DiscoverLife taxa by name, synonym using offline-enabled database dump |
+| envo | Lookup envo terms by name or by id using ENVO:* prefix. |
+| eol | Lookup EOL pages by id with EOL:* prefix using offline-enabled database dump |
+| gbif | Lookup GBIF taxa by name, synonym or id using offline-enabled database dump |
+| gbif-parse | Attempts extract canonical taxonomic name from name string using https://github.com/gbif/name-parser . |
+| gbif-web | Web-based taxon id/name lookup using GBIF backbone API and GBIF:* prefix. |
+| globalnames | Uses https://resolver.globalnames.org to match taxon names. Searches by name only (not id). |
+| globi | Uses GloBI's Taxon Graph to lookup terms by id or name across many taxonomies / ontologies. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information. |
+| globi-correct | Scrubs names using GloBI's (taxonomic) name scrubber. Scrubbing includes removing of stopwords (e.g., undefined), correcting common typos using a "crappy" names list, parse to canonical name using gnparser (see https://github.com/GlobalNamesArchitecture/gnparser), and more. |
+| globi-enrich | Uses GloBI's taxon enricher to find first term match by id or name. Uses various web apis like Encyclopedia of Life, World Registry of Marine Species (WoRMS), Integrated Taxonomic Information System (ITIS), National Biodiversity Network (NBN) and more. |
+| globi-rank | Finds taxonomic rank identifiers by rank commons name (e.g., species, order, soort). Uses Wikidata taxon rank items. Caches a copy locally on first usage to allow for subsequent offline usage. |
+| gn-parse | Attempts extract canonical taxonomic name from name string using https://github.com/GlobalNamesArchitecture/gnparser . |
+| gulfbase | Look up taxa of https://gulfbase.org by name or id with BioGoMx:* prefix. |
+| inaturalist-id | Lookup taxon in iNaturalist by id with INAT_TAXON:* prefix. |
+| indexfungorum | Lookup Index Fungorum taxon by name or id using offline-enabled database dump |
+| itis | Lookup ITIS taxon by name or id using offline-enabled database dump |
+| itis-web | Use itis webservice to lookup taxa by id using ITIS:* prefix. |
+| nbn | Lookup taxon of National Biodiversity Network by id with NBN:* prefix. |
+| ncbi | Lookup NCBI taxa by name, synonym or id using offline-enabled database dump |
+| ncbi-web | Lookup NCBI taxon by id with NCBI:* prefix using web apis. |
+| nodc | Lookup taxon in the Taxonomic Code of the National Oceanographic Data Center (NODC) by id with prefix NODC: . Maps to ITIS terms if possible. |
+| openbiodiv | uses openbiodiv sparql endpoint to resolve openbiodiv terms |
+| orcid-web | Lookup ORCID by id with ORCID:* prefix. |
+| ott | Lookup Open Tree of Life taxon by name or (OTT\|GBIF\|WORMS\|IF\|NCBI\|IRMNG)* prefixed ids using offline-enabled database dump |
+| plazi | Lookup Plazi taxon treatment by name or id using offline-enabled database dump |
+| pmid-doi | resolves pubmed id to doi using https://www.ncbi.nlm.nih.gov/pmc/pmctopmid/ |
+| remove-stop-words | Removes stop words (e.g., undefined) using a stop word list specified by property [nomer.taxon.name.stopword.url] . |
+| tpt | Lookup TPT taxon by name or id using offline-enabled database dump |
+| translate-names | Translates incoming names using a two column csv file specified by property [nomer.taxon.name.correction.url] . |
+| uksi-current-name | Use UK Species Inventory to find current taxonomic name. |
+| wfo | Lookup World of Flora Online taxon by name or WFO:* prefixed ids using offline-enabled database dump |
+| wikidata-web | uses wikidata to cross-walk taxon id across taxonomies |
+| worms | Lookup taxon in WoRMS by name or by id with WORMS:* prefix. |
 
 If you'd like to add new matchers, please open [a new issue](https://github.com/globalbioticinteractions/nomer/issues/new) and describe your desires.
 
