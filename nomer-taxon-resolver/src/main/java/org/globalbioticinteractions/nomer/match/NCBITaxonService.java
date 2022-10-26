@@ -218,7 +218,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
         if (db.exists(DENORMALIZED_NODES)
                 && db.exists(MERGED_NODES)) {
-            LOG.info("NCBI taxonomy already indexed at [" + ncbiTaxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("NCBI taxonomy already indexed at [" + ncbiTaxonomyDir.getAbsolutePath() + "], no need to import.");
             ncbiDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
             mergedNodes = db.getTreeMap(MERGED_NODES);
             nameIds = db.getTreeMap(NAME_IDS);

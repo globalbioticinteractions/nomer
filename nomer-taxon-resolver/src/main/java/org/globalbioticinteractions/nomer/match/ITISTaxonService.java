@@ -146,7 +146,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
         if (db.exists(NODES)
                 && db.exists(CHILD_PARENT)
                 && db.exists(MERGED_NODES)) {
-            LOG.info("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);

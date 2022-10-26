@@ -116,7 +116,7 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
         if (db.exists(NODES)
                 && db.exists(NODES)
                 && db.exists(MERGED_NODES)) {
-            LOG.info("[" + getProviderShortName() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("[" + getProviderShortName() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);

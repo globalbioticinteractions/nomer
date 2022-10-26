@@ -66,7 +66,7 @@ public class TaxonomyImporter {
             try (Directory cacheDir = CacheUtil.luceneDirectoryFor(indexDir);
                  TaxonLookupBuilder taxonImportListener = new TaxonLookupBuilder(cacheDir)) {
 
-                LOG.info("index directory at [" + indexDir + "] initializing...");
+                LOG.debug("index directory at [" + indexDir + "] initializing...");
                 Map<String, Resource> allReaders = taxonReaderFactory.getResources();
                 for (Map.Entry<String, Resource> entry : allReaders.entrySet()) {
                     try {
@@ -74,7 +74,7 @@ public class TaxonomyImporter {
                     } catch (IOException ex) {
                         throw new IOException("failed to read from [" + entry.getKey() + "]", ex);
                     }
-                    LOG.info("index directory at [" + indexDir + "] initialized.");
+                    LOG.debug("index directory at [" + indexDir + "] initialized.");
 
                 }
             } catch (IOException e) {

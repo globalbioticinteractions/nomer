@@ -79,7 +79,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
                 && db.exists(MERGED_NODES)
                 && db.exists(NAME_TO_NODE_IDS)
         ) {
-            LOG.info("[Catalogue of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("[Catalogue of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);

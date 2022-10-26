@@ -190,7 +190,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
 
 
         if (db.exists(ID_NAME_RANK) && db.exists(ID_RELATION) && db.exists(NAME_ID)) {
-            LOG.info("GBIF taxonomy ids already indexed at [" + gbifTaxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("GBIF taxonomy ids already indexed at [" + gbifTaxonomyDir.getAbsolutePath() + "], no need to import.");
             idNameRanks = db.getTreeMap(ID_NAME_RANK);
             idRelations = db.getTreeMap(ID_RELATION);
             nameIds = db.getTreeMap(NAME_ID);

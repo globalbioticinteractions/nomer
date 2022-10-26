@@ -78,7 +78,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
                 && db.exists(MERGED_NODES)
                 && db.exists(NAME_TO_NODE_IDS)
         ) {
-            LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("[" + getTaxonomyProvider().name() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);

@@ -110,7 +110,7 @@ public class PlaziService implements TermMatcher {
 
         try {
             if (preExistingCacheDir) {
-                LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
+                LOG.debug("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
             } else {
                 try (SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir.toPath())) {
                     indexTreatments(indexDir);

@@ -173,7 +173,7 @@ public class EOLTaxonService extends PropertyEnricherSimple {
                 .make();
 
         if (db.exists(DENORMALIZED_NODES)) {
-            LOG.info("EOL taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("EOL taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             eolDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
         } else {
             LOG.info("EOL taxonomy importing...");

@@ -159,7 +159,7 @@ public class TermMatcherRegistry {
         if (factory == null) {
             throw new IllegalArgumentException("unknown matcher [" + id + "]");
         } else {
-            LOG.info("using matcher [" + factory.getPreferredName() + "]");
+            LOG.debug("using matcher [" + factory.getPreferredName() + "]");
         }
         return factory.createTermMatcher(ctx);
     }
