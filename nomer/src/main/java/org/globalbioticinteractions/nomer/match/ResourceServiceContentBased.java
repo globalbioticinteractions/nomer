@@ -40,7 +40,7 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
             if (!HashKeyUtil.isValidHashKey(RefNodeFactory.toIRI(hash))) {
                 throw new IOException("expected sha256 hash uri, but found [" + hash + "]");
             }
-            cmdGet.setContentIdsOrAliases(Collections.singletonList(RefNodeFactory.toIRI(hash)));
+            cmdGet.setProvenanceArchor(RefNodeFactory.toIRI(hash));
         } catch (PropertyEnricherException e) {
             throw new IOException("failed to access preston verse", e);
         }

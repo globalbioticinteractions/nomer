@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.InputStreamFactory;
