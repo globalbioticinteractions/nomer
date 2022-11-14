@@ -10,8 +10,6 @@ import org.junit.rules.TemporaryFolder;
 import java.io.IOException;
 import java.net.URI;
 
-import static junit.framework.TestCase.fail;
-
 public class ResourceServiceContentBasedIT {
 
     @Rule
