@@ -34,6 +34,7 @@ public class CmdMatcherParamsTest {
         assertThat(schema, Is.is(new TreeMap<Integer, String>() {{
             put(0, "externalId");
             put(1, "name");
+            put(2, "authorship");
         }}));
     }
 
