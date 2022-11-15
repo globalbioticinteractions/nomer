@@ -33,7 +33,7 @@ public class ResourceServiceContentBasedTest {
     public void getMostUpToDateAlias() throws IOException {
 
         // with-update contains two versions of file:///tmp/preston-test/foo.txt
-        // , the most recent one containing "bar2", the less recent one contains "bar"
+        // , the most recent one containing "bar2", the less recent one contains "`bar"
         ZipFile zipFile = new ZipFile(getClass().getResource("with-update.zip").getFile());
 
         Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
