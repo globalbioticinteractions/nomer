@@ -4,6 +4,7 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -36,7 +37,7 @@ public class TestTermMatcherContextDefault implements TermMatcherContext {
 
     @Override
     public InputStream retrieve(URI uri) throws IOException {
-        return null;
+        return new FileInputStream(new File(uri));
     }
 
     @Override

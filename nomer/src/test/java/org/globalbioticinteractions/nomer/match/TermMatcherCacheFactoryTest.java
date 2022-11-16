@@ -34,7 +34,8 @@ public class TermMatcherCacheFactoryTest {
 
     @Test
     public void smallCache() throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCacheFactory().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+        TermMatcher termMatcher = new TermMatcherCacheFactory()
+                .createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
         AtomicBoolean hasMatch = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl("EOL:1276240", "bla")), (Long id, Term name, NameType nameType, Taxon taxon) -> {

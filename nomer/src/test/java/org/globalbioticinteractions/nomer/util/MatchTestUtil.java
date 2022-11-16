@@ -24,8 +24,8 @@ public class MatchTestUtil {
             @Override
             public String getProperty(String key) {
                 Map<String, String> props = new TreeMap<>();
-                props.put("nomer.term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMap.tsv.gz").toString());
-                props.put("nomer.term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCache.tsv.gz").toString());
+                props.put("nomer.term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMap.tsv").toString());
+                props.put("nomer.term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCache.tsv").toString());
                 return props.get(key);
             }
 

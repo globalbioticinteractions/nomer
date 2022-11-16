@@ -71,8 +71,11 @@ public class TermMatcherFactoryTaxonRanksTest {
 
     @Test
     public void twoMatchersSameCacheDir() throws PropertyEnricherException {
-        termMatcher = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
-        TermMatcher termMatcher2 = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+        termMatcher = new TermMatcherFactoryTaxonRanks()
+                .createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+
+        TermMatcher termMatcher2 = new TermMatcherFactoryTaxonRanks()
+                .createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
         assertFoundById(termMatcher);
         assertFoundById(termMatcher2);
