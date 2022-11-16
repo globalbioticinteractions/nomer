@@ -140,7 +140,7 @@ public class BatNamesTaxonService implements TermMatcher {
     }
 
     private File getCacheDir() throws IOException {
-        File discoverLifeCacheDir = new File(ctx.getCacheDir(), "discoverlife");
+        File discoverLifeCacheDir = new File(ctx.getCacheDir(), "batnames");
         FileUtils.forceMkdir(discoverLifeCacheDir);
         return discoverLifeCacheDir;
     }
