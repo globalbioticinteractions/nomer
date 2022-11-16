@@ -9,7 +9,6 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.GlobalNamesService2;
 import org.eol.globi.taxon.GlobalNamesSources2;
-import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
@@ -50,8 +49,7 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCache() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
-        applyMatcher(is, os, matcher);
+        applyMatcher(is, os, MatchTestUtil.createTaxonCacheService());
         String[] lines = os.toString().split("\n");
         assertThat(lines[0], startsWith("EOL:327955\tHomo sapiens\tSAME_AS\tEOL:327955\tHomo sapiens\tSpecies\tإنسان @ar | Insan @az | човешки @bg | মানবীয় @bn | Ljudsko biće @bs | Humà @ca | Muž @cs | Menneske @da | Mensch @de | ανθρώπινο ον @el | Humans @en | Humano @es | Gizakiaren @eu | Ihminen @fi | Homme @fr | Mutum @ha | אנושי @he | մարդու @hy | Umano @it | ადამიანის @ka | Homo @la | žmogaus @lt | Om @mo | Mens @nl | Òme @oc | Om @ro | Человек разумный современный @ru | Qenie Njerëzore @sq | மனிதன் @ta | మానవుడు @te | Aadmi @ur | umuntu @zu |\tAnimalia | Bilateria | Deuterostomia | Chordata | Vertebrata | Gnathostomata | Tetrapoda | Mammalia | Theria | Eutheria | Primates | Haplorrhini | Simiiformes | Hominoidea | Hominidae | Homininae | Homo | Homo sapiens\tEOL:1 | EOL:3014411 | EOL:8814528 | EOL:694 | EOL:2774383 | EOL:12094272 | EOL:4712200 | EOL:1642 | EOL:57446 | EOL:2844801 | EOL:1645 | EOL:10487985 | EOL:10509493 | EOL:4529848 | EOL:1653 | EOL:10551052 | EOL:42268 | EOL:327955\tkingdom | subkingdom | infrakingdom | division | subdivision | infraphylum | superclass | class | subclass | infraclass | order | suborder | infraorder | superfamily | family | subfamily | genus | species\thttp://eol.org/pages/327955\thttp://media.eol.org/content/2014/08/07/23/02836_98_68.jpg"));
         assertThat(lines.length, Is.is(2));
@@ -63,11 +61,7 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCacheMatchFirstLine() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = new TaxonCacheService(
-                "classpath:/org/eol/globi/taxon/taxonCache.tsv.gz",
-                "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz"
-        );
-        applyMatcher(is, os, matcher);
+        applyMatcher(is, os, MatchTestUtil.createTaxonCacheService());
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("EOL:1276240\tHomo sapiens\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));
@@ -77,16 +71,18 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCacheMatchFirstLineWithNonDefaultSchema() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return new TreeMap<Integer, String>() {{
-                    put(2, "externalId");
-                    put(3, "name");
-                }};
-            }
-        }, new AppenderTSV(MatchTestUtil.appenderSchemaDefault())));
+        MatchUtil.apply(is, new AppendingRowHandler(
+                os,
+                MatchTestUtil.createTaxonCacheService(),
+                new TestTermMatcherContextDefault() {
+                    @Override
+                    public Map<Integer, String> getInputSchema() {
+                        return new TreeMap<Integer, String>() {{
+                            put(2, "externalId");
+                            put(3, "name");
+                        }};
+                    }
+                }, new AppenderTSV(MatchTestUtil.appenderSchemaDefault())));
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("a scrub\ta tree\tEOL:1276240\tHomo sapiens\ta bone\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));
@@ -96,19 +92,21 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCacheMatchFirstLineWithAuthorshipSchema() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens\tL.", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return new TreeMap<Integer, String>() {{
-                    put(0, "externalId");
-                    put(1, "name");
-                    put(2, "authorship");
-                }};
-            }
+        MatchUtil.apply(is, new AppendingRowHandler(
+                os,
+                MatchTestUtil.createTaxonCacheService(),
+                new TestTermMatcherContextDefault() {
+                    @Override
+                    public Map<Integer, String> getInputSchema() {
+                        return new TreeMap<Integer, String>() {{
+                            put(0, "externalId");
+                            put(1, "name");
+                            put(2, "authorship");
+                        }};
+                    }
 
 
-        }, new AppenderTSV(new TreeMap<Integer, String>() {{
+                }, new AppenderTSV(new TreeMap<Integer, String>() {{
             put(0, "externalId");
             put(1, "name");
             put(2, "authorship");
@@ -122,19 +120,21 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCacheMatchFirstLineWithAuthorshipSchemaNoOutputAuthor() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens\tL.", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv.gz", "classpath:/org/eol/globi/taxon/taxonMap.tsv.gz");
-        MatchUtil.apply(is, new AppendingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return new TreeMap<Integer, String>() {{
-                    put(0, "externalId");
-                    put(1, "name");
-                    put(2, "authorship");
-                }};
-            }
+        MatchUtil.apply(is, new AppendingRowHandler(
+                os,
+                MatchTestUtil.createTaxonCacheService(),
+                new TestTermMatcherContextDefault() {
+                    @Override
+                    public Map<Integer, String> getInputSchema() {
+                        return new TreeMap<Integer, String>() {{
+                            put(0, "externalId");
+                            put(1, "name");
+                            put(2, "authorship");
+                        }};
+                    }
 
 
-        }, new AppenderTSV(new TreeMap<Integer, String>() {{
+                }, new AppenderTSV(new TreeMap<Integer, String>() {{
             put(0, "externalId");
             put(1, "name");
         }})));

@@ -6,10 +6,10 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.service.WikidataUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.globalbioticinteractions.wikidata.WikidataUtil;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

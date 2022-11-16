@@ -13,6 +13,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.globalbioticinteractions.nomer.util.TermValidatorPredicates;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -78,7 +79,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
                 return Objects::nonNull;
             }
         };
-        return new TaxonCacheService(terms, links);
+        return new TaxonCacheService(terms, links, ctx);
     }
 
     public static String getTermMapUrl(TermMatcherContext ctx) {

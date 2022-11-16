@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.net.URI;
@@ -49,7 +50,7 @@ public class ResourceServiceUtil {
         return new GZIPOutputStream(new FileOutputStream(cachedFile));
     }
 
-    public static GZIPInputStream getInputStreamForCache(File cachedFile) throws IOException {
+    public static InputStream getInputStreamForCache(File cachedFile) throws IOException {
         return new GZIPInputStream(new FileInputStream(cachedFile));
     }
 

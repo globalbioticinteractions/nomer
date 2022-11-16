@@ -11,6 +11,7 @@ import org.eol.globi.taxon.GlobalNamesService2;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.ResourceServiceLocal;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
@@ -211,7 +212,10 @@ public class ReplacingRowHandlerTest {
     }
 
     private ByteArrayOutputStream replace(InputStream is, TermMatcherContext ctx) throws IOException, PropertyEnricherException {
-        final TermMatcher matcher = new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv", "classpath:/org/eol/globi/taxon/taxonMap.tsv");
+        final TermMatcher matcher = new TaxonCacheService(
+                "classpath:/org/eol/globi/taxon/taxonCache.tsv",
+                "classpath:/org/eol/globi/taxon/taxonMap.tsv",
+                new ResourceServiceLocal());
         return replace(is, ctx, matcher);
     }
 

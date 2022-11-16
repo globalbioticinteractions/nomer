@@ -14,8 +14,8 @@
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
         <project.build.testResourceEncoding>UTF-8</project.build.testResourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <globi.version>0.24.4</globi.version>
-        <preston.version>0.5.0</preston.version>
+        <globi.version>0.24.6</globi.version>
+        <preston.version>0.5.1</preston.version>
         <jena.version>3.17.0</jena.version>
         <commons-lang3.version>3.12.0</commons-lang3.version>
         <commons-io.version>2.10.0</commons-io.version>

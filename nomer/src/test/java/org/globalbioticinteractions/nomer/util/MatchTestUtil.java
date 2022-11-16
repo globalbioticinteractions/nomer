@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.util.ResourceServiceLocal;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,7 +33,10 @@ public class MatchTestUtil {
     }
 
     public static TaxonCacheService createTaxonCacheService() {
-        return new TaxonCacheService("classpath:/org/eol/globi/taxon/taxonCache.tsv", "classpath:/org/eol/globi/taxon/taxonMap.tsv");
+        return new TaxonCacheService(
+                "classpath:/org/eol/globi/taxon/taxonCache.tsv",
+                "classpath:/org/eol/globi/taxon/taxonMap.tsv",
+                new ResourceServiceLocal());
     }
 
     public static TreeMap<Integer, String> appenderSchemaDefault() {

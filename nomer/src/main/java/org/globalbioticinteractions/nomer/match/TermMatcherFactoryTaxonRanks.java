@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.eol.globi.service.ResourceService;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -51,15 +52,18 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
                     }
                 });
             }
-            return createTermCache(cacheDir, taxonRankCacheUrl, taxonRankMapUrl);
+            return createTermCache(cacheDir, taxonRankCacheUrl, taxonRankMapUrl, ctx);
         } catch (URISyntaxException | IOException e) {
             throw new RuntimeException("failed to create matcher", e);
         }
 
     }
 
-    private TaxonCacheService createTermCache(File cacheDir, String taxonRankCacheUrl, String taxonRankMapUrl) {
-        TaxonCacheService taxonCacheService = new TaxonCacheService(taxonRankCacheUrl, taxonRankMapUrl);
+    private TaxonCacheService createTermCache(File cacheDir,
+                                              String taxonRankCacheUrl,
+                                              String taxonRankMapUrl,
+                                              ResourceService resourceService) {
+        TaxonCacheService taxonCacheService = new TaxonCacheService(taxonRankCacheUrl, taxonRankMapUrl, resourceService);
         taxonCacheService.setCacheDir(new File(cacheDir, "wikidata_taxon_ranks"));
         return taxonCacheService;
     }
