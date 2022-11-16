@@ -4,11 +4,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.service.CacheService;
 import org.eol.globi.service.CacheServiceUtil;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.ResourceServiceLocal;
 import org.globalbioticinteractions.nomer.match.TermMatcherCacheFactory;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.globalbioticinteractions.nomer.util.TermValidator;
 import org.globalbioticinteractions.nomer.util.TermValidatorFactory;
+import org.globalbioticinteractions.nomer.util.TestTermMatcherContextDefault;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -17,6 +20,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Predicate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -25,7 +30,8 @@ public class TermValidatorFactoryTest {
 
     @Test
     public void validateCache() throws IOException {
-        String termCacheUrl = TermMatcherCacheFactory.getTermCacheUrl(MatchTestUtil.getLocalTermMatcherCache());
+        String termCacheUrl = TermMatcherCacheFactory
+                .getTermCacheUrl(getCtx());
 
         String expectedResult = "OK\tno id\tid\tname\trank\tcommonNames\tpath\tpathIds\tpathNames\texternalUrl\tthumbnailUrl\n" +
                 "FAIL\ttoo few\tid\tname\trank\tcommonNames\tpath\tpathIds\tpathNames\texternalUrl\tthumbnailUrl\n" +
@@ -38,7 +44,7 @@ public class TermValidatorFactoryTest {
 
     @Test
     public void validateMap() throws IOException {
-        String termCacheUrl = TermMatcherCacheFactory.getTermMapUrl(MatchTestUtil.getLocalTermMatcherCache());
+        String termCacheUrl = TermMatcherCacheFactory.getTermMapUrl(getCtx());
 
         String expectedResult = "OK\tno id\tprovidedTaxonId\tprovidedTaxonName\tresolvedTaxonId\tresolvedTaxonName\n" +
                 "FAIL\ttoo few\tprovidedTaxonId\tprovidedTaxonName\tresolvedTaxonId\tresolvedTaxonName\n" +
@@ -68,5 +74,20 @@ public class TermValidatorFactoryTest {
         assertThat(out.toString(), Is.is(
                 expectedResult));
     }
+
+    private TermMatcherContext getCtx() {
+        return new TestTermMatcherContextDefault() {
+
+            @Override
+            public String getProperty(String key) {
+                Map<String, String> props = new TreeMap<>();
+                props.put("nomer.term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMapValidate.tsv").toString());
+                props.put("nomer.term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCacheValidate.tsv").toString());
+                return props.get(key);
+            }
+
+        };
+    }
+
 
 }
