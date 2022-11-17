@@ -1,0 +1,241 @@
+<document ID-DOI="http://doi.org/10.5281/zenodo.4334132" ID-GBIF-Dataset="bb6f5628-d3ac-4a12-b3b1-24ab27e112f5" ID-ISSN="1733-5329" ID-Zenodo-Dep="4334132" checkinTime="1594727469920" checkinUser="valdenar" docAuthor="Zhang, Libiao, Jones, Gareth, Zhang, Jinshuo, Zhu, Guangjian &amp; Parsons, Stuart" docDate="2009" docId="03AF87D3C435B542FF728049FB55BB1B" docLanguage="en" docName="ActaChiropterologica.11.1.71-88.pdf.imf" docOrigin="Acta Chiropterologica 11 (1)" docStyle="DocumentStylede.uka.ipd.idaho.easyIO.settings.Settings@3d6a0db8" docStyleName="actachiropterologica.2008-2015.journal_article" docTitle="Rhinolophus sinicus K. Andersen 1905" docType="treatment" docVersion="13" lastPageNumber="80" masterDocId="FF96FFABC43FB548FF95830FFF87B934" masterDocTitle="Recent surveys of bats (Mammalia: Chiroptera) from China. I. Rhinolophidae and Hipposideridae" masterLastPageNumber="88" masterPageNumber="71" pageId="10" pageNumber="80" updateTime="1608202738328" updateUser="ExternalLinkService" zenodo-license-document="CLOSED">
+<mods:mods xmlns:mods="http://www.loc.gov/mods/v3">
+<mods:titleInfo>
+<mods:title>Recent surveys of bats (Mammalia: Chiroptera) from China. I. Rhinolophidae and Hipposideridae</mods:title>
+</mods:titleInfo>
+<mods:name type="personal">
+<mods:role>
+<mods:roleTerm>Author</mods:roleTerm>
+</mods:role>
+<mods:namePart>Zhang, Libiao</mods:namePart>
+<mods:affiliation>Guangdong Entomological Institute, 105 Xingang Xilu, Haizhu, Guangzhou, 510260 China</mods:affiliation>
+</mods:name>
+<mods:name type="personal">
+<mods:role>
+<mods:roleTerm>Author</mods:roleTerm>
+</mods:role>
+<mods:namePart>Jones, Gareth</mods:namePart>
+<mods:affiliation>School of Biological Sciences, University of Bristol, Woodland Road, Bristol, BS 8 1 UG, United Kingdom</mods:affiliation>
+</mods:name>
+<mods:name type="personal">
+<mods:role>
+<mods:roleTerm>Author</mods:roleTerm>
+</mods:role>
+<mods:namePart>Zhang, Jinshuo</mods:namePart>
+<mods:affiliation>Institute of Zoology, Chinese Academy of Sciences, 1 - 5 Beichen Xilu, Chaoyang District, Beijing, 100101 China</mods:affiliation>
+</mods:name>
+<mods:name type="personal">
+<mods:role>
+<mods:roleTerm>Author</mods:roleTerm>
+</mods:role>
+<mods:namePart>Zhu, Guangjian</mods:namePart>
+<mods:affiliation>Guangdong Entomological Institute, 105 Xingang Xilu, Haizhu, Guangzhou, 510260 China</mods:affiliation>
+</mods:name>
+<mods:name type="personal">
+<mods:role>
+<mods:roleTerm>Author</mods:roleTerm>
+</mods:role>
+<mods:namePart>Parsons, Stuart</mods:namePart>
+<mods:affiliation>School of Biological Sciences, University of Auckland, Private Bag, Auckland, 92019 New Zealand</mods:affiliation>
+</mods:name>
+<mods:typeOfResource>text</mods:typeOfResource>
+<mods:relatedItem type="host">
+<mods:titleInfo>
+<mods:title>Acta Chiropterologica</mods:title>
+</mods:titleInfo>
+<mods:part>
+<mods:date>2009</mods:date>
+<mods:detail type="pubDate">
+<mods:number>2009-06-01</mods:number>
+</mods:detail>
+<mods:detail type="volume">
+<mods:number>11</mods:number>
+</mods:detail>
+<mods:detail type="issue">
+<mods:number>1</mods:number>
+</mods:detail>
+<mods:extent unit="page">
+<mods:start>71</mods:start>
+<mods:end>88</mods:end>
+</mods:extent>
+</mods:part>
+</mods:relatedItem>
+<mods:classification>journal article</mods:classification>
+<mods:identifier type="DOI">10.3161/150811009X465703</mods:identifier>
+<mods:identifier type="GBIF-Dataset">bb6f5628-d3ac-4a12-b3b1-24ab27e112f5</mods:identifier>
+<mods:identifier type="ISSN">1733-5329</mods:identifier>
+<mods:identifier type="Zenodo-Dep">3944511</mods:identifier>
+</mods:mods>
+<treatment ID-DOI="http://doi.org/10.5281/zenodo.4334132" ID-Zenodo-Dep="4334132" LSID="urn:lsid:plazi:treatment:03AF87D3C435B542FF728049FB55BB1B" httpUri="http://treatment.plazi.org/id/03AF87D3C435B542FF728049FB55BB1B" lastPageNumber="80" pageId="10" pageNumber="80">
+<subSubSection box="[231,699,838,864]" pageId="10" pageNumber="80" type="nomenclature">
+<paragraph blockId="10.[231,699,838,898]" box="[231,699,838,864]" pageId="10" pageNumber="80">
+<heading box="[231,699,838,864]" pageId="10" pageNumber="80">
+<taxonomicName authority="K. Andersen, 1905" authorityName="K. Andersen" authorityYear="1905" box="[231,699,838,864]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="sinicus">
+<emphasis box="[231,469,838,864]" italics="true" pageId="10" pageNumber="80">Rhinolophus sinicus</emphasis>
+K. Andersen, 1905
+</taxonomicName>
+</heading>
+</paragraph>
+</subSubSection>
+<subSubSection box="[291,638,872,898]" pageId="10" pageNumber="80" type="vernacular_names">
+<paragraph blockId="10.[231,699,838,898]" box="[291,638,872,898]" pageId="10" pageNumber="80">Chinese rufous horseshoe bat</paragraph>
+</subSubSection>
+<subSubSection pageId="10" pageNumber="80" type="discussion">
+<paragraph blockId="10.[159,771,940,2019]" pageId="10" pageNumber="80">
+The species is most easily confused with 
+<taxonomicName authorityName="Horsfield" authorityYear="1823" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="affinis">
+<emphasis italics="true" pageId="10" pageNumber="80">R. affinis</emphasis>
+</taxonomicName>
+, from which it is best distinguished by its straight-sided lancet and the relatively short second phalanx of the third digit (&lt;66% of the length of the metacarpal — Csorba 
+<emphasis box="[443,502,1076,1102]" italics="true" pageId="10" pageNumber="80">et al</emphasis>
+., 2003). Unequivocal separation can seemingly be performed by sequencing the control region of mtDNA (authors’ unpublished data). Echolocation call frequencies overlap with those emitted by 
+<taxonomicName authorityName="Horsfield" authorityYear="1823" box="[421,526,1211,1237]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="affinis">
+<emphasis box="[421,526,1211,1237]" italics="true" pageId="10" pageNumber="80">R. affinis</emphasis>
+</taxonomicName>
+. 
+<taxonomicName authorityName="Horsfield" authorityYear="1823" box="[542,771,1211,1237]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="affinis">
+<emphasis box="[542,771,1211,1237]" italics="true" pageId="10" pageNumber="80">Rhinolophus affinis</emphasis>
+</taxonomicName>
+is also typically a larger species, though overlap occurs with 
+<taxonomicName authorityName="K. Andersen" authorityYear="1905" box="[291,413,1279,1305]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="sinicus">
+<emphasis box="[291,413,1279,1305]" italics="true" pageId="10" pageNumber="80">R. sinicus</emphasis>
+</taxonomicName>
+at forearm lengths between 
+<quantity box="[159,285,1313,1339]" metricMagnitude="-2" metricUnit="m" metricValue="5.15" metricValueMax="5.3" metricValueMin="5.0" pageId="10" pageNumber="80" unit="mm" value="51.5" valueMax="53.0" valueMin="50.0">50–53 mm</quantity>
+(
+<figureCitation box="[299,371,1313,1339]" captionStart="FIG" captionStartId="6.[159,172,1939,1960]" captionTargetBox="[403,1184,1366,1928]" captionTargetId="figure@6.[470,1189,1354,1897]" captionTargetPageId="6" captionText="FIG. 4. Representative echolocation calls of bats in the family Hipposideridae captured from China during our surveys. See text for data on intraspecific variation. Calls are from time expanded sequences of handheld bats with FFT size 1024 Hz, Hanning window. The species are arranged according to body size from large species (left) to small (right)" figureDoi="http://doi.org/10.5281/zenodo.3944523" httpUri="https://zenodo.org/record/3944523/files/figure.png" pageId="10" pageNumber="80">Fig. 4</figureCitation>
+). 
+<taxonomicName authorityName="K. Andersen" authorityYear="1905" box="[392,627,1313,1339]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="sinicus">
+<emphasis box="[392,627,1313,1339]" italics="true" pageId="10" pageNumber="80">Rhinolophus sinicus</emphasis>
+</taxonomicName>
+is very similar to 
+<taxonomicName box="[250,383,1347,1373]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="thomasi">
+<emphasis box="[250,383,1347,1373]" italics="true" pageId="10" pageNumber="80">R. thomasi</emphasis>
+</taxonomicName>
+from 
+<collectingCountry box="[470,586,1347,1373]" name="Myanmar" pageId="10" pageNumber="80">Myanmar</collectingCountry>
+, 
+<collectingCountry box="[604,706,1347,1373]" name="Vietnam" pageId="10" pageNumber="80">Vietnam</collectingCountry>
+, Lao PDR and 
+<collectingCountry box="[272,379,1381,1407]" name="Thailand" pageId="10" pageNumber="80">Thailand</collectingCountry>
+, to which it is closely related and possibly conspecific. Call frequency for 
+<taxonomicName authority="in Lao" authorityName="in Lao" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="thomasi">
+<emphasis box="[644,771,1415,1441]" italics="true" pageId="10" pageNumber="80">R. thomasi</emphasis>
+in Lao
+</taxonomicName>
+PDR is reported as 76–86 kHz (
+<bibRefCitation author="FRANCIS, C. M. &amp; J. HABERSETZER" pageId="10" pageNumber="80" refId="ref11146" refString="FRANCIS, C. M., and J. HABERSETZER. 1998. Interspecific and intraspecific variation in echolocation call frequency and morphology of horseshoe bats, Rhinolophus and Hipposideros. Pp. 169 - 179, in Bat biology and conservation (T. H. KUNZ and P. A. RACEY, eds.). Smithsonian Institution Press, Washington, D. C., 365 pp." type="book" year="1998">Francis and Habersetzer 1998</bibRefCitation>
+), and so the two taxa overlap considerably in call frequency. 
+<taxonomicName box="[492,742,1517,1543]" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="thomasi">
+<emphasis box="[492,742,1517,1543]" italics="true" pageId="10" pageNumber="80">Rhinolophus thomasi</emphasis>
+</taxonomicName>
+is reported to have smaller upper canines than 
+<taxonomicName authority="(Francis 2008)" baseAuthorityName="Francis" baseAuthorityYear="2008" class="Mammalia" family="Rhinolophidae" genus="Rhinolophus" kingdom="Animalia" order="Chiroptera" pageId="10" pageNumber="80" phylum="Chordata" rank="species" species="sinicus">
+<emphasis italics="true" pageId="10" pageNumber="80">R. sinicus</emphasis>
+(Francis 2008)
+</taxonomicName>
+.
+</paragraph>
+</subSubSection>
+<subSubSection pageId="10" pageNumber="80" type="description">
+<paragraph blockId="10.[159,771,940,2019]" pageId="10" pageNumber="80">
+<collectionCode box="[197,230,1619,1645]" pageId="10" pageNumber="80">FA</collectionCode>
+— 
+<quantity box="[299,482,1619,1645]" metricMagnitude="-2" metricUnit="m" metricValue="4.76" metricValueMax="5.26" metricValueMin="4.26" pageId="10" pageNumber="80" unit="mm" value="47.6" valueMax="52.6" valueMin="42.6">42.6–52.6 mm</quantity>
+, mass — 
+<quantity box="[629,767,1619,1645]" metricMagnitude="-2" metricUnit="kg" metricValue="1.14" metricValueMax="1.43" metricValueMin="0.85" pageId="10" pageNumber="80" unit="g" value="11.4" valueMax="14.3" valueMin="8.5">8.5–14.3 g</quantity>
+. Seventy-four males and 
+<specimenCount box="[458,590,1653,1679]" pageId="10" pageNumber="80" type="female">43 females</specimenCount>
+were captured from 
+<collectingRegion box="[228,305,1687,1713]" country="China" name="Fujian" pageId="10" pageNumber="80">Fujian</collectingRegion>
+, 
+<collectingRegion box="[323,461,1687,1713]" country="China" name="Guangdong" pageId="10" pageNumber="80">Guangdong</collectingRegion>
+, 
+<collectingRegion box="[479,582,1687,1713]" country="China" name="Guangxi" pageId="10" pageNumber="80">Guangxi</collectingRegion>
+, 
+<collectingRegion box="[599,702,1687,1713]" country="China" name="Guizhou" pageId="10" pageNumber="80">Guizhou</collectingRegion>
+, 
+<collectingRegion country="China" name="Hainan" pageId="10" pageNumber="80">Hainan</collectingRegion>
+, 
+<collectingRegion box="[215,289,1721,1747]" country="China" name="Hubei" pageId="10" pageNumber="80">Hubei</collectingRegion>
+, 
+<collectingRegion box="[300,387,1721,1747]" country="China" name="Jiangxi" pageId="10" pageNumber="80">Jiangxi</collectingRegion>
+, 
+<collectingRegion box="[397,494,1721,1747]" country="China" name="Sichuan" pageId="10" pageNumber="80">Sichuan</collectingRegion>
+, and 
+<collectingRegion box="[552,645,1721,1747]" country="China" name="Yunnan" pageId="10" pageNumber="80">Yunnan</collectingRegion>
+. The echolocation calls vary over the geographic range, from 73.4–88.5 kHz. The call frequencies (
+<emphasis bold="true" box="[628,646,1788,1814]" italics="true" pageId="10" pageNumber="80">0</emphasis>
+± SD) of a sample of males (82.0 ± 2.0 kHz, 
+<emphasis box="[609,624,1823,1849]" italics="true" pageId="10" pageNumber="80">n</emphasis>
+= 38) were lower than females (85.4 ± 1.9, 
+<emphasis box="[557,572,1857,1883]" italics="true" pageId="10" pageNumber="80">n</emphasis>
+= 29 — Mann- Whitney W = 839, 
+<emphasis box="[413,431,1891,1917]" italics="true" pageId="10" pageNumber="80">P</emphasis>
+&lt;0.001), but the forearm lengths were not significantly different between sexes (
+<emphasis bold="true" box="[244,292,1958,1984]" pageId="10" pageNumber="80">♂♂</emphasis>
+: 46.9 ± 1.5, 
+<emphasis box="[461,476,1959,1985]" italics="true" pageId="10" pageNumber="80">n</emphasis>
+= 37; 
+<emphasis bold="true" box="[566,614,1958,1984]" pageId="10" pageNumber="80">♀♀</emphasis>
+: 46.6 ± 2.0, 
+<emphasis box="[159,174,1993,2019]" italics="true" pageId="10" pageNumber="80">n</emphasis>
+= 29; Mann-Whitney W = 1325, 
+<emphasis box="[572,590,1993,2019]" italics="true" pageId="10" pageNumber="80">P</emphasis>
+&gt; 0.05).
+</paragraph>
+</subSubSection>
+<subSubSection pageId="10" pageNumber="80" type="distribution">
+<paragraph blockId="10.[816,1429,220,349]" pageId="10" pageNumber="80">
+Previous records from 
+<collectingCountry box="[1149,1226,220,246]" name="China" pageId="10" pageNumber="80">China</collectingCountry>
+:, 
+<collectingRegion box="[1249,1325,220,246]" country="China" name="Anhui" pageId="10" pageNumber="80">Anhui</collectingRegion>
+, 
+<collectingRegion box="[1346,1424,220,246]" country="China" name="Fujian" pageId="10" pageNumber="80">Fujian</collectingRegion>
+, 
+<collectingRegion box="[816,894,254,280]" country="China" name="Gansu" pageId="10" pageNumber="80">Gansu</collectingRegion>
+, 
+<collectingRegion box="[905,1045,254,280]" country="China" name="Guangdong" pageId="10" pageNumber="80">Guangdong</collectingRegion>
+, 
+<collectingRegion box="[1055,1159,254,280]" country="China" name="Guangxi" pageId="10" pageNumber="80">Guangxi</collectingRegion>
+, 
+<collectingRegion box="[1170,1274,254,280]" country="China" name="Guizhou" pageId="10" pageNumber="80">Guizhou</collectingRegion>
+, 
+<collectingRegion box="[1285,1373,254,280]" country="China" name="Hainan" pageId="10" pageNumber="80">Hainan</collectingRegion>
+, 
+<collectingRegion country="China" name="Hubei" pageId="10" pageNumber="80">Hubei</collectingRegion>
+<collectingRegion box="[863,954,289,315]" country="China" name="Jiangsu" pageId="10" pageNumber="80">Jiangsu</collectingRegion>
+, 
+<collectingRegion box="[968,1056,289,315]" country="China" name="Jiangxi" pageId="10" pageNumber="80">Jiangxi</collectingRegion>
+, 
+<collectingRegion box="[1071,1168,289,315]" country="China" name="Shaanxi" pageId="10" pageNumber="80">Shaanxi</collectingRegion>
+, 
+<collectingRegion box="[1183,1280,289,315]" country="China" name="Sichuan" pageId="10" pageNumber="80">Sichuan</collectingRegion>
+, 
+<collectingRegion box="[1294,1358,289,315]" country="China" name="Xizang" pageId="10" pageNumber="80">Tibet</collectingRegion>
+, 
+<collectingRegion country="China" name="Yunnan" pageId="10" pageNumber="80">Yunnan</collectingRegion>
+, 
+<collectingRegion box="[874,978,323,349]" country="China" name="Zhejiang" pageId="10" pageNumber="80">Zhejiang</collectingRegion>
+(
+<bibRefCitation author="ZHANG, Y. Z." box="[995,1149,323,349]" pageId="10" pageNumber="80" refId="ref13150" refString="ZHANG, Y. Z. (ed.). 1997. Distribution of mammalian species in China. China Forestry Publishing House, Beijing, 280 pp." type="book" year="1997">Zhang, 1997</bibRefCitation>
+; 
+<bibRefCitation author="WANG, Y. X." box="[1161,1308,323,349]" pageId="10" pageNumber="80" refId="ref12745" refString="WANG, Y. X. (ed.). 2003. A complete checklist of mammal species and subspecies in China: a taxonomic and geographic reference. China Forestry Publishing House, Beijing, 394 pp." type="book" year="2003">Wang, 2003</bibRefCitation>
+).
+</paragraph>
+</subSubSection>
+<subSubSection pageId="10" pageNumber="80" type="biology_ecology">
+<paragraph blockId="10.[816,1429,396,559]" box="[816,1019,396,422]" pageId="10" pageNumber="80">
+<emphasis box="[816,1019,396,422]" italics="true" pageId="10" pageNumber="80">Ecological Notes</emphasis>
+</paragraph>
+<paragraph blockId="10.[816,1429,396,559]" pageId="10" pageNumber="80">
+Widespread in caves in southern 
+<collectingCountry box="[1296,1369,431,457]" name="China" pageId="10" pageNumber="80">China</collectingCountry>
+, but never abundant. Maximum count was 24 bats in one cave in 
+<collectingRegion box="[912,1001,499,525]" country="China" name="Jiangxi" pageId="10" pageNumber="80">Jiangxi</collectingRegion>
+. An abandoned brick kiln was used by a solitary male in Xinyi County.
+</paragraph>
+</subSubSection>
+</treatment>
+</document>
