@@ -1,136 +1,132 @@
-@prefix mods:  <http://www.loc.gov/mods/v3> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix cito: <http://purl.org/spar/cito/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dwc: <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwcFP: <http://filteredpush.org/ontologies/oa/dwcFP#> .
 @prefix fabio: <http://purl.org/spar/fabio/> .
-@prefix cnt:   <http://www.w3.org/2011/content#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix cito:  <http://purl.org/spar/cito/> .
-@prefix dwc:   <http://rs.tdwg.org/dwc/terms/> .
-@prefix sdd:   <http://tdwg.org/sdd#> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix trt:   <http://plazi.org/vocab/treatment#> .
-@prefix bibo:  <http://purl.org/ontology/bibo/> .
-@prefix sdo:   <http://schema.org/> .
+@prefix mods: <http://www.loc.gov/mods/v3> .
+@prefix trt: <http://plazi.org/vocab/treatment#> .
 @prefix xlink: <http://www.w3.org/1999/xlink> .
-@prefix dc:    <http://purl.org/dc/elements/1.1/> .
-
-<http://taxon-name.plazi.org/id/Animalia/Arthropoda>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia> ;
-        dwc:kingdom        "Animalia" ;
-        dwc:phylum         "Arthropoda" ;
-        dwc:rank           "phylum" .
-
-<http://taxon-name.plazi.org/id/Animalia/Insecta>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Arthropoda> ;
-        dwc:class          "Insecta" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:phylum         "Arthropoda" ;
-        dwc:rank           "class" .
-
-<http://taxon-name.plazi.org/id/Animalia/Hemiptera>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Insecta> ;
-        dwc:class          "Insecta" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Hemiptera" ;
-        dwc:phylum         "Arthropoda" ;
-        dwc:rank           "order" .
-
-<http://dx.doi.org/10.5281/zenodo.3850855>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 2. SEM images of C. malcolmae Slater & Gross, 1977. A. Head, anterior view, ♀. B. Head and pronotum, dorsal view, Ƌ. C. Head and pronotum, lateral view, ♀. D. Fore- and middle femora, Ƌ. E. Scutellum and hemelytra, ♀. F. Antenna, ♀. G. Hind femur, ♀. H. Labium, ♀. I. Hind tarsus, ♀. J. Abdomen, lateral view, Ƌ. K. Pleura, ♀. L. Pretarsus, ventral view, Ƌ." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850855/files/figure.png" .
-
-<http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B>
-        a                         trt:Treatment ;
-        trt:augmentsTaxonConcept  <http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977> ;
-        trt:publishedIn           <http://doi.org/10.5281/zenodo.3854772> ;
-        dc:creator                "Namyatova, Anna A." , "Cassis, Gerasimos" ;
-        cito:cites                <http://dx.doi.org/10.5281/zenodo.3850863> , <http://dx.doi.org/10.5281/zenodo.3850871> , <http://dx.doi.org/10.5281/zenodo.3850875> , <http://dx.doi.org/10.5281/zenodo.3850885> , <http://dx.doi.org/10.5281/zenodo.3850855> , <http://dx.doi.org/10.5281/zenodo.3850867> , <http://dx.doi.org/10.5281/zenodo.3850859> , <http://dx.doi.org/10.5281/zenodo.3850851> .
-
-<http://dx.doi.org/10.5281/zenodo.3850875>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 7. Genitalia of C. malcolmae Slater & Gross, 1977. A. Aedeagus, left lateral view. B. Aedeagus, ventral view. C. Genital capsule. D. Right paramere. E. Left paramere. F. Dorsal labiate plate of bursa copulatrix. G. Posterior wall of bursa copulatrix. Scale bars = 0.1 mm (the large scale bar is for A–B and D–E, the small scale bar is for C and F–G)." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850875/files/figure.png" .
-
-<http://dx.doi.org/10.5281/zenodo.3850867>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 5. SEM images of C. taplini Slater & Gross, 1977, ♀. A.Head and pronotum, lateral view. B. Head and pronotum, dorsal view. C. Head, anterior view. D. Labium. E. Hind tarsus. F. Forefemur. G. Pleura. H. Antenna. I. Abdomen, lateral view. J. Pronotum, scutellum, hemelytra and abdomen, dorsal view." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850867/files/figure.png" .
-
-<http://taxon-name.plazi.org/id/Animalia>
-        a            dwcFP:TaxonName ;
-        dwc:kingdom  "Animalia" ;
-        dwc:rank     "kingdom" .
-
-<http://dx.doi.org/10.5281/zenodo.3850851>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 1. Habitus of Carvalhoma species. Scale bar = 1 mm. When two specimens of the same species are shown, the male is on the left and the female on the right. C. ovatum sp. nov. shows the male holotype. C. taplini Slater & Gross, 1977 shows the female holotype." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850851/files/figure.png" .
-
-<http://dx.doi.org/10.5281/zenodo.3850871>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 6. SEM images of C. weiri sp. nov. A. Head, anterior view, Ƌ. B. Head and pronotum, lateral view, Ƌ. C. Head and pronotum, dorsal view, Ƌ. D. Antennal segments I and II, Ƌ. E. Labium, ♀. F. Hemelytron, Ƌ. G. Abdomen, lateral view, Ƌ. H. Middle and hind femora, Ƌ. I. Hemelytron, ♀. J. Pleura, ♀. K. Fore- and middle femora, Ƌ. L. Hind tarsus, ♀." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850871/files/figure.png" .
-
-<http://taxon-name.plazi.org/id/Animalia/Carvalhoma>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  "http://taxon-name.plazi.org/id/Animalia/Miridae" ;
-        dwc:class          "Insecta" ;
-        dwc:family         "Miridae" ;
-        dwc:genus          "Carvalhoma" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Hemiptera" ;
-        dwc:phylum         "Arthropoda" ;
-        dwc:rank           "genus" .
-
-<http://taxon-name.plazi.org/id/Animalia/Miridae>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Hemiptera> ;
-        dwc:class          "Insecta" ;
-        dwc:family         "Miridae" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Hemiptera" ;
-        dwc:phylum         "Arthropoda" ;
-        dwc:rank           "family" .
-
-<http://dx.doi.org/10.5281/zenodo.3850859>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 3. SEM images of C. ovatum sp. nov., Ƌ. A. Head and pronotum, lateral view. B. Head and pronotum, dorsal view. C. Head, anterior view. D. Fore- and middle femora. E. Scutellum and hemelytra. F. Genital segment, lateral view. G. Pleura. H. Setae on hemelytron. I. Antenna." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850859/files/figure.png" .
-
-<http://dx.doi.org/10.5281/zenodo.3850885>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 10. Genitalia of C. weiri sp. nov. A. Aedeagus, left lateral view. B.Aedeagus, ventral view. C. Genital capsule. D. Right paramere. E. Left paramere. F. Dorsal labiate plate of bursa copulatrix. G. Posterior wall of bursa copulatrix. Scale bars = 0.1 mm (the large scale bar is for A–B and D–E, the small scale bar is for C and F–G)." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850885/files/figure.png" .
-
-<http://dx.doi.org/10.5281/zenodo.3850863>
-        a                        fabio:Figure ;
-        dc:description           "Fig. 4. SEM images of C. parvum sp. nov. A. Head, anterior view, ♀. B. Head and pronotum, dorsal view, Ƌ. C. Head and pronotum, lateral view, Ƌ. D. Pleura, ♀. E. Scutellum and hemelytra, Ƌ. F. Scutellum and hemelytra, ♀. G. Fore- and middle femora, ♀. H. Labium, Ƌ. I. Hind tarsus, ♀. J. Hind femur, ♀. K. Genital segment, lateral view, Ƌ. L. Antenna, ♀. M. Pretarsus, Ƌ." ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3850863/files/figure.png" .
 
 <http://doi.org/10.5281/zenodo.3854772>
-        a               fabio:JournalArticle ;
-        dc:creator      "Namyatova, Anna A." , "Cassis, Gerasimos" ;
-        dc:date         "2016" ;
-        dc:title        "Revision of the staphylinoid and ground-dwelling genus Carvalhoma Slater & Gross (Insecta: Heteroptera: Miridae: Cylapinae) of Australia" ;
-        bibo:endPage    "27" ;
-        bibo:journal    "European Journal of Taxonomy" ;
-        bibo:pubDate    "2016-12-22" ;
-        bibo:startPage  "1" ;
-        bibo:volume     "253" ;
-        fabio:hasPart   <http://dx.doi.org/10.5281/zenodo.3850859> , <http://dx.doi.org/10.5281/zenodo.3850851> , <http://dx.doi.org/10.5281/zenodo.3850867> , <http://dx.doi.org/10.5281/zenodo.3850885> , <http://dx.doi.org/10.5281/zenodo.3850875> , <http://dx.doi.org/10.5281/zenodo.3850855> , <http://dx.doi.org/10.5281/zenodo.3850871> , <http://dx.doi.org/10.5281/zenodo.3850863> .
+    dc:creator "Cassis, Gerasimos", "Namyatova, Anna A." ;
+    dc:date "2016" ;
+    dc:title "Revision of the staphylinoid and ground-dwelling genus Carvalhoma Slater & Gross (Insecta: Heteroptera: Miridae: Cylapinae) of Australia" ;
+    bibo:endPage "27" ;
+    bibo:journal "European Journal of Taxonomy" ;
+    bibo:pubDate "2016-12-22" ;
+    bibo:startPage "1" ;
+    bibo:volume "253" ;
+    fabio:hasPart <http://dx.doi.org/10.5281/zenodo.3850851>, <http://dx.doi.org/10.5281/zenodo.3850855>, <http://dx.doi.org/10.5281/zenodo.3850859>, <http://dx.doi.org/10.5281/zenodo.3850863>, <http://dx.doi.org/10.5281/zenodo.3850867>, <http://dx.doi.org/10.5281/zenodo.3850871>, <http://dx.doi.org/10.5281/zenodo.3850875>, <http://dx.doi.org/10.5281/zenodo.3850885> ;
+    a fabio:JournalArticle .
+
+<http://dx.doi.org/10.5281/zenodo.3850851>
+    dc:description "Fig. 1. Habitus of Carvalhoma species. Scale bar = 1 mm. When two specimens of the same species are shown, the male is on the left and the female on the right. C. ovatum sp. nov. shows the male holotype. C. taplini Slater & Gross, 1977 shows the female holotype." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850851/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850855>
+    dc:description "Fig. 2. SEM images of C. malcolmae Slater & Gross, 1977. A. Head, anterior view, ♀. B. Head and pronotum, dorsal view, Ƌ. C. Head and pronotum, lateral view, ♀. D. Fore- and middle femora, Ƌ. E. Scutellum and hemelytra, ♀. F. Antenna, ♀. G. Hind femur, ♀. H. Labium, ♀. I. Hind tarsus, ♀. J. Abdomen, lateral view, Ƌ. K. Pleura, ♀. L. Pretarsus, ventral view, Ƌ." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850855/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850859>
+    dc:description "Fig. 3. SEM images of C. ovatum sp. nov., Ƌ. A. Head and pronotum, lateral view. B. Head and pronotum, dorsal view. C. Head, anterior view. D. Fore- and middle femora. E. Scutellum and hemelytra. F. Genital segment, lateral view. G. Pleura. H. Setae on hemelytron. I. Antenna." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850859/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850863>
+    dc:description "Fig. 4. SEM images of C. parvum sp. nov. A. Head, anterior view, ♀. B. Head and pronotum, dorsal view, Ƌ. C. Head and pronotum, lateral view, Ƌ. D. Pleura, ♀. E. Scutellum and hemelytra, Ƌ. F. Scutellum and hemelytra, ♀. G. Fore- and middle femora, ♀. H. Labium, Ƌ. I. Hind tarsus, ♀. J. Hind femur, ♀. K. Genital segment, lateral view, Ƌ. L. Antenna, ♀. M. Pretarsus, Ƌ." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850863/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850867>
+    dc:description "Fig. 5. SEM images of C. taplini Slater & Gross, 1977, ♀. A.Head and pronotum, lateral view. B. Head and pronotum, dorsal view. C. Head, anterior view. D. Labium. E. Hind tarsus. F. Forefemur. G. Pleura. H. Antenna. I. Abdomen, lateral view. J. Pronotum, scutellum, hemelytra and abdomen, dorsal view." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850867/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850871>
+    dc:description "Fig. 6. SEM images of C. weiri sp. nov. A. Head, anterior view, Ƌ. B. Head and pronotum, lateral view, Ƌ. C. Head and pronotum, dorsal view, Ƌ. D. Antennal segments I and II, Ƌ. E. Labium, ♀. F. Hemelytron, Ƌ. G. Abdomen, lateral view, Ƌ. H. Middle and hind femora, Ƌ. I. Hemelytron, ♀. J. Pleura, ♀. K. Fore- and middle femora, Ƌ. L. Hind tarsus, ♀." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850871/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850875>
+    dc:description "Fig. 7. Genitalia of C. malcolmae Slater & Gross, 1977. A. Aedeagus, left lateral view. B. Aedeagus, ventral view. C. Genital capsule. D. Right paramere. E. Left paramere. F. Dorsal labiate plate of bursa copulatrix. G. Posterior wall of bursa copulatrix. Scale bars = 0.1 mm (the large scale bar is for A–B and D–E, the small scale bar is for C and F–G)." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850875/files/figure.png" ;
+    a fabio:Figure .
+
+<http://dx.doi.org/10.5281/zenodo.3850885>
+    dc:description "Fig. 10. Genitalia of C. weiri sp. nov. A. Aedeagus, left lateral view. B.Aedeagus, ventral view. C. Genital capsule. D. Right paramere. E. Left paramere. F. Dorsal labiate plate of bursa copulatrix. G. Posterior wall of bursa copulatrix. Scale bars = 0.1 mm (the large scale bar is for A–B and D–E, the small scale bar is for C and F–G)." ;
+    fabio:hasRepresentation "https://zenodo.org/record/3850885/files/figure.png" ;
+    a fabio:Figure .
 
 <http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977>
-        a                             dwcFP:TaxonConcept ;
-        trt:hasTaxonName              <http://taxon-name.plazi.org/id/Animalia/Carvalhoma> ;
-        dwc:class                     "Insecta" ;
-        dwc:family                    "Miridae" ;
-        dwc:genus                     "Carvalhoma" ;
-        dwc:kingdom                   "Animalia" ;
-        dwc:order                     "Hemiptera" ;
-        dwc:phylum                    "Arthropoda" ;
-        dwc:rank                      "genus" ;
-        dwc:scientificNameAuthorship  "Slater & Gross, 1977" .
+    trt:hasTaxonName <http://taxon-name.plazi.org/id/Animalia/Carvalhoma> ;
+    dwc:class "Insecta" ;
+    dwc:family "Miridae" ;
+    dwc:genus "Carvalhoma" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Hemiptera" ;
+    dwc:phylum "Arthropoda" ;
+    dwc:rank "genus" ;
+    dwc:scientificNameAuthorship "Slater & Gross, 1977" ;
+    a dwcFP:TaxonConcept .
+
+<http://taxon-name.plazi.org/id/Animalia>
+    dwc:kingdom "Animalia" ;
+    dwc:rank "kingdom" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Arthropoda>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia> ;
+    dwc:kingdom "Animalia" ;
+    dwc:phylum "Arthropoda" ;
+    dwc:rank "phylum" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Carvalhoma>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Miridae> ;
+    dwc:class "Insecta" ;
+    dwc:family "Miridae" ;
+    dwc:genus "Carvalhoma" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Hemiptera" ;
+    dwc:phylum "Arthropoda" ;
+    dwc:rank "genus" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Hemiptera>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Insecta> ;
+    dwc:class "Insecta" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Hemiptera" ;
+    dwc:phylum "Arthropoda" ;
+    dwc:rank "order" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Insecta>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Arthropoda> ;
+    dwc:class "Insecta" ;
+    dwc:kingdom "Animalia" ;
+    dwc:phylum "Arthropoda" ;
+    dwc:rank "class" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Miridae>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Hemiptera> ;
+    dwc:class "Insecta" ;
+    dwc:family "Miridae" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Hemiptera" ;
+    dwc:phylum "Arthropoda" ;
+    dwc:rank "family" ;
+    a dwcFP:TaxonName .
+
+<http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B>
+    trt:augmentsTaxonConcept <http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977> ;
+    trt:publishedIn <http://doi.org/10.5281/zenodo.3854772> ;
+    dc:creator "Cassis, Gerasimos", "Namyatova, Anna A." ;
+    cito:cites <http://dx.doi.org/10.5281/zenodo.3850851>, <http://dx.doi.org/10.5281/zenodo.3850855>, <http://dx.doi.org/10.5281/zenodo.3850859>, <http://dx.doi.org/10.5281/zenodo.3850863>, <http://dx.doi.org/10.5281/zenodo.3850867>, <http://dx.doi.org/10.5281/zenodo.3850871>, <http://dx.doi.org/10.5281/zenodo.3850875>, <http://dx.doi.org/10.5281/zenodo.3850885> ;
+    a trt:Treatment .
+

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PlaziTreatmentsLoader {
+public class PlaziTreatmentRDFLoader implements PlaziTreatmentLoader  {
 
     public static void importTreatment(InputStream treatmentGraph, TaxonCacheListener listener) {
         OntModel m = ModelFactory.createOntologyModel();
@@ -163,4 +163,8 @@ public class PlaziTreatmentsLoader {
         taxonMap.put(PropertyAndValueDictionary.RANK, split.length > 0 ? split[split.length - 1] : "");
     }
 
+    @Override
+    public void loadTreatment(InputStream is, TaxonCacheListener listener) {
+        importTreatment(is, listener);
+    }
 }

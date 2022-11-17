@@ -158,7 +158,7 @@ public class PlaziService implements TermMatcher {
             while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
                 if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
                     CloseShieldInputStream closeShieldInputStream = CloseShieldInputStream.wrap(archiveInputStream);
-                    PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
+                    PlaziTreatmentRDFLoader.importTreatment(closeShieldInputStream, listener);
                 }
             }
 

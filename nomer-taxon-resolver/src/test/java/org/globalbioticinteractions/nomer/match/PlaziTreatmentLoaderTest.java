@@ -11,14 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertNotNull;
 
-public class PlaziTreatmentsLoaderTest {
+public abstract class PlaziTreatmentLoaderTest {
+
+    abstract public String getExtension();
+
+    abstract public PlaziTreatmentLoader createLoader();
 
     @Test
     public void importFromFile() throws URISyntaxException {
-        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/000087F6E320FF95FF7EFDC1FAE4FA7B.ttl");
+        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/000087F6E320FF95FF7EFDC1FAE4FA7B" + getExtension());
         AtomicInteger counter = new AtomicInteger(0);
 
         assertNotNull(treatmentGraph);
@@ -43,7 +47,7 @@ public class PlaziTreatmentsLoaderTest {
             }
         };
 
-        PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
+        createLoader().loadTreatment(treatmentGraph, listener);
         assertThat(counter.get(), Is.is(3));
 
         Taxon taxon = taxa.get(1);
@@ -67,7 +71,7 @@ public class PlaziTreatmentsLoaderTest {
 
     @Test
     public void importFromRhinolophusSinicus() throws URISyntaxException {
-        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/03AF87D3C435B542FF728049FB55BB1B.ttl");
+        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/03AF87D3C435B542FF728049FB55BB1B" + getExtension());
         AtomicInteger counter = new AtomicInteger(0);
 
         assertNotNull(treatmentGraph);
@@ -92,7 +96,7 @@ public class PlaziTreatmentsLoaderTest {
             }
         };
 
-        PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
+        createLoader().loadTreatment(treatmentGraph, listener);
         assertThat(counter.get(), Is.is(3));
 
         Taxon taxon = taxa.get(1);
@@ -100,14 +104,14 @@ public class PlaziTreatmentsLoaderTest {
         assertThat(taxon.getName(), Is.is("Rhinolophus sinicus"));
 
         Taxon secondTaxon = taxa.get(2);
-        assertThat(secondTaxon.getExternalId(), Is.is("doi:10.3161/150811009X465703"));
+        assertThat(secondTaxon.getExternalId(), Is.is("doi:10.5281/zenodo.4334132"));
         assertThat(secondTaxon.getName(), Is.is("Rhinolophus sinicus"));
 
     }
 
     @Test
     public void importWithSubspecies() throws URISyntaxException {
-        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/0B6AC9BA1E03488CE06DCAA62DC4AA02.ttl");
+        InputStream treatmentGraph = getClass().getResourceAsStream("plazi/0B6AC9BA1E03488CE06DCAA62DC4AA02" + getExtension());
         AtomicInteger counter = new AtomicInteger(0);
 
         assertNotNull(treatmentGraph);
@@ -132,13 +136,14 @@ public class PlaziTreatmentsLoaderTest {
             }
         };
 
-        PlaziTreatmentsLoader.importTreatment(treatmentGraph, listener);
+
+        createLoader().loadTreatment(treatmentGraph, listener);
         assertThat(counter.get(), Is.is(3));
 
         Taxon taxon = taxa.get(0);
-        assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Homo_sapiens_ferus_Linnaeus_1758"));
-        assertThat(taxon.getName(), Is.is("Homo sapiens ferus"));
-        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Primates | Hominidae | Homo | Homo sapiens ferus"));
+        assertThat(taxon.getExternalId(), Is.is("http://taxon-concept.plazi.org/id/Animalia/Homo_Sapiens_ferus_Linnaeus_1758"));
+        assertThat(taxon.getName(), Is.is("Homo Sapiens ferus"));
+        assertThat(taxon.getPath(), Is.is("Animalia | Chordata | Mammalia | Primates | Hominidae | Homo | Homo Sapiens ferus"));
         assertThat(taxon.getRank(), Is.is("species"));
 
     }

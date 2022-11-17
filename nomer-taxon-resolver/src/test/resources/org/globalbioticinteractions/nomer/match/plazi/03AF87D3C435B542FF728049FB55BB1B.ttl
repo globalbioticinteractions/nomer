@@ -1,115 +1,111 @@
-@prefix mods:  <http://www.loc.gov/mods/v3> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix cito: <http://purl.org/spar/cito/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dwc: <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwcFP: <http://filteredpush.org/ontologies/oa/dwcFP#> .
 @prefix fabio: <http://purl.org/spar/fabio/> .
-@prefix cnt:   <http://www.w3.org/2011/content#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix cito:  <http://purl.org/spar/cito/> .
-@prefix dwc:   <http://rs.tdwg.org/dwc/terms/> .
-@prefix sdd:   <http://tdwg.org/sdd#> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix trt:   <http://plazi.org/vocab/treatment#> .
-@prefix bibo:  <http://purl.org/ontology/bibo/> .
-@prefix sdo:   <http://schema.org/> .
+@prefix mods: <http://www.loc.gov/mods/v3> .
+@prefix trt: <http://plazi.org/vocab/treatment#> .
 @prefix xlink: <http://www.w3.org/1999/xlink> .
-@prefix dc:    <http://purl.org/dc/elements/1.1/> .
 
-<http://taxon-name.plazi.org/id/Animalia/Chordata>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia> ;
-        dwc:kingdom        "Animalia" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "phylum" .
-
-<http://taxon-name.plazi.org/id/Animalia/Rhinolophus>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Rhinolophidae> ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Rhinolophidae" ;
-        dwc:genus          "Rhinolophus" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Chiroptera" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "genus" .
-
-<http://taxon-name.plazi.org/id/Animalia/Chiroptera>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Mammalia> ;
-        dwc:class          "Mammalia" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Chiroptera" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "order" .
+<http://doi.org/10.5281/zenodo.4334132>
+    dc:creator "Jones, Gareth", "Parsons, Stuart", "Zhang, Jinshuo", "Zhang, Libiao", "Zhu, Guangjian" ;
+    dc:date "2009" ;
+    dc:title "Recent surveys of bats (Mammalia: Chiroptera) from China. I. Rhinolophidae and Hipposideridae" ;
+    bibo:endPage "88" ;
+    bibo:issue "1" ;
+    bibo:journal "Acta Chiropterologica" ;
+    bibo:pubDate "2009-06-01" ;
+    bibo:startPage "71" ;
+    bibo:volume "11" ;
+    fabio:hasPart <http://dx.doi.org/10.5281/zenodo.3944523> ;
+    a fabio:JournalArticle .
 
 <http://dx.doi.org/10.5281/zenodo.3944523>
-        a                        fabio:Figure ;
-        dc:description           "FIG. 4. Representative echolocation calls of bats in the family Hipposideridae captured from China during our surveys. See text for data on intraspecific variation. Calls are from time expanded sequences of handheld bats with FFT size 1024 Hz, Hanning window. The species are arranged according to body size from large species (left) to small (right)" ;
-        fabio:hasRepresentation  "https://zenodo.org/record/3944523/files/figure.png" .
-
-<http://taxon-name.plazi.org/id/Animalia/Rhinolophus_sinicus>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  "http://taxon-name.plazi.org/id/Animalia/Rhinolophus" ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Rhinolophidae" ;
-        dwc:genus          "Rhinolophus" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Chiroptera" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "species" ;
-        dwc:species        "sinicus" .
-
-<http://taxon-name.plazi.org/id/Animalia>
-        a            dwcFP:TaxonName ;
-        dwc:kingdom  "Animalia" ;
-        dwc:rank     "kingdom" .
-
-<http://taxon-name.plazi.org/id/Animalia/Rhinolophidae>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Chiroptera> ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Rhinolophidae" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Chiroptera" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "family" .
-
-<http://taxon-name.plazi.org/id/Animalia/Mammalia>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Chordata> ;
-        dwc:class          "Mammalia" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "class" .
-
-<http://treatment.plazi.org/id/03AF87D3C435B542FF728049FB55BB1B>
-        a                         trt:Treatment ;
-        trt:augmentsTaxonConcept  <http://taxon-concept.plazi.org/id/Animalia/Rhinolophus_sinicus_Andersen_1905> ;
-        trt:publishedIn           <http://dx.doi.org/10.3161/150811009X465703> ;
-        dc:creator                "Parsons, Stuart" , "Zhu, Guangjian" , "Zhang, Jinshuo" , "Jones, Gareth" , "Zhang, Libiao" ;
-        cito:cites                <http://dx.doi.org/10.5281/zenodo.3944523> .
+    dc:description "FIG. 4. Representative echolocation calls of bats in the family Hipposideridae captured from China during our surveys. See text for data on intraspecific variation. Calls are from time expanded sequences of handheld bats with FFT size 1024 Hz, Hanning window. The species are arranged according to body size from large species (left) to small (right)" ;
+    fabio:hasRepresentation "https://zenodo.org/record/3944523/files/figure.png" ;
+    a fabio:Figure .
 
 <http://taxon-concept.plazi.org/id/Animalia/Rhinolophus_sinicus_Andersen_1905>
-        a                             dwcFP:TaxonConcept ;
-        trt:hasTaxonName              <http://taxon-name.plazi.org/id/Animalia/Rhinolophus_sinicus> ;
-        dwc:class                     "Mammalia" ;
-        dwc:family                    "Rhinolophidae" ;
-        dwc:genus                     "Rhinolophus" ;
-        dwc:kingdom                   "Animalia" ;
-        dwc:order                     "Chiroptera" ;
-        dwc:phylum                    "Chordata" ;
-        dwc:rank                      "species" ;
-        dwc:scientificNameAuthorship  "K. Andersen, 1905" ;
-        dwc:species                   "sinicus" .
+    trt:hasTaxonName <http://taxon-name.plazi.org/id/Animalia/Rhinolophus_sinicus> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Rhinolophidae" ;
+    dwc:genus "Rhinolophus" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Chiroptera" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "species" ;
+    dwc:scientificNameAuthorship "K. Andersen, 1905" ;
+    dwc:species "sinicus" ;
+    a dwcFP:TaxonConcept .
 
-<http://dx.doi.org/10.3161/150811009X465703>
-        a               fabio:JournalArticle ;
-        dc:creator      "Zhu, Guangjian" , "Parsons, Stuart" , "Zhang, Jinshuo" , "Jones, Gareth" , "Zhang, Libiao" ;
-        dc:date         "2009" ;
-        dc:title        "Recent surveys of bats (Mammalia: Chiroptera) from China. I. Rhinolophidae and Hipposideridae" ;
-        bibo:endPage    "88" ;
-        bibo:issue      "1" ;
-        bibo:journal    "Acta Chiropterologica" ;
-        bibo:pubDate    "2009-06-01" ;
-        bibo:startPage  "71" ;
-        bibo:volume     "11" ;
-        fabio:hasPart   <http://dx.doi.org/10.5281/zenodo.3944523> .
+<http://taxon-name.plazi.org/id/Animalia>
+    dwc:kingdom "Animalia" ;
+    dwc:rank "kingdom" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Chiroptera>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Mammalia> ;
+    dwc:class "Mammalia" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Chiroptera" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "order" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Chordata>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia> ;
+    dwc:kingdom "Animalia" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "phylum" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Mammalia>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Chordata> ;
+    dwc:class "Mammalia" ;
+    dwc:kingdom "Animalia" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "class" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Rhinolophidae>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Chiroptera> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Rhinolophidae" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Chiroptera" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "family" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Rhinolophus>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Rhinolophidae> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Rhinolophidae" ;
+    dwc:genus "Rhinolophus" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Chiroptera" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "genus" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Rhinolophus_sinicus>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Rhinolophus> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Rhinolophidae" ;
+    dwc:genus "Rhinolophus" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Chiroptera" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "species" ;
+    dwc:species "sinicus" ;
+    a dwcFP:TaxonName .
+
+<http://treatment.plazi.org/id/03AF87D3C435B542FF728049FB55BB1B>
+    trt:augmentsTaxonConcept <http://taxon-concept.plazi.org/id/Animalia/Rhinolophus_sinicus_Andersen_1905> ;
+    trt:publishedIn <http://doi.org/10.5281/zenodo.4334132> ;
+    dc:creator "Jones, Gareth", "Parsons, Stuart", "Zhang, Jinshuo", "Zhang, Libiao", "Zhu, Guangjian" ;
+    cito:cites <http://dx.doi.org/10.5281/zenodo.3944523> ;
+    a trt:Treatment .
+
