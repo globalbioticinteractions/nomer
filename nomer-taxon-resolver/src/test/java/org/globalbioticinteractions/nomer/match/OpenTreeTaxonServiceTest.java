@@ -11,11 +11,8 @@ import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -111,10 +108,6 @@ public class OpenTreeTaxonServiceTest {
     }
 
     private OpenTreeTaxonService createService() {
-        return createService("/org/globalbioticinteractions/nomer/match/ott/taxonomy.tsv");
-    }
-
-    private OpenTreeTaxonService createService(final String nameUrl) {
         return new OpenTreeTaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
@@ -130,7 +123,32 @@ public class OpenTreeTaxonServiceTest {
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {
-                        put("nomer.ott.taxonomy", nameUrl);
+                        put("nomer.ott.taxonomy", "/org/globalbioticinteractions/nomer/match/ott/taxonomy.tsv");
+                        put("nomer.ott.synonyms", "/org/globalbioticinteractions/nomer/match/ott/synonyms.tsv");
+                    }
+                }.get(key);
+            }
+        });
+    }
+
+    private OpenTreeTaxonService createService(final String taxonomy, final String synonyms) {
+        return new OpenTreeTaxonService(new TermMatcherContextClasspath() {
+            @Override
+            public String getCacheDir() {
+                return new File("target/ottCache" + UUID.randomUUID()).getAbsolutePath();
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
+                return null;
+            }
+
+            @Override
+            public String getProperty(String key) {
+                return new TreeMap<String, String>() {
+                    {
+                        put("nomer.ott.taxonomy", taxonomy);
+                        put("nomer.ott.synonyms", synonyms);
                     }
                 }.get(key);
             }
