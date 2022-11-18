@@ -8,3 +8,4 @@ uid	|	parent_uid	|	name	|	rank	|	sourceinfo	|	uniqname	|	flags	|
 1098176	|	767311	|	Pasteurellaceae	|	family	|	silva:A16379/#5,ncbi:712,worms:394200,gbif:9536,irmng:104984	|	Pasteurellaceae (family silva:A16379/#5)	|		|	
 470454	|	1098176	|	Haemophilus	|	genus	|	silva:A16379/#6,ncbi:724,worms:571392,gbif:3219815,irmng:1307220	|		|		|	
 525972	|	470454	|	Haemophilus pittmaniae HK 85	|	no rank - terminal	|	silva:AFUV01000004,ncbi:1035188	|		|		|
+139650	|	704260	|	Ariopsis felis	|	species	|	ncbi:75286,gbif:7819720,gbif:5202927,irmng:10572147	|		|		|
