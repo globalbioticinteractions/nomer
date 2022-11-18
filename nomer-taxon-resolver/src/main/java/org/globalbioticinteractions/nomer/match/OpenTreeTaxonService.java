@@ -95,38 +95,9 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
             StopWatch watch = new StopWatch();
             watch.start();
-            try (InputStream resource = getNameUsageStream()) {
 
-                nodes = db
-                        .createTreeMap(NODES)
-                        .keySerializer(BTreeKeySerializer.STRING)
-                        .valueSerializer(Serializer.JAVA)
-                        .make();
-
-
-                childParent = db
-                        .createTreeMap(CHILD_PARENT)
-                        .keySerializer(BTreeKeySerializer.STRING)
-                        .valueSerializer(Serializer.STRING)
-                        .make();
-
-                mergedNodes = db
-                        .createTreeMap(MERGED_NODES)
-                        .keySerializer(BTreeKeySerializer.STRING)
-                        .valueSerializer(Serializer.STRING)
-                        .make();
-
-                name2nodeIds = db
-                        .createTreeMap(NAME_TO_NODE_IDS)
-                        .keySerializer(BTreeKeySerializer.STRING)
-                        .valueSerializer(Serializer.JAVA)
-                        .make();
-
-                NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent, name2nodeIds);
-                parseNameUsage(resource, nameUsageListener);
-            } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse taxon", e);
-            }
+            initDb(db);
+            indexTaxonomy(getResource("taxonomy"));
 
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
 
@@ -136,19 +107,54 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
         }
     }
 
+    private void indexTaxonomy(URI taxonomy) throws PropertyEnricherException {
+        try (InputStream resource = getResourceStream(taxonomy)) {
+            NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent, name2nodeIds);
+            parseNameUsage(resource, nameUsageListener);
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse taxon", e);
+        }
+    }
+
+    private void initDb(DB db) {
+        nodes = db
+                .createTreeMap(NODES)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
+                .make();
 
 
-    private InputStream getNameUsageStream() throws PropertyEnricherException {
-        InputStream resource;
+        childParent = db
+                .createTreeMap(CHILD_PARENT)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.STRING)
+                .make();
+
+        mergedNodes = db
+                .createTreeMap(MERGED_NODES)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.STRING)
+                .make();
+
+        name2nodeIds = db
+                .createTreeMap(NAME_TO_NODE_IDS)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
+                .make();
+    }
+
+
+    private InputStream getResourceStream(URI resource) throws PropertyEnricherException {
+        InputStream is;
         try {
-            resource = getCtx().retrieve(getTaxonomy());
+            is = getCtx().retrieve(resource);
             if (resource == null) {
-                throw new PropertyEnricherException("Open Tree of Life init failure: failed to find [" + getTaxonomy() + "]");
+                throw new PropertyEnricherException("Open Tree of Life init failure: failed to find [" + getResource("taxonomy") + "]");
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse [" + getTaxonomyProvider().name() + "]", e);
         }
-        return resource;
+        return is;
     }
 
     private void parseNameUsage(InputStream resource, NameUsageListener nameUsageListener) throws PropertyEnricherException {
@@ -197,8 +203,8 @@ public class OpenTreeTaxonService extends CommonTaxonService<String> {
         reader.readLine();
     }
 
-    private URI getTaxonomy() {
-        String propertyValue = getCtx().getProperty("nomer.ott.taxonomy");
+    private URI getResource(String taxonomy) {
+        String propertyValue = getCtx().getProperty("nomer.ott." + taxonomy);
         return URI.create(propertyValue);
     }
 
