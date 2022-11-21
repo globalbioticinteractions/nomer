@@ -8,6 +8,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -78,6 +79,7 @@ public class OpenTreeTaxonServiceTest {
         assertPasteurellaceae(enriched);
     }
 
+    @Ignore
     @Test
     public void enrichBySynonymIdGBIF() throws PropertyEnricherException {
         OpenTreeTaxonService service = createService();
@@ -88,6 +90,7 @@ public class OpenTreeTaxonServiceTest {
         assertPasteurellaceae(enriched);
     }
 
+    @Ignore
     @Test
     public void enrichBySynonymIdWORMS() throws PropertyEnricherException {
         OpenTreeTaxonService service = createService();
