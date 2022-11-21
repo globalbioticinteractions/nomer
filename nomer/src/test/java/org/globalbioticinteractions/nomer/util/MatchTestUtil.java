@@ -26,6 +26,7 @@ public class MatchTestUtil {
                 Map<String, String> props = new TreeMap<>();
                 props.put("nomer.term.map.url", getClass().getResource("/org/eol/globi/taxon/taxonMap.tsv").toString());
                 props.put("nomer.term.cache.url", getClass().getResource("/org/eol/globi/taxon/taxonCache.tsv").toString());
+                props.put("nomer.taxon.rank.wikidata.query", getClass().getResource("wikidata-ranks.json").toString());
                 return props.get(key);
             }
 

@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
                     for (WikidataTaxonRankLoader.TermListener listener : listeners) {
                         listener.onTerm(taxon);
                     }
-                });
+                }, ctx, new URI(ctx.getProperty("nomer.taxon.rank.wikidata.query")));
             }
             return createTermCache(cacheDir, taxonRankCacheUrl, taxonRankMapUrl, ctx);
         } catch (URISyntaxException | IOException e) {
