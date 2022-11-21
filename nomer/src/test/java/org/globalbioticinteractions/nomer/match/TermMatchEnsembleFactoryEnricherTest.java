@@ -27,14 +27,14 @@ import static org.junit.Assert.assertNotNull;
 
 public class TermMatchEnsembleFactoryEnricherTest {
 
+    public static final String NODC_RESOURCE = "/org/eol/globi/taxon/nodc/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
     @Rule
     public TemporaryFolder cacheDir = new TemporaryFolder();
 
     @Test
     public void nodc() throws PropertyEnricherException, IOException {
-        String testArchivePath = "/org/eol/globi/taxon/nodc_archive.zip";
-        final URL nodcTestArchive = getClass().getResource(testArchivePath);
-        assertNotNull("failed to find [" + testArchivePath + "]", nodcTestArchive);
+        final URL nodcTestArchive = getClass().getResource(NODC_RESOURCE);
+        assertNotNull("failed to find [" + NODC_RESOURCE + "]", nodcTestArchive);
 
         File dir = cacheDir.newFolder();
 
@@ -48,8 +48,7 @@ public class TermMatchEnsembleFactoryEnricherTest {
             @Override
             public String getProperty(String key) {
                 if (StringUtils.equals("nomer.nodc.url", key)) {
-                    return "zip:" + nodcTestArchive.toString()
-                            + "!/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
+                    return nodcTestArchive.toExternalForm();
                 }
                 return null;
             }
