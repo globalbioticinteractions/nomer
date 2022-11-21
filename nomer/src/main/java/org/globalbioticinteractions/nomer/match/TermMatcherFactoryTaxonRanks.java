@@ -26,6 +26,10 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
 
+        if (ctx == null) {
+            throw new RuntimeException("failed to create matcher");
+        }
+
         try {
             File cacheDir = new File(ctx.getCacheDir());
             FileUtils.forceMkdir(cacheDir);
@@ -44,13 +48,22 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
             String taxonRankMapUrl = linkwriter.getRight().toURI().toString();
 
 
-            WikidataTaxonRankLoader.importTaxonRanks(taxon -> {
-                for (WikidataTaxonRankLoader.TermListener listener : listeners) {
-                    listener.onTerm(taxon);
-                }
-            }, ctx, new URI(ctx.getProperty("nomer.taxon.rank.wikidata.query")));
+            String wikidataQuery = ctx.getProperty("nomer.taxon.rank.wikidata.query");
 
-            return createTermCache(cacheDir, taxonRankCacheUrl, taxonRankMapUrl, new ResourceServiceLocalFile(is -> is));
+            if (StringUtils.isNotBlank(wikidataQuery)) {
+                WikidataTaxonRankLoader.importTaxonRanks(taxon -> {
+                    for (WikidataTaxonRankLoader.TermListener listener : listeners) {
+                        listener.onTerm(taxon);
+                    }
+                }, ctx, new URI(wikidataQuery));
+            }
+
+            return createTermCache(
+                    cacheDir,
+                    taxonRankCacheUrl,
+                    taxonRankMapUrl,
+                    new ResourceServiceLocalFile(is -> is)
+            );
         } catch (URISyntaxException | IOException e) {
             throw new RuntimeException("failed to create matcher", e);
         }
