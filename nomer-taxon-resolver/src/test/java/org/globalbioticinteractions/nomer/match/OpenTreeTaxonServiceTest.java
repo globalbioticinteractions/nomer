@@ -39,7 +39,7 @@ public class OpenTreeTaxonServiceTest {
                     }
                 });
 
-        assertThat(counter.get(), is(45L));
+        assertThat(counter.get(), is(8L));
 
         assertThat(ids.size(), is(8));
 
