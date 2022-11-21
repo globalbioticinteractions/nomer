@@ -40,9 +40,9 @@ public class OpenTreeTaxonServiceTest {
                     }
                 });
 
-        assertThat(counter.get(), is(8L));
+        assertThat(counter.get(), is(10L));
 
-        assertThat(ids.size(), is(8));
+        assertThat(ids.size(), is(10));
 
         assertThat(ids, hasItem("OTT:470454"));
 //        assertThat(ids, hasItem("OTT:525972"));
@@ -77,6 +77,18 @@ public class OpenTreeTaxonServiceTest {
                 TaxonUtil.taxonToMap(new TaxonImpl(null, "OTT:1098176")));
 
         assertPasteurellaceae(enriched);
+    }
+
+    @Test
+    public void enrichBySynonymName() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+
+        Map<String, String> enriched = service.enrich(
+                TaxonUtil.taxonToMap(new TaxonImpl("Arius felis", null)));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Ariopsis felis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("OTT:139650"));
     }
 
     @Ignore
@@ -128,30 +140,6 @@ public class OpenTreeTaxonServiceTest {
                     {
                         put("nomer.ott.taxonomy", "/org/globalbioticinteractions/nomer/match/ott/taxonomy.tsv");
                         put("nomer.ott.synonyms", "/org/globalbioticinteractions/nomer/match/ott/synonyms.tsv");
-                    }
-                }.get(key);
-            }
-        });
-    }
-
-    private OpenTreeTaxonService createService(final String taxonomy, final String synonyms) {
-        return new OpenTreeTaxonService(new TermMatcherContextClasspath() {
-            @Override
-            public String getCacheDir() {
-                return new File("target/ottCache" + UUID.randomUUID()).getAbsolutePath();
-            }
-
-            @Override
-            public OutputFormat getOutputFormat() {
-                return null;
-            }
-
-            @Override
-            public String getProperty(String key) {
-                return new TreeMap<String, String>() {
-                    {
-                        put("nomer.ott.taxonomy", taxonomy);
-                        put("nomer.ott.synonyms", synonyms);
                     }
                 }.get(key);
             }

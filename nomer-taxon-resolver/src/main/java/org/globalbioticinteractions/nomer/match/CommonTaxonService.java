@@ -215,6 +215,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
     private T mergedNodeOrDefault(T defaultKey) {
+
         return mergedNodes == null || defaultKey == null
                 ? defaultKey
                 : mergedNodes.getOrDefault(defaultKey, defaultKey);

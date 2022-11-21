@@ -3,6 +3,8 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.RelType;
+import org.eol.globi.domain.RelTypes;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
@@ -24,9 +26,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class OpenTreeTaxonService extends CommonTaxonService<Long> {
     private static final Logger LOG = LoggerFactory.getLogger(OpenTreeTaxonService.class);
@@ -110,7 +116,18 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
 
     private void indexSynonyms(URI synonyms) throws PropertyEnricherException {
         try (InputStream resource = getResourceStream(synonyms)) {
-            NameUsageListener nameUsageListener = new NameUsageListenerImpl(nodes, childParent, name2nodeIds);
+            NameUsageListener nameUsageListener = new NameUsageListener() {
+                @Override
+                public void handle(NameType type, Long childTaxId, Long parentTaxId, Taxon taxon) {
+                    if (NameType.SYNONYM_OF.equals(type)) {
+                        List<Long> ids = name2nodeIds.getOrDefault(taxon.getName(), Collections.emptyList());
+                        Set<Long> idsUpdated = new TreeSet<>(ids);
+                        idsUpdated.add(parentTaxId);
+                        name2nodeIds.put(taxon.getName(), new ArrayList<>(idsUpdated));
+                        mergedNodes.put(parentTaxId, parentTaxId);
+                    }
+                }
+            };
             parseSynonyms(resource, nameUsageListener);
         } catch (IOException | PropertyEnricherException e) {
             throw new PropertyEnricherException("failed to parse taxon", e);
@@ -147,7 +164,6 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .valueSerializer(Serializer.JAVA)
                 .make();
-
 
         childParent = db
                 .createTreeMap(CHILD_PARENT)
@@ -199,20 +215,15 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
 
     private void parseSynonym(NameUsageListener nameUsageListener, String line) {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t|\t");
-        if (rowValues.length > 7) {
-            String taxId = rowValues[0];
-            String parentTaxId = rowValues[1];
-            String completeName = rowValues[2];
-            String rank = rowValues[3];
-            String[] ids = StringUtils.split(rowValues[4], ",");
-            String idPrefix = getTaxonomyProvider().getIdPrefix();
-            TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxId);
+        if (rowValues.length > 2) {
+            String completeName = rowValues[0];
+            String acceptedTaxonId = rowValues[1];
+            TaxonImpl taxon = new TaxonImpl(completeName, null);
 
-            taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
-
-            nameUsageListener.handle(null,
-                    StringUtils.isNumeric(taxId) ? Long.parseLong(taxId) : null,
-                    StringUtils.isNumeric(parentTaxId) ? Long.parseLong(parentTaxId) : null,
+            nameUsageListener.handle(
+                    NameType.SYNONYM_OF,
+                    null,
+                    StringUtils.isNumeric(acceptedTaxonId) ? Long.parseLong(acceptedTaxonId) : null,
                     taxon);
 
         }
@@ -221,12 +232,11 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
 
     private void parseLine(NameUsageListener nameUsageListener, String line) {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t|\t");
-        if (rowValues.length > 7) {
+        if (rowValues.length > 3) {
             String taxId = rowValues[0];
             String parentTaxId = rowValues[1];
             String completeName = rowValues[2];
             String rank = rowValues[3];
-            String[] ids = StringUtils.split(rowValues[4], ",");
             String idPrefix = getTaxonomyProvider().getIdPrefix();
             TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxId);
 
@@ -248,8 +258,8 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
         reader.readLine();
     }
 
-    private URI getResource(String taxonomy) {
-        String propertyValue = getCtx().getProperty("nomer.ott." + taxonomy);
+    private URI getResource(String resourceName) {
+        String propertyValue = getCtx().getProperty("nomer.ott." + resourceName);
         return URI.create(propertyValue);
     }
 
