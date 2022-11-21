@@ -20,6 +20,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
@@ -60,7 +61,7 @@ public class OpenTreeTaxonServiceTest {
         assertThat(names, hasItem("Ariopsis felis"));
         assertThat(names, hasItem("Arius felis"));
 
-        assertThat(counter.get(), is(56L));
+        assertThat(counter.get(), is(55L));
 
         assertThat(ids.size(), is(54));
         assertThat(names.size(), is(11));
@@ -79,6 +80,19 @@ public class OpenTreeTaxonServiceTest {
         );
 
         assertPasteurellaceae(enriched);
+    }
+
+    @Test
+    public void doNotIndexUnknownenrichById() throws PropertyEnricherException {
+        OpenTreeTaxonService service = createService();
+        Map<String, String> enriched = service.enrich(
+                TaxonUtil.taxonToMap(
+                        new TaxonImpl(null, "OTT:7035713")
+                )
+        );
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("OTT:7035713"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is(nullValue()));
     }
 
     @Test

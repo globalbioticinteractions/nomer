@@ -219,7 +219,9 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
             String line;
             skipFirstLine(reader);
             while ((line = reader.readLine()) != null) {
-                parseLine(nameUsageListener, line);
+                if (!StringUtils.contains(line, "incertae_sedis")) {
+                    parseLine(nameUsageListener, line);
+                }
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse [Open Tree of Life] taxon dump", e);

@@ -107,16 +107,25 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             if (acceptedId == null) {
                 taxonTo = taxonFrom;
                 nameType = NameType.HAS_ACCEPTED_NAME;
+                termMatchListener.foundTaxonForTerm(
+                        null,
+                        taxonFrom,
+                        nameType,
+                        taxonTo
+                );
             } else {
                 taxonTo = resolveTaxon(acceptedId, childParent, nodes, getTaxonomyProvider());
-                nameType = NameType.SYNONYM_OF;
+                if (!StringUtils.equals(taxonTo.getExternalId(), taxonFrom.getExternalId())) {
+                    nameType = NameType.SYNONYM_OF;
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            taxonFrom,
+                            nameType,
+                            taxonTo
+                    );
+                }
+
             }
-            termMatchListener.foundTaxonForTerm(
-                    null,
-                    taxonFrom,
-                    nameType,
-                    taxonTo
-            );
 
         });
 
@@ -142,11 +151,14 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
 
         } else {
             Taxon taxonIdOrName = isIdSchemeSupported(name) ? new TaxonImpl(null, name) : new TaxonImpl(name, null);
-            termMatchListener.foundTaxonForTerm(
-                    null,
-                    taxonIdOrName,
-                    NameType.SYNONYM_OF,
-                    taxonTo);
+
+            if (!StringUtils.equals(taxonIdOrName.getExternalId(), taxonTo.getExternalId())) {
+                termMatchListener.foundTaxonForTerm(
+                        null,
+                        taxonIdOrName,
+                        NameType.SYNONYM_OF,
+                        taxonTo);
+            }
         }
     }
 
