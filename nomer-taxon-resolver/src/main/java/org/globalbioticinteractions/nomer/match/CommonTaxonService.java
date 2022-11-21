@@ -119,6 +119,35 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             );
 
         });
+
+        name2nodeIds.forEach((name, ids) -> {
+            for (T id : ids) {
+                Taxon taxonTo = resolveTaxon(id, childParent, nodes, getTaxonomyProvider());
+                if (taxonTo != null) {
+                    registerRelation(termMatchListener, name, id, taxonTo);
+                }
+            }
+        });
+    }
+
+    private void registerRelation(TermMatchListener termMatchListener, String name, T id, Taxon taxonTo) {
+        T acceptedId = mergedNodes.get(id);
+        if (acceptedId == null) {
+            String externalId = name;
+            termMatchListener.foundTaxonForTerm(
+                    null,
+                    new TaxonImpl(null, externalId),
+                    NameType.HAS_ACCEPTED_NAME,
+                    taxonTo);
+
+        } else {
+            Taxon taxonIdOrName = isIdSchemeSupported(name) ? new TaxonImpl(null, name) : new TaxonImpl(name, null);
+            termMatchListener.foundTaxonForTerm(
+                    null,
+                    taxonIdOrName,
+                    NameType.SYNONYM_OF,
+                    taxonTo);
+        }
     }
 
     protected boolean isIdSchemeSupported(String externalId) {

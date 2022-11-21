@@ -3,8 +3,6 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eol.globi.domain.NameType;
-import org.eol.globi.domain.RelType;
-import org.eol.globi.domain.RelTypes;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
@@ -63,9 +61,14 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
     @Override
     public Long getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
         TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
-        return getTaxonomyProvider().equals(taxonomyProvider)
-                ? Long.parseLong(ExternalIdUtil.stripPrefix(taxonomyProvider, key.getExternalId()))
-                : null;
+        Long id;
+        if (getTaxonomyProvider().equals(taxonomyProvider)) {
+            id = Long.parseLong(ExternalIdUtil.stripPrefix(taxonomyProvider, key.getExternalId()));
+        } else {
+            List<Long> ids = name2nodeIds.get(key.getExternalId());
+            id = ids != null && ids.size() > 0 ? ids.get(0) : null;
+        }
+        return id;
     }
 
     @Override
@@ -117,22 +120,32 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
     private void indexSynonyms(URI synonyms) throws PropertyEnricherException {
         try (InputStream resource = getResourceStream(synonyms)) {
             NameUsageListener nameUsageListener = new NameUsageListener() {
+
                 @Override
                 public void handle(NameType type, Long childTaxId, Long parentTaxId, Taxon taxon) {
                     if (NameType.SYNONYM_OF.equals(type)) {
-                        List<Long> ids = name2nodeIds.getOrDefault(taxon.getName(), Collections.emptyList());
-                        Set<Long> idsUpdated = new TreeSet<>(ids);
-                        idsUpdated.add(parentTaxId);
-                        name2nodeIds.put(taxon.getName(), new ArrayList<>(idsUpdated));
+                        appendIdMap(parentTaxId, taxon.getName());
+                        appendIdMap(parentTaxId, taxon.getExternalId());
                         mergedNodes.put(parentTaxId, parentTaxId);
                     }
                 }
+
             };
             parseSynonyms(resource, nameUsageListener);
         } catch (IOException | PropertyEnricherException e) {
             throw new PropertyEnricherException("failed to parse taxon", e);
         }
     }
+
+    private void appendIdMap(Long parentTaxId, String name) {
+        if (StringUtils.isNotBlank(name)) {
+            List<Long> ids = name2nodeIds.getOrDefault(name, Collections.emptyList());
+            Set<Long> idsUpdated = new TreeSet<>(ids);
+            idsUpdated.add(parentTaxId);
+            name2nodeIds.put(name, new ArrayList<>(idsUpdated));
+        }
+    }
+
 
     private void parseSynonyms(InputStream resource, NameUsageListener nameUsageListener) throws PropertyEnricherException {
         try {
@@ -217,36 +230,71 @@ public class OpenTreeTaxonService extends CommonTaxonService<Long> {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t|\t");
         if (rowValues.length > 2) {
             String completeName = rowValues[0];
-            String acceptedTaxonId = rowValues[1];
-            TaxonImpl taxon = new TaxonImpl(completeName, null);
+            String acceptedTaxonIdString = rowValues[1];
+            Long acceptedTaxonId = StringUtils.isNumeric(acceptedTaxonIdString) ? Long.parseLong(acceptedTaxonIdString) : null;
 
-            nameUsageListener.handle(
-                    NameType.SYNONYM_OF,
-                    null,
-                    StringUtils.isNumeric(acceptedTaxonId) ? Long.parseLong(acceptedTaxonId) : null,
-                    taxon);
+            String sourceIds = rowValues[4];
+            if (StringUtils.isNotBlank(sourceIds)) {
+                String[] ids = StringUtils.split(sourceIds, ',');
+                for (String id : ids) {
+                    String externalId = StringUtils.upperCase(id);
+                    if (isIdSchemeSupported(externalId)) {
+                        handleSynonym(nameUsageListener, new TaxonImpl(null, externalId), acceptedTaxonId);
+                    }
+                }
+            }
+
+            handleSynonym(nameUsageListener, new TaxonImpl(completeName, null), acceptedTaxonId);
 
         }
+    }
+
+    private void handleSynonym(NameUsageListener nameUsageListener, TaxonImpl taxon, Long parentTaxId) {
+        nameUsageListener.handle(
+                NameType.SYNONYM_OF,
+                null,
+                parentTaxId,
+                taxon);
     }
 
 
     private void parseLine(NameUsageListener nameUsageListener, String line) {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t|\t");
         if (rowValues.length > 3) {
-            String taxId = rowValues[0];
-            String parentTaxId = rowValues[1];
+            String taxonIdString = rowValues[0];
+            String parentTaxonIdString = rowValues[1];
+
+            Long childTaxonId = StringUtils.isNumeric(taxonIdString) ? Long.parseLong(taxonIdString) : null;
+            Long parentTaxonId = StringUtils.isNumeric(parentTaxonIdString) ? Long.parseLong(parentTaxonIdString) : null;
+
+
             String completeName = rowValues[2];
             String rank = rowValues[3];
-            String idPrefix = getTaxonomyProvider().getIdPrefix();
-            TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxId);
 
+            registerSourceIds(rowValues[4], childTaxonId);
+
+            String idPrefix = getTaxonomyProvider().getIdPrefix();
+
+            TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxonIdString);
             taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
 
             nameUsageListener.handle(null,
-                    StringUtils.isNumeric(taxId) ? Long.parseLong(taxId) : null,
-                    StringUtils.isNumeric(parentTaxId) ? Long.parseLong(parentTaxId) : null,
+                    childTaxonId,
+                    parentTaxonId,
                     taxon);
 
+        }
+    }
+
+    private void registerSourceIds(String sourceIds, Long childTaxonId) {
+        if (StringUtils.isNotBlank(sourceIds)) {
+            String[] ids = StringUtils.split(sourceIds, ',');
+            for (String id : ids) {
+                String externalId = StringUtils.upperCase(id);
+                if (isIdSchemeSupported(externalId)) {
+                    appendIdMap(childTaxonId, externalId);
+                }
+            }
         }
     }
 

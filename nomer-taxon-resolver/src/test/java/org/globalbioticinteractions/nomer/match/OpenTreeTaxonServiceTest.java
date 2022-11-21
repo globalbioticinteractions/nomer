@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -8,7 +9,6 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -31,20 +31,40 @@ public class OpenTreeTaxonServiceTest {
         OpenTreeTaxonService service = createService();
         AtomicLong counter = new AtomicLong();
         Collection<String> ids = new TreeSet<>();
+        Collection<String> names = new TreeSet<>();
         service.match(Collections.singletonList(
                 new TaxonImpl(".*", ".*")), new TermMatchListener() {
-                    @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
-                        counter.incrementAndGet();
-                        ids.add(taxon.getExternalId());
-                    }
-                });
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                counter.incrementAndGet();
+                if (StringUtils.isNotBlank(term.getId())) {
+                    ids.add(term.getId());
+                }
+                if (StringUtils.isNotBlank(taxon.getId())) {
+                    ids.add(taxon.getId());
+                }
 
-        assertThat(counter.get(), is(10L));
-
-        assertThat(ids.size(), is(10));
+                if (StringUtils.isNotBlank(taxon.getName())) {
+                    names.add(taxon.getName());
+                }
+                if (StringUtils.isNotBlank(term.getName())) {
+                    names.add(term.getName());
+                }
+            }
+        });
 
         assertThat(ids, hasItem("OTT:470454"));
+        assertThat(ids, hasItem("GBIF:7819720"));
+        assertThat(ids, hasItem("NCBI:75286"));
+
+        assertThat(names, hasItem("Ariopsis felis"));
+        assertThat(names, hasItem("Arius felis"));
+
+        assertThat(counter.get(), is(56L));
+
+        assertThat(ids.size(), is(54));
+        assertThat(names.size(), is(11));
+
 //        assertThat(ids, hasItem("OTT:525972"));
     }
 
@@ -91,20 +111,20 @@ public class OpenTreeTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("OTT:139650"));
     }
 
-    @Ignore
     @Test
     public void enrichBySynonymIdGBIF() throws PropertyEnricherException {
         OpenTreeTaxonService service = createService();
 
         Map<String, String> enriched = service.enrich(
-                TaxonUtil.taxonToMap(new TaxonImpl(null, "GBIF:9536")));
+                TaxonUtil.taxonToMap(new TaxonImpl(null, "GBIF:5202927")));
 
-        assertPasteurellaceae(enriched);
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("OTT:139650"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Ariopsis felis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
     }
 
-    @Ignore
     @Test
-    public void enrichBySynonymIdWORMS() throws PropertyEnricherException {
+    public void enrichByAcceptedNameByWORMSId() throws PropertyEnricherException {
         OpenTreeTaxonService service = createService();
 
         Map<String, String> enriched = service.enrich(
