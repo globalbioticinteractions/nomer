@@ -2,11 +2,7 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.vfs2.FileObject;
-import org.apache.commons.vfs2.FileSystemManager;
-import org.apache.commons.vfs2.VFS;
 import org.eol.globi.service.ResourceService;
-import org.eol.globi.util.ResourceServiceHTTP;
 import org.eol.globi.util.ResourceServiceLocalAndRemote;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.slf4j.Logger;
