@@ -5,6 +5,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.VFS;
+import org.eol.globi.service.ResourceService;
+import org.eol.globi.util.ResourceServiceHTTP;
+import org.eol.globi.util.ResourceServiceLocalAndRemote;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +41,12 @@ public class ResourceServiceLocationBased extends ResourceServiceReadOnly {
         String location = "[" + resource + "] at [" + cachedFile.getAbsolutePath() + "]";
         String msg = "caching " + location;
         LOG.info(msg + "...");
-        FileSystemManager fsManager = VFS.getManager();
-        FileObject fileObj = fsManager.resolveFile(resource);
+
+        ResourceService resourceService = new ResourceServiceLocalAndRemote(is -> is);
         try (OutputStream output = StringUtils.endsWith(resource.toString(), ".gz") ?
                 new FileOutputStream(cachedFile) :
                 ResourceServiceUtil.getOutputStreamForCache(cachedFile)) {
-            IOUtils.copyLarge(fileObj.getContent().getInputStream(), output);
+            IOUtils.copyLarge(resourceService.retrieve(resource), output);
             output.flush();
         }
         LOG.info(msg + " done.");
