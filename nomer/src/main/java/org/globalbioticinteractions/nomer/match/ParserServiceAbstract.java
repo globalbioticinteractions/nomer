@@ -34,7 +34,7 @@ public abstract class ParserServiceAbstract implements TermMatcher, ParserServic
                     likelyVirusName = new TaxonImpl(term.getName(), term.getId());
                 }
                 termMatchListener.foundTaxonForTerm(null, term, NameType.NONE, likelyVirusName);
-            } else {
+            } else if (StringUtils.isNotBlank(name)) {
                 Taxon nameParsed = parse(term, name);
                 termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, nameParsed);
             }

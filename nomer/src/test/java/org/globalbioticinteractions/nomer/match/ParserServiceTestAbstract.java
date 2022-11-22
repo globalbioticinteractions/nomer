@@ -10,11 +10,13 @@ import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertFalse;
 
 public abstract class ParserServiceTestAbstract {
 
@@ -73,6 +75,20 @@ public abstract class ParserServiceTestAbstract {
         });
 
         assertTrue(foundMatch.get());
+    }
+
+    @Test
+    public void ignoreNulName() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Collections.singletonList(new TermImpl("someId", null)), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                foundMatch.set(true);
+            }
+        });
+
+        assertFalse(foundMatch.get());
     }
 
 }
