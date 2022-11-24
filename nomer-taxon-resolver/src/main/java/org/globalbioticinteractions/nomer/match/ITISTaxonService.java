@@ -30,6 +30,10 @@ import java.util.Map;
 public class ITISTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(ITISTaxonService.class);
 
+    static final String AUTHORS = "author";
+    private BTreeMap<Long, String> authorIds;
+
+
     public ITISTaxonService(TermMatcherContext ctx) {
         super(ctx);
     }
@@ -53,7 +57,15 @@ public class ITISTaxonService extends CommonLongTaxonService {
                 if (rowValues.length > 24) {
                     String taxId = rowValues[0];
                     String parentTaxId = rowValues[17];
+                    String authorId = rowValues[18];
+
+                    String authorship = "ITIS:AUTHORSHIP:" + authorId;
+                    if (StringUtils.isNumeric(authorId)) {
+                        authorship = authorIds.getOrDefault(Long.parseLong(authorId), authorship);
+                    }
+
                     String rankKingdomId = rowValues[20];
+
                     String rankId = rowValues[21];
                     String rankKey = rankKingdomId + "-" + rankId;
                     String rank = rankIdNameMap.getOrDefault(rankKey, rankKey);
@@ -62,6 +74,11 @@ public class ITISTaxonService extends CommonLongTaxonService {
 
                     TaxonImpl taxon = new TaxonImpl(completeName, TaxonomyProvider.ID_PREFIX_ITIS + taxId);
                     taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
+
+                    if (StringUtils.isNotBlank(authorship)) {
+                        taxon.setAuthorship(authorship);
+                    }
+
                     if (NumberUtils.isCreatable(taxId)) {
                         Long taxonKey = Long.parseLong(taxId);
                         registerIdForName(taxonKey, taxon, name2nodeIds);
@@ -94,6 +111,24 @@ public class ITISTaxonService extends CommonLongTaxonService {
                     String rankId = rowValues[1];
                     String rankName = rowValues[2];
                     rankIdMap.put(kingdomId + "-" + rankId, StringUtils.lowerCase(rankName));
+                }
+            }
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
+        }
+    }
+
+    static void parseAuthors(Map<Long, String> authorIds, InputStream resourceAsStream) throws PropertyEnricherException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "|");
+                if (rowValues.length > 3) {
+                    String authorIdString = rowValues[0];
+                    String authorship = rowValues[1];
+                    authorIds.put(Long.parseLong(authorIdString), authorship);
                 }
             }
         } catch (IOException e) {
@@ -151,6 +186,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
             name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
+            authorIds = db.getTreeMap(AUTHORS);
         } else {
             indexITIS(db);
         }
@@ -173,6 +209,22 @@ public class ITISTaxonService extends CommonLongTaxonService {
                 throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonUnitTypes() + "]");
             }
             parseTaxonUnitTypes(rankIdNameMap, resource);
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
+        }
+
+        authorIds = db
+                .createTreeMap(AUTHORS)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.STRING)
+                .make();
+
+        try {
+            InputStream resource = getCtx().retrieve(getTaxonAuthors());
+            if (resource == null) {
+                throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonAuthors() + "]");
+            }
+            parseAuthors(authorIds, resource);
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
         }
@@ -234,6 +286,10 @@ public class ITISTaxonService extends CommonLongTaxonService {
 
     private URI getMergedNodesUrl() throws PropertyEnricherException {
         return CacheUtil.getValueURI(getCtx(), "nomer.itis.synonym_links");
+    }
+
+    private URI getTaxonAuthors() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.taxon_authors_lkp");
     }
 
 }

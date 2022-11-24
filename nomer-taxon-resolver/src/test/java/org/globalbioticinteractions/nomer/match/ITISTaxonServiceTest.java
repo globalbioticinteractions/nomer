@@ -1,12 +1,9 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.taxon.EnvoService;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
@@ -15,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -38,8 +34,25 @@ public class ITISTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:57"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Nitrobacter"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("ITIS:AUTHORSHIP:177805"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+    }
+
+    @Test
+    public void enrichById2() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl(null, "ITIS:680665");
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("ITIS:680665"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Ariopsis felis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Linnaeus, 1766)"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ariopsis felis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:680665"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));
     }
 
     @Test
@@ -130,6 +143,7 @@ public class ITISTaxonServiceTest {
                         put("nomer.itis.taxonomic_units", "/org/globalbioticinteractions/nomer/match/itis/taxonomic_units.psv");
                         put("nomer.itis.synonym_links", "/org/globalbioticinteractions/nomer/match/itis/synonym_links.psv");
                         put("nomer.itis.taxon_unit_types", "/org/globalbioticinteractions/nomer/match/itis/taxon_unit_types.psv");
+                        put("nomer.itis.taxon_authors_lkp", "/org/globalbioticinteractions/nomer/match/itis/taxon_authors_lkp.psv");
                     }
                 }.get(key);
             }
