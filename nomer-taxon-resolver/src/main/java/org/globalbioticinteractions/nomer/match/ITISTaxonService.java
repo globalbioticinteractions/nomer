@@ -30,7 +30,7 @@ import java.util.Map;
 public class ITISTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(ITISTaxonService.class);
 
-    static final String AUTHORS = "author";
+    private static final String AUTHORS = "author";
     private BTreeMap<Long, String> authorIds;
 
 
