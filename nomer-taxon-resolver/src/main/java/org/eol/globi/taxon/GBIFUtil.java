@@ -1,10 +1,10 @@
 package org.eol.globi.taxon;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -137,7 +137,7 @@ public class GBIFUtil {
         return StringUtils.join(ids, CharsetConstant.SEPARATOR);
     }
 
-    public static Taxon resolveTaxonId1(Map<Long, Pair<String, GBIFRank>> idToNameAndRank,
+    public static Taxon resolveTaxonId1(Map<Long, Pair<String[], GBIFRank>> idToNameAndRank,
                                         Map<Long, Pair<GBIFNameRelationType, Long>> idRelation,
                                         Long requestedTaxonId) {
         return requestedTaxonId == null
@@ -148,7 +148,7 @@ public class GBIFUtil {
                 requestedTaxonId);
     }
 
-    public static Taxon resolveTaxonId(Map<Long, Pair<String, GBIFRank>> idToNameAndRank,
+    public static Taxon resolveTaxonId(Map<Long, Pair<String[], GBIFRank>> idToNameAndRank,
                                        Map<Long, Pair<GBIFNameRelationType, Long>> idRelation,
                                        Long taxonId) {
         Long childId = taxonId;
@@ -157,7 +157,8 @@ public class GBIFUtil {
 
         LinkedList<GBIFRank> ancestorRanks = new LinkedList<>();
         LinkedList<String> ancestorNames = new LinkedList<>();
-        appendById(idToNameAndRank, ancestorIds, ancestorRanks, ancestorNames, childId);
+        LinkedList<String> authorships = new LinkedList<>();
+        appendById(idToNameAndRank, ancestorIds, ancestorRanks, ancestorNames, authorships, childId);
 
         Pair<GBIFNameRelationType, Long> relation;
         while ((relation = idRelation.get(childId)) != null) {
@@ -167,23 +168,26 @@ public class GBIFUtil {
                 ancestorIds.clear();
                 ancestorNames.clear();
                 ancestorRanks.clear();
+                authorships.clear();
             }
 
             if (ancestorIds.contains(relation.getRight())) {
                 throw new IllegalStateException("found circular reference: parentId [" + relation.getRight() + "] already present in taxon path");
             }
-            appendById(idToNameAndRank, ancestorIds, ancestorRanks, ancestorNames, relation.getRight());
+            appendById(idToNameAndRank, ancestorIds, ancestorRanks, ancestorNames, authorships, relation.getRight());
             childId = relation.getRight();
         }
 
 
         String path = String.join(CharsetConstant.SEPARATOR, ancestorNames);
+
         String pathNames = ancestorRanks
                 .stream()
                 .map(Object::toString)
                 .map(StringUtils::lowerCase)
                 .map(x -> StringUtils.replace(x, "unranked", ""))
                 .collect(Collectors.joining(CharsetConstant.SEPARATOR));
+
         String pathIds = ancestorIds
                 .stream()
                 .map(Object::toString)
@@ -192,10 +196,17 @@ public class GBIFUtil {
 
         return ancestorNames.isEmpty()
                 ? null
-                : populateTaxon(ancestorIds, ancestorRanks, ancestorNames, path, pathNames, pathIds);
+                : populateTaxon(ancestorIds, ancestorRanks, ancestorNames, authorships, path, pathNames, pathIds);
     }
 
-    public static Taxon populateTaxon(LinkedList<Long> ancestorIds, LinkedList<GBIFRank> ancestorRanks, LinkedList<String> ancestorNames, String path, String pathNames, String pathIds) {
+    public static Taxon populateTaxon(
+            LinkedList<Long> ancestorIds,
+            LinkedList<GBIFRank> ancestorRanks,
+            LinkedList<String> ancestorNames,
+            LinkedList<String> authorships,
+            String path,
+            String pathNames,
+            String pathIds) {
         Taxon taxon;
         taxon = new TaxonImpl(ancestorNames.getLast(), TaxonomyProvider.GBIF.getIdPrefix() + ancestorIds.getLast());
         if (ancestorRanks.size() > 0) {
@@ -207,18 +218,23 @@ public class GBIFUtil {
         taxon.setPathIds(pathIds);
         taxon.setPathNames(pathNames);
         taxon.setPath(path);
+        if (authorships.size() > 0) {
+            taxon.setAuthorship(authorships.getLast());
+        }
         return taxon;
     }
 
-    public static Pair<String, GBIFRank> appendById(Map<Long, Pair<String, GBIFRank>> idToNameAndRank,
-                                                    LinkedList<Long> ancestorIds,
-                                                    LinkedList<GBIFRank> ancestorRanks,
-                                                    LinkedList<String> ancestorNames,
-                                                    Long taxonId) {
-        Pair<String, GBIFRank> nameAndRank = idToNameAndRank.get(taxonId);
+    public static Pair<String[], GBIFRank> appendById(Map<Long, Pair<String[], GBIFRank>> idToNameAndRank,
+                                                      LinkedList<Long> ancestorIds,
+                                                      LinkedList<GBIFRank> ancestorRanks,
+                                                      LinkedList<String> ancestorNames,
+                                                      LinkedList<String> authorships,
+                                                      Long taxonId) {
+        Pair<String[], GBIFRank> nameAndRank = idToNameAndRank.get(taxonId);
         if (nameAndRank != null) {
             ancestorIds.push(taxonId);
-            ancestorNames.push(nameAndRank.getLeft());
+            ancestorNames.push(nameAndRank.getLeft()[0]);
+            authorships.push(nameAndRank.getLeft()[1]);
             ancestorRanks.push(nameAndRank.getRight());
         }
         return nameAndRank;
@@ -255,19 +271,41 @@ public class GBIFUtil {
         return nameId;
     }
 
-    public static Triple<Long, String, GBIFRank> parseIdNameRank(String line) {
-        Triple<Long, String, GBIFRank> taxon = null;
+    public static Triple<Long, String[], GBIFRank> parseIdNameRank(String line) {
+        Triple<Long, String[], GBIFRank> taxon = null;
         String[] rowValues = CSVTSVUtil.splitTSV(line);
 
-        if (rowValues.length > 19) {
+        if (rowValues.length > 29) {
             String taxId = rowValues[0];
             String rank = StringUtils.trim(rowValues[5]);
 
 
             String canonicalName = rowValues[19];
-            taxon = Triple.of(Long.parseLong(taxId), canonicalName, GBIFRank.valueOf(rank));
+
+            String authorshipString = compileAuthorshipString(rowValues[26], rowValues[27]);
+            if (StringUtils.isBlank(authorshipString)) {
+                authorshipString = compileAuthorshipString(rowValues[24], rowValues[25]);
+            } else {
+                authorshipString = "(" + authorshipString + ")";
+            }
+
+            taxon = Triple.of(Long.parseLong(taxId), new String[]{canonicalName, authorshipString}, GBIFRank.valueOf(rank));
         }
         return taxon;
+    }
+
+    private static String compileAuthorshipString(String author, String year) {
+        String author1 = removeNull(author);
+        String year1 = removeNull(year);
+        String authorship = null;
+        if (StringUtils.isNotBlank(author1) && StringUtils.isNotBlank(year1)) {
+            authorship = author1 + ", " + year1;
+        }
+        return authorship;
+    }
+
+    private static String removeNull(String rowValue) {
+        return StringUtils.remove(rowValue, "\\N");
     }
 
     public static boolean isSynonym(String[] rowValues) {

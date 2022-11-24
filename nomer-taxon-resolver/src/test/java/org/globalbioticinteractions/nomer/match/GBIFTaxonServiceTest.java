@@ -33,6 +33,7 @@ public class GBIFTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Desulfobacter vibrioformis"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("GBIF:3220631"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Desulfobacter vibrioformis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Lien & Beeder, 1997"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("GBIF:3220631"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));

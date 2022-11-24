@@ -51,7 +51,7 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
     private final TermMatcherContext ctx;
 
     private BTreeMap<Long, Pair<GBIFNameRelationType, Long>> idRelations = null;
-    private BTreeMap<Long, Pair<String, GBIFRank>> idNameRanks = null;
+    private BTreeMap<Long, Pair<String[], GBIFRank>> idNameRanks = null;
     private BTreeMap<String, List<Long>> nameIds = null;
 
     public GBIFTaxonService(TermMatcherContext ctx) {
@@ -344,9 +344,9 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                 .createTreeMap(ID_NAME_RANK)
                 .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
                 .valueSerializer(Serializer.JAVA)
-                .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<String, GBIFRank>>>() {
+                .pumpSource(new Iterator<Fun.Tuple2<Long, Pair<String[], GBIFRank>>>() {
                     BufferedReader reader = null;
-                    Triple<Long, String, GBIFRank> idNameRank = null;
+                    Triple<Long, String[], GBIFRank> idNameRank = null;
 
                     @Override
                     public boolean hasNext() {
@@ -362,7 +362,9 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                             if (idNameRank == null) {
                                 String line = reader.readLine();
                                 idNameRank =
-                                        StringUtils.isBlank(line) ? null : GBIFUtil.parseIdNameRank(line);
+                                        StringUtils.isBlank(line)
+                                                ? null
+                                                : GBIFUtil.parseIdNameRank(line);
                             }
                             return idNameRank != null;
                         } catch (IOException e) {
@@ -371,8 +373,8 @@ public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatc
                     }
 
                     @Override
-                    public Fun.Tuple2<Long, Pair<String, GBIFRank>> next() {
-                        Fun.Tuple2<Long, Pair<String, GBIFRank>> current = idNameRank == null
+                    public Fun.Tuple2<Long, Pair<String[], GBIFRank>> next() {
+                        Fun.Tuple2<Long, Pair<String[], GBIFRank>> current = idNameRank == null
                                 ? null
                                 : new Fun.Tuple2<>(idNameRank.getLeft(), Pair.of(idNameRank.getMiddle(), idNameRank.getRight()));
                         idNameRank = null;
