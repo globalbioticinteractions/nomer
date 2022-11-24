@@ -158,9 +158,12 @@ public class ITISTaxonServiceTest {
         Map<String, String> rankIdNameMap = new TreeMap<String, String>() {{
             put("1-180", "some rank");
         }};
+        Map<Long, String> authorIds = new TreeMap<Long, String>() {{
+            put(1L, "some name");
+        }};
 
         InputStream nodesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/itis/taxonomic_units.psv");
-        createService().parseNodes(node, childParent, rankIdNameMap, name2NodeId, nodesStream);
+        createService().parseNodes(node, childParent, rankIdNameMap, name2NodeId, authorIds, nodesStream);
 
         assertThat(childParent.get(57L), is(956340L));
         assertThat(TaxonUtil.mapToTaxon(node.get(57L)).getRank(), is("some rank"));

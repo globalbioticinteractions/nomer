@@ -47,6 +47,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
                     Map<Long, Long> childParent,
                     Map<String, String> rankIdNameMap,
                     Map<String, List<Long>> name2nodeIds,
+                    Map<Long, String> authorIds,
                     InputStream is) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
@@ -180,7 +181,9 @@ public class ITISTaxonService extends CommonLongTaxonService {
 
         if (db.exists(NODES)
                 && db.exists(CHILD_PARENT)
-                && db.exists(MERGED_NODES)) {
+                && db.exists(MERGED_NODES)
+                && db.exists(NAME_TO_NODE_IDS)
+                && db.exists(AUTHORS)) {
             LOG.debug("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
@@ -248,7 +251,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
                 .make();
 
         try {
-            parseNodes(nodes, childParent, rankIdNameMap, name2nodeIds, getCtx().retrieve(getNodesUrl()));
+            parseNodes(nodes, childParent, rankIdNameMap, name2nodeIds, authorIds, getCtx().retrieve(getNodesUrl()));
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS nodes", e);
         }
