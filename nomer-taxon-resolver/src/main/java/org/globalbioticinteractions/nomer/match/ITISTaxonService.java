@@ -162,14 +162,8 @@ public class ITISTaxonService extends CommonLongTaxonService {
 
     @Override
     protected void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
 
-        File taxonomyDir = new File(cacheDir, StringUtils.lowerCase(getTaxonomyProvider().name()));
+        File taxonomyDir = new File(getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
@@ -193,6 +187,16 @@ public class ITISTaxonService extends CommonLongTaxonService {
         } else {
             indexITIS(db);
         }
+    }
+
+    private File initCacheDir() throws PropertyEnricherException {
+        File cacheDir = getCacheDir();
+        if (!cacheDir.exists()) {
+            if (!cacheDir.mkdirs()) {
+                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
+            }
+        }
+        return cacheDir;
     }
 
     private void indexITIS(DB db) throws PropertyEnricherException {

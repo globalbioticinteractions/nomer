@@ -168,6 +168,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
 
     @Override
     public Map<String, String> enrich(Map<String, String> toBeEnriched) throws PropertyEnricherException {
+        checkInit();
         Map<String, String> enriched = new TreeMap<>(toBeEnriched);
         String externalId = toBeEnriched.get(PropertyAndValueDictionary.EXTERNAL_ID);
         if (isIdSchemeSupported(externalId)) {
@@ -321,6 +322,13 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             if (ctx == null) {
                 throw new PropertyEnricherException("context needed to initialize");
             }
+            File cacheDir = getCacheDir();
+            if (!cacheDir.exists()) {
+                if (!cacheDir.mkdirs()) {
+                    throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
+                }
+            }
+
             lazyInit();
         }
     }
@@ -340,9 +348,9 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
     protected File getCacheDir() {
-        File cacheDir = new File(getCtx().getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
-        cacheDir.mkdirs();
-        return cacheDir;
+        File file = new File(getCtx().getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
+        file.mkdirs();
+        return file;
     }
 
 

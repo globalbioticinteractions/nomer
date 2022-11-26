@@ -96,14 +96,7 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
 
     @Override
     protected void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
-
-        File taxonomyDir = new File(cacheDir, getProviderShortName());
+        File taxonomyDir = new File(getCacheDir(), getProviderShortName());
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()

@@ -56,14 +56,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
 
     @Override
     protected void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
-
-        File taxonomyDir = new File(cacheDir, StringUtils.lowerCase(getTaxonomyProvider().name()));
+        File taxonomyDir = new File(getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()

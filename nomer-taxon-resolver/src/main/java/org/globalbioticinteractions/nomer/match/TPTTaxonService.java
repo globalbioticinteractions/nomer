@@ -49,11 +49,6 @@ public class TPTTaxonService extends CommonTaxonService<String> {
     @Override
     protected void lazyInit() throws PropertyEnricherException {
         File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
 
         File taxonomyDir = new File(cacheDir, StringUtils.lowerCase(getTaxonomyProvider().name()));
         DB db = DBMaker
