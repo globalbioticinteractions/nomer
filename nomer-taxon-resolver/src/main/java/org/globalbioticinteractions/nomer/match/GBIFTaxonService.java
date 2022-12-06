@@ -77,13 +77,22 @@ public class GBIFTaxonService extends CommonLongTaxonService {
             URI gbifNameResource = CacheUtil.getValueURI(getCtx(), "nomer.gbif.ids");
 
             watch.start();
+
+            LOG.info("indexing taxon ids...");
             buildTaxonIndex(db, gbifNameResource);
+            LOG.info("indexing taxon ids...done.");
 
+            LOG.info("indexing taxon hierarchies...");
             childParent = buildRelationIndex(db, gbifNameResource, CHILD_PARENT, new ChildParentRelationParser());
+            LOG.info("indexing taxon hierarchies...done.");
 
+            LOG.info("indexing synonyms...");
             mergedNodes = buildRelationIndex(db, gbifNameResource, MERGED_NODES, new SynonymParser());
+            LOG.info("indexing synonyms...done.");
 
+            LOG.info("indexing names...");
             buildNameToIdIndex(db, gbifNameResource);
+            LOG.info("indexing names...done.");
 
             watch.stop();
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
