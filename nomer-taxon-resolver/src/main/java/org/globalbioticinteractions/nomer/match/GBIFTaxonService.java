@@ -70,7 +70,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
             mergedNodes = db.getTreeMap(MERGED_NODES);
             name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
         } else {
-            LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
+            LOG.info("[" + getTaxonomyProvider().name() + "] indexing taxonomy...");
             StopWatch watch = new StopWatch();
 
 
@@ -78,27 +78,31 @@ public class GBIFTaxonService extends CommonLongTaxonService {
 
             watch.start();
 
-            LOG.info("indexing ids...");
+            log("indexing ids...");
             buildTaxonIndex(db, gbifNameResource);
-            LOG.info("indexing taxon ids...done.");
+            log("indexing taxon ids...done.");
 
-            LOG.info("indexing taxon hierarchies...");
+            log("indexing taxon hierarchies...");
             childParent = buildRelationIndex(db, gbifNameResource, CHILD_PARENT, new ChildParentRelationParser());
-            LOG.info("indexing taxon hierarchies...done.");
+            log("indexing taxon hierarchies...done.");
 
-            LOG.info("indexing synonyms...");
+            log("indexing synonyms...");
             mergedNodes = buildRelationIndex(db, gbifNameResource, MERGED_NODES, new SynonymParser());
-            LOG.info("indexing synonyms...done.");
+            log("indexing synonyms...done.");
 
-            LOG.info("indexing names...");
+            log("indexing names...");
             buildNameToIdIndex(db, CacheUtil.getValueURI(getCtx(), "nomer.gbif.names"));
-            LOG.info("indexing names...done.");
+            log("indexing names...done.");
 
             watch.stop();
             TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
-            LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
+            log("taxonomy imported.");
         }
 
+    }
+
+    private void log(String msg) {
+        LOG.info("[" + getTaxonomyProvider() + "] " + msg);
     }
 
     private void buildNameToIdIndex(DB db, URI gbifNameResource) throws PropertyEnricherException {
@@ -259,7 +263,6 @@ public class GBIFTaxonService extends CommonLongTaxonService {
     }
 
     private void handleLine(String line, LineHandler lineHandler) {
-        System.out.println(line);
         String[] rowValues = CSVTSVUtil.splitTSV(line);
 
         if (rowValues != null && rowValues.length > 19) {
