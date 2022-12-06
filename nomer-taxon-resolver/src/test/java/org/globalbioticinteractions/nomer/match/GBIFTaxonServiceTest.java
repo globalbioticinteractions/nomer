@@ -80,10 +80,13 @@ public class GBIFTaxonServiceTest {
     }
 
     private PropertyEnricherSimple createService() {
-        return createService("/org/globalbioticinteractions/nomer/match/gbif/backbone-current-simple.txt");
+        return createService(
+                "/org/globalbioticinteractions/nomer/match/gbif/backbone-current-simple.txt",
+                "/org/globalbioticinteractions/nomer/match/gbif/backbone-current-name-id-sorted.txt"
+        );
     }
 
-    protected PropertyEnricherSimple createService(final String nameUrl) {
+    protected PropertyEnricherSimple createService(final String idsUrl, final String namesUrl) {
         return new GBIFTaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
@@ -99,7 +102,8 @@ public class GBIFTaxonServiceTest {
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {
-                        put("nomer.gbif.ids", nameUrl);
+                        put("nomer.gbif.ids", idsUrl);
+                        put("nomer.gbif.names", namesUrl);
                     }
                 }.get(key);
             }

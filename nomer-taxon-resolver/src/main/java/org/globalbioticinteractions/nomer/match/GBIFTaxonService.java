@@ -78,7 +78,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
 
             watch.start();
 
-            LOG.info("indexing taxon ids...");
+            LOG.info("indexing ids...");
             buildTaxonIndex(db, gbifNameResource);
             LOG.info("indexing taxon ids...done.");
 
@@ -91,7 +91,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
             LOG.info("indexing synonyms...done.");
 
             LOG.info("indexing names...");
-            buildNameToIdIndex(db, gbifNameResource);
+            buildNameToIdIndex(db, CacheUtil.getValueURI(getCtx(), "nomer.gbif.names"));
             LOG.info("indexing names...done.");
 
             watch.stop();
@@ -102,67 +102,18 @@ public class GBIFTaxonService extends CommonLongTaxonService {
     }
 
     private void buildNameToIdIndex(DB db, URI gbifNameResource) throws PropertyEnricherException {
-        name2nodeIds = db
-                .createTreeMap(NAME_TO_NODE_IDS)
-                .keySerializer(BTreeKeySerializer.STRING)
-                .valueSerializer(Serializer.JAVA)
-                .make();
-        handleResource(gbifNameResource, new LineHandler() {
-            @Override
-            public void handle(String[] rowValues, String taxIdString, long taxId, String relatedTaxIdString, String rank, String canonicalName) {
-                mapNameToIds(taxId, canonicalName);
-            }
-        });
-    }
 
-    private void buildSynonymIndex(DB db, URI gbifNameResource) throws PropertyEnricherException {
-        final BufferedReader reader;
         try {
-            reader = getBufferedReader(gbifNameResource);
 
-
-            mergedNodes = db
-                    .createTreeMap(MERGED_NODES)
-                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                    .valueSerializer(Serializer.LONG)
-                    .pumpSource(new Iterator<Fun.Tuple2<Long, Long>>() {
-                        private Fun.Tuple2<Long, Long> entry;
-
-                        @Override
-                        public boolean hasNext() {
-
-                            if (entry == null) {
-                                try {
-                                    parseNext();
-                                } catch (IOException e) {
-                                    return false;
-                                }
-                            }
-                            return entry != null;
-                        }
-
-                        private void parseNext() throws IOException {
-                            String line;
-                            while (entry == null && (line = reader.readLine()) != null) {
-                                handleLine(line, (rowValues, taxIdString, taxId, relatedTaxIdString, rank, canonicalName) -> {
-
-                                    entry = parseSynonymRelation(rowValues, relatedTaxIdString, taxId);
-                                });
-                            }
-                        }
-
-                        @Override
-                        public Fun.Tuple2<Long, Long> next() {
-                            Fun.Tuple2<Long, Long> currentEntry = this.entry;
-                            if (currentEntry != null) {
-                                this.entry = null;
-                            }
-                            return currentEntry;
-                        }
-                    })
+            name2nodeIds = db
+                    .createTreeMap(NAME_TO_NODE_IDS)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .pumpSource(new GBIFNameToIdsIterator(getBufferedReader(gbifNameResource, getCtx())))
                     .make();
+
+
         } catch (IOException e) {
-            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]", e);
+            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]");
         }
 
     }
@@ -175,7 +126,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
 
         final BufferedReader reader;
         try {
-            reader = getBufferedReader(gbifNameResource);
+            reader = getBufferedReader(gbifNameResource, getCtx());
             return db
                     .createTreeMap(indexName)
                     .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
@@ -223,7 +174,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
     private void buildTaxonIndex(DB db, URI gbifNameResource) throws PropertyEnricherException {
 
         try {
-            final BufferedReader reader = getBufferedReader(gbifNameResource);
+            final BufferedReader reader = getBufferedReader(gbifNameResource, getCtx());
 
             nodes = db
                     .createTreeMap(NODES)
@@ -279,11 +230,11 @@ public class GBIFTaxonService extends CommonLongTaxonService {
         });
     }
 
-    private BufferedReader getBufferedReader(URI gbifNameResource) throws IOException, PropertyEnricherException {
+    public static BufferedReader getBufferedReader(URI resourceName, TermMatcherContext ctx) throws IOException, PropertyEnricherException {
         InputStream retrieve;
-        retrieve = getCtx().retrieve(gbifNameResource);
+        retrieve = ctx.retrieve(resourceName);
         if (retrieve == null) {
-            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]");
+            throw new PropertyEnricherException("failed to retrieve [" + resourceName + "]");
         }
 
         return new BufferedReader(
@@ -296,7 +247,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
 
     private void handleResource(URI gbifNameResource, LineHandler lineHandler) throws PropertyEnricherException {
         try {
-            BufferedReader reader = getBufferedReader(gbifNameResource);
+            BufferedReader reader = getBufferedReader(gbifNameResource, getCtx());
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -399,6 +350,7 @@ public class GBIFTaxonService extends CommonLongTaxonService {
             return childParentRelation;
         }
     }
+
 }
 
 
