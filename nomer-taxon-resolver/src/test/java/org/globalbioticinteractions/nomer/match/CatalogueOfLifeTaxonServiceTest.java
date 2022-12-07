@@ -59,6 +59,21 @@ public class CatalogueOfLifeTaxonServiceTest {
     }
 
     @Test
+    public void enrichByNameWithSubspecies() throws PropertyEnricherException {
+        CatalogueOfLifeTaxonService service = createService();
+
+        Taxon phryganella = new TaxonImpl("Pteronotus (Chilonycteris) macleayii", null);
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(phryganella));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("COL:7WP8W"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Pteronotus (Chilonycteris) macleayii"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Pteronotus | Chilonycteris | Pteronotus (Chilonycteris) macleayii"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("COL:74SW | COL:8P3CB | COL:7WP8W"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | subgenus | species"));
+    }
+
+    @Test
     public void enrichBySynonymId() throws PropertyEnricherException {
         CatalogueOfLifeTaxonService service = createService();
 
