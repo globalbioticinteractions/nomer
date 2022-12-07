@@ -91,4 +91,22 @@ public abstract class ParserServiceTestAbstract {
         assertFalse(foundMatch.get());
     }
 
+    @Test
+    public void nameWithSubgenus() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Pteronotus (Chilonycteris) macleayii")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Pteronotus (Chilonycteris) macleayii"));
+                assertThat(taxon.getName(), Is.is("Pteronotus macleayii"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
+
 }

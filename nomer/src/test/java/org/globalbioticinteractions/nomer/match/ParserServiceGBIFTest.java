@@ -7,4 +7,6 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
         return new ParserServiceGBIF();
     }
 
+
+
 }
