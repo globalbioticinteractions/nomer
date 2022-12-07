@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eol.globi.domain.NameType;
@@ -345,7 +346,7 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
             String taxId = rowValues[0];
             String parentTaxId = rowValues[2];
             String status = rowValues[4];
-            String completeName = rowValues[5];
+            String completeName = RegExUtils.replaceAll(rowValues[5], "[ ]+\\(.*\\)[ ]+", " ");
             String authorship = rowValues[6];
             String rank = rowValues[7];
 
