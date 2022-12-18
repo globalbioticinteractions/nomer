@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Launches Nomer in JVM
+#
+
+java -Xmx4G -XX:+UseG1GC -cp "/usr/share/nomer/lib/*" org.globalbioticinteractions.nomer.Nomer $@
+
