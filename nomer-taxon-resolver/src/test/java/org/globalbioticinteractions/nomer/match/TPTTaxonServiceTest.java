@@ -86,6 +86,21 @@ public class TPTTaxonServiceTest {
     }
 
     @Test
+    public void enrichSynonymPhthiraptera() throws PropertyEnricherException {
+        PropertyEnricher service = getTptTaxonService("/org/globalbioticinteractions/nomer/match/tpt/phthiraptera.csv");
+
+        TaxonImpl taxon = new TaxonImpl("Brueelia subalbicans", null);
+        Map<String, String> enriched = service.enrichFirstMatch(taxonToMap(taxon));
+
+        assertThat(mapToTaxon(enriched).getName(), is("Brueelia papuana"));
+        assertThat(mapToTaxon(enriched).getAuthorship(), is("(Giebel, 1879)"));
+        assertThat(mapToTaxon(enriched).getExternalId(), is("1032"));
+        assertThat(mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Insecta | Psocodea | Troctomorpha | Nanopsocetae | Phthiraptera | Ischnocera | Philopteridae | Brueelia | papuana"));
+        assertThat(mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | suborder | infraorder | parvorder | nanorder | family | genus | specificEpithet"));
+    }
+
+    @Test
     public void getIdOrNullGBIFPrefix() {
         TPTTaxonService tptTaxonService = new TPTTaxonService(null);
 

@@ -130,32 +130,42 @@ public class TabularTaxonUtil {
 
         Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMap);
 
-        NameType nameType = parseNameType(labeledCSVParser);
+        String taxonomicStatus = labeledCSVParser.getValueByLabel("taxonomicStatus");
+
 
         Taxon acceptedTaxon = providedTaxon;
+        String acceptedNameUsageID = labeledCSVParser.getValueByLabel(ACCEPTED_NAME_USAGE_ID);
+        NameType nameType =
+                shouldInferSynonymStatusFromPresenceOfAcceptedNameUsageID(taxonomicStatus, acceptedNameUsageID)
+                ? NameType.SYNONYM_OF
+                : parseNameType(taxonomicStatus);
+
         if (NameType.SYNONYM_OF.equals(nameType)) {
-            acceptedTaxon = new TaxonImpl();
-            String acceptedNameUsageID = labeledCSVParser.getValueByLabel(ACCEPTED_NAME_USAGE_ID);
             if (StringUtils.isBlank(acceptedNameUsageID)) {
                 throw new IllegalStateException("failed to resolve accepted name for [" + TaxonUtil.taxonToMap(providedTaxon) + "]: no [" + ACCEPTED_NAME_USAGE_ID + "]");
             }
+            acceptedTaxon = new TaxonImpl();
             acceptedTaxon.setExternalId(acceptedNameUsageID);
         }
+
         return Triple.of(providedTaxon, nameType, acceptedTaxon);
     }
 
-    private static NameType parseNameType(LabeledCSVParser labeledCSVParser) {
-        String taxonomicStatus = labeledCSVParser.getValueByLabel("taxonomicStatus");
+    private static boolean shouldInferSynonymStatusFromPresenceOfAcceptedNameUsageID(String taxonomicStatus, String acceptedNameUsageID) {
+        return StringUtils.isBlank(taxonomicStatus) && StringUtils.isNotBlank(acceptedNameUsageID);
+    }
+
+    private static NameType parseNameType(String taxonomicStatus) {
         final Map<String, NameType> statusMap = new TreeMap<String, NameType>() {{
-           put("accepted", NameType.HAS_ACCEPTED_NAME);
-           put("synonym", NameType.SYNONYM_OF);
-           put("heterotypic synonym", NameType.SYNONYM_OF);
-           put("doubtful", NameType.NONE);
+            put("accepted", NameType.HAS_ACCEPTED_NAME);
+            put("synonym", NameType.SYNONYM_OF);
+            put("heterotypic synonym", NameType.SYNONYM_OF);
+            put("doubtful", NameType.NONE);
         }};
 
         return StringUtils.isBlank(taxonomicStatus)
-                        ? NameType.HAS_ACCEPTED_NAME
-                        : statusMap.getOrDefault(StringUtils.lowerCase(taxonomicStatus), NameType.NONE);
+                ? NameType.HAS_ACCEPTED_NAME
+                : statusMap.getOrDefault(StringUtils.lowerCase(taxonomicStatus), NameType.NONE);
     }
 
 
