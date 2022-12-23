@@ -237,6 +237,18 @@
                                 </data>
 
                                 <data>
+                                    <src>${generated.docs.dir}/manpage</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/local/share/man/man1/</prefix>
+                                        <filemode>644</filemode>
+                                        <user>${project.artifactId}</user>
+                                        <group>${project.artifactId}</group>
+                                    </mapper>
+                                </data>
+
+                                <data>
                                     <type>template</type>
                                     <paths>
                                         <path>etc/${project.artifactId}</path>
