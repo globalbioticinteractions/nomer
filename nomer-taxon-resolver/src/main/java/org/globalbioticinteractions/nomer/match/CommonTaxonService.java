@@ -15,6 +15,8 @@ import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public abstract class CommonTaxonService<T> extends PropertyEnricherSimple implements TermMatcher {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CommonTaxonService.class);
 
     static final String NODES = "nodes";
     static final String CHILD_PARENT = "childParent";
@@ -115,14 +119,18 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 );
             } else {
                 taxonTo = resolveTaxon(acceptedId, childParent, nodes, getTaxonomyProvider());
-                if (!StringUtils.equals(taxonTo.getExternalId(), taxonFrom.getExternalId())) {
-                    nameType = NameType.SYNONYM_OF;
-                    termMatchListener.foundTaxonForTerm(
-                            null,
-                            taxonFrom,
-                            nameType,
-                            taxonTo
-                    );
+                if (taxonTo == null) {
+                    LOG.warn("failed to resolve [" + taxonFrom.getExternalId() + ";" + taxonFrom.getName() + "]: does accepted name id [" + acceptedId + "] exist?" );
+                } else {
+                    if (!StringUtils.equals(taxonTo.getExternalId(), taxonFrom.getExternalId())) {
+                        nameType = NameType.SYNONYM_OF;
+                        termMatchListener.foundTaxonForTerm(
+                                null,
+                                taxonFrom,
+                                nameType,
+                                taxonTo
+                        );
+                    }
                 }
 
             }
