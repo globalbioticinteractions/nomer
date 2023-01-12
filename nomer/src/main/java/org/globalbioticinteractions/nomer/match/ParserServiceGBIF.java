@@ -5,7 +5,9 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TaxonUtil;
 import org.gbif.nameparser.NameParserGBIF;
 import org.gbif.nameparser.api.NameParser;
 import org.gbif.nameparser.api.ParsedName;
@@ -28,8 +30,8 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
             taxonParsed.setAuthorship(nameParsed.authorshipComplete());
             if (!nameParsed.getRank().isAmbiguous()) {
                 taxonParsed.setRank(StringUtils.lowerCase(nameParsed.getRank().toString()));
-                List<String> path  = new ArrayList<>();
-                List<String> pathNames  = new ArrayList<>();
+                List<String> path = new ArrayList<>();
+                List<String> pathNames = new ArrayList<>();
                 String genus = nameParsed.getGenus();
                 if (StringUtils.isNotBlank(genus)) {
                     path.add(genus);
@@ -69,7 +71,9 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
 
             return taxonParsed;
         } catch (UnparsableNameException e) {
-            throw new PropertyEnricherException("failed to parse [" + term.getName() + "]", e);
+            return term instanceof Taxon
+                    ? TaxonUtil.copy((Taxon) term)
+                    : new TaxonImpl(term.getName(), term.getId());
         }
     }
 

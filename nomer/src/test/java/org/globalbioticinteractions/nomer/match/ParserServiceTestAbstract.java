@@ -39,6 +39,24 @@ public abstract class ParserServiceTestAbstract {
         assertTrue(foundMatch.get());
     }
 
+    @Test
+    public void unparsableName() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "ad64ad57 a281 e b398 dddc7e953")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("ad64ad57 a281 e b398 dddc7e953"));
+                assertThat(term.getId(), Is.is("someId"));
+                assertThat(taxon.getName(), Is.is("ad64ad57 a281 e b398 dddc7e953"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
     protected abstract ParserServiceAbstract getParserService();
 
     @Test
