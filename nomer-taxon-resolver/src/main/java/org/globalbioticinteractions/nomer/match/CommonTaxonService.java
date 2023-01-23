@@ -107,7 +107,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             Taxon taxonFrom = resolveTaxon(id, childParent, nodes, getTaxonomyProvider());
             Taxon taxonTo;
             NameType nameType;
-            T acceptedId = mergedNodes.get(id);
+            T acceptedId = mergedNodes == null ? null : mergedNodes.get(id);
             if (acceptedId == null) {
                 taxonTo = taxonFrom;
                 nameType = NameType.HAS_ACCEPTED_NAME;
@@ -148,12 +148,11 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
     private void registerRelation(TermMatchListener termMatchListener, String name, T id, Taxon taxonTo) {
-        T acceptedId = mergedNodes.get(id);
-        if (acceptedId == null) {
-            String externalId = name;
+        T acceptedId = mergedNodes == null ? null : mergedNodes.get(id);
+        if (mergedNodes != null && acceptedId == null) {
             termMatchListener.foundTaxonForTerm(
                     null,
-                    new TaxonImpl(null, externalId),
+                    new TaxonImpl(null, name),
                     NameType.HAS_ACCEPTED_NAME,
                     taxonTo);
 
@@ -376,7 +375,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
     private void resolveHierarchyIfNeeded(T focalTaxonKey, Map<T, T> childParent, Map<T, Map<String, String>> nodes, TaxonomyProvider primaryTaxonProvider, Taxon resolvedTaxon) {
-        if (childParent != null && resolvedTaxon != null) {
+        if (shouldResolveHierarchy(childParent, resolvedTaxon)) {
             List<String> pathNames = new ArrayList<>();
             List<String> pathIds = new ArrayList<>();
             List<String> path = new ArrayList<>();
@@ -413,6 +412,10 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             resolvedTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
             resolvedTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
         }
+    }
+
+    protected boolean shouldResolveHierarchy(Map<T, T> childParent, Taxon resolvedTaxon) {
+        return childParent != null && resolvedTaxon != null;
     }
 
 }

@@ -76,7 +76,7 @@ public class BatNamesUtilTest {
         assertThat(firstTaxon.getExternalId(), Is.is("https://batnames.org/species/Rhinolophus%20acuminatus"));
         assertThat(firstTaxon.getExternalUrl(), Is.is("https://batnames.org/species/Rhinolophus%20acuminatus"));
         assertThat(firstTaxon.getName(), Is.is("Rhinolophus acuminatus"));
-        assertThat(firstTaxon.getAuthorship(), Is.is("Peters, 1871."));
+        assertThat(firstTaxon.getAuthorship(), Is.is("Peters, 1871"));
         assertThat(firstTaxon.getCommonNames(), Is.is("Accuminate Horseshoe Bat @en"));
         assertThat(firstTaxon.getNameSource(), Is.is("Simmons, N.B. and A.L. Cirranello. 2022B. Bat Species of the World: A taxonomic and geographic database . Accessed on 07/21/2022."));
         assertThat(firstTaxon.getNameSourceURL(), Is.is("https://batnames.org/species/Rhinolophus%20acuminatus"));
@@ -106,7 +106,7 @@ public class BatNamesUtilTest {
         assertThat(firstTaxon.getExternalId(), Is.is("https://batnames.org/species/Cistugo%20lesueuri"));
         assertThat(firstTaxon.getExternalUrl(), Is.is("https://batnames.org/species/Cistugo%20lesueuri"));
         assertThat(firstTaxon.getName(), Is.is("Cistugo lesueuri"));
-        assertThat(firstTaxon.getAuthorship(), Is.is("Roberts, 1919."));
+        assertThat(firstTaxon.getAuthorship(), Is.is("Roberts, 1919"));
         assertThat(firstTaxon.getCommonNames(), Is.is("Lesueur's Wing-gland Bat @en"));
         assertThat(firstTaxon.getNameSource(), Is.is("Simmons, N.B. and A.L. Cirranello. 2022B. Bat Species of the World: A taxonomic and geographic database . Accessed on 07/21/2022."));
         assertThat(firstTaxon.getNameSourceURL(), Is.is("https://batnames.org/species/Cistugo%20lesueuri"));
@@ -135,7 +135,7 @@ public class BatNamesUtilTest {
         assertThat(firstTaxon.getExternalId(), Is.is("https://batnames.org/species/Miniopterus%20aelleni"));
         assertThat(firstTaxon.getExternalUrl(), Is.is("https://batnames.org/species/Miniopterus%20aelleni"));
         assertThat(firstTaxon.getName(), Is.is("Miniopterus aelleni"));
-        assertThat(firstTaxon.getAuthorship(), Is.is("Goodman, Maminirina, Weyeneth, Bradman, Christidis, Ruedi, &amp; Appleton, 2009."));
+        assertThat(firstTaxon.getAuthorship(), Is.is("Goodman, Maminirina, Weyeneth, Bradman, Christidis, Ruedi, &amp; Appleton, 2009"));
         assertThat(firstTaxon.getCommonNames(), Is.is("Aellen's Long-fingered Bat @en"));
         assertThat(firstTaxon.getNameSource(), Is.is("Simmons, N.B. and A.L. Cirranello. 2022B. Bat Species of the World: A taxonomic and geographic database . Accessed on 07/21/2022."));
         assertThat(firstTaxon.getNameSourceURL(), Is.is("https://batnames.org/species/Miniopterus%20aelleni"));

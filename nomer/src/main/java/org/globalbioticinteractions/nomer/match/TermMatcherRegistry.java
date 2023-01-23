@@ -51,7 +51,8 @@ public class TermMatcherRegistry {
             "col",
             "wfo",
             "ott",
-            "orcid-web"));
+            "orcid-web",
+            "mdd"));
 
     static final Map<String, String> MATCH_NAME_MAPPER = Collections.unmodifiableMap(new TreeMap<String, String>() {
         {
@@ -94,6 +95,7 @@ public class TermMatcherRegistry {
             put("orcid-web", "orcid-web");
             put("batnames", "batnames");
             put("tpt", "tpt");
+            put("mdd", "mdd");
         }
     });
 
@@ -130,6 +132,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherOpenTreeOfLifeFactory());
         add(new TermMatcherBatNamesTaxonFactory());
         add(new TermMatcherTPTFactory());
+        add(new TermMatcherMDDFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

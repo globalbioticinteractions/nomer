@@ -10,7 +10,6 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
@@ -31,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
+public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOfLifeTaxonService.class);
     private boolean reverseSorted;
 
@@ -44,16 +43,6 @@ public class CatalogueOfLifeTaxonService extends CommonTaxonService<String> {
     @Override
     public TaxonomyProvider getTaxonomyProvider() {
         return TaxonomyProvider.CATALOGUE_OF_LIFE;
-    }
-
-    @Override
-    public String getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
-        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
-        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key.getExternalId());
-        return (matchingTaxonomyProvider.equals(taxonomyProvider)
-                && StringUtils.isNoneBlank(idString))
-                ? idString
-                : null;
     }
 
     @Override

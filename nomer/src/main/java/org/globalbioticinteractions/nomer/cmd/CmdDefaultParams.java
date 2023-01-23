@@ -3,7 +3,7 @@ package org.globalbioticinteractions.nomer.cmd;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.InputStreamFactory;
-import org.eol.globi.util.ResourceServiceClasspathResource;
+import org.eol.globi.util.ResourceServiceClasspathOrDataDirResource;
 import org.eol.globi.util.ResourceServiceFactory;
 import org.eol.globi.util.ResourceServiceGzipAware;
 import org.eol.globi.util.ResourceServiceLocalFile;
@@ -112,7 +112,7 @@ public abstract class CmdDefaultParams implements PropertyContext {
             } else if (org.apache.commons.lang3.StringUtils.startsWith(resource.toString(), "jar:file:/")) {
                 resourceService = new ResourceServiceLocalJarResource(factory);
             } else if (StringUtils.equals(uri.getScheme(), "classpath")) {
-                resourceService = new ResourceServiceClasspathResource(factory, CmdDefaultParams.class);
+                resourceService = new ResourceServiceClasspathOrDataDirResource(factory, CmdDefaultParams.class, workDir);
             } else {
                 resourceService = new ResourceServiceLocalFile(factory) {
                     @Override

@@ -189,16 +189,6 @@ public class ITISTaxonService extends CommonLongTaxonService {
         }
     }
 
-    private File initCacheDir() throws PropertyEnricherException {
-        File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
-        return cacheDir;
-    }
-
     private void indexITIS(DB db) throws PropertyEnricherException {
         LOG.info("ITIS taxonomy importing...");
         StopWatch watch = new StopWatch();
