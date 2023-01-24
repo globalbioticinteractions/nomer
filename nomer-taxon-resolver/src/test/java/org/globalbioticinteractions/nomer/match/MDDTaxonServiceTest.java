@@ -58,10 +58,7 @@ public class MDDTaxonServiceTest {
 
         Taxon enrichedTaxon = TaxonUtil.mapToTaxon(enriched);
         assertThat(enrichedTaxon.getName(), is("Rhinolophus sinicus sinicus"));
-        assertThat(enrichedTaxon.getExternalUrl(), is("https://www.mammaldiversity.org/explore.html#genus=Rhinolophus&species=sinicus&id=1004746&subspecies=sinicus"));
-        assertThat(enrichedTaxon.getAuthorship(), is("K. Andersen, 1905"));
-        assertThat(enrichedTaxon.getPath(), is("Theria | Placentalia | Boreoeutheria | Laurasiatheria | Chiroptera | Pteropodiformes |  |  | Rhinolophoidea | Rhinolophidae |  |  | Rhinolophus |  | sinicus | sinicus"));
-        assertThat(enrichedTaxon.getPathNames(), is("subclass | infraclass | magnorder | superorder | order | suborder | infraorder | parvorder | superfamily | family | subfamily | tribe | genus | subgenus | specificEpithet | subspecificEpithet"));
+        assertThat(enrichedTaxon.getExternalUrl(), is(nullValue()));
     }
 
     @Test

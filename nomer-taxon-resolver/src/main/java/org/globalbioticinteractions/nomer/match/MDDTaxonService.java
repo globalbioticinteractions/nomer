@@ -126,6 +126,7 @@ public class MDDTaxonService extends CommonStringTaxonService {
                 List<String> subspecies = Arrays.asList(StringUtils.split(nominalNames, CharsetConstant.SEPARATOR_CHAR));
                 Stream<Taxon> subspeciesTaxa = subspecies
                         .stream()
+                        .skip(1) // skip first, because it appears that first nominalName is the specificEpithet
                         .map(subspecificEpithetAndAuthor -> {
                     String[] s = subspecificEpithetAndAuthor.split(" ");
                     String subspecificEpithet = s[0];
