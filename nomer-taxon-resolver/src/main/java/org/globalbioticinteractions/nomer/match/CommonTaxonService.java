@@ -66,7 +66,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
 
-    private void registerIdForName(T childTaxId, String name, Map<String, List<T>> name2nodeIds) {
+    protected void registerIdForName(T childTaxId, String name, Map<String, List<T>> name2nodeIds) {
         if (StringUtils.isNoneBlank(name)) {
             List<T> ids = name2nodeIds.get(name);
             List<T> updatedIds;

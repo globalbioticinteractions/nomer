@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -14,8 +13,6 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.util.CSVTSVUtil;
-import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;

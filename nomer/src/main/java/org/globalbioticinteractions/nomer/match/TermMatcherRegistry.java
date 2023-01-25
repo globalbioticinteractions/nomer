@@ -96,6 +96,7 @@ public class TermMatcherRegistry {
             put("batnames", "batnames");
             put("tpt", "tpt");
             put("mdd", "mdd");
+            put("hesperomys", "hesperomys");
         }
     });
 
@@ -133,6 +134,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherBatNamesTaxonFactory());
         add(new TermMatcherTPTFactory());
         add(new TermMatcherMDDFactory());
+        add(new TermMatcherHesperomysFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {

@@ -56,7 +56,9 @@ public class TermMatcherRegistryTest {
             "orcid-web",
             "ott",
             "batnames",
-            "tpt"));
+            "tpt",
+            "mdd",
+            "hesperomys"));
 
     @Test(expected = IllegalArgumentException.class)
     public void createNonExistingMatcher() {
