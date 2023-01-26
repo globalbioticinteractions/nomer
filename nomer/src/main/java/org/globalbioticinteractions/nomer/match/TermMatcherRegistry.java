@@ -134,7 +134,8 @@ public class TermMatcherRegistry {
         add(new TermMatcherBatNamesTaxonFactory());
         add(new TermMatcherTPTFactory());
         add(new TermMatcherMDDFactory());
-        add(new TermMatcherHesperomysFactory());
+        // disabled until data update is available see https://github.com/globalbioticinteractions/nomer/issues/144#issuecomment-1405187944
+        //add(new TermMatcherHesperomysFactory());
     }});
 
     public static Map<String, TermMatcherFactory> getRegistry(TermMatcherContext ctx) {
