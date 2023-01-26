@@ -47,6 +47,7 @@ public class PlaziServiceTest {
                     @Override
                     public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
+                        assertThat(nameType, is(NameType.OCCURS_IN));
                     }
                 });
 
@@ -57,6 +58,30 @@ public class PlaziServiceTest {
         assertThat(taxon.getExternalId(), is("http://taxon-concept.plazi.org/id/Animalia/Carvalhoma_Slater_1977"));
         assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family | genus"));
         assertThat(taxon.getName(), is("Carvalhoma"));
+    }
+
+    @Test
+    public void noMatch() throws PropertyEnricherException {
+
+        TermMatcher service = createService();
+
+        List<Taxon> found = new ArrayList<>();
+        service.match(
+                Collections.singletonList(new TermImpl(null, "Donald duck")), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                        found.add(taxon);
+                        assertThat(nameType, is(NameType.NONE));
+                    }
+                });
+
+
+        assertThat(found.size(), is(1));
+        Taxon taxon = found.get(0);
+        assertThat(taxon.getPath(), is(nullValue()));
+        assertThat(taxon.getExternalId(), is(nullValue()));
+        assertThat(taxon.getPathNames(), is(nullValue()));
+        assertThat(taxon.getName(), is("Donald duck"));
     }
 
 

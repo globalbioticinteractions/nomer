@@ -67,7 +67,7 @@ public class PlaziService implements TermMatcher {
                     termMatchListener.foundTaxonForTerm(
                             null,
                             term,
-                            NameType.SAME_AS,
+                            NameType.OCCURS_IN,
                             taxonToBeSubmitted
                     );
                 }
