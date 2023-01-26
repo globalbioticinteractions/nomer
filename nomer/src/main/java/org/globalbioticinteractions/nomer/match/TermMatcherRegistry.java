@@ -97,6 +97,7 @@ public class TermMatcherRegistry {
             put("tpt", "tpt");
             put("mdd", "mdd");
             put("hesperomys", "hesperomys");
+            put("pbdb", "pbdb");
         }
     });
 
@@ -124,6 +125,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherGBIFTaxonFactory());
         add(new TermMatcherDiscoverLifeTaxonFactory());
         add(new TermMatcherITISFactory());
+        add(new TermMatcherPBDBFactory());
         add(new TermMatcherIndexFungorumFactory());
         add(new TermMatcherCatalogueOfLifeFactory());
         add(new TermMatcherWorldOfFloraOnlineFactory());

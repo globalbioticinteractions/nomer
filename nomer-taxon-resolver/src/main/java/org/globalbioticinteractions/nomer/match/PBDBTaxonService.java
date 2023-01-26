@@ -117,7 +117,7 @@ public class PBDBTaxonService extends CommonLongTaxonService {
                         );
                     }
 
-                    if (mapping.containsKey(different)) {
+                    if (mapping.containsKey(different) && NumberUtils.isCreatable(acceptedId)) {
                         mergedNodes.put(Long.parseLong(providedId), Long.parseLong(acceptedId));
                     }
                 }
@@ -134,14 +134,16 @@ public class PBDBTaxonService extends CommonLongTaxonService {
             LabeledCSVParser parser = CSVTSVUtil.createLabeledTSVParser(resourceAsStream);
             while (parser.getLine() != null) {
                 String refId = parser.getValueByLabel("reference_no");
-                String year = parser.getValueByLabel("pubyr");
-                StringBuilder builder = new StringBuilder();
-                appendIfNotBlank(parser, builder, "author1init", " ", "");
-                appendIfNotBlank(parser, builder, "author1last", " ", "");
-                appendIfNotBlank(parser, builder, "author2init", " ", "and ");
-                appendIfNotBlank(parser, builder, "author2last", " ", "");
+                if (NumberUtils.isCreatable(refId)) {
+                    String year = parser.getValueByLabel("pubyr");
+                    StringBuilder builder = new StringBuilder();
+                    appendIfNotBlank(parser, builder, "author1init", " ", "");
+                    appendIfNotBlank(parser, builder, "author1last", " ", "");
+                    appendIfNotBlank(parser, builder, "author2init", " ", "and ");
+                    appendIfNotBlank(parser, builder, "author2last", " ", "");
 
-                refIdMap.put(Long.parseLong(refId), builder.toString() + year);
+                    refIdMap.put(Long.parseLong(refId), builder.toString() + year);
+                }
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);

@@ -1,0 +1,92 @@
+orig_no	taxon_no	record_type	flags	taxon_rank	taxon_name	difference	accepted_no	accepted_rank	accepted_name	parent_no	reference_no	is_extant	n_occs
+1	1	txn	V	kingdom	Eukaryota	obsolete variant of	1	unranked clade	Eukaryota	28595	64730	extant	1525224
+1	306691	txn		unranked clade	Eukaryota		1	unranked clade	Eukaryota	28595	64730	extant	1525224
+2	2	txn		subkingdom	Metazoa	subjective synonym of	67091	kingdom	Animalia	212579	35740	extant	1274652
+3	3	txn		phylum	Actinopoda		3	phylum	Actinopoda	1	6930	extant	0
+4	4	txn		phylum	Radiolaria		4	phylum	Radiolaria	213089	6930	extant	50798
+5	5	txn		order	Spumellaria		5	order	Spumellaria	111594	6930	extant	19197
+5	111595	txn	V	suborder	Spumellaria	obsolete variant of	5	order	Spumellaria	111594	25851	extant	19197
+6	6	txn		genus	Acaeniotyle		6	genus	Acaeniotyle	84726	6930	extinct	312
+7	7	txn		genus	Acanthopyle		7	genus	Acanthopyle	5	6930	extinct	0
+83088	83088	txn		species	Homo sapiens		83088	species	Homo sapiens	40901	12782	extant	95
+91596	91596	txn		subspecies	Homo sapiens idaltu		91596	subspecies	Homo sapiens idaltu	83088	19544	extinct	0
+399795	399795	txn		subspecies	Homo sapiens ferus		399795	subspecies	Homo sapiens ferus	83088	12782	extant	0
+399796	399796	txn		subspecies	Homo sapiens americanus		399796	subspecies	Homo sapiens americanus	83088	12782	extant	0
+399797	399797	txn		subspecies	Homo sapiens europaeus		399797	subspecies	Homo sapiens europaeus	83088	12782	extant	0
+399798	399798	txn		subspecies	Homo sapiens asiaticus		399798	subspecies	Homo sapiens asiaticus	83088	12782	extant	0
+399799	399799	txn		subspecies	Homo sapiens afer		399799	subspecies	Homo sapiens afer	83088	12782	extant	0
+399800	399800	txn		subspecies	Homo sapiens monstrosus		399800	subspecies	Homo sapiens monstrosus	83088	12782	extant	0
+40901	40901	txn		genus	Homo		40901	genus	Homo	91486	12782	extant	233
+83071	83071	txn		genus	Pithecanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83072	83072	txn		genus	Protanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83073	83073	txn		genus	Sinanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83074	83074	txn		genus	Cyphanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83075	83075	txn		genus	Africanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83076	83076	txn		genus	Telanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83077	83077	txn		genus	Atlanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83078	83078	txn		genus	Tchadanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83079	83079	txn		genus	Kenyanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83080	83080	txn		species	Kenyanthropus platyops		83080	species	Kenyanthropus platyops	40901	18101	extinct	0
+83080	83090	txn	V	species	Homo platyops	recombined as	83080	species	Kenyanthropus platyops	40901	18101	extinct	0
+83081	83081	txn		species	Homo rudolfensis		83081	species	Homo rudolfensis	40901	18101	extinct	1
+83081	83092	txn	V	species	Kenyanthropus rudolfensis	recombined as	83081	species	Homo rudolfensis	40901	18101	extinct	1
+83082	83082	txn		species	Homo habilis		83082	species	Homo habilis	40901	18101	extinct	18
+83083	83083	txn		species	Homo ergaster	subjective synonym of	83084	species	Homo erectus	40901	18101	extinct	42
+83084	83084	txn	V	species	Pithecanthropus erectus	recombined as	83084	species	Homo erectus	40901	18101	extinct	42
+83084	376854	txn		species	Homo erectus		83084	species	Homo erectus	40901	18101	extinct	42
+83085	83085	txn		species	Homo antecessor		83085	species	Homo antecessor	40901	18101	extinct	1
+83086	83086	txn		species	Homo heidelbergensis		83086	species	Homo heidelbergensis	40901	18101	extinct	1
+83087	83087	txn		species	Homo neanderthalensis		83087	species	Homo neanderthalensis	40901	18101	extinct	4
+83088	83088	txn		species	Homo sapiens		83088	species	Homo sapiens	40901	12782	extant	95
+91487	91487	txn		species	Homo floresiensis		91487	species	Homo floresiensis	40901	19515	extinct	8
+91597	91597	txn		species	Homo rhodesiensis		91597	species	Homo rhodesiensis	40901	75623	extinct	0
+91598	91598	txn		species	Homo helmei		91598	species	Homo helmei	40901	19544	extinct	0
+91599	91599	txn		species	Homo njarasensis		91599	species	Homo njarasensis	40901	19544	extinct	0
+95969	95969	txn		class	Bimanes	invalid subgroup of	40901	genus	Homo	40901	23420	extant	0
+108454	108454	txn		species	Homo georgicus		108454	species	Homo georgicus	40901	25343	extinct	1
+140901	140901	txn		genus	Brachyscelio		140901	genus	Brachyscelio	442086	10191	extinct	3
+149946	409012	txn	V	subgenus	Protaspis (Gigantaspis)	obsolete variant of	149946	genus	Gigantaspis	149925	67446	extinct	1
+210122	440901	txn		species	Rolfodon goliath		210122	species	Rolfodon goliath	210792	77642	extinct	0
+230177	230177	txn		family	Radiophronidae		230177	family	Radiophronidae	179784	40901	extinct	3
+230178	230178	txn		genus	Radiophron		230178	genus	Radiophron	230177	40901	extinct	1
+230179	230179	txn		species	Radiophron ibericus		230179	species	Radiophron ibericus	230178	40901	extinct	1
+230180	230180	txn		genus	Microcostaphron		230180	genus	Microcostaphron	230177	40901	extinct	1
+230181	230181	txn		species	Microcostaphron parvus		230181	species	Microcostaphron parvus	230180	40901	extinct	1
+240901	240901	txn		species	Fusulinella fugafilia		240901	species	Fusulinella fugafilia	1464	42149	extinct	3
+258501	258501	txn		species	Brachyscelio cephalotes		258501	species	Brachyscelio cephalotes	140901	10191	extinct	1
+258502	258502	txn		species	Brachyscelio dubius		258502	species	Brachyscelio dubius	140901	10191	extinct	1
+326519	326519	txn		species	Brachyscelio grandiculus		326519	species	Brachyscelio grandiculus	140901	56030	extinct	1
+340901	340901	txn		species	Hystrichodinium compactum		340901	species	Hystrichodinium compactum	278039	59171	extinct	0
+384458	384458	txn		species	Homo naledi		384458	species	Homo naledi	40901	68534	extinct	0
+409010	409010	txn		species	Protaspis (Protaspis) brevispina		409010	species	Protaspis (Protaspis) brevispina	399342	67446	extinct	2
+409011	409011	txn		subgenus	Protaspis (Europrotaspis)		409011	subgenus	Protaspis (Europrotaspis)	34197	30349	extinct	0
+409013	409013	txn		genus	Gracilerectus		409013	genus	Gracilerectus	54311	71641	extinct	0
+409014	409014	txn		species	Gracilerectus hackberryensis		409014	species	Gracilerectus hackberryensis	409013	71641	extinct	0
+409015	409015	txn		species	Gracilerectus delicatus		409015	species	Gracilerectus delicatus	409013	71641	extinct	0
+409016	409016	txn		genus	Grambastichara		409016	genus	Grambastichara	98158	71641	extinct	2
+409017	409017	txn	V	species	Chara tornata	recombined as	409017	species	Grambastichara tornata	409016	71641	extinct	1
+409017	409018	txn		species	Grambastichara tornata		409017	species	Grambastichara tornata	409016	71641	extinct	1
+409019	409019	txn		genus	Graminites		409019	genus	Graminites	53546	71641	extinct	3
+409020	409020	txn		species	Graminites feistmanteli		409020	species	Graminites feistmanteli	409019	71641	extinct	0
+40900	40900	txn		genus	Australopithecus		40900	genus	Australopithecus	91486	7584	extinct	80
+40901	40901	txn		genus	Homo		40901	genus	Homo	91486	12782	extant	233
+77367	77367	txn		genus	Sahelanthropus		77367	genus	Sahelanthropus	91486	17173	extinct	1
+83059	83059	txn		genus	Ardipithecus		83059	genus	Ardipithecus	91486	5353	extinct	3
+83062	83062	txn		genus	Plesianthropus	subjective synonym of	40900	genus	Australopithecus	91486	18101	extinct	80
+83064	83064	txn		genus	Zinjanthropus	subjective synonym of	40900	genus	Australopithecus	91486	18101	extinct	80
+83065	83065	txn		genus	Paraustralopithecus	subjective synonym of	40900	genus	Australopithecus	91486	18101	extinct	80
+83071	83071	txn		genus	Pithecanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83072	83072	txn		genus	Protanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83073	83073	txn		genus	Sinanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83074	83074	txn		genus	Cyphanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83075	83075	txn		genus	Africanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83076	83076	txn		genus	Telanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83077	83077	txn		genus	Atlanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83078	83078	txn		genus	Tchadanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+83079	83079	txn		genus	Kenyanthropus	subjective synonym of	40901	genus	Homo	91486	18101	extant	233
+91486	91486	txn		tribe	Hominini		91486	tribe	Hominini	83070	19515	extant	317
+191485	191486	txn		species	Streptorhynchus sinuatum		191485	species	Streptorhynchus sinuatum	28003	27678	extinct	1
+291486	291486	txn		genus	Parahupehsuchus		291486	genus	Parahupehsuchus	38870	50697	extinct	1
+291487	291487	txn		species	Parahupehsuchus longus		291487	species	Parahupehsuchus longus	291486	50697	extinct	1
+391486	391486	txn		species	Mysidioptera silvatica		391486	species	Mysidioptera silvatica	66039	69698	extinct	1
+397855	397855	txn		subtribe	Panina		397855	subtribe	Panina	91486	68737	extant	0
