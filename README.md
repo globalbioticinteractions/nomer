@@ -52,11 +52,23 @@ Nomer is a stand-alone java application, packaged in a jarfile. You can build yo
 
 On linux and mac, you can use the following script to install nomer:
 ```console
-sudo sh -c '(curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.4.7/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer && nomer install-manpage' && nomer clean && nomer version
+sudo sh -c '(curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.4.9/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer && nomer install-manpage' && nomer clean && nomer version
 ```
 :warning: Please review the script before running it.
 
 With this, you can now run things like ```nomer version``` instead of ```java -jar [some long dir path]/nomer.jar version``` . 
+
+Note that a debian package (Debian, Ubuntu, etc) is also available for use with the [Advanced Package Tool (or apt)](https://en.wikipedia.org/wiki/APT_(software)) via:
+
+```console
+sudo apt update
+sudo apt upgrade
+curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.4.9/nomer.deb > nomer.deb
+sudo apt install ./nomer.deb
+```
+
+To remove type ```sudo apt remove nomer```.
+
 
 ### Maven, Gradle, SBT
 Nomer is made available through a [maven](https://maven.apache.org) repository.
