@@ -64,6 +64,20 @@ public class AppenderTSVTest {
     }
 
     @Test
+    public void appendWithMatcherName() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        appendTo(new AppenderTSV(new HashMap<Integer, String>() {{
+            put(0, "path.pathName1.name");
+            put(1, "path.pathName1.id");
+            put(2, "name");
+            put(3, "id");
+            put(4, "rank");
+            put(5, "nameSource");
+        }}), out);
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1\tpathId1\tresolvedName\tresolvedId\tresolvedRank\tresolvedCatalog\n"));
+    }
+
+    @Test
     public void appendWithSeparateRanksWithSchemaWithNullPathNames() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String[] row = {"col1", "col2"};
@@ -127,6 +141,7 @@ public class AppenderTSVTest {
         resolved.setPathIds("pathId1 | pathId2");
         resolved.setPathNames("pathName1 | pathName2");
         resolved.setRank("resolvedRank");
+        resolved.setNameSource("resolvedCatalog");
         appender.appendLinesForRow(row, provided, taxon1 -> NameType.SAME_AS, Stream.of(resolved), new PrintStream(out));
     }
 

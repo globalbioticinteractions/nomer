@@ -44,6 +44,10 @@ public class AppendingRowHandler implements RowHandler {
                         taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
                     }
 
+                    for (String matcher : ctx.getMatchers()) {
+                        taxonResolved.setNameSource(matcher);
+                    }
+
                     String[] rowToBeAppended = isWildcardMatch(rowOrig)
                             ? fillProvidedTaxon(rowOrig, taxonToBeResolved)
                             : rowOrig;
