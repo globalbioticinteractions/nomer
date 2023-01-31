@@ -64,7 +64,7 @@ public class AppenderTSVTest {
     }
 
     @Test
-    public void appendWithMatcherName() {
+    public void appendWithNameSource() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         appendTo(new AppenderTSV(new HashMap<Integer, String>() {{
             put(0, "path.pathName1.name");
@@ -75,6 +75,21 @@ public class AppenderTSVTest {
             put(5, "nameSource");
         }}), out);
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1\tpathId1\tresolvedName\tresolvedId\tresolvedRank\tresolvedCatalog\n"));
+    }
+
+    @Test
+    public void appendWithNameSourceURL() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        appendTo(new AppenderTSV(new HashMap<Integer, String>() {{
+            put(0, "path.pathName1.name");
+            put(1, "path.pathName1.id");
+            put(2, "name");
+            put(3, "id");
+            put(4, "rank");
+            put(5, "nameSourceUrl");
+            put(6, "nameSourceAccessedAt");
+        }}), out);
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1\tpathId1\tresolvedName\tresolvedId\tresolvedRank\tresolvedCatalogURL\tresolvedCatalogId\n"));
     }
 
     @Test
@@ -142,6 +157,8 @@ public class AppenderTSVTest {
         resolved.setPathNames("pathName1 | pathName2");
         resolved.setRank("resolvedRank");
         resolved.setNameSource("resolvedCatalog");
+        resolved.setNameSourceURL("resolvedCatalogURL");
+        resolved.setNameSourceAccessedAt("resolvedCatalogId");
         appender.appendLinesForRow(row, provided, taxon1 -> NameType.SAME_AS, Stream.of(resolved), new PrintStream(out));
     }
 

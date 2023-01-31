@@ -38,7 +38,7 @@ public class CacheUtil {
         return new SimpleFSDirectory(indexDir.toPath());
     }
 
-    public static URI getValueURI(TermMatcherContext ctx, String key) throws PropertyEnricherException {
+    public static URI getValueURI(PropertyContext ctx, String key) throws PropertyEnricherException {
         String value = ctx.getProperty(key);
         return parseURI(key, value);
     }

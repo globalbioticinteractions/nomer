@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.rdf.api.IRI;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -9,6 +10,7 @@ import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
+import org.globalbioticinteractions.nomer.match.ResourceServiceUtil;
 import org.globalbioticinteractions.nomer.match.TermMatchUtil;
 
 import java.io.OutputStream;
@@ -33,6 +35,9 @@ public class AppendingRowHandler implements RowHandler {
     @Override
     public void onRow(final String[] rowOrig) throws PropertyEnricherException {
         Taxon providedTaxon = MatchUtil.asTaxon(rowOrig, ctx.getInputSchema());
+        final String provenanceAnchor = ResourceServiceUtil.hasAnchor(ctx)
+                ? ResourceServiceUtil.getProvenanceAnchor(ctx).getIRIString()
+                : null;
         termMatcher.match(
                 Collections.singletonList(providedTaxon),
                 (id, termToBeResolved, nameType, taxonResolved) -> {
@@ -44,11 +49,6 @@ public class AppendingRowHandler implements RowHandler {
                         taxonToBeResolved = new TaxonImpl(termToBeResolved.getName(), termToBeResolved.getId());
                     }
 
-                    if (ctx.getMatchers() != null) {
-                        for (String matcher : ctx.getMatchers()) {
-                            taxonResolved.setNameSource(matcher);
-                        }
-                    }
 
                     String[] rowToBeAppended = isWildcardMatch(rowOrig)
                             ? fillProvidedTaxon(rowOrig, taxonToBeResolved)
@@ -56,15 +56,27 @@ public class AppendingRowHandler implements RowHandler {
 
 
                     NameTypeOf typeMapperOf = t -> taxonResolved == null ? NameType.NONE : nameType;
+                    Taxon taxonResolvedOrNotResolved = taxonResolved == null ? taxonToBeResolved : taxonResolved;
+                    populateNameMatcherProvenance(provenanceAnchor, taxonResolvedOrNotResolved);
+
                     appender.appendLinesForRow(
                             rowToBeAppended,
                             taxonToBeResolved,
                             typeMapperOf,
-                            streamFor(taxonResolved == null ? taxonToBeResolved : taxonResolved),
+                            streamFor(taxonResolvedOrNotResolved),
                             out
                     );
 
                 });
+    }
+
+    private void populateNameMatcherProvenance(String provenanceAnchor, Taxon taxonResolvedOrNotResolved) {
+        if (ctx.getMatchers() != null) {
+            for (String matcher : ctx.getMatchers()) {
+                taxonResolvedOrNotResolved.setNameSource(matcher);
+            }
+            taxonResolvedOrNotResolved.setNameSourceURL(provenanceAnchor);
+        }
     }
 
     public Stream<Taxon> streamFor(Taxon taxonResolved) {

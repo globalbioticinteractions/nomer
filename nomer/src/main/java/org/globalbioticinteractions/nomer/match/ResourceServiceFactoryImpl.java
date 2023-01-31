@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.ResourceService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -9,8 +8,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.globalbioticinteractions.nomer.match.ResourceServiceUtil.NOMER_PRESTON_VERSION;
 
 public class ResourceServiceFactoryImpl implements ResourceServiceFactory {
 
@@ -26,10 +23,10 @@ public class ResourceServiceFactoryImpl implements ResourceServiceFactory {
 
         services.add(new ResourceServiceReadOnly(ctx));
 
-        if (StringUtils.isBlank(ctx.getProperty(NOMER_PRESTON_VERSION))) {
-            services.add(new ResourceServiceLocationBased(ctx));
-        } else {
+        if (ResourceServiceUtil.hasAnchor(ctx)) {
             services.add(new ResourceServiceContentBased(ctx));
+        } else {
+            services.add(new ResourceServiceLocationBased(ctx));
         }
 
         return new ResourceService() {
