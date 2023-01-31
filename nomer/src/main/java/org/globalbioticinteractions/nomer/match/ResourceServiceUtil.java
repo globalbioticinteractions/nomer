@@ -27,6 +27,7 @@ import java.util.zip.GZIPOutputStream;
 public class ResourceServiceUtil {
 
     public static final String NOMER_PRESTON_VERSION = "nomer.preston.version";
+    public static final String NOMER_PRESTON_REMOTES = "nomer.preston.remotes";
 
     private static File getCachedFileName(File cacheDir, URI resource) throws IOException {
         try {

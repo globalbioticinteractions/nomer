@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.util;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.rdf.api.IRI;
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -75,7 +76,9 @@ public class AppendingRowHandler implements RowHandler {
             for (String matcher : ctx.getMatchers()) {
                 taxonResolvedOrNotResolved.setNameSource(matcher);
             }
-            taxonResolvedOrNotResolved.setNameSourceURL(provenanceAnchor);
+            taxonResolvedOrNotResolved.setNameSourceURL(ctx.getProperty(ResourceServiceUtil.NOMER_PRESTON_REMOTES));
+            taxonResolvedOrNotResolved.setNameSourceAccessedAt(provenanceAnchor);
+
         }
     }
 

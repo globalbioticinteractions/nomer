@@ -36,7 +36,7 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
         } catch (PropertyEnricherException e) {
             throw new IOException("failed to access preston verse", e);
         }
-        String[] remotes = StringUtils.split(ctx.getProperty("nomer.preston.remotes"), ",");
+        String[] remotes = StringUtils.split(ctx.getProperty(ResourceServiceUtil.NOMER_PRESTON_REMOTES), ",");
         if (remotes != null) {
             List<String> ts = Arrays.asList(remotes);
             List<URI> remotesList = ts.stream()
