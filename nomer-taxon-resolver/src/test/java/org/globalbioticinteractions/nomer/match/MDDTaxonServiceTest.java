@@ -87,6 +87,22 @@ public class MDDTaxonServiceTest {
     }
 
 
+    @Test
+    public void enrichBySubspeciesNameAltAuthorship2() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl("Acerodon jubatus jubatus");
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+
+        Taxon enrichedTaxon = TaxonUtil.mapToTaxon(enriched);
+        assertThat(enrichedTaxon.getName(), is("Acerodon jubatus jubatus"));
+        assertThat(enrichedTaxon.getExternalUrl(), is("https://www.mammaldiversity.org/explore.html#genus=Acerodon&species=jubatus&id=1004444&subspecies=jubatus"));
+        assertThat(enrichedTaxon.getAuthorship(), is("(Eschscholtz, 1831)"));
+        assertThat(enrichedTaxon.getPath(), is("Theria | Placentalia | Boreoeutheria | Laurasiatheria | Chiroptera | Pteropodiformes |  |  | Pteropodoidea | Pteropodidae | Pteropodinae | Pteropodini | Acerodon |  | jubatus | jubatus"));
+        assertThat(enrichedTaxon.getPathNames(), is("subclass | infraclass | magnorder | superorder | order | suborder | infraorder | parvorder | superfamily | family | subfamily | tribe | genus | subgenus | specificEpithet | subspecificEpithet"));
+    }
+
+
     private MDDTaxonService createService() {
         File file = new File("target/cache" + UUID.randomUUID());
         return new MDDTaxonService(new TermMatcherContext() {
