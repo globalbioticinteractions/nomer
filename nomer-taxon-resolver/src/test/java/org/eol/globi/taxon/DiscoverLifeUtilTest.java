@@ -716,12 +716,16 @@ public class DiscoverLifeUtilTest {
     }
 
 
-    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/80")
+    //@Ignore("see https://github.com/globalbioticinteractions/nomer/issues/80")
     @Test
     public void getCurrentBeeNames() throws IOException {
         String actual = HtmlUtil.getHtmlAsXmlString(DiscoverLifeUtil.DISCOVER_LIFE_URL);
 
-        String localCopy = IOUtils.toString(DiscoverLifeUtil.getStreamOfBees(), StandardCharsets.UTF_8);
+        String localCopy = IOUtils.toString(
+                DiscoverLifeUtil.getStreamOfBees(),
+                StandardCharsets.UTF_8
+        );
+
         assertThat(actual, Is.is(localCopy));
     }
 
