@@ -3,28 +3,51 @@ package org.eol.globi.taxon;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
+import org.eol.globi.service.ResourceService;
+import org.eol.globi.util.HttpUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.net.ssl.SSLContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.zip.GZIPInputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
 
 public class DiscoverLifeUtilTest {
+
+    private static final String DISCOVER_LIFE_URL
+            = DiscoverLifeUtil.URL_ENDPOINT_DISCOVER_LIFE +
+            "/mp/20q" +
+            "?act=x_checklist" +
+            "&guide=Apoidea_species" +
+            "&flags=HAS";
+    private static final String BEE_NAMES_CACHED = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.html.gz";
 
     @Test
     public void parseNameAncylandrenaAtoposoma() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
@@ -701,7 +724,12 @@ public class DiscoverLifeUtilTest {
             }
         };
 
-        DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), listener);
+        DiscoverLifeUtil.parse(DiscoverLifeUtil.getBeeNameTable(new ResourceService() {
+            @Override
+            public InputStream retrieve(URI uri) throws IOException {
+                return getStreamOfBees();
+            }
+        }, "https://example.org"), listener);
 
         assertThat(counter.get(), Is.is(51348));
 
@@ -719,15 +747,39 @@ public class DiscoverLifeUtilTest {
     //@Ignore("see https://github.com/globalbioticinteractions/nomer/issues/80")
     @Test
     public void getCurrentBeeNames() throws IOException {
-        String actual = HtmlUtil.getHtmlAsXmlString(DiscoverLifeUtil.DISCOVER_LIFE_URL);
+
+        SSLContext build = null;
+        try {
+            build = new SSLContextBuilder()
+                    .loadTrustMaterial(null, (TrustStrategy) (arg0, arg1) -> true)
+                    .build();
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
+            // ignore
+        }
+
+
+        HttpClientBuilder httpClientBuilder = HttpUtil.createHttpClientBuilder(300000);
+        httpClientBuilder.setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .setSSLContext(build);
+
+        CloseableHttpClient build1 = httpClientBuilder.build();
+
+        String actual = HttpUtil.executeAndRelease(new HttpGet(DISCOVER_LIFE_URL), build1);
 
         String localCopy = IOUtils.toString(
-                DiscoverLifeUtil.getStreamOfBees(),
+                getStreamOfBees(),
                 StandardCharsets.UTF_8
         );
 
         assertThat(actual, Is.is(localCopy));
     }
+
+    private static InputStream getStreamOfBees() throws IOException {
+        return new GZIPInputStream(DiscoverLifeUtilTest.class
+                .getResourceAsStream(BEE_NAMES_CACHED)
+        );
+    }
+
 
     @Test
     public void guessRank() throws IOException {

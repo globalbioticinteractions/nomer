@@ -1,7 +1,5 @@
 package org.eol.globi.taxon;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomNode;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
@@ -9,7 +7,10 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.service.ResourceService;
 import org.eol.globi.service.TaxonUtil;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -17,20 +18,22 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-import java.util.zip.GZIPInputStream;
 
 public class DiscoverLifeUtil {
 
     private static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
-    private static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
+    public static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
     private static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
             "/mp/20q?search=";
     private static final List<String> PATH_STATIC_IDS = PATH_STATIC
@@ -38,19 +41,17 @@ public class DiscoverLifeUtil {
             .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
             .collect(Collectors.toList());
     private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family");
-    static final String DISCOVER_LIFE_URL
-            = URL_ENDPOINT_DISCOVER_LIFE +
-            "/mp/20q" +
-            "?act=x_checklist" +
-            "&guide=Apoidea_species" +
-            "&flags=HAS";
-    private static final String BEE_NAMES = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
     public static final String HOMONYM_SUFFIX = "_homonym";
 
-    public static InputStream getStreamOfBees() throws IOException {
-        return new GZIPInputStream(DiscoverLifeUtil.class
-                .getResourceAsStream(BEE_NAMES)
-        );
+    public static InputStream getBeeNameTable(ResourceService service, String discoverLifeUrl) throws IOException {
+
+        InputStream retrieve = service.retrieve(URI.create(discoverLifeUrl));
+        Document document = Jsoup.parse(retrieve, "UTF-8", discoverLifeUrl);
+        document.outputSettings()
+                .syntax(Document.OutputSettings.Syntax.xml)
+                .charset(StandardCharsets.UTF_8)
+                .escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
+        return new ByteArrayInputStream(document.html().getBytes(StandardCharsets.UTF_8));
     }
 
     static void parseNames(Node familyNameNode, Node nameNodeCandidate, TermMatchListener listener) throws XPathExpressionException {
@@ -179,8 +180,8 @@ public class DiscoverLifeUtil {
         if (relatedTaxon != null && focalTaxon != null) {
             isSelfReference =
                     StringUtils.equals(relatedTaxon.getExternalId(), focalTaxon.getExternalId())
-                    && StringUtils.equals(relatedTaxon.getName(), focalTaxon.getName())
-                    && StringUtils.equals(relatedTaxon.getAuthorship(), focalTaxon.getAuthorship());
+                            && StringUtils.equals(relatedTaxon.getName(), focalTaxon.getName())
+                            && StringUtils.equals(relatedTaxon.getAuthorship(), focalTaxon.getAuthorship());
 
         }
         return isSelfReference;
@@ -238,7 +239,7 @@ public class DiscoverLifeUtil {
 
         String[] authorParts = StringUtils.split(scrubbedName, ",");
 
-        if (authorParts.length > 1) {
+        if (authorParts != null && authorParts.length > 1) {
             String authorName = StringUtils.trim(authorParts[0]);
             String authorYear = StringUtils.trim(authorParts[1]);
             relatedName.put("authorship", StringUtils.join(Arrays.asList(authorName, authorYear), ", "));

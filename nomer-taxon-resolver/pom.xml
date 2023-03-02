@@ -26,6 +26,11 @@
             <version>${commons-io.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.4</version>
+        </dependency>
+        <dependency>
             <groupId>org.eol</groupId>
             <artifactId>eol-globi-taxon-resolver</artifactId>
             <version>${globi.version}</version>

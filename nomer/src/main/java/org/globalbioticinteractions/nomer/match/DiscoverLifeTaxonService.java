@@ -168,7 +168,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
                     .valueSerializer(Serializer.JAVA)
                     .make();
 
-            DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), new TermMatchListener() {
+            DiscoverLifeUtil.parse(DiscoverLifeUtil.getBeeNameTable(ctx, ctx.getProperty("nomer.discoverlife.url")), new TermMatchListener() {
                 @Override
                 public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                     if (resolvedTaxon == null && NameType.HOMONYM_OF.equals(nameType)) {
