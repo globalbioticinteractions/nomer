@@ -7,7 +7,6 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
 import org.hamcrest.core.Is;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -26,6 +25,61 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
 
 public class DiscoverLifeUtilTest {
+
+    @Test
+    public void parseNameAncylandrenaAtoposoma() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/149
+        String xmlSnippet = "          <tr bgcolor=\"#f0f0f0\">\n" +
+                "            <td>\n" +
+                "                 \n" +
+                "              <i>\n" +
+                "                <a href=\"/mp/20q?search=Ancylandrena+atoposoma\" target=\"_self\">\n" +
+                "                  Ancylandrena atoposoma\n" +
+                "                </a>\n" +
+                "              </i>\n" +
+                "              <font size=\"-1\" face=\"sans-serif\">\n" +
+                "                (Cockerell, 1934)\n" +
+                "              </font>\n" +
+                "               -- \n" +
+                "              <i>\n" +
+                "                Andrena (Ancylandrena) heterodoxa_homonym \n" +
+                "              </i>\n" +
+                "              Cockerell, 1930; \n" +
+                "              <i>\n" +
+                "                Andrena atoposoma \n" +
+                "              </i>\n" +
+                "              Cockerell, 1934, replacement name\n" +
+                "            </td>\n" +
+                "          </tr>\n";
+
+        NodeList nodes = selectNameRelations(xmlSnippet);
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(3));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        assertThat(firstNameRelation.getLeft().getName(), Is.is("Ancylandrena atoposoma"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Ancylandrena+atoposoma"));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("(Cockerell, 1934)"));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getRank(), Is.is("species"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(firstNameRelation.getRight().getName(), Is.is("Ancylandrena atoposoma"));
+        assertThat(firstNameRelation.getRight().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Ancylandrena+atoposoma"));
+        assertThat(((Taxon) firstNameRelation.getRight()).getAuthorship(), Is.is("(Cockerell, 1934)"));
+        assertThat(((Taxon) firstNameRelation.getRight()).getRank(), Is.is("species"));
+
+    }
 
     @Test
     public void parseNameRelationsAcamptopoeumVagans() {
@@ -399,7 +453,7 @@ public class DiscoverLifeUtilTest {
         assertThat(relatedTaxa.size(), Is.is(3));
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
-        assertThat(((Taxon)firstNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
+        assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Anthidiellum boreale"));
         assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
         assertNull(firstNameRelation.getRight());
@@ -411,7 +465,7 @@ public class DiscoverLifeUtilTest {
 
         Triple<Term, NameType, Taxon> thirdNameRelation = relatedTaxa.get(2);
         assertThat(thirdNameRelation.getLeft().getName(), Is.is("Anthidiellum boreale"));
-        assertThat(((Taxon)thirdNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
+        assertThat(((Taxon) thirdNameRelation.getLeft()).getAuthorship(), Is.is("Wu, 2004"));
         assertThat(thirdNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
         assertNull(thirdNameRelation.getRight());
     }
@@ -681,17 +735,17 @@ public class DiscoverLifeUtilTest {
         assertThat(DiscoverLifeUtil.guessRankFromName("Bla (Bla) bla"), Is.is("species"));
     }
 
-   @Test
+    @Test
     public void guessRankSubspecies() throws IOException {
         assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla"), Is.is("subspecies"));
     }
 
-   @Test
+    @Test
     public void guessRankVariant() throws IOException {
         assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla var bla"), Is.is("variety"));
     }
 
-   @Test
+    @Test
     public void guessRankSubvariant() throws IOException {
         assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla var bla"), Is.is("subvariety"));
     }
