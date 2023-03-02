@@ -348,7 +348,7 @@ public class DiscoverLifeTaxonServiceTest {
 
             @Override
             public InputStream retrieve(URI uri) throws IOException {
-                return null;
+                return DiscoverLifeTaxonServiceTest.class.getResourceAsStream("discoverlife-bees.html");
             }
 
             @Override
@@ -373,7 +373,7 @@ public class DiscoverLifeTaxonServiceTest {
 
             @Override
             public String getProperty(String key) {
-                return null;
+                return "https://example.org/bees";
             }
         };
     }

@@ -774,7 +774,7 @@ public class DiscoverLifeUtilTest {
         assertThat(actual, Is.is(localCopy));
     }
 
-    private static InputStream getStreamOfBees() throws IOException {
+    public static InputStream getStreamOfBees() throws IOException {
         return new GZIPInputStream(DiscoverLifeUtilTest.class
                 .getResourceAsStream(BEE_NAMES_CACHED)
         );
