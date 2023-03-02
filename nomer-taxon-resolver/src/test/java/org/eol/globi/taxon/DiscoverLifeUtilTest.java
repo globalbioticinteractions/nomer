@@ -703,7 +703,7 @@ public class DiscoverLifeUtilTest {
 
         DiscoverLifeUtil.parse(DiscoverLifeUtil.getStreamOfBees(), listener);
 
-        assertThat(counter.get(), Is.is(50219));
+        assertThat(counter.get(), Is.is(51348));
 
         Taxon taxon = firstTaxon.get();
 
