@@ -274,7 +274,7 @@ public class DiscoverLifeTaxonServiceTest {
                     }
                 });
 
-        assertThat(counter.get(), Is.is(50838));
+        assertThat(counter.get(), Is.is(58495));
     }
 
     @Test
