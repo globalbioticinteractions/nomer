@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DiscoverLifeUtil {
@@ -296,8 +297,7 @@ public class DiscoverLifeUtil {
                     parseNames(
                             currentFamilyNode,
                             node,
-                            termMatchListener
-                    );
+                            new SubgenusStrippingListener(termMatchListener));
                 }
 
             }
@@ -336,4 +336,5 @@ public class DiscoverLifeUtil {
     public static String trimScientificName(String actual) {
         return RegExUtils.replacePattern(actual, " \\(.*\\) ", " ");
     }
+
 }

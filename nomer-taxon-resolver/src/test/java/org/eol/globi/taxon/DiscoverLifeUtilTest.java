@@ -711,6 +711,43 @@ public class DiscoverLifeUtilTest {
     }
 
     @Test
+    public void parseNamePseudopanurgus_parvus() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
+        // see https://github.com/globalbioticinteractions/nomer/issues/149
+        String xmlSnippet = "<tr bgcolor=\"#f0f0f0\"><td>" +
+                "<i><a href=\"/mp/20q?search=Protandrena+parva\" target=\"_self\">Protandrena parva</a></i> <font size=\"-1\" face=\"sans-serif\">(Robertson, 1892)</font> -- <i>Calliopsis parvus </i>Robertson, 1892; <i>Pseudopanurgus gerardiae </i>Crawford, 1932; <i>Pseudopanurgus stevensi </i>Crawford, 1932; <i>Panurginus borealis </i>Cockerell, 1937; <i>Pseudopanurgus (Heterosarus) parvus </i>(Robertson, 1892); <i>Heterosarus (Heterosarus) parvus </i>(Robertson, 1892)</td></tr>";
+
+        NodeList nodes = selectNameRelations(xmlSnippet);
+
+        assertThat(nodes.getLength(), Is.is(1));
+
+        List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
+
+        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                relatedTaxa.add(Triple.of(providedTerm, nameType, resolvedTaxon));
+            }
+        });
+
+        assertThat(relatedTaxa.size(), Is.is(7));
+
+        Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
+        Taxon firstTaxonLeft = (Taxon) firstNameRelation.getLeft();
+        assertThat(firstTaxonLeft.getName(), Is.is("Protandrena parva"));
+        assertThat(firstTaxonLeft.getRank(), Is.is("species"));
+        assertThat(firstTaxonLeft.getAuthorship(), Is.is("(Robertson, 1892)"));
+        assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
+
+        Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(5);
+        assertThat(secondNameRelation.getLeft().getName(), Is.is("Pseudopanurgus (Heterosarus) parvus"));
+        assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("(Robertson, 1892)"));
+        assertThat(secondNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
+        assertThat(secondNameRelation.getRight().getName(), Is.is("Protandrena parva"));
+
+    }
+
+    @Test
     public void parseBees() throws IOException {
 
         final AtomicReference<Taxon> firstTaxon = new AtomicReference<>();
