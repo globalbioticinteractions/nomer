@@ -194,11 +194,7 @@ public class ITISTaxonService extends CommonLongTaxonService {
         StopWatch watch = new StopWatch();
         watch.start();
 
-        BTreeMap<String, String> rankIdNameMap = db
-                .createTreeMap("rankIdNameMap")
-                .keySerializer(BTreeKeySerializer.STRING)
-                .valueSerializer(Serializer.STRING)
-                .make();
+        BTreeMap<String, String> rankIdNameMap = DBMaker.newTempTreeMap();
 
         try {
             InputStream resource = getCtx().retrieve(getTaxonUnitTypes());
