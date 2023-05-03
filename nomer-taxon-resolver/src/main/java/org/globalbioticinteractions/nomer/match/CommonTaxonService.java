@@ -110,17 +110,16 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             T acceptedId = mergedNodes == null ? null : mergedNodes.get(id);
             if (acceptedId == null) {
                 taxonTo = taxonFrom;
-                nameType = NameType.HAS_ACCEPTED_NAME;
                 termMatchListener.foundTaxonForTerm(
                         null,
                         taxonFrom,
-                        nameType,
+                        uncheckedOrAccepted(taxonFrom),
                         taxonTo
                 );
             } else {
                 taxonTo = resolveTaxon(acceptedId, childParent, nodes, getTaxonomyProvider());
                 if (taxonTo == null) {
-                    LOG.warn("failed to resolve [" + taxonFrom.getExternalId() + ";" + taxonFrom.getName() + "]: does accepted name id [" + acceptedId + "] exist?" );
+                    LOG.warn("failed to resolve [" + taxonFrom.getExternalId() + ";" + taxonFrom.getName() + "]: does accepted name id [" + acceptedId + "] exist?");
                 } else {
                     if (!StringUtils.equals(taxonTo.getExternalId(), taxonFrom.getExternalId())) {
                         nameType = NameType.SYNONYM_OF;
@@ -145,6 +144,12 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 }
             }
         });
+    }
+
+    private static boolean isUnchecked(Taxon taxon) {
+        return taxon.getStatus() != null
+                && NameType.HAS_UNCHECKED_NAME.name()
+                .equals(taxon.getStatus().getName());
     }
 
     private void registerRelation(TermMatchListener termMatchListener, String name, T id, Taxon taxonTo) {
@@ -253,18 +258,21 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 ? NameType.HAS_ACCEPTED_NAME
                 : NameType.SYNONYM_OF;
         for (Map<String, String> enrichedProperty : enrichedProperties) {
+            Taxon taxon = TaxonUtil.mapToTaxon(enrichedProperty);
+            if (isUnchecked(taxon)) {
+                type = NameType.HAS_UNCHECKED_NAME;
+            }
             listener.foundTaxonForTerm(
                     null,
                     toBeEnriched,
                     type,
-                    TaxonUtil.mapToTaxon(enrichedProperty)
+                    taxon
             );
         }
         return new TreeMap<>(enrichedProperties.get(0));
     }
 
     private T mergedNodeOrDefault(T defaultKey) {
-
         return mergedNodes == null || defaultKey == null
                 ? defaultKey
                 : mergedNodes.getOrDefault(defaultKey, defaultKey);
@@ -305,7 +313,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                             if (acceptedExternalId.equals(taxonKey)) {
                                 listener.foundTaxonForTerm(null,
                                         resolvedTaxon,
-                                        NameType.HAS_ACCEPTED_NAME,
+                                        uncheckedOrAccepted(resolvedTaxon),
                                         resolvedTaxon
                                 );
                             } else {
@@ -321,6 +329,12 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             }
         }
         return enriched;
+    }
+
+    private NameType uncheckedOrAccepted(Taxon resolvedTaxon) {
+        return isUnchecked(resolvedTaxon)
+                ? NameType.HAS_UNCHECKED_NAME
+                : NameType.HAS_ACCEPTED_NAME;
     }
 
 

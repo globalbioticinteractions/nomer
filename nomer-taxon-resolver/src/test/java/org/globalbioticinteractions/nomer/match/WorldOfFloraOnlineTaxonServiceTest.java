@@ -4,16 +4,21 @@ import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
+import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -90,6 +95,25 @@ public class WorldOfFloraOnlineTaxonServiceTest {
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WFO:0000002017"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Kyrsteniopsis spinaciifolia"));
+    }
+
+    @Test
+    public void matchUncheckedName() throws PropertyEnricherException {
+        WorldOfFloraOnlineTaxonService service = createService();
+
+        Taxon taxon = new TaxonImpl(null, "WFO:0000002017");
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+
+
+        service.match(Arrays.asList(taxon), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, is(NameType.HAS_UNCHECKED_NAME));
+                foundMatch.set(true);
+            }
+        });
+
+        assertThat(foundMatch.get(), is(true));
     }
 
     @Test

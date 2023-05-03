@@ -7,6 +7,7 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
@@ -30,9 +31,9 @@ import java.util.Map;
 public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
     private static final Logger LOG = LoggerFactory.getLogger(WorldOfFloraOnlineTaxonService.class);
 
-    public static final String ACCEPTED_LABEL = "ACCEPTED";
-    public static final String SYNONYM_LABEL = "SYNONYM";
-    public static final String UNCHECKED_LABEL = "UNCHECKED";
+    private static final String ACCEPTED_LABEL = "ACCEPTED";
+    private static final String SYNONYM_LABEL = "SYNONYM";
+    private static final String UNCHECKED_LABEL = "UNCHECKED";
 
 
     public WorldOfFloraOnlineTaxonService(TermMatcherContext ctx) {
@@ -171,6 +172,10 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
                 taxon.setAuthorship(StringUtils.trim(authorship));
             }
 
+            if (StringUtils.isNotBlank(status)) {
+                taxon.setStatus(new TermImpl(null, NameType.HAS_UNCHECKED_NAME.name()));
+            }
+
             taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
 
             nameUsageListener.handle(
@@ -198,7 +203,7 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
         } else if (StringUtils.equals(statusValue, ACCEPTED_LABEL)) {
             nameType = NameType.HAS_ACCEPTED_NAME;
         } else if (StringUtils.equals(statusValue, UNCHECKED_LABEL)) {
-            nameType = NameType.HAS_ACCEPTED_NAME;
+            nameType = NameType.HAS_UNCHECKED_NAME;
         }
         return nameType;
     }
@@ -237,6 +242,9 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
             }
 
             if (childTaxId != null) {
+                if (NameType.HAS_UNCHECKED_NAME.equals(nameType)) {
+                    taxon.setStatus(new TermImpl(NameType.HAS_UNCHECKED_NAME.name(), NameType.HAS_UNCHECKED_NAME.name()));
+                }
                 nodes.put(childTaxId, TaxonUtil.taxonToMap(taxon));
                 if (parentTaxId != null) {
                     childParent.put(
