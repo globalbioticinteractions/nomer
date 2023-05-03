@@ -198,11 +198,11 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
 
     private NameType getNameType(String statusValue) {
         NameType nameType = NameType.NONE;
-        if (StringUtils.equals(statusValue, SYNONYM_LABEL)) {
+        if (StringUtils.equalsIgnoreCase(statusValue, SYNONYM_LABEL)) {
             nameType = NameType.SYNONYM_OF;
-        } else if (StringUtils.equals(statusValue, ACCEPTED_LABEL)) {
+        } else if (StringUtils.equalsIgnoreCase(statusValue, ACCEPTED_LABEL)) {
             nameType = NameType.HAS_ACCEPTED_NAME;
-        } else if (StringUtils.equals(statusValue, UNCHECKED_LABEL)) {
+        } else if (StringUtils.equalsIgnoreCase(statusValue, UNCHECKED_LABEL)) {
             nameType = NameType.HAS_UNCHECKED_NAME;
         }
         return nameType;
