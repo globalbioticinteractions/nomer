@@ -112,7 +112,7 @@ public class BatNamesUtil {
                 taxon.setName(trim);
 
                 try {
-                    URI speciesPage = new URI("https", "batnames.org", "/species/" + taxon.getName(), null);
+                    URI speciesPage = new URI("https", "batnames.org", "/species/" + StringUtils.replace(taxon.getName(), " ", "+"), null);
                     String speciesUrl = speciesPage.toString();
                     taxon.setExternalId(speciesUrl);
                     taxon.setExternalUrl(speciesUrl);

@@ -53,7 +53,7 @@
         <em>
           Miniopterus
         </em>
-         resulted in 37 species-level matches: 
+         resulted in 39 species-level matches: 
         <br/>
       </div>
       <div class="link" id="families">
@@ -230,6 +230,27 @@
             <span>
               <b>
                 <i>
+                  Miniopterus eschscholtzii  
+                </i>
+              </b>
+            </span>
+            (Waterhouse, 1845).
+            <br/>
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             13 (1845): 3.
+            <br/>
+            Eschscholtz's Bent-winged Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Miniopterus fraterculus 
                 </i>
               </b>
@@ -260,7 +281,7 @@
             <i>
               J. Asiat. Soc. Bengal
             </i>
-             4(1835): 400.
+             4(48): 700.
             <br/>
             Eastern Bent-winged Bat
           </p>
@@ -773,6 +794,73 @@ to the west of Mount Nimba
             <span>
               <b>
                 <i>
+                  Miniopterus phillipsi 
+                </i>
+              </b>
+            </span>
+            Kusuminda, Mannakkara, Ukuwela, Kruskop, Amarasinghe, Saikia, Venugopal, Karunarathna, Gamage, Ruedi, Csorba, Yapa, &amp; Patterson, 2022.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             24(1): 4.
+            <br/>
+            Phillips' Long-fingered Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Sri Lanka, Uva Province, at an edge of Dunkunda division of Bio Tea Garden tea plantation, near Idulgashinna railway station, Idulgashinna cave
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Sri Lanka and S India
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Not evaluated (new species).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Kusuminda, T., A. Mannakkara, K.D. Ukuwela, S.V. Kruskop, C.J. Amarasinghe, U. Saikia, P. Venugopal, M. Karunarathna, R. Gamage, M. Ruedi, and G. Csorba. 2022. DNA barcoding and morphological analyses reveal a cryptic species of Miniopterusfrom India and Sri Lanka. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             24(1): 1-17. 
+            <a href="https://www.ingentaconnect.com/content/miiz/actac/2022/00000024/00000001/art00001" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Miniopterus pusillus 
                 </i>
               </b>
@@ -1101,11 +1189,11 @@ National Park, Mount Gorongosa
           </div>
           <div class="cite">
             <p>
-              Cite the database: Simmons, N.B. and A.L. Cirranello. 2022B. 
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2023. 
               <i>
-                Bat Species of the World: A taxonomic and geographic database
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.3
               </i>
-              . Accessed on 07/21/2022.
+              . Accessed on 05/16/2023.
             </p>
           </div>
         </div>
@@ -1128,9 +1216,6 @@ National Park, Mount Gorongosa
             </li>
           </ul>
           <div class="photo">
-            <p>
-              Interactive web maps: Maria Brown
-            </p>
             <p>
               Background photo: M. Brock Fenton
             </p>
