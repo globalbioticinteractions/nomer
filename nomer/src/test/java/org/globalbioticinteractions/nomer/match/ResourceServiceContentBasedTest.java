@@ -19,6 +19,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.AnyOf.anyOf;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 
 public class ResourceServiceContentBasedTest {
 
@@ -34,7 +36,53 @@ public class ResourceServiceContentBasedTest {
 
         // with-update contains two versions of file:///tmp/preston-test/foo.txt
         // , the most recent one containing "bar2", the less recent one contains "`bar"
-        ZipFile zipFile = new ZipFile(getClass().getResource("with-update.zip").getFile());
+        unpack("with-update.zip");
+
+        String anchor = "hash://sha256/30845fefa4a854fc67da113a06759f86902b591bf0708bd625e611680aa1c9c4";
+        CmdMatcherParams ctx = ctxWithAnchor(anchor);
+        ResourceServiceContentBased resourceServiceContentBased = new ResourceServiceContentBased(ctx);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        IOUtils.copy(
+                resourceServiceContentBased.retrieve(URI.create("file:///tmp/preston-test/foo.txt")),
+                os
+        );
+
+        assertThat(new String(os.toByteArray(), StandardCharsets.UTF_8), Is.is("bar2\n"));
+    }
+
+    private CmdMatcherParams ctxWithAnchor(String anchor) {
+        CmdMatcherParams ctx = new CmdMatcherParams() {
+
+            @Override
+            public void run() {
+
+            }
+
+            @Override
+            public String getProperty(String key) {
+                String value;
+                if ("nomer.cache.dir".equals(key)) {
+                    value = cacheDir.getRoot().getAbsolutePath();
+                } else if ("nomer.preston.dir".equals(key)) {
+                    value = cacheDir.getRoot().getAbsolutePath() + "/data";
+                } else if ("nomer.preston.version".equals(key)) {
+                    value = anchor;
+                } else if ("nomer.preston.remotes".equals(key)) {
+                    value = "";
+                } else {
+                    value = super.getProperty(key);
+                }
+                return value;
+            }
+        };
+
+        ctx.setWorkDir(workDir.getRoot().getAbsolutePath());
+        return ctx;
+    }
+
+    private void unpack(String filename) throws IOException {
+        ZipFile zipFile = new ZipFile(getClass().getResource(filename).getFile());
 
         Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
 
@@ -47,42 +95,32 @@ public class ResourceServiceContentBasedTest {
                 IOUtils.copy(zipFile.getInputStream(zipArchiveEntry), new FileOutputStream(target));
             }
         }
+    }
 
-        CmdMatcherParams ctx = new CmdMatcherParams() {
 
-            @Override
-            public void run() {
+    @Test
+    public void getAliasFromPreviousFromAnchoredVersion() throws IOException {
+        assertExampleDotOrg("https://example.org/");
+    }
 
-            }
+    @Test
+    public void getAliasFromAnchoredVersion() throws IOException {
+        assertExampleDotOrg("https://duckduckgo.com");
+    }
 
-            @Override
-            public String getProperty(String key) {
-                String value = null;
-                if ("nomer.cache.dir".equals(key)) {
-                    value = cacheDir.getRoot().getAbsolutePath();
-                } else if ("nomer.preston.dir".equals(key)) {
-                    value = cacheDir.getRoot().getAbsolutePath() + "/data";
-                } else if ("nomer.preston.version".equals(key)) {
-                    value = "hash://sha256/30845fefa4a854fc67da113a06759f86902b591bf0708bd625e611680aa1c9c4";
-                } else if ("nomer.preston.remotes".equals(key)) {
-                    value = "";
-                } else {
-                    value = super.getProperty(key);
-                }
-                return value;
-            }
-        };
+    private void assertExampleDotOrg(String alias) throws IOException {
+        unpack("get-alias-test.zip");
+        CmdMatcherParams ctx = ctxWithAnchor("hash://sha256/18e35af484b642526be2ad322bf9aa2720f3ed17c4e164d5a22e6f2a42ca3033");
 
-        ctx.setWorkDir(workDir.getRoot().getAbsolutePath());
         ResourceServiceContentBased resourceServiceContentBased = new ResourceServiceContentBased(ctx);
 
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         IOUtils.copy(
-                resourceServiceContentBased.retrieve(URI.create("file:///tmp/preston-test/foo.txt")),
+                resourceServiceContentBased.retrieve(URI.create(alias)),
                 os
         );
 
-        assertThat(new String(os.toByteArray(), StandardCharsets.UTF_8), Is.is("bar2\n"));
+        assertThat(new String(os.toByteArray(), StandardCharsets.UTF_8), anyOf(startsWith("<!DOCTYPE html"), startsWith("<!doctype html")));
     }
 
 }
