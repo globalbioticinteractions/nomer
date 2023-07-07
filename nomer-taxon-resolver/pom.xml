@@ -98,9 +98,9 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>net.sourceforge.htmlunit</groupId>
+            <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>2.53.0</version>
+            <version>3.3.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
