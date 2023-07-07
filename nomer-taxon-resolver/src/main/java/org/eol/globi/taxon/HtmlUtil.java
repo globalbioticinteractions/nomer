@@ -1,7 +1,7 @@
 package org.eol.globi.taxon;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.DomNode;
+import org.htmlunit.WebClient;
+import org.htmlunit.html.DomNode;
 
 import java.io.IOException;
 
