@@ -29,6 +29,7 @@ public class TermMatcherRegistry {
             "gbif",
             "gbif-web",
             "globi-suggest",
+            "globi-correct",
             "globi-enrich",
             "globalnames",
             "globi",
@@ -64,6 +65,7 @@ public class TermMatcherRegistry {
             put("eol-taxon-id", "eol");
             put("gbif-taxon", "gbif");
             put("gbif-taxon-web", "gbif-web");
+            put("globi-correct", "globi-correct");
             put("globi-suggest", "globi-suggest");
             put("globi-enrich", "globi-enrich");
             put("globi-globalnames", "globalnames");
@@ -113,6 +115,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherTranslateNamesFactory());
         add(new TermMatcherStopWordFactory());
         add(new TermMatcherCorrectFactory());
+        add(new TermMatcherSuggestFactory());
         add(new TermMatcherFactoryTaxonRanks());
         add(new TermMatcherFactoryEnsembleEnricher());
         add(new TermMatcherFactoryGlobalNames());

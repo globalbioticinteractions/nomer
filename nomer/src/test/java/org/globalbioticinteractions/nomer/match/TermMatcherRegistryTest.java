@@ -28,6 +28,7 @@ public class TermMatcherRegistryTest {
             "gbif-taxon",
             "gbif-taxon-web",
             "globi-suggest",
+            "globi-correct",
             "globi-enrich",
             "globi-globalnames",
             "globi-taxon-cache",
