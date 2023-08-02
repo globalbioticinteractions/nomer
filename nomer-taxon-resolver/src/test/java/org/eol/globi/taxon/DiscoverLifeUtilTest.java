@@ -801,7 +801,8 @@ public class DiscoverLifeUtilTest {
 
         CloseableHttpClient build1 = httpClientBuilder.build();
 
-        String actual = HttpUtil.executeAndRelease(new HttpGet(DISCOVER_LIFE_URL), build1);
+        String endpointUrl = DISCOVER_LIFE_URL;
+        String actual = HttpUtil.executeAndRelease(new HttpGet(endpointUrl), build1);
 
         String localCopy = IOUtils.toString(
                 getStreamOfBees(),
