@@ -28,7 +28,7 @@ public class TermMatcherRegistry {
             "eol",
             "gbif",
             "gbif-web",
-            "globi-correct",
+            "globi-suggest",
             "globi-enrich",
             "globalnames",
             "globi",
@@ -64,7 +64,7 @@ public class TermMatcherRegistry {
             put("eol-taxon-id", "eol");
             put("gbif-taxon", "gbif");
             put("gbif-taxon-web", "gbif-web");
-            put("globi-correct", "globi-correct");
+            put("globi-suggest", "globi-suggest");
             put("globi-enrich", "globi-enrich");
             put("globi-globalnames", "globalnames");
             put("globi-taxon-cache", "globi");

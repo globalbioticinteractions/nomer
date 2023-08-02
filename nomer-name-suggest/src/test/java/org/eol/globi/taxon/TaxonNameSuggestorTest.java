@@ -8,43 +8,43 @@ import java.util.Collections;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TaxonNameCorrectorTest {
+public class TaxonNameSuggestorTest {
 
-    private final static CorrectionService CORRECTOR = new TaxonNameCorrector() {{
+    private final static SuggestionService CORRECTOR = new TaxonNameSuggestor() {{
         setSuggestors(Collections.singletonList(name -> name));
     }};
 
     @Test
     public void cleanName() {
-        assertThat(CORRECTOR.correct(""), is(""));
-        assertThat(CORRECTOR.correct("a"), is(""));
+        assertThat(CORRECTOR.suggest(""), is(""));
+        assertThat(CORRECTOR.suggest("a"), is(""));
     }
 
     @Test
     public void batSARSCoV() {
-        assertThat(CORRECTOR.correct("Bat SARS CoV"), is("Bat SARS CoV"));
+        assertThat(CORRECTOR.suggest("Bat SARS CoV"), is("Bat SARS CoV"));
     }
 
     @Test
     public void taxonNameNoMatch() {
-        assertThat(CORRECTOR.correct(PropertyAndValueDictionary.NO_MATCH), is(PropertyAndValueDictionary.NO_MATCH));
+        assertThat(CORRECTOR.suggest(PropertyAndValueDictionary.NO_MATCH), is(PropertyAndValueDictionary.NO_MATCH));
     }
 
     @Test
     public void taxonNameTooShort() {
-        assertThat(CORRECTOR.correct("G"), is(""));
-        assertThat(CORRECTOR.correct("H"), is(""));
-        assertThat(CORRECTOR.correct("HH"), is("HH"));
+        assertThat(CORRECTOR.suggest("G"), is(""));
+        assertThat(CORRECTOR.suggest("H"), is(""));
+        assertThat(CORRECTOR.suggest("HH"), is("HH"));
     }
 
     @Test
     public void circularSuggestions() {
-        TaxonNameCorrector corrector = new TaxonNameCorrector() {{
+        TaxonNameSuggestor corrector = new TaxonNameSuggestor() {{
             setSuggestors(Collections.singletonList(
                     name -> "Mimesa bicolor".equals(name) ? "Mimesa equestris" : "Mimesa bicolor")
             );
         }};
-        assertThat(corrector.correct("Mimesa bicolor"), is("Mimesa bicolor"));
+        assertThat(corrector.suggest("Mimesa bicolor"), is("Mimesa bicolor"));
     }
 
 }

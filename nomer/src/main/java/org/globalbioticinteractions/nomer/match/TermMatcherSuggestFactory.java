@@ -4,7 +4,7 @@ import org.eol.globi.taxon.TaxonNameSuggestor;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
-public class TermMatcherCorrectFactory implements TermMatcherFactory {
+public class TermMatcherSuggestFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
@@ -13,7 +13,7 @@ public class TermMatcherCorrectFactory implements TermMatcherFactory {
 
     @Override
     public String getPreferredName() {
-        return "globi-correct";
+        return "globi-suggest";
     }
 
     @Override
