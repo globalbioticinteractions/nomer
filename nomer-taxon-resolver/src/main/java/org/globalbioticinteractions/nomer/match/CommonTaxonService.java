@@ -14,6 +14,7 @@ import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.mapdb.Atomic;
 import org.mapdb.BTreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     BTreeMap<T, Map<String, String>> nodes;
     BTreeMap<T, T> childParent;
     BTreeMap<String, List<T>> name2nodeIds;
+    Atomic.Long datasetKey;
 
 
     public CommonTaxonService(TermMatcherContext ctx) {
@@ -175,8 +177,13 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
     protected boolean isIdSchemeSupported(String externalId) {
-        return StringUtils.startsWith(externalId, getTaxonomyProvider().getIdPrefix());
+        return StringUtils.startsWith(externalId, getIdPrefix());
     }
+
+    protected String getIdPrefix() {
+        return getTaxonomyProvider().getIdPrefix();
+    }
+
 
     @Override
     public Map<String, String> enrich(Map<String, String> toBeEnriched) throws PropertyEnricherException {
@@ -406,7 +413,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             visitedParents.add(focalTaxonKey);
             while (parent != null
                     && !visitedParents.contains(parent)
-                    && !pathIds.contains(primaryTaxonProvider.getIdPrefix() + parent)) {
+                    && !pathIds.contains(getIdPrefix() + parent)) {
                 Map<String, String> parentTaxonProperties = nodes.get(parent);
                 if (parentTaxonProperties != null) {
                     Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);

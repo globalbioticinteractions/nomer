@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -26,12 +27,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOfLifeTaxonService.class);
+    private static final String DATASET_KEY = "datasetKey";
+
     private boolean reverseSorted;
 
 
@@ -63,16 +70,20 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 && db.exists(CHILD_PARENT)
                 && db.exists(MERGED_NODES)
                 && db.exists(NAME_TO_NODE_IDS)
+                && db.exists(DATASET_KEY)
         ) {
             LOG.debug("[Catalogue of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
             name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
+            datasetKey = db.getAtomicLong(DATASET_KEY);
         } else {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
             StopWatch watch = new StopWatch();
             watch.start();
+            indexDatasetKey(db);
+
             if (reverseSorted) {
                 LOG.info("indexing taxon names...");
                 nodes = populateNodes(db, watch);
@@ -87,7 +98,9 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 watch.reset();
                 watch.start();
             } else {
+
                 try (InputStream resource = getNameUsageStream()) {
+
 
                     nodes = db
                             .createTreeMap(NODES)
@@ -114,7 +127,11 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                             .valueSerializer(Serializer.STRING)
                             .make();
 
-                    NameUsageListener nameUsageListener = new NameUsageListenerImpl(mergedNodes, nodes, childParent);
+                    NameUsageListener nameUsageListener = new NameUsageListenerImpl(
+                            mergedNodes,
+                            nodes,
+                            childParent
+                    );
                     parseNameUsage(resource, nameUsageListener);
                 } catch (IOException e) {
                     throw new PropertyEnricherException("failed to parse taxon", e);
@@ -126,6 +143,34 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             watch.stop();
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
 
+        }
+    }
+
+    private void indexDatasetKey(DB db) throws PropertyEnricherException {
+        String propertyValue = getCtx().getProperty("nomer.col.metadata.url");
+        URI metadata = URI.create(propertyValue);
+        final Pattern compile = Pattern.compile("^key:[ ]+(?<datasetKey>[0-9]+)$");
+        try (InputStream resource = getCtx().retrieve(metadata)) {
+            BufferedReader reader = IOUtils.toBufferedReader(new InputStreamReader(resource, StandardCharsets.UTF_8));
+            Long key = reader
+                    .lines()
+                    .filter(line -> compile.matcher(line).matches())
+                    .findFirst()
+                    .map(line -> {
+                        Matcher matcher = compile.matcher(line);
+                        matcher.matches();
+                        return Long.parseLong(matcher.group("datasetKey"));
+                    }).orElseThrow(new Supplier<Throwable>() {
+                        @Override
+                        public Throwable get() {
+                            return new PropertyEnricherException("failed to locate dataset key in [" + propertyValue + "]");
+                        }
+                    });
+            datasetKey = db
+                    .createAtomicLong(DATASET_KEY, -1L);
+            datasetKey.set(key);
+        } catch (Throwable e) {
+            throw new PropertyEnricherException("failed to read metadata at [" + metadata + "]", e);
         }
     }
 
@@ -332,14 +377,14 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     private void parseLine(NameUsageListener nameUsageListener, String line) {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
         if (rowValues.length > 8) {
-            String taxId = rowValues[0];
-            String parentTaxId = rowValues[2];
+            String taxId = prefixIdWithDatasetKey(rowValues[0]);
+            String parentTaxId = prefixIdWithDatasetKey(rowValues[2]);
             String status = rowValues[4];
             String completeName = RegExUtils.replaceAll(rowValues[5], "[ ]+\\(.*\\)[ ]+", " ");
             String authorship = rowValues[6];
             String rank = rowValues[7];
 
-            String idPrefix = getTaxonomyProvider().getIdPrefix();
+            String idPrefix = getIdPrefix();
             TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxId);
             if (StringUtils.isNoneBlank(authorship)) {
                 taxon.setAuthorship(StringUtils.trim(authorship));
@@ -350,6 +395,13 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
 
         }
     }
+
+    private String prefixIdWithDatasetKey(String rowValue) {
+        return StringUtils.isBlank(rowValue) || datasetKey == null
+                ? rowValue
+                : datasetKey.get() + ":" + rowValue;
+    }
+
 
     public void setReverseSorted(boolean reverseSorted) {
         this.reverseSorted = reverseSorted;
