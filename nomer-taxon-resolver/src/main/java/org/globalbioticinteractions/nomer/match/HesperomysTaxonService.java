@@ -112,7 +112,7 @@ public class HesperomysTaxonService extends CommonLongTaxonService {
         String externalId = TaxonomyProvider.HESPEROMYS.getIdPrefix() + taxonId;
         taxon.setExternalId(externalId);
 
-        Map<String, String> taxon2 = TaxonUtil.toPathNameMap(taxon);
+        Map<String, String> taxon2 = TaxonUtil.toPathNameMap(taxon, taxon.getPath());
         Taxon taxonGen = (TaxonUtil.generateSpecies(taxon2, "genus", "specificepithet", "subspecificepithet", ""));
 
         taxon.setName(taxonGen.getName());
