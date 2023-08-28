@@ -13,6 +13,7 @@ import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.Atomic;
 import org.mapdb.BTreeMap;
@@ -164,7 +165,9 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                     taxonTo);
 
         } else {
-            Taxon taxonIdOrName = isIdSchemeSupported(name) ? new TaxonImpl(null, name) : new TaxonImpl(name, null);
+            Taxon taxonIdOrName = isIdSchemeSupported(name)
+                    ? new TaxonImpl(null, name)
+                    : new TaxonImpl(name, null);
 
             if (!StringUtils.equals(taxonIdOrName.getExternalId(), taxonTo.getExternalId())) {
                 termMatchListener.foundTaxonForTerm(
@@ -176,8 +179,14 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         }
     }
 
-    protected boolean isIdSchemeSupported(String externalId) {
-        return StringUtils.startsWith(externalId, getIdPrefix());
+     boolean isIdSchemeSupported(String externalId) {
+         TaxonomyProvider provider = getTaxonomyProvider();
+         return isIdSupportedBy(externalId, provider);
+     }
+
+    static boolean isIdSupportedBy(String externalId, TaxonomyProvider provider) {
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(externalId);
+        return taxonomyProvider != null && taxonomyProvider.equals(provider);
     }
 
     protected String getIdPrefix() {
