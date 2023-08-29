@@ -5,7 +5,7 @@
 
     <groupId>org.globalbioticinteractions</groupId>
     <artifactId>nomer-parent</artifactId>
-    <version>0.5.2</version>
+    <version>0.5.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Nomer Shared Project Settings</name>
 
