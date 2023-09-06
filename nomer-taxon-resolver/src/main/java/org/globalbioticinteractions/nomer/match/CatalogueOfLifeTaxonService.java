@@ -70,14 +70,17 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 && db.exists(CHILD_PARENT)
                 && db.exists(MERGED_NODES)
                 && db.exists(NAME_TO_NODE_IDS)
-                && db.exists(DATASET_KEY)
         ) {
             LOG.debug("[Catalogue of Life] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
             name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
-            datasetKey = db.getAtomicLong(DATASET_KEY);
+            if (db.exists(DATASET_KEY)) {
+                datasetKey = db.getAtomicLong(DATASET_KEY);
+            } else {
+                datasetKey = null;
+            }
         } else {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy importing...");
             StopWatch watch = new StopWatch();
