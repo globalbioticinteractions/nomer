@@ -33,6 +33,21 @@ public class CatalogueOfLifeTaxonServiceTest {
         assertEnrichById(service);
     }
 
+    @Test
+    public void enrichByIdReverseSortedSearchByName() throws PropertyEnricherException {
+        CatalogueOfLifeTaxonService service = createService(
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/NameUsageReverseSorted.tsv",
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/metadata.yaml"
+        );
+        service.setReverseSorted(true);
+
+        Taxon phryganella = new TaxonImpl("Pteronotus macleayii", null);
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(phryganella));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("COL:9916:7WP8W"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Pteronotus macleayii"));
+    }
+
     public void assertEnrichById(CatalogueOfLifeTaxonService service) throws PropertyEnricherException {
         TaxonImpl taxon = new TaxonImpl(null, "COL:9916:63MJH");
         Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));

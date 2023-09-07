@@ -179,10 +179,10 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         }
     }
 
-     boolean isIdSchemeSupported(String externalId) {
-         TaxonomyProvider provider = getTaxonomyProvider();
-         return isIdSupportedBy(externalId, provider);
-     }
+    boolean isIdSchemeSupported(String externalId) {
+        TaxonomyProvider provider = getTaxonomyProvider();
+        return isIdSupportedBy(externalId, provider);
+    }
 
     static boolean isIdSupportedBy(String externalId, TaxonomyProvider provider) {
         TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(externalId);
@@ -404,7 +404,13 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         return resolvedTaxon;
     }
 
-    private void resolveHierarchyIfNeeded(T focalTaxonKey, Map<T, T> childParent, Map<T, Map<String, String>> nodes, TaxonomyProvider primaryTaxonProvider, Taxon resolvedTaxon) {
+    private void resolveHierarchyIfNeeded(
+            T focalTaxonKey,
+            Map<T, T> childParent,
+            Map<T, Map<String, String>> nodes,
+            TaxonomyProvider primaryTaxonProvider,
+            Taxon resolvedTaxon
+    ) {
         if (shouldResolveHierarchy(childParent, resolvedTaxon)) {
             List<String> pathNames = new ArrayList<>();
             List<String> pathIds = new ArrayList<>();

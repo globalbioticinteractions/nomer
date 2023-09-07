@@ -108,6 +108,11 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 childParent = populateChildParent(db, watch);
                 watch.reset();
                 watch.start();
+                LOG.info("indexing names to node ids...");
+                populateName2NodeIds(db, watch);
+                watch.reset();
+                watch.start();
+
                 LOG.info("indexing synonyms...");
                 mergedNodes = populatedMergedNodes(db, watch);
                 watch.reset();
@@ -146,7 +151,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                     );
                     parseNameUsage(resource, nameUsageListener);
                 } catch (IOException e) {
-                    throw new PropertyEnricherException("failed to parse taxon", e);
+                    throw new PropertyEnricherException("failed to index [" + getNameUsageResource() + "]", e);
                 }
             }
 
@@ -156,6 +161,21 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
 
         }
+    }
+
+    private void populateName2NodeIds(DB db, StopWatch watch) throws PropertyEnricherException {
+        name2nodeIds = db
+                .createTreeMap(NAME_TO_NODE_IDS)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
+                .make();
+        NameUsageListener nameUsageListenerName2Id = new NameUsageListenerName2Id();
+        try (InputStream resource = getNameUsageStream()) {
+            parseNameUsage(resource, nameUsageListenerName2Id);
+        } catch(IOException ex) {
+            throw new PropertyEnricherException("failed to index [" + getNameUsageResource() + "]", ex);
+        }
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), name2nodeIds.size(), LOG);
     }
 
     private void indexDatasetKey(DB db) throws PropertyEnricherException {
@@ -470,6 +490,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         private final Map<String, String> mergedNodes;
         private final Map<String, Map<String, String>> nodes;
         private final Map<String, String> childParent;
+        private final NameUsageListener name2nodeIdListener;
 
         public NameUsageListenerImpl(Map<String, String> mergedNodes,
                                      Map<String, Map<String, String>> nodes,
@@ -477,11 +498,12 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             this.mergedNodes = mergedNodes;
             this.nodes = nodes;
             this.childParent = childParent;
+            this.name2nodeIdListener = new NameUsageListenerName2Id();
         }
 
         @Override
         public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-            registerIdForName(childTaxId, taxon, CatalogueOfLifeTaxonService.this.name2nodeIds);
+            name2nodeIdListener.handle(status, childTaxId, parentTaxId, taxon);
 
             NameType nameType = getNameType(status);
             if (NameType.SYNONYM_OF.equals(nameType)) {
@@ -497,6 +519,15 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 }
             }
 
+        }
+
+    }
+
+    public class NameUsageListenerName2Id implements NameUsageListener {
+
+        @Override
+        public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+            registerIdForName(childTaxId, taxon, CatalogueOfLifeTaxonService.this.name2nodeIds);
         }
     }
 }
