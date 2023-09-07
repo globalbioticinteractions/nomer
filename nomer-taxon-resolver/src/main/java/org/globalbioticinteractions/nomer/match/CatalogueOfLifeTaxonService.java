@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,12 +105,9 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 nodes = populateNodes(db, watch);
                 watch.reset();
                 watch.start();
+
                 LOG.info("indexing taxon hierarchies...");
                 childParent = populateChildParent(db, watch);
-                watch.reset();
-                watch.start();
-                LOG.info("indexing names to node ids...");
-                populateName2NodeIds(db, watch);
                 watch.reset();
                 watch.start();
 
@@ -117,6 +115,12 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 mergedNodes = populatedMergedNodes(db, watch);
                 watch.reset();
                 watch.start();
+
+                LOG.info("indexing names to node ids...");
+                populateName2NodeIds(db, watch);
+                watch.reset();
+                watch.start();
+
             } else {
 
                 try (InputStream resource = getNameUsageStream()) {
@@ -172,7 +176,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         NameUsageListener nameUsageListenerName2Id = new NameUsageListenerName2Id();
         try (InputStream resource = getNameUsageStream()) {
             parseNameUsage(resource, nameUsageListenerName2Id);
-        } catch(IOException ex) {
+        } catch (IOException ex) {
             throw new PropertyEnricherException("failed to index [" + getNameUsageResource() + "]", ex);
         }
         TaxonCacheService.logCacheLoadStats(watch.getTime(), name2nodeIds.size(), LOG);
@@ -219,41 +223,36 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                     .keySerializer(BTreeKeySerializer.STRING)
                     .valueSerializer(Serializer.JAVA)
                     .pumpSource(new Iterator<Fun.Tuple2<String, Map<String, String>>>() {
-                        String taxonStatus;
-                        String taxonChildId;
-                        String taxonParentId;
-                        Taxon taxonObj;
+                        final AtomicReference<Fun.Tuple2<String, Map<String, String>>> nextObj = new AtomicReference<>(null);
 
                         @Override
                         public boolean hasNext() {
-                            AtomicBoolean hasNext = new AtomicBoolean(false);
-                            try {
-                                String line = reader.readLine();
-                                if (StringUtils.isNoneBlank(line)) {
-                                    parseLine(new NameUsageListener() {
-                                        @Override
-                                        public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-                                            taxonStatus = status;
-                                            taxonParentId = parentTaxId;
-                                            taxonChildId = childTaxId;
-                                            taxonObj = taxon;
-                                            hasNext.set(true);
-                                        }
-                                    }, line, schema);
+                            if (nextObj.get() == null) {
+                                try {
+                                    String line = reader.readLine();
+                                    if (StringUtils.isNoneBlank(line)) {
+                                        parseLine(new NameUsageListener() {
+                                            @Override
+                                            public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+                                                Fun.Tuple2<String, Map<String, String>> next = new Fun.Tuple2<>(
+                                                        childTaxId,
+                                                        TaxonUtil.taxonToMap(taxon)
+                                                );
+                                                nextObj.set(next);
+                                            }
+                                        }, line, schema);
+                                    }
+                                } catch (IOException e) {
+                                    // ignore
                                 }
-                            } catch (IOException e) {
-                                // ignore
                             }
 
-                            return hasNext.get();
+                            return nextObj.get() != null;
                         }
 
                         @Override
                         public Fun.Tuple2<String, Map<String, String>> next() {
-                            return new Fun.Tuple2<>(
-                                    taxonChildId,
-                                    TaxonUtil.taxonToMap(taxonObj)
-                            );
+                            return nextObj.getAndSet(null);
                         }
                     })
                     .make();
@@ -278,37 +277,36 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                     .keySerializer(BTreeKeySerializer.STRING)
                     .valueSerializer(Serializer.STRING)
                     .pumpSource(new Iterator<Fun.Tuple2<String, String>>() {
-                        String taxonChildId;
-                        String taxonParentId;
+                        final AtomicReference<Fun.Tuple2<String, String>> nextObj = new AtomicReference<>(null);
 
                         @Override
                         public boolean hasNext() {
-                            AtomicBoolean hasNext = new AtomicBoolean(false);
-                            try {
-                                String line = reader.readLine();
-                                if (StringUtils.isNoneBlank(line)) {
-                                    parseLine(new NameUsageListener() {
-                                        @Override
-                                        public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-                                            taxonParentId = parentTaxId;
-                                            taxonChildId = childTaxId;
-                                            hasNext.set(true);
-                                        }
-                                    }, line, schema);
+                            if (nextObj.get() == null) {
+                                try {
+                                    String line = reader.readLine();
+                                    if (StringUtils.isNoneBlank(line)) {
+                                        parseLine(new NameUsageListener() {
+                                            @Override
+                                            public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+                                                Fun.Tuple2<String, String> next = new Fun.Tuple2<>(
+                                                        childTaxId,
+                                                        parentTaxId
+                                                );
+                                                nextObj.set(next);
+                                            }
+                                        }, line, schema);
+                                    }
+                                } catch (IOException e) {
+                                    // ignore
                                 }
-                            } catch (IOException e) {
-                                // ignore
                             }
 
-                            return hasNext.get();
+                            return nextObj.get() != null;
                         }
 
                         @Override
                         public Fun.Tuple2<String, String> next() {
-                            return new Fun.Tuple2<>(
-                                    taxonChildId,
-                                    taxonParentId
-                            );
+                            return nextObj.getAndSet(null);
                         }
                     })
                     .make();
@@ -332,42 +330,38 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                     .keySerializer(BTreeKeySerializer.STRING)
                     .valueSerializer(Serializer.STRING)
                     .pumpSource(new Iterator<Fun.Tuple2<String, String>>() {
-                        String taxonParentId;
-                        String taxonChildId;
+                        AtomicReference<Fun.Tuple2<String, String>> nextObj = new AtomicReference<>(null);
 
                         @Override
                         public boolean hasNext() {
-                            AtomicBoolean hasNext = new AtomicBoolean(false);
-                            try {
-                                String line;
-                                while (StringUtils.isNoneBlank(line = reader.readLine())) {
-                                    parseLine(new NameUsageListener() {
-                                        @Override
-                                        public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-                                            if (StringUtils.contains(status, "synonym")) {
-                                                taxonParentId = parentTaxId;
-                                                taxonChildId = childTaxId;
-                                                hasNext.set(true);
+                            if (nextObj.get() == null) {
+                                try {
+                                    String line;
+                                    while (nextObj.get() == null && StringUtils.isNoneBlank(line = reader.readLine())) {
+                                        parseLine(new NameUsageListener() {
+                                            @Override
+                                            public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+                                                if (StringUtils.contains(status, "synonym")) {
+                                                    Fun.Tuple2<String, String> next = new Fun.Tuple2<>(
+                                                            childTaxId,
+                                                            parentTaxId
+                                                    );
+                                                    nextObj.set(next);
+                                                }
                                             }
-                                        }
-                                    }, line, schema);
-                                    if (hasNext.get()) {
-                                        break;
+                                        }, line, schema);
                                     }
+                                } catch (IOException e) {
+                                    // ignore
                                 }
-                            } catch (IOException e) {
-                                // ignore
                             }
 
-                            return hasNext.get();
+                            return nextObj.get() != null;
                         }
 
                         @Override
                         public Fun.Tuple2<String, String> next() {
-                            return new Fun.Tuple2<>(
-                                    taxonChildId,
-                                    taxonParentId
-                            );
+                            return nextObj.getAndSet(null);
                         }
                     })
                     .make();
@@ -410,7 +404,6 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     private void parseLine(NameUsageListener nameUsageListener, String line, Map<String, Integer> schema) {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
         if (rowValues.length > 8) {
-
             String taxId = prefixIdWithDatasetKey(rowValues[schema.get(LABEL_TAXON_ID)]);
             String parentTaxId = prefixIdWithDatasetKey(rowValues[schema.get(LABEL_TAXON_ID_PARENT)]);
             String status = rowValues[schema.get(LABEL_TAXON_STATUS_NAME)];
@@ -431,9 +424,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     }
 
     private String prefixIdWithDatasetKey(String rowValue) {
-        return StringUtils.isBlank(rowValue) || datasetKey == null
-                ? rowValue
-                : datasetKey.get() + ":" + rowValue;
+        return rowValue;
     }
 
 
