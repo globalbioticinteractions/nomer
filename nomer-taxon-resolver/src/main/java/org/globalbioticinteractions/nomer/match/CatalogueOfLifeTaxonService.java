@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,8 +29,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -38,6 +44,12 @@ import java.util.regex.Pattern;
 public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOfLifeTaxonService.class);
     private static final String DATASET_KEY = "datasetKey";
+    private static final String LABEL_TAXON_ID = "col:ID";
+    private static final String LABEL_TAXON_ID_PARENT = "col:parentID";
+    private static final String LABEL_TAXON_STATUS_NAME = "col:status";
+    private static final String LABEL_TAXON_SCIENTIFIC_NAME = "col:scientificName";
+    private static final String LABEL_TAXON_AUTHORSHIP = "col:authorship";
+    private static final String LABEL_TAXON_RANK_NAME = "col:rank";
 
     private boolean reverseSorted;
 
@@ -103,14 +115,11 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             } else {
 
                 try (InputStream resource = getNameUsageStream()) {
-
-
                     nodes = db
                             .createTreeMap(NODES)
                             .keySerializer(BTreeKeySerializer.STRING)
                             .valueSerializer(Serializer.JAVA)
                             .make();
-
 
                     childParent = db
                             .createTreeMap(CHILD_PARENT)
@@ -184,7 +193,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 new InputStreamReader(is));
 
         try {
-            skipFirstLine(reader);
+            final Map<String, Integer> schema = parseFirstLine(reader);
             nodes = db
                     .createTreeMap(NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
@@ -210,7 +219,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                                             taxonObj = taxon;
                                             hasNext.set(true);
                                         }
-                                    }, line);
+                                    }, line, schema);
                                 }
                             } catch (IOException e) {
                                 // ignore
@@ -243,7 +252,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 new InputStreamReader(is));
 
         try {
-            skipFirstLine(reader);
+            final Map<String, Integer> schema = parseFirstLine(reader);
             childParent = db
                     .createTreeMap(CHILD_PARENT)
                     .keySerializer(BTreeKeySerializer.STRING)
@@ -265,7 +274,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                                             taxonChildId = childTaxId;
                                             hasNext.set(true);
                                         }
-                                    }, line);
+                                    }, line, schema);
                                 }
                             } catch (IOException e) {
                                 // ignore
@@ -297,7 +306,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 new InputStreamReader(is));
 
         try {
-            skipFirstLine(reader);
+            final Map<String, Integer> schema = parseFirstLine(reader);
             mergedNodes = db
                     .createTreeMap(MERGED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
@@ -321,7 +330,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                                                 hasNext.set(true);
                                             }
                                         }
-                                    }, line);
+                                    }, line, schema);
                                     if (hasNext.get()) {
                                         break;
                                     }
@@ -367,25 +376,27 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             BufferedReader reader = new BufferedReader(
                     new InputStreamReader(resource));
 
+            final Map<String, Integer> schema = parseFirstLine(reader);
+
             String line;
-            skipFirstLine(reader);
             while ((line = reader.readLine()) != null) {
-                parseLine(nameUsageListener, line);
+                parseLine(nameUsageListener, line, schema);
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse [Catalogue of Life] taxon dump", e);
         }
     }
 
-    private void parseLine(NameUsageListener nameUsageListener, String line) {
+    private void parseLine(NameUsageListener nameUsageListener, String line, Map<String, Integer> schema) {
         String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
         if (rowValues.length > 8) {
-            String taxId = prefixIdWithDatasetKey(rowValues[0]);
-            String parentTaxId = prefixIdWithDatasetKey(rowValues[2]);
-            String status = rowValues[4];
-            String completeName = RegExUtils.replaceAll(rowValues[5], "[ ]+\\(.*\\)[ ]+", " ");
-            String authorship = rowValues[6];
-            String rank = rowValues[7];
+
+            String taxId = prefixIdWithDatasetKey(rowValues[schema.get(LABEL_TAXON_ID)]);
+            String parentTaxId = prefixIdWithDatasetKey(rowValues[schema.get(LABEL_TAXON_ID_PARENT)]);
+            String status = rowValues[schema.get(LABEL_TAXON_STATUS_NAME)];
+            String completeName = RegExUtils.replaceAll(rowValues[schema.get(LABEL_TAXON_SCIENTIFIC_NAME)], "[ ]+\\(.*\\)[ ]+", " ");
+            String authorship = rowValues[schema.get(LABEL_TAXON_AUTHORSHIP)];
+            String rank = rowValues[schema.get(LABEL_TAXON_RANK_NAME)];
 
             String idPrefix = getIdPrefix();
             TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxId);
@@ -420,8 +431,34 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                 : NameType.HAS_ACCEPTED_NAME;
     }
 
-    private void skipFirstLine(BufferedReader reader) throws IOException {
-        reader.readLine();
+    private Map<String, Integer> parseFirstLine(BufferedReader reader) throws IOException {
+        String line = reader.readLine();
+        List<String> headers = Arrays.asList(StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t"));
+
+        Map<String, Integer> schema = new TreeMap<>();
+        List<String> headerLabels = Arrays.asList(
+                LABEL_TAXON_ID,
+                LABEL_TAXON_ID_PARENT,
+                LABEL_TAXON_SCIENTIFIC_NAME,
+                LABEL_TAXON_RANK_NAME,
+                LABEL_TAXON_STATUS_NAME,
+                LABEL_TAXON_AUTHORSHIP
+        );
+        headerLabels.forEach(label -> mapHeader(headers, schema, label));
+
+        Collection<String> missingHeaders = CollectionUtils.disjunction(schema.keySet(), headerLabels);
+        if (missingHeaders.size() > 0) {
+            throw new IOException("missing headers [" + StringUtils.join(missingHeaders) + "] in header [" + line + "]");
+        }
+
+        return Collections.unmodifiableMap(schema);
+    }
+
+    private void mapHeader(List<String> headers, Map<String, Integer> schema, String labelTaxonRankName) {
+        int index = headers.indexOf(labelTaxonRankName);
+        if (index >= 0) {
+            schema.put(labelTaxonRankName, index);
+        }
     }
 
     private URI getNameUsageResource() {

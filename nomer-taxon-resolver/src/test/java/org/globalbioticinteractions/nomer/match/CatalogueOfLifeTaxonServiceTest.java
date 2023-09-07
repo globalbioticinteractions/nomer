@@ -25,8 +25,8 @@ public class CatalogueOfLifeTaxonServiceTest {
     @Test
     public void enrichByIdReverseSorted() throws PropertyEnricherException {
         CatalogueOfLifeTaxonService service = createService(
-                "/org/globalbioticinteractions/nomer/match/col/NameUsageReverseSorted.tsv",
-                "/org/globalbioticinteractions/nomer/match/col/metadata.yaml"
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/NameUsageReverseSorted.tsv",
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/metadata.yaml"
         );
         service.setReverseSorted(true);
 
@@ -109,9 +109,13 @@ public class CatalogueOfLifeTaxonServiceTest {
 
     private CatalogueOfLifeTaxonService createService() {
         return createService(
-                "/org/globalbioticinteractions/nomer/match/col/NameUsage.tsv",
-                "/org/globalbioticinteractions/nomer/match/col/metadata.yaml"
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/NameUsage.tsv",
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/metadata.yaml"
         );
+    }
+
+    protected String getTestSetName() {
+        return "col";
     }
 
     private CatalogueOfLifeTaxonService createService(final String nameUrl, final String metaDataUrl) {
