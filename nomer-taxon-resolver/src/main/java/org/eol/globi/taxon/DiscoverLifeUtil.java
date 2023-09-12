@@ -365,6 +365,8 @@ public class DiscoverLifeUtil {
                 String subgenusName = subgenus.text();
                 accepted.setPath(subgenusName + " | " + accepted.getPath());
             }
+            accepted.setPath("Animalia | Arthropoda | Insecta | Hymenoptera | " + accepted.getPath());
+            accepted.setPathNames("kingdom | phylum | class | order | " + accepted.getPathNames());
             termMatchListener.foundTaxonForTerm(null, accepted, NameType.HAS_ACCEPTED_NAME, accepted);
         }
 
