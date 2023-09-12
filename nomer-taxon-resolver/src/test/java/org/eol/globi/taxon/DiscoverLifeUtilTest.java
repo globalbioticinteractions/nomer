@@ -844,5 +844,45 @@ public class DiscoverLifeUtilTest {
         assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla var bla"), Is.is("subvariety"));
     }
 
+    @Test
+    public void parseSingleBeePage() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.html");
+
+        AtomicReference<Taxon> acceptedFound = new AtomicReference<>(null);
+        List<Taxon> knownSynonyms = new ArrayList<>();
+
+        TermMatchListener termMatchListener = new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
+                if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
+                    acceptedFound.set(resolvedTaxon);
+                } else if (NameType.SYNONYM_OF.equals(nameType)) {
+                    knownSynonyms.add((Taxon) providedTerm);
+                }
+            }
+        };
+
+        DiscoverLifeUtil.parseTaxonPage(is, termMatchListener);
+
+
+        assertThat(acceptedFound.get().getName(), Is.is("Agapostemon texanus"));
+        assertThat(acceptedFound.get().getAuthorship(), Is.is("Cresson, 1872"));
+        assertThat(acceptedFound.get().getRank(), Is.is("species"));
+        assertThat(acceptedFound.get().getPath(), Is.is("Agapostemon | Agapostemon texanus"));
+        assertThat(acceptedFound.get().getPathNames(), Is.is("subgenus | species"));
+
+        assertThat(knownSynonyms.size(), Is.is(14));
+
+        assertThat(knownSynonyms.get(0).getAuthorship(), Is.is("Cockerell, 1898; "));
+        assertThat(knownSynonyms.get(0).getName(), Is.is("Agapostemon texanus subtilior "));
+        assertThat(knownSynonyms.get(0).getRank(), Is.is("subspecies"));
+
+        assertThat(knownSynonyms.get(knownSynonyms.size() - 1).getAuthorship(), Is.is("Cockerell, 1939"));
+        assertThat(knownSynonyms.get(knownSynonyms.size() - 1).getName(), Is.is("Agapostemon californicus clementinus "));
+        assertThat(knownSynonyms.get(knownSynonyms.size() - 1).getRank(), Is.is("subspecies"));
+
+
+    }
+
 
 }

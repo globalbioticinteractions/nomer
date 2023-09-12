@@ -196,8 +196,8 @@ public class DiscoverLifeTaxonService implements TermMatcher {
 
 
         stopWatch.stop();
-        long time = stopWatch.getTime(TimeUnit.SECONDS);
-        LOG.info("[" + nameCounter.get() + "] DiscoverLife names were indexed in " + time + "s (@ " + (nameCounter.get() / time) + " names/s)");
+        long time = stopWatch.getTime(TimeUnit.MILLISECONDS);
+        LOG.info("[" + nameCounter.get() + "] DiscoverLife names were indexed in " + time + "s (@ " + (nameCounter.get() / (time+1) / 1000) + " names/s)");
     }
 
     private void attemptToResolveHomonyms(List<Pair<String, Map<String, String>>> homonymsToBeResolved) {

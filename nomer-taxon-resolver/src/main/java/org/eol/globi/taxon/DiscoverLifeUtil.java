@@ -11,6 +11,8 @@ import org.eol.globi.service.ResourceService;
 import org.eol.globi.service.TaxonUtil;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -336,4 +338,68 @@ public class DiscoverLifeUtil {
         return RegExUtils.replacePattern(actual, " \\(.*\\) ", " ");
     }
 
+    public static void parseTaxonPage(InputStream is, TermMatchListener termMatchListener) throws IOException {
+        Document document = Jsoup.parse(is, "UTF-8", "https://example.org/");
+        document.outputSettings()
+                .syntax(Document.OutputSettings.Syntax.xml)
+                .charset(StandardCharsets.UTF_8)
+                .escapeMode(org.jsoup.nodes.Entities.EscapeMode.xhtml);
+
+        Element primary = document.selectXpath("//div/table/tbody/tr/td/b").first();
+
+        Element nameElem = primary == null ? null : primary.select("i").first();
+        Taxon accepted = new TaxonImpl();
+        if (nameElem != null) {
+            setName(accepted, nameElem.text());
+        }
+        Element authorshipElem = primary == null ? null : primary.select("font").first();
+
+        if (authorshipElem != null) {
+            accepted.setAuthorship(authorshipElem.text());
+            accepted.setPathNames(accepted.getRank());
+            accepted.setPath(accepted.getName());
+
+            Element subgenus = document.selectXpath("//td/p/small/a/i").first();
+            if (subgenus != null) {
+                accepted.setPathNames("subgenus | " + accepted.getPathNames());
+                String subgenusName = subgenus.text();
+                accepted.setPath(subgenusName + " | " + accepted.getPath());
+            }
+            termMatchListener.foundTaxonForTerm(null, accepted, NameType.HAS_ACCEPTED_NAME, accepted);
+        }
+
+
+        if (authorshipElem != null) {
+            Element synonyms = document.selectXpath("//div/table/tbody/tr/td/small").first();
+
+            if (synonyms != null) {
+                List<TextNode> textNodes = synonyms.textNodes();
+                for (TextNode textNode : textNodes) {
+                    org.jsoup.nodes.Node parent = textNode.parent();
+                    if (parent != null) {
+                        if (StringUtils.equals("small", parent.nodeName())) {
+                            Taxon currentTaxon = new TaxonImpl();
+                            currentTaxon.setAuthorship(textNode.text());
+                            org.jsoup.nodes.Node node = textNode.previousSibling();
+                            if (node != null && StringUtils.equals("i", node.nodeName())) {
+                                org.jsoup.nodes.Node synonymNameNode = node.firstChild();
+                                if (synonymNameNode != null) {
+                                    String name = synonymNameNode.toString();
+                                    currentTaxon.setName(name);
+                                    setName(currentTaxon, name);
+                                    termMatchListener.foundTaxonForTerm(null, currentTaxon, NameType.SYNONYM_OF, accepted);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void setName(Taxon accepted, String text1) {
+        String text = text1;
+        accepted.setName(text);
+        accepted.setRank(guessRankFromName(text));
+    }
 }
