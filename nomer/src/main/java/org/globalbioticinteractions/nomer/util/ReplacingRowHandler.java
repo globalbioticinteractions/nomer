@@ -88,7 +88,7 @@ public class ReplacingRowHandler implements RowHandler {
     private Map<String, String> mergeTaxon(Taxon taxon, NameType nameType, Taxon otherTaxon) {
         return new TreeMap<String, String>() {{
             putAll(TaxonUtil.taxonToMap(taxon));
-            if (NameType.SAME_AS.equals(nameType)) {
+            if (!NameType.NONE.equals(nameType)) {
                 putAll(TaxonUtil.taxonToMap(otherTaxon));
             }
             put("matchType", nameType.name());

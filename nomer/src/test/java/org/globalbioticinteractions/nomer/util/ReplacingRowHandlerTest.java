@@ -125,7 +125,7 @@ public class ReplacingRowHandlerTest {
     }
 
     @Test
-    public void replaceCommonNameWithFamilyName() throws IOException, PropertyEnricherException {
+    public void replaceCommonNameWithKingdomName() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("\tGreen-winged teal", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
             @Override
@@ -136,6 +136,20 @@ public class ReplacingRowHandlerTest {
             }
         });
         assertThat(os.toString(), Is.is("\tAnimalia\n"));
+    }
+
+    @Test
+    public void replaceCommonNameWithFamilyName() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("\tGreen-winged teal", StandardCharsets.UTF_8);
+        ByteArrayOutputStream os = replace(is, new TestTermMatcherContextDefault() {
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(1, "path.family.name");
+                }};
+            }
+        });
+        assertThat(os.toString(), Is.is("\tAnatidae\n"));
     }
 
     @Test
