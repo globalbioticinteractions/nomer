@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -11,6 +12,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
@@ -162,8 +164,8 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
             String acceptedNameUsageIdString = StringUtils.remove(rowValues[19], "wfo-");
             Long acceptedNameUsageId = getIdAsLong(acceptedNameUsageIdString);
             String status = rowValues[18];
-            String completeName = rowValues[3];
-            String authorship = rowValues[6];
+            String completeName = removeQuotes(rowValues[3]);
+            String authorship = removeQuotes(rowValues[6]);
             String rank = StringUtils.lowerCase(rowValues[4]);
 
             String idPrefix = getTaxonomyProvider().getIdPrefix();
@@ -186,6 +188,10 @@ public class WorldOfFloraOnlineTaxonService extends CommonTaxonService<Long> {
             );
 
         }
+    }
+
+    private String removeQuotes(String rowValue) {
+        return RegExUtils.removeAll(rowValue, "(^\"|\"$)");
     }
 
     private static Long getIdAsLong(String stripped) {

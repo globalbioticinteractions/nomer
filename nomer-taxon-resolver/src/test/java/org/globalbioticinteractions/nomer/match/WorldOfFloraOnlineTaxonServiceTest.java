@@ -131,6 +131,18 @@ public class WorldOfFloraOnlineTaxonServiceTest {
     }
 
     @Test
+    public void ensureTrimmingOfDoubleQuotes() throws PropertyEnricherException {
+        WorldOfFloraOnlineTaxonService service = createService("/org/globalbioticinteractions/nomer/match/wfo/classification.csv");
+        Taxon taxon = new TaxonImpl("Cyperus violifolia");
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WFO:0001302011"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Rodriguez & Alfonso"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Cyperus violifolia"));
+    }
+
+    @Test
     public void enrichBySynonymId() throws PropertyEnricherException {
         WorldOfFloraOnlineTaxonService service = createService();
 
