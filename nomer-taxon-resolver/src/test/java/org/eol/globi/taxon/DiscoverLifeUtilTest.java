@@ -868,8 +868,8 @@ public class DiscoverLifeUtilTest {
         assertThat(acceptedFound.get().getName(), Is.is("Agapostemon texanus"));
         assertThat(acceptedFound.get().getAuthorship(), Is.is("Cresson, 1872"));
         assertThat(acceptedFound.get().getRank(), Is.is("species"));
-        assertThat(acceptedFound.get().getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Agapostemon | Agapostemon texanus"));
-        assertThat(acceptedFound.get().getPathNames(), Is.is("kingdom | phylum | class | order | subgenus | species"));
+        assertThat(acceptedFound.get().getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Agapostemon | Agapostemon | Agapostemon texanus"));
+        assertThat(acceptedFound.get().getPathNames(), Is.is("kingdom | phylum | class | order | genus | subgenus | species"));
 
         assertThat(knownSynonyms.size(), Is.is(14));
 

@@ -30,6 +30,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DiscoverLifeUtil {
@@ -44,6 +46,7 @@ public class DiscoverLifeUtil {
             .collect(Collectors.toList());
     private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family");
     public static final String HOMONYM_SUFFIX = "_homonym";
+    public static final Pattern PATTERN_GENUS = Pattern.compile("(?<genus>[A-Z][a-z]+)(.*)");
 
     public static InputStream getBeeNameTable(ResourceService service, String discoverLifeUrl) throws IOException {
 
@@ -314,19 +317,33 @@ public class DiscoverLifeUtil {
         String familyName = StringUtils.trim(familyNode.getTextContent());
         TaxonUtil.copy(t, targetTaxon);
 
+        Matcher matcher = PATTERN_GENUS.matcher(t.getName());
+
+        final String genusName = matcher.matches() ? matcher.group("genus") : "";
         List<String> path = new ArrayList<String>(PATH_STATIC) {{
-            addAll(Arrays.asList(familyName, t.getName()));
+            add(familyName);
+            if (StringUtils.isNoneBlank(genusName)) {
+                add(genusName);
+            }
+            add(t.getName());
         }};
 
         targetTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
 
         List<String> pathIds = new ArrayList<String>(PATH_STATIC_IDS) {{
-            addAll(Arrays.asList(URL_ENDPOINT_DISCOVER_LIFE + familyId, URL_ENDPOINT_DISCOVER_LIFE + t.getId()));
+            add(URL_ENDPOINT_DISCOVER_LIFE + familyId);
+            if (StringUtils.isNoneBlank(genusName)) {
+                add(URL_ENDPOINT_DISCOVER_LIFE + "/mp/20q?search=" + genusName);
+            }
+            add(URL_ENDPOINT_DISCOVER_LIFE + t.getId());
         }};
 
         targetTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
 
         ArrayList<String> pathList = new ArrayList<String>(PATH_NAMES_STATIC) {{
+            if (StringUtils.isNoneBlank(genusName)) {
+                add("genus");
+            }
             add(targetTaxon.getRank());
         }};
 
@@ -361,9 +378,15 @@ public class DiscoverLifeUtil {
 
             Element subgenus = document.selectXpath("//td/p/small/a/i").first();
             if (subgenus != null) {
-                accepted.setPathNames("subgenus | " + accepted.getPathNames());
+                accepted.setPathNames("subgenus" + CharsetConstant.SEPARATOR + accepted.getPathNames());
                 String subgenusName = subgenus.text();
-                accepted.setPath(subgenusName + " | " + accepted.getPath());
+                accepted.setPath(subgenusName + CharsetConstant.SEPARATOR + accepted.getPath());
+            }
+            Matcher matcher = PATTERN_GENUS.matcher(accepted.getName());
+            if (matcher.matches()) {
+                accepted.setPathNames("genus" + CharsetConstant.SEPARATOR + accepted.getPathNames());
+                String genusName = matcher.group("genus");
+                accepted.setPath(genusName + CharsetConstant.SEPARATOR + accepted.getPath());
             }
             accepted.setPath("Animalia | Arthropoda | Insecta | Hymenoptera | " + accepted.getPath());
             accepted.setPathNames("kingdom | phylum | class | order | " + accepted.getPathNames());
@@ -399,9 +422,8 @@ public class DiscoverLifeUtil {
         }
     }
 
-    private static void setName(Taxon accepted, String text1) {
-        String text = text1;
-        accepted.setName(text);
-        accepted.setRank(guessRankFromName(text));
+    private static void setName(Taxon accepted, String name) {
+        accepted.setName(name);
+        accepted.setRank(guessRankFromName(name));
     }
 }

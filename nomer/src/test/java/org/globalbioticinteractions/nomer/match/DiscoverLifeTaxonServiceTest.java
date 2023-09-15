@@ -302,9 +302,9 @@ public class DiscoverLifeTaxonServiceTest {
                     public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
-                        assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum argentinum"));
-                        assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
-                        assertThat(resolvedTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | species"));
+                        assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum | Acamptopoeum argentinum"));
+                        assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        assertThat(resolvedTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | species"));
                         assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
                         assertThat(resolvedTaxon.getRank(), Is.is("species"));
                         assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
