@@ -31,6 +31,7 @@ import java.util.TreeMap;
 @PropertyEnricherInfo(name = "nodc-taxon-id", description = "Lookup taxon in the Taxonomic Code of the National Oceanographic Data Center (NODC) by id with prefix NODC: . Maps to ITIS terms if possible.")
 public class NODCTaxonService extends PropertyEnricherSimple {
     private static final Logger LOG = LoggerFactory.getLogger(NODCTaxonService.class);
+    public static final String NODC_2_ITIS = "nodc2itis";
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, String> nodc2itis = null;
@@ -85,10 +86,6 @@ public class NODCTaxonService extends PropertyEnricherSimple {
             throw new PropertyEnricherException("failed to initialize", e);
         }
 
-        LOG.info("NODC taxonomy importing...");
-        StopWatch watch = new StopWatch();
-        watch.start();
-
         DB db = DBMaker
                 .newFileDB(new File(getCacheDir(), "nodcLookup"))
                 .mmapFileEnableIfSupported()
@@ -97,18 +94,27 @@ public class NODCTaxonService extends PropertyEnricherSimple {
                 .transactionDisable()
                 .make();
 
-        nodc2itis = db
-                .createTreeMap("nodc2itis")
+        nodc2itis = db.exists(NODC_2_ITIS)
+                ? db.getTreeMap(NODC_2_ITIS)
+                : createTreeMap(parser, db);
+    }
+
+    private static BTreeMap<String, String> createTreeMap(NODCTaxonParser parser, DB db) {
+        LOG.info("NODC taxonomy importing...");
+        StopWatch watch = new StopWatch();
+        watch.start();
+        BTreeMap<String, String> aMap = db
+                .createTreeMap(NODC_2_ITIS)
                 .pumpSource(parser)
                 .pumpPresort(100000)
                 .pumpIgnoreDuplicates()
                 .keySerializer(BTreeKeySerializer.STRING)
                 .valueSerializer(Serializer.STRING)
                 .make();
-
         watch.stop();
-        TaxonCacheService.logCacheLoadStats(watch.getTime(), nodc2itis.size(), LOG);
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), aMap.size(), LOG);
         LOG.info("NODC taxonomy imported.");
+        return aMap;
     }
 
     @Override
