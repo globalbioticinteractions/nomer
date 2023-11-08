@@ -35,7 +35,6 @@ public class NODCTaxonService extends PropertyEnricherSimple {
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, String> nodc2itis = null;
-    private PropertyEnricher itisService = new ITISService();
 
     public NODCTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
@@ -55,7 +54,6 @@ public class NODCTaxonService extends PropertyEnricherSimple {
 
             if (StringUtils.isNotBlank(tsn)) {
                 enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, tsn);
-                enriched = itisService.enrichFirstMatch(enriched);
             }
         }
         return enriched;
