@@ -45,6 +45,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     BTreeMap<T, T> childParent;
     BTreeMap<String, List<T>> name2nodeIds;
     Atomic.Long datasetKey;
+    private String cacheName = null;
 
 
     public CommonTaxonService(TermMatcherContext ctx) {
@@ -385,9 +386,19 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
     }
 
     protected File getCacheDir() {
-        File file = new File(getCtx().getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
+        File file = new File(getCtx().getCacheDir(), getCacheName());
         file.mkdirs();
         return file;
+    }
+
+    public String getCacheName() {
+        return StringUtils.isBlank(cacheName) ?
+                StringUtils.lowerCase(getTaxonomyProvider().name())
+                : cacheName;
+    }
+
+    public void setCacheName(String cacheName) {
+        this.cacheName = cacheName;
     }
 
 

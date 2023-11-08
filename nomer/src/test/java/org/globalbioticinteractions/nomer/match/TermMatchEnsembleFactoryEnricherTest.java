@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -47,10 +48,15 @@ public class TermMatchEnsembleFactoryEnricherTest {
 
             @Override
             public String getProperty(String key) {
-                if (StringUtils.equals("nomer.nodc.url", key)) {
-                    return nodcTestArchive.toExternalForm();
-                }
-                return null;
+                return new TreeMap<String, String>() {
+                    {
+                        put("nomer.itis.taxonomic_units", "/org/globalbioticinteractions/nomer/match/itis/taxonomic_units.psv");
+                        put("nomer.itis.synonym_links", "/org/globalbioticinteractions/nomer/match/itis/synonym_links.psv");
+                        put("nomer.itis.taxon_unit_types", "/org/globalbioticinteractions/nomer/match/itis/taxon_unit_types.psv");
+                        put("nomer.itis.taxon_authors_lkp", "/org/globalbioticinteractions/nomer/match/itis/taxon_authors_lkp.psv");
+                        put("nomer.nodc.url", nodcTestArchive.toExternalForm());
+                    }
+                }.get(key);
             }
 
             @Override
@@ -81,8 +87,10 @@ public class TermMatchEnsembleFactoryEnricherTest {
             public void foundTaxonForTerm(Long id, Term name, NameType nameType, Taxon taxon) {
                 assertThat(name.getName(), Is.is("Mickey"));
                 assertThat(name.getId(), Is.is("NODC:9227040101"));
-                // note that the NODC taxonomy maps to ITIS:180725 and online itis maps ITIS:180725 to ITIS:552761
+                // note that the NODC taxonomy maps to ITIS:180725
+                // and itis maps ITIS:180725 to ITIS:552761
                 assertThat(taxon.getExternalId(), Is.is("ITIS:552761"));
+                assertThat(taxon.getName(), Is.is("Pecari tajacu"));
             }
         });
     }

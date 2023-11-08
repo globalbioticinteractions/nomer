@@ -3,6 +3,7 @@ package org.eol.globi.taxon;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.globalbioticinteractions.nomer.match.ITISTaxonService;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.mapdb.Serializer;
 import org.slf4j.Logger;
@@ -35,10 +36,13 @@ public class NODCTaxonService extends PropertyEnricherSimple {
     private final TermMatcherContext ctx;
 
     private BTreeMap<String, String> nodc2itis = null;
-    private PropertyEnricher itisService = new ITISService();
+    private final PropertyEnricher itisService;
 
     public NODCTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
+        ITISTaxonService itisService = new ITISTaxonService(ctx);
+        itisService.setCacheName("nodcitis");
+        this.itisService = itisService;
     }
 
     @Override
