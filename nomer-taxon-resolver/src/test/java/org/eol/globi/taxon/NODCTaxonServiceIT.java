@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class NODCTaxonServiceTest {
+public class NODCTaxonServiceIT {
 
     private NODCTaxonService nodcTaxonService;
 
@@ -35,12 +35,13 @@ public class NODCTaxonServiceTest {
         final Map<String, String> enriched = nodcTaxonService.enrich(new HashMap<String, String>() {
             {
                 put(PropertyAndValueDictionary.EXTERNAL_ID, "NODC:9227040101");
-                put(PropertyAndValueDictionary.NAME, "Mickey mouse");
             }
         });
 
-        assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ITIS:180725"));
-        assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Mickey mouse"));
+        assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ITIS:552761"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH), containsString("Pecari tajacu"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH_IDS), containsString("ITIS:552761"));
+        assertThat(enriched.get(PropertyAndValueDictionary.PATH), not(containsString("Pecari tajacu angulatus")));
     }
 
     @Test
