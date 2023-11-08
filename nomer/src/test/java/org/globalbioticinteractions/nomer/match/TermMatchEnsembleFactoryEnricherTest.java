@@ -25,7 +25,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 
-public class TermMatchEnsembleFactoryEnricherIT {
+public class TermMatchEnsembleFactoryEnricherTest {
 
     public static final String NODC_RESOURCE = "/org/eol/globi/taxon/nodc/0050418/1.1/data/0-data/NODC_TaxonomicCode_V8_CD-ROM/TAXBRIEF.DAT";
     @Rule
