@@ -94,4 +94,68 @@ public class TermMatchEnsembleFactoryEnricherTest {
             }
         });
     }
+
+
+    @Test
+    public void nodcManualPatch() throws PropertyEnricherException, IOException {
+        final URL nodcTestArchive = getClass().getResource(NODC_RESOURCE);
+        assertNotNull("failed to find [" + NODC_RESOURCE + "]", nodcTestArchive);
+
+        File dir = cacheDir.newFolder();
+
+        TermMatcherContext ctx = new TermMatcherContextCaching() {
+
+            @Override
+            public String getCacheDir() {
+                return dir.getAbsolutePath();
+            }
+
+            @Override
+            public String getProperty(String key) {
+                return new TreeMap<String, String>() {
+                    {
+                        put("nomer.itis.taxonomic_units", "/org/globalbioticinteractions/nomer/match/itis/taxonomic_units.psv");
+                        put("nomer.itis.synonym_links", "/org/globalbioticinteractions/nomer/match/itis/synonym_links.psv");
+                        put("nomer.itis.taxon_unit_types", "/org/globalbioticinteractions/nomer/match/itis/taxon_unit_types.psv");
+                        put("nomer.itis.taxon_authors_lkp", "/org/globalbioticinteractions/nomer/match/itis/taxon_authors_lkp.psv");
+                        put("nomer.nodc.url", nodcTestArchive.toExternalForm());
+                    }
+                }.get(key);
+            }
+
+            @Override
+            public List<String> getMatchers() {
+                return null;
+            }
+
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return null;
+            }
+
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
+                return null;
+            }
+
+
+        };
+        TermMatcher termMatcher = new TermMatcherFactoryEnsembleEnricher().createTermMatcher(ctx);
+        termMatcher.match(Arrays.asList(new TermImpl("NODC:88430103", "Mickey")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long id, Term name, NameType nameType, Taxon taxon) {
+                assertThat(name.getName(), Is.is("Mickey"));
+                assertThat(name.getId(), Is.is("NODC:88430103"));
+                // note that the NODC taxonomy maps to ITIS:180725
+                // and itis maps ITIS:180725 to ITIS:552761
+                assertThat(taxon.getExternalId(), Is.is("ITIS:170949"));
+                assertThat(taxon.getName(), Is.is("Bathymaster signatus"));
+            }
+        });
+    }
 }

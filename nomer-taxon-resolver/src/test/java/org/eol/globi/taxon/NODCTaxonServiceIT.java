@@ -55,5 +55,4 @@ public class NODCTaxonServiceIT {
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("ITIS:167424"));
     }
 
-
 }

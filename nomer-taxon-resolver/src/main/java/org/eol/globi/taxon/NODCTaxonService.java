@@ -38,6 +38,26 @@ public class NODCTaxonService extends PropertyEnricherSimple {
     private BTreeMap<String, String> nodc2itis = null;
     private final PropertyEnricher itisService;
 
+    // some ids were matched manually using the NOAA REEM dataaset
+    private static final TreeMap<String, String> PATCHED_NODC_2_ITIS = new TreeMap<String, String>() {{
+        put("NODC:5707030277", "ITIS:556271");
+        put("NODC:6187010305", "ITIS:98427");
+        put("NODC:8713040898", "ITIS:564280");
+        put("NODC:8713040899", "ITIS:564263");
+        put("NODC:8759010404", "ITIS:622490");
+        put("NODC:8793010404", "ITIS:631027");
+        put("NODC:8793010405", "ITIS:550589");
+        put("NODC:8826010198", "ITIS:644604");
+        put("NODC:8831020399", "ITIS:643806");
+        put("NODC:88310212", "ITIS:167268");
+        put("NODC:8831080804", "ITIS:644362");
+        put("NODC:8831090888", "ITIS:555701");
+        put("NODC:88430103", "ITIS:170949");
+        put("NODC:88430201", "ITIS:170951");
+        put("NODC:8857040803", "ITIS:616392");
+        put("NODC:8857040999", "ITIS:616064");
+    }};
+
     public NODCTaxonService(TermMatcherContext ctx) {
         this.ctx = ctx;
         ITISTaxonService itisService = new ITISTaxonService(ctx);
@@ -55,7 +75,13 @@ public class NODCTaxonService extends PropertyEnricherSimple {
                 lazyInit();
             }
             String tsn = nodc2itis.get(externalId);
-            tsn = StringUtils.startsWith(tsn, nodcPrefix) ? nodc2itis.get(tsn) : tsn;
+            tsn = StringUtils.isBlank(tsn) ? PATCHED_NODC_2_ITIS.get(externalId) : tsn;
+
+            if (StringUtils.startsWith(tsn, nodcPrefix)) {
+                String match = nodc2itis.get(tsn);
+                tsn = match;
+            }
+            ;
 
             if (StringUtils.isNotBlank(tsn)) {
                 enriched.put(PropertyAndValueDictionary.EXTERNAL_ID, tsn);
