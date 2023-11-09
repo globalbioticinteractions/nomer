@@ -78,8 +78,7 @@ public class NODCTaxonService extends PropertyEnricherSimple {
             tsn = StringUtils.isBlank(tsn) ? PATCHED_NODC_2_ITIS.get(externalId) : tsn;
 
             if (StringUtils.startsWith(tsn, nodcPrefix)) {
-                String match = nodc2itis.get(tsn);
-                tsn = match;
+                tsn = nodc2itis.get(tsn);
             }
             ;
 
