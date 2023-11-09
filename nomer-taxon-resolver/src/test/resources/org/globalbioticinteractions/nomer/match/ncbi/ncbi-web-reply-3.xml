@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<!DOCTYPE TaxaSet PUBLIC "-//NLM//DTD Taxon, 14th January 2002//EN" "https://www.ncbi.nlm.nih.gov/entrez/query/DTD/taxon.dtd">
+<TaxaSet><Taxon>
+    <TaxId>235106</TaxId>
+    <ScientificName>Influenza A virus (A/Taiwan/0562/1995(H1N1))</ScientificName>
+    <OtherNames>
+        <EquivalentName>Influenza A virus (A/Taiwan/0562/95 (H1N1))</EquivalentName>
+        <EquivalentName>Influenza A virus (A/Taiwan/0562/95(H1N1))</EquivalentName>
+        <EquivalentName>Influenza A virus (A/human/Taiwan/0562/95(H1N1))</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>114727</ParentTaxId>
+    <Rank>no rank</Rank>
+    <Division>Viruses</Division>
+    <GeneticCode>
+        <GCId>1</GCId>
+        <GCName>Standard</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>Viruses; Riboviria; Orthornavirae; Negarnaviricota; Polyploviricotina; Insthoviricetes; Articulavirales; Orthomyxoviridae; Alphainfluenzavirus; Alphainfluenzavirus influenzae; Influenza A virus; H1N1 subtype</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>10239</TaxId>
+            <ScientificName>Viruses</ScientificName>
+            <Rank>superkingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2559587</TaxId>
+            <ScientificName>Riboviria</ScientificName>
+            <Rank>clade</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2732396</TaxId>
+            <ScientificName>Orthornavirae</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2497569</TaxId>
+            <ScientificName>Negarnaviricota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2497571</TaxId>
+            <ScientificName>Polyploviricotina</ScientificName>
+            <Rank>subphylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2497577</TaxId>
+            <ScientificName>Insthoviricetes</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2499411</TaxId>
+            <ScientificName>Articulavirales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>11308</TaxId>
+            <ScientificName>Orthomyxoviridae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>197911</TaxId>
+            <ScientificName>Alphainfluenzavirus</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2955291</TaxId>
+            <ScientificName>Alphainfluenzavirus influenzae</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>11320</TaxId>
+            <ScientificName>Influenza A virus</ScientificName>
+            <Rank>no rank</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>114727</TaxId>
+            <ScientificName>H1N1 subtype</ScientificName>
+            <Rank>serotype</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2003/06/24 11:39:49</CreateDate>
+    <UpdateDate>2020/04/07 15:24:16</UpdateDate>
+    <PubDate>2001/06/29 19:01:00</PubDate>
+</Taxon>
+
+</TaxaSet>
