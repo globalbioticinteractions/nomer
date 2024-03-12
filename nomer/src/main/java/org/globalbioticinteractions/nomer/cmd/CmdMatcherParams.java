@@ -31,14 +31,6 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
         return matchers;
     }
 
-    @Override
-    public String getCacheDir() {
-        String property = getProperty("nomer.cache.dir");
-        File cacheDir = StringUtils.isBlank(property)
-                ? getOrCreateDefaultCacheDir()
-                : getOrCreateCacheDir(new File(property));
-        return cacheDir.getAbsolutePath();
-    }
 
     @Override
     public Map<Integer, String> getInputSchema() {
@@ -73,20 +65,5 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
                 : schemaMap);
     }
 
-    public static File getOrCreateDefaultCacheDir() {
-        File userHome = new File(System.getProperty("user.home"));
-        return getOrCreateCacheDir(new File(userHome, ".cache/nomer"));
-    }
-
-    private static File getOrCreateCacheDir(File cacheDir) {
-        if (!cacheDir.exists()) {
-            try {
-                FileUtils.forceMkdir(cacheDir);
-            } catch (IOException ex) {
-                throw new IllegalArgumentException("invalid or missing cachedir [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
-        return cacheDir;
-    }
 
 }
