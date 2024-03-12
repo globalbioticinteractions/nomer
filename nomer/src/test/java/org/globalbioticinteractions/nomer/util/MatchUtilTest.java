@@ -43,8 +43,8 @@ public class MatchUtilTest {
         FileUtils.copyDirectory(getDataDir(), new File(tmpDataDir, "data"));
     }
 
-    @Test
-    public void defaultOnEmpty() {
+    @Test(expected = IllegalArgumentException.class)
+    public void throwOnEmpty() {
         TermMatcher termMatcher = MatchUtil.getTermMatcher(Collections.emptyList(), new TestTermMatcherContextDefault());
         assertThat(termMatcher, is(notNullValue()));
     }

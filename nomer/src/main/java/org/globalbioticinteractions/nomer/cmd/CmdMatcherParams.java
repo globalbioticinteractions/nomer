@@ -18,7 +18,7 @@ import java.util.TreeMap;
 
 public abstract class CmdMatcherParams extends TermMatcherContextCaching implements Runnable {
 
-    @CommandLine.Parameters(description = "[matcher]")
+    @CommandLine.Parameters(description = "[matcher]", arity = "1")
     private List<String> matchers = new ArrayList<>();
 
     @Override

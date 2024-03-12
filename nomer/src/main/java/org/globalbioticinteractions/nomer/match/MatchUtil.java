@@ -41,9 +41,11 @@ public class MatchUtil {
     }
 
     public static TermMatcher getTermMatcher(List<String> matcherIds, TermMatcherContext ctx) {
-        return matcherIds.isEmpty()
-                ? TermMatcherRegistry.defaultMatcher(ctx)
-                : resolveMatcher(matcherIds, ctx);
+        if (matcherIds.isEmpty()) {
+            throw new IllegalArgumentException("matcher must be specified");
+        }
+
+        return resolveMatcher(matcherIds, ctx);
     }
 
     private static TermMatcher resolveMatcher(List<String> matcherIds, TermMatcherContext ctx) {
