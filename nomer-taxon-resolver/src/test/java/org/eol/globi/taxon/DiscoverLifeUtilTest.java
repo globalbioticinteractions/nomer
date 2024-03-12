@@ -23,6 +23,9 @@ import javax.net.ssl.SSLContext;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -807,6 +810,11 @@ public class DiscoverLifeUtilTest {
                 getStreamOfBees(),
                 StandardCharsets.UTF_8
         );
+
+//        IOUtils.copy(
+//                IOUtils.toInputStream(actual, StandardCharsets.UTF_8),
+//                new FileOutputStream(new File("/tmp/bees.html"))
+//        );
 
         assertThat(actual, Is.is(localCopy));
     }
