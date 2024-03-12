@@ -1,24 +1,20 @@
 package org.globalbioticinteractions.nomer.match;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.util.EntityUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.ExternalIdUtil;
-import org.eol.globi.util.HttpUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -33,7 +29,7 @@ import java.util.stream.Stream;
 public class WikidataTaxonRankLoader {
     private static final String WIKIDATA_ENTITY_PREFIX = "http://www.wikidata.org/entity/";
 
-    public static void importTaxonRanks(TermListener termListener) throws URISyntaxException, IOException {
+    public static URI createWikidataTaxonRankQuery() throws URISyntaxException {
         String queryString = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                 "PREFIX bd: <http://www.bigdata.com/rdf#>\n" +
                 "PREFIX wd: <" + WIKIDATA_ENTITY_PREFIX + ">\n" +
@@ -44,12 +40,14 @@ public class WikidataTaxonRankLoader {
                 "  ?i rdfs:label ?l\n" +
                 "}";
 
-        URI req = new URI("https", "query.wikidata.org", "/sparql", "format=json&query=" + queryString, null);
-        HttpRequestBase httpGet = new HttpGet(req);
-        HttpResponse response = HttpUtil.getFailFastHttpClient().execute(httpGet);
-        StatusLine statusLine = response.getStatusLine();
-        HttpEntity entity = response.getEntity();
-        String json = getJson(statusLine, entity);
+        return new URI("https", "query.wikidata.org", "/sparql", "format=json&query=" + queryString, null);
+    }
+
+    public static void importTaxonRanks(TermListener termListener, ResourceService resourceService, URI req) throws IOException {
+        InputStream is = resourceService.retrieve(req);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        IOUtils.copy(is, outputStream);
+        String json = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
         handleWikidataTaxonRanks(termListener, json);
     }
 
@@ -60,11 +58,11 @@ public class WikidataTaxonRankLoader {
         Map<String, String> ranks = new HashMap<>();
         for (JsonNode binding : bindings) {
             JsonNode item = binding.get("i");
-            String value = item.get("value").getTextValue();
+            String value = item.get("value").asText();
 
             JsonNode label = binding.get("l");
-            String language = label.get("xml:lang").getTextValue();
-            String labelString = label.get("value").getTextValue();
+            String language = label.get("xml:lang").asText();
+            String labelString = label.get("value").asText();
             String s = ranks.containsKey(value) ? ranks.get(value) + CharsetConstant.SEPARATOR : "";
             ranks.put(value, s + labelString + " " + CharsetConstant.LANG_SEPARATOR_CHAR + language);
         }
@@ -88,16 +86,7 @@ public class WikidataTaxonRankLoader {
         }
     }
 
-    private static String getJson(StatusLine statusLine, HttpEntity entity) throws IOException {
-        if (statusLine.getStatusCode() >= 300) {
-            EntityUtils.consume(entity);
-            throw new HttpResponseException(statusLine.getStatusCode(), statusLine.getReasonPhrase());
-        } else {
-            return entity == null ? null : EntityUtils.toString(entity, StandardCharsets.UTF_8);
-        }
-    }
-
-    public static TermListener createCacheWriter(PrintStream out) {
+    static TermListener createCacheWriter(PrintStream out) {
         return taxon -> out.println(taxon.getExternalId()
                 + "\t"
                 + taxon.getName()

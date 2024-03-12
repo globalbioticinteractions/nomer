@@ -3,6 +3,7 @@ package org.eol.globi.taxon;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.ExternalIdUtil;
+import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -17,9 +18,10 @@ public class GulfBaseServiceTest {
 
     private static GulfBaseService gulfBaseService = null;
 
+
     @BeforeClass
     public static void init() {
-        gulfBaseService = new GulfBaseService();
+        gulfBaseService = new GulfBaseService(new ContextForTesting());
     }
 
     @Test
@@ -37,7 +39,6 @@ public class GulfBaseServiceTest {
 
     @Test
     public void lookupRankPath() throws PropertyEnricherException {
-        GulfBaseService gulfBaseService = new GulfBaseService();
         HashMap<String, String> m = new HashMap<String, String>();
         m.put(PropertyAndValueDictionary.NAME, "Haplognathia rosea");
         Map<String, String> properties = Collections.unmodifiableMap(m);
@@ -50,7 +51,6 @@ public class GulfBaseServiceTest {
 
     @Test
     public void lookupById() throws PropertyEnricherException {
-        GulfBaseService gulfBaseService = new GulfBaseService();
         HashMap<String, String> m = new HashMap<String, String>();
         m.put(PropertyAndValueDictionary.EXTERNAL_ID, "BioGoMx:Spp-26-0003");
         Map<String, String> properties = Collections.unmodifiableMap(m);

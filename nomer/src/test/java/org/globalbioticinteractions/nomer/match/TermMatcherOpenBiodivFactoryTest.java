@@ -7,6 +7,7 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Ignore;
@@ -14,6 +15,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +67,7 @@ public class TermMatcherOpenBiodivFactoryTest {
         final TermMatcher termMatcher =
                 new TermMatcherOpenBiodivFactory().createTermMatcher(testContext());
         termMatcher.match(Collections.singletonList(
-                term), (requestId, providedTerm, resolvedTaxon, nameType) -> {
+                term), (requestId, providedTerm, nameType, resolvedTaxon) -> {
                     resolveTaxa.add(resolvedTaxon);
                     matchesOnly.set(NameType.SAME_AS.equals(nameType) && matchesOnly.get());
 
@@ -85,7 +87,7 @@ public class TermMatcherOpenBiodivFactoryTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
+            public InputStream retrieve(URI uri) throws IOException {
                 return null;
             }
 
@@ -101,6 +103,11 @@ public class TermMatcherOpenBiodivFactoryTest {
 
             @Override
             public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

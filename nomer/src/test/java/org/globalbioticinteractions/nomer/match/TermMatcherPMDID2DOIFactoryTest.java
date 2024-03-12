@@ -9,11 +9,13 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.doi.MalformedDOIException;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +36,7 @@ public class TermMatcherPMDID2DOIFactoryTest {
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl("11056684", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term s, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term s, NameType nameType, Taxon taxon) {
                 assertThat(nameType, is(NameType.SAME_AS));
                 assertThat(taxon.getId(), is("10.1186/bcr29"));
                 found.set(true);
@@ -52,7 +54,7 @@ public class TermMatcherPMDID2DOIFactoryTest {
         AtomicBoolean found = new AtomicBoolean(false);
         termMatcher.match(Collections.singletonList(new TermImpl("this is not valid", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term s, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term s, NameType nameType, Taxon taxon) {
                 assertThat(nameType, is(NameType.NONE));
                 found.set(true);
             }
@@ -69,7 +71,7 @@ public class TermMatcherPMDID2DOIFactoryTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
+            public InputStream retrieve(URI uri) throws IOException {
                 return IOUtils.toInputStream(first10Lines, StandardCharsets.UTF_8);
             }
 
@@ -85,6 +87,11 @@ public class TermMatcherPMDID2DOIFactoryTest {
 
             @Override
             public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

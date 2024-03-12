@@ -1,378 +1,359 @@
 package org.globalbioticinteractions.nomer.match;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.eol.globi.data.CharsetConstant;
-import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
-import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.taxon.GBIFService;
-import org.eol.globi.taxon.PropertyEnricherSimple;
+import org.eol.globi.taxon.GBIFUtil;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.eol.globi.taxon.TermMatchListener;
-import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.CSVTSVUtil;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Fun;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GBIFTaxonService extends PropertyEnricherSimple implements TermMatcher {
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static org.eol.globi.taxon.GBIFUtil.compileAuthorshipString;
+
+public class GBIFTaxonService extends CommonLongTaxonService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GBIFTaxonService.class);
-    private static final String DENORMALIZED_NODES = "denormalizedNodes";
-    private static final String NAME_IDS = "nameIds";
-    private static final String SYNONYM_IDS = "synonymIds";
-
-    private final TermMatcherContext ctx;
-
-    private BTreeMap<String, List<String>> nameIds = null;
-    private BTreeMap<String, List<String>> synonymIds = null;
-    private BTreeMap<String, Map<String, String>> gbifDenormalizedNodes = null;
 
     public GBIFTaxonService(TermMatcherContext ctx) {
-        this.ctx = ctx;
+        super(ctx);
     }
 
     @Override
-    public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
-        lazyInitIfNeeded();
-
-        for (Term term : terms) {
-            List<Taxon> matchedTaxa = new ArrayList<>();
-            List<Taxon> matchedSynonyms = new ArrayList<>();
-
-            String gbifId = GBIFService.getGBIFId(term.getId());
-            if (StringUtils.isNotBlank(gbifId)) {
-                Map<String, String> taxonMap = lookupTaxonById(gbifId);
-                if (taxonMap != null) {
-                    matchedTaxa.add(TaxonUtil.mapToTaxon(taxonMap));
-                }
-            } else if (StringUtils.isNotBlank(term.getName())) {
-                List<Map<String, String>> matched = lookupTaxaByName(term.getName());
-                matched.forEach(taxonForName -> {
-                    matchedTaxa.add(TaxonUtil.mapToTaxon(taxonForName));
-                });
-
-                List<Map<String, String>> synonyms = lookupTaxaBySynonym(term.getName());
-                synonyms.forEach(taxonForName -> {
-                    matchedSynonyms.add(TaxonUtil.mapToTaxon(taxonForName));
-                });                
-            }
-
-
-            if (matchedTaxa.isEmpty() && matchedSynonyms.isEmpty()) {
-                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
-            } else {
-                matchedTaxa.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SAME_AS);
-                });
-                matchedSynonyms.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SYNONYM_OF);
-                });
-            }
-        }
-    }
-
-    private List<Map<String, String>> lookupTaxaBySynonym(String name) {
-        List<Map<String, String>> matches = new ArrayList<>();
-        List<String> ids = synonymIds.get(name);
-        if (ids != null) {
-            for (String id : ids) {
-                Map<String, String> taxonMap = gbifDenormalizedNodes.get(id);
-                if (taxonMap != null) {
-                    matches.add(taxonMap);
-                }
-            }
-        }
-        return matches;
-    }   
-
-    private List<Map<String, String>> lookupTaxaByName(String name) {
-        List<Map<String, String>> matches = new ArrayList<>();
-        List<String> ids = nameIds.get(name);
-        if (ids != null) {
-            for (String id : ids) {
-                Map<String, String> taxonMap = gbifDenormalizedNodes.get(id);
-                if (taxonMap != null) {
-                    matches.add(taxonMap);
-                }
-            }
-        }
-        return matches;
+    public TaxonomyProvider getTaxonomyProvider() {
+        return TaxonomyProvider.GBIF;
     }
 
     @Override
-    public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-        String gbifTaxonId = GBIFService.getGBIFTaxonId(properties);
-        Map<String, String> enriched = lookupTaxonById(gbifTaxonId);
-        return enriched == null
-                ? properties
-                : enriched;
-    }
-
-    private Map<String, String> lookupTaxonById(String gbifTaxonId) throws PropertyEnricherException {
-        Map<String, String> enrichedProperties = null;
-        if (StringUtils.isNotBlank(gbifTaxonId)) {
-            lazyInitIfNeeded();
-            String externalId = TaxonomyProvider.ID_PREFIX_GBIF + gbifTaxonId;
-            enrichedProperties = gbifDenormalizedNodes.get(externalId);
-        }
-        return enrichedProperties;
-    }
-
-    private void lazyInitIfNeeded() throws PropertyEnricherException {
-        if (needsInit()) {
-            lazyInit();
-        }
-    }
-
-    private void lazyInit() throws PropertyEnricherException {
-    	File cacheDir = getCacheDir();
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
-        
-        File gbifTaxonomyDir = new File(getCacheDir(), "gbif");
+    protected void lazyInit() throws PropertyEnricherException {
+        File taxonomyDir = new File(getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
         DB db = DBMaker
-                .newFileDB(gbifTaxonomyDir)
+                .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
-                .compressionEnable()
+                .mmapFileCleanerHackDisable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES)) {
-            LOG.info("GBIF taxonomy already indexed at [" + gbifTaxonomyDir.getAbsolutePath() + "], no need to import.");
-            gbifDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
-            nameIds = db.getTreeMap(NAME_IDS);
-            synonymIds = db.getTreeMap(SYNONYM_IDS);
+        if (db.exists(NODES)
+                && db.exists(CHILD_PARENT)
+                && db.exists(MERGED_NODES)
+                && db.exists(NAME_TO_NODE_IDS)
+        ) {
+            LOG.debug("[" + getTaxonomyProvider().name() + "] taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
+            mergedNodes = db.getTreeMap(MERGED_NODES);
+            name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
         } else {
-            LOG.info("GBIF taxonomy importing...");
+            LOG.info("[" + getTaxonomyProvider().name() + "] indexing taxonomy...");
             StopWatch watch = new StopWatch();
+
+
+            URI gbifNameResource = CacheUtil.getValueURI(getCtx(), "nomer.gbif.ids");
+
             watch.start();
 
-            BTreeMap<String, Map<String, String>> gbifNodes = db
-                    .createTreeMap("nodes")
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
+            log("indexing ids...");
+            buildTaxonIndex(db, gbifNameResource);
+            log("indexing taxon ids...done.");
 
-            BTreeMap<String, String> childParent = db
-                    .createTreeMap("childParent")
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-            
-            nameIds = db
-                    .createTreeMap(NAME_IDS)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
+            log("indexing taxon hierarchies...");
+            childParent = buildRelationIndex(db, gbifNameResource, CHILD_PARENT, new ChildParentRelationParser());
+            log("indexing taxon hierarchies...done.");
 
-            synonymIds = db
-                    .createTreeMap(SYNONYM_IDS)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();           
-            
-            try {
-                String taxonUrl = ctx.getProperty("nomer.gbif.taxon");
-                if (taxonUrl == null) {
-                    throw new PropertyEnricherException("no url for taxon resource [nomer.gbif.taxon] found");
-                }
-                InputStream resource = ctx.getResource(taxonUrl);
-                parseNodes(gbifNodes, childParent, resource, nameIds, synonymIds);
-            } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse GBIF nodes", e);
-            }                     
-                                
+            log("indexing synonyms...");
+            mergedNodes = buildRelationIndex(db, gbifNameResource, MERGED_NODES, new SynonymParser());
+            log("indexing synonyms...done.");
 
-            gbifDenormalizedNodes = db
-                    .createTreeMap(DENORMALIZED_NODES)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-            denormalizeTaxa(gbifNodes, gbifDenormalizedNodes, childParent);
+            log("indexing names...");
+            buildNameToIdIndex(db, CacheUtil.getValueURI(getCtx(), "nomer.gbif.names"));
+            log("indexing names...done.");
 
             watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), gbifNodes.size(), LOG);
-            LOG.info("GBIF taxonomy imported.");
+            TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
+            log("taxonomy imported.");
+        }
+
+    }
+
+    private void log(String msg) {
+        LOG.info("[" + getTaxonomyProvider() + "] " + msg);
+    }
+
+    private void buildNameToIdIndex(DB db, URI gbifNameResource) throws PropertyEnricherException {
+
+        try {
+
+            name2nodeIds = db
+                    .createTreeMap(NAME_TO_NODE_IDS)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .pumpSource(new GBIFNameToIdsIterator(getBufferedReader(gbifNameResource, getCtx())))
+                    .make();
+
+
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]");
+        }
+
+    }
+
+    private BTreeMap<Long, Long> buildRelationIndex(
+            DB db,
+            URI gbifNameResource,
+            String indexName,
+            RelationParser relationParser) throws PropertyEnricherException {
+
+        final BufferedReader reader;
+        try {
+            reader = getBufferedReader(gbifNameResource, getCtx());
+            return db
+                    .createTreeMap(indexName)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.LONG)
+                    .pumpSource(new Iterator<Fun.Tuple2<Long, Long>>() {
+                        private Fun.Tuple2<Long, Long> entry;
+
+                        @Override
+                        public boolean hasNext() {
+
+                            if (entry == null) {
+                                try {
+                                    parseNext();
+                                } catch (IOException e) {
+                                    return false;
+                                }
+                            }
+                            return entry != null;
+                        }
+
+                        private void parseNext() throws IOException {
+                            String line;
+                            while (entry == null && (line = reader.readLine()) != null) {
+                                handleLine(line, (rowValues, taxIdString, taxId, relatedTaxIdString, rank, canonicalName) -> {
+                                    entry = parseChildParentRelation(rowValues, relatedTaxIdString, taxId, relationParser);
+                                });
+                            }
+                        }
+
+                        @Override
+                        public Fun.Tuple2<Long, Long> next() {
+                            Fun.Tuple2<Long, Long> currentEntry = this.entry;
+                            if (currentEntry != null) {
+                                this.entry = null;
+                            }
+                            return currentEntry;
+                        }
+                    })
+                    .make();
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]", e);
         }
     }
 
-    private boolean needsInit() {
-    	return gbifDenormalizedNodes == null;
+    private void buildTaxonIndex(DB db, URI gbifNameResource) throws PropertyEnricherException {
+
+        try {
+            final BufferedReader reader = getBufferedReader(gbifNameResource, getCtx());
+
+            nodes = db
+                    .createTreeMap(NODES)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.JAVA)
+                    .pumpSource(new Iterator<Fun.Tuple2<Long, Map<String, String>>>() {
+                        private Fun.Tuple2<Long, Map<String, String>> entry;
+
+                        @Override
+                        public boolean hasNext() {
+
+                            if (entry == null) {
+                                try {
+                                    parseNext();
+                                } catch (IOException e) {
+                                    return false;
+                                }
+                            }
+
+                            return entry != null;
+                        }
+
+                        private void parseNext() throws IOException {
+                            String line = reader.readLine();
+                            handleLine(line, (rowValues, taxIdString, taxId, relatedTaxIdString, rank, canonicalName) -> {
+                                Taxon taxon = parseTaxon(rowValues, taxIdString, rank, canonicalName);
+                                entry = new Fun.Tuple2<>(taxId, TaxonUtil.taxonToMap(taxon));
+                            });
+                        }
+
+                        @Override
+                        public Fun.Tuple2<Long, Map<String, String>> next() {
+                            Fun.Tuple2<Long, Map<String, String>> currentEntry = this.entry;
+                            if (currentEntry != null) {
+                                this.entry = null;
+                            }
+                            return currentEntry;
+                        }
+                    })
+                    .make();
+
+
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]");
+        }
+
+
+        handleResource(gbifNameResource, new LineHandler() {
+            @Override
+            public void handle(String[] rowValues, String taxIdString, long taxId, String relatedTaxIdString, String rank, String canonicalName) {
+                putTaxonById(rowValues, taxIdString, taxId, rank, canonicalName);
+            }
+        });
     }
 
-    @Override
-    public void shutdown() {
+    public static BufferedReader getBufferedReader(URI resourceName, TermMatcherContext ctx) throws IOException, PropertyEnricherException {
+        InputStream retrieve;
+        retrieve = ctx.retrieve(resourceName);
+        if (retrieve == null) {
+            throw new PropertyEnricherException("failed to retrieve [" + resourceName + "]");
+        }
 
-    } 
-    
-    private File getCacheDir() {
-        File cacheDir = new File(ctx.getCacheDir(), "gbif");
-        cacheDir.mkdirs();
-        return cacheDir;
-    }    
+        return new BufferedReader(
+                new InputStreamReader(
+                        retrieve,
+                        StandardCharsets.UTF_8
+                )
+        );
+    }
 
-
-    static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream, BTreeMap<String,List<String>> names, BTreeMap<String,List<String>> synonyms) throws PropertyEnricherException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
-
-        String line;
+    private void handleResource(URI gbifNameResource, LineHandler lineHandler) throws PropertyEnricherException {
         try {
+            BufferedReader reader = getBufferedReader(gbifNameResource, getCtx());
+
+            String line;
             while ((line = reader.readLine()) != null) {
-                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
-                if (rowValues.length > 19) {
-                	String taxId = rowValues[0];                
-                	String parentTaxId = rowValues[1];
-                	String rank = rowValues[5];
-                	
-                	boolean isSynomym = StringUtils.equals("t", rowValues[3]);
-                	
-                	String canonicalName = rowValues[19];                	
-                	String externalId = TaxonomyProvider.ID_PREFIX_GBIF + taxId;
-                	TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
-                	taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "UNRANKED") ? "" : rank);
-                	taxon.setExternalId(externalId);
-                	
-                	taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
-                	childParent.put(TaxonomyProvider.ID_PREFIX_GBIF + taxId, TaxonomyProvider.ID_PREFIX_GBIF + parentTaxId);
-                	
-                	if (!isSynomym) {                        
-                        addIdMapEntry(names, canonicalName, taxId);
-                    } else {                        
-                        addIdMapEntry(synonyms, canonicalName, taxId);
-                    }
-                }
+                handleLine(line, lineHandler);
             }
         } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse GBIF taxon dump", e);
-        }                    
-    }
-
-    static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonMapDenormalized, Map<String, String> childParent) {
-        Set<Map.Entry<String, Map<String, String>>> taxa = taxonMap.entrySet();
-        for (Map.Entry<String, Map<String, String>> taxon : taxa) {
-            denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxon);
+            throw new PropertyEnricherException("failed to retrieve [" + gbifNameResource + "]");
         }
     }
 
-    private static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonEnrichMap, Map<String, String> childParent, Map.Entry<String, Map<String, String>> taxon) {
-        Map<String, String> childTaxon = taxon.getValue();
-        List<String> pathNames = new ArrayList<>();
-        List<String> pathIds = new ArrayList<>();
-        List<String> path = new ArrayList<>();
+    private void handleLine(String line, LineHandler lineHandler) {
+        String[] rowValues = CSVTSVUtil.splitTSV(line);
 
-        Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);                
-        path.add(StringUtils.defaultIfBlank(origTaxon.getName(), ""));
-        
-        String externalId = origTaxon.getExternalId();
-        pathIds.add(StringUtils.defaultIfBlank(externalId, ""));
+        if (rowValues != null && rowValues.length > 19) {
+            String taxIdString = rowValues[0];
+            long taxId = Long.parseLong(taxIdString);
+            String relatedTaxIdString = rowValues[1];
+            String rank = StringUtils.trim(rowValues[5]);
+            String canonicalName = rowValues[19];
+            lineHandler.handle(rowValues, taxIdString, taxId, relatedTaxIdString, rank, canonicalName);
+        }
 
-        origTaxon.setRank(origTaxon.getRank());
-        pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
+    }
 
-        String parent = childParent.get(taxon.getKey());
-        while (StringUtils.isNotBlank(parent) && !pathIds.contains(parent)) {
-            Map<String, String> stringStringMap = taxonMap.get(parent);
-            if (stringStringMap != null) {
-                Taxon parentTaxon = TaxonUtil.mapToTaxon(stringStringMap);
-                path.add(StringUtils.defaultIfBlank(parentTaxon.getName(), ""));
-                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
-                pathIds.add(StringUtils.defaultIfBlank(parentTaxon.getExternalId(), ""));
+    interface LineHandler {
+        void handle(String[] rowValues, String taxIdString, long taxId, String relatedTaxIdString, String rank, String canonicalName);
+    }
+
+    private void putTaxonById(String[] rowValues, String taxIdString, long taxId, String rank, String canonicalName) {
+        Taxon taxon = parseTaxon(rowValues, taxIdString, rank, canonicalName);
+
+        nodes.put(taxId, TaxonUtil.taxonToMap(taxon));
+    }
+
+    private Taxon parseTaxon(String[] rowValues, String taxIdString, String rank, String canonicalName) {
+        Taxon taxon = new TaxonImpl(canonicalName, TaxonomyProvider.ID_PREFIX_GBIF + taxIdString);
+        taxon.setRank(StringUtils.lowerCase(rank));
+        if (rowValues.length > 27) {
+            String authorshipString = compileAuthorshipString(rowValues[26], rowValues[27]);
+            if (StringUtils.isBlank(authorshipString)) {
+                authorshipString = compileAuthorshipString(rowValues[24], rowValues[25]);
+            } else {
+                authorshipString = "(" + authorshipString + ")";
             }
-            parent = childParent.get(parent);
+            taxon.setAuthorship(authorshipString);
         }
-
-        Collections.reverse(pathNames);
-        Collections.reverse(pathIds);
-        Collections.reverse(path);
-
-        origTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
-        origTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
-        origTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
-
-        taxonEnrichMap.put(taxon.getKey(), TaxonUtil.taxonToMap(origTaxon));
+        return taxon;
     }
 
-    static void parseNames(InputStream resourceAsStream, Map<String, String> nameMap,
-                           Map<String, List<String>> nameIds,
-                           Map<String, List<String>> commonNameIds,
-                           Map<String, List<String>> synonymIds) throws PropertyEnricherException {
+    private void mapNameToIds(long taxId, String name) {
+        List<Long> ids = name2nodeIds.get(name);
+        List<Long> idsNew = ids == null
+                ? new ArrayList<>()
+                : new ArrayList<>(ids);
+        idsNew.add(taxId);
+        name2nodeIds.put(name, idsNew);
+    }
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
-                if (rowValues.length > 3) {
-                    String taxId = rowValues[0];
-                    String taxonName = rowValues[18];
-                    String rank = rowValues[5];
-                    boolean isSynomym = StringUtils.equals("t", rowValues[3]);
-                    String gbifTaxonId = TaxonomyProvider.ID_PREFIX_GBIF + taxId;
-                    
-                    if (!isSynomym) {                        
-                        nameMap.put(gbifTaxonId, taxonName);
-                        addIdMapEntry(nameIds, taxonName, gbifTaxonId);
-                    } else {                        
-                        addIdMapEntry(synonymIds, taxonName, gbifTaxonId);
-                    }
+    private Fun.Tuple2<Long, Long> parseChildParentRelation(String[] rowValues, String relatedTaxIdString, long taxId, RelationParser childParentRelationParser) {
+        return childParentRelationParser.parseRelation(rowValues, relatedTaxIdString, taxId);
+    }
 
+    interface RelationParser {
+        Fun.Tuple2<Long, Long> parseRelation(String[] rowValues, String relatedTaxIdString, long taxId);
+    }
+
+    private Fun.Tuple2<Long, Long> parseSynonymRelation(String[] rowValues, String relatedTaxIdString, long taxId) {
+        return new SynonymParser().parseRelation(rowValues, relatedTaxIdString, taxId);
+
+    }
+
+    private static class SynonymParser implements RelationParser {
+
+
+        @Override
+        public Fun.Tuple2<Long, Long> parseRelation(String[] rowValues, String relatedTaxIdString, long taxId) {
+            Fun.Tuple2<Long, Long> entry = null;
+            if (StringUtils.isNumeric(relatedTaxIdString)) {
+                long relatedTaxId = Long.parseLong(relatedTaxIdString);
+                if (GBIFUtil.isSynonym(rowValues)) {
+                    entry = new Fun.Tuple2<>(taxId, relatedTaxId);
                 }
             }
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse GBIF taxon dump", e);
+            return entry;
         }
     }
 
-    private static void addIdMapEntry(Map<String, List<String>> nameIds,
-                                      String taxonName,
-                                      String key) {
-        List<String> ids = nameIds.get(taxonName);
-        if (ids == null) {
-            ids = new ArrayList<>();
-        }
-        if (!ids.contains(key)) {
-            ids.add(key);
-        }
-        nameIds.put(taxonName, ids);
-    }
+    private static class ChildParentRelationParser implements RelationParser {
 
-    static void parseMerged(Map<String, String> mergedMap, InputStream resourceAsStream) throws PropertyEnricherException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
-        String line;
-        try {
-            while ((line = reader.readLine()) != null) {
-                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
-                if (rowValues.length > 1) {
-                    String oldTaxId = rowValues[0];
-                    String newTaxId = rowValues[1];
-                    if (StringUtils.isNotBlank(oldTaxId) && StringUtils.isNotBlank(newTaxId)) {
-                        mergedMap.put(TaxonomyProvider.ID_PREFIX_GBIF + oldTaxId, TaxonomyProvider.ID_PREFIX_GBIF + newTaxId);
-                    }
+        @Override
+        public Fun.Tuple2<Long, Long> parseRelation(String[] rowValues, String relatedTaxIdString, long taxId) {
+            Fun.Tuple2<Long, Long> childParentRelation = null;
+            if (StringUtils.isNumeric(relatedTaxIdString)) {
+                long relatedTaxId = Long.parseLong(relatedTaxIdString);
+                if (!GBIFUtil.isSynonym(rowValues)) {
+                    childParentRelation = new Fun.Tuple2<>(taxId, relatedTaxId);
                 }
             }
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse GBIF taxon dump", e);
+            return childParentRelation;
         }
     }
-
 
 }
+
+

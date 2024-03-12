@@ -3,11 +3,11 @@ package org.globalbioticinteractions.nomer.cmd;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static junit.framework.TestCase.assertNull;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class CmdMatcherParamsTest {
@@ -34,12 +34,59 @@ public class CmdMatcherParamsTest {
         assertThat(schema, Is.is(new TreeMap<Integer, String>() {{
             put(0, "externalId");
             put(1, "name");
+            put(2, "authorship");
         }}));
     }
 
     @Test(expected = RuntimeException.class)
     public void testInvalidSchema() {
         CmdMatcherParams.parseSchema("[ this ain't valid n\": 3, \"type\": \"name\"}]");
+    }
+
+    @Test
+    public void testGetCacheDir() {
+        CmdMatcherParams cmd = new CmdMatcherParams() {
+
+            @Override
+            public void run() {
+
+            }
+        };
+
+
+        File cachedir = CmdMatcherParams.getOrCreateDefaultCacheDir();
+        assertThat(cmd.getCacheDir(), Is.is(cachedir.getAbsolutePath()));
+    }
+
+    @Test
+    public void testInvalidCacheDir() {
+        CmdMatcherParams cmd = new CmdMatcherParams() {
+
+            @Override
+            public void run() {
+
+            }
+        };
+
+
+        File cachedir = CmdMatcherParams.getOrCreateDefaultCacheDir();
+        assertThat(cmd.getCacheDir(), Is.is(cachedir.getAbsolutePath()));
+    }
+
+    @Test
+    public void testGetCacheDirOverride() {
+        CmdMatcherParams cmd = new CmdMatcherParams() {
+
+            @Override
+            public void run() {
+
+            }
+        };
+
+        cmd.setPropertiesResource(getClass().getResource("cachedir.properties").toExternalForm());
+
+
+        assertThat(cmd.getCacheDir(), Is.is(new File("./target/.nomer").getAbsolutePath()));
     }
 
 

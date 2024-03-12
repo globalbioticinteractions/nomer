@@ -1,0 +1,1234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <title>
+      batnames | genera
+    </title>
+    <link rel="stylesheet" type="text/css" href="/MSOW.css"/>
+    <base target="_blank"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, target-densitydpi=high-dpi"/>
+  </head>
+  <body>
+    <header>
+      <div class="headertextwrap">
+        <div class="headerleft">
+          <a href="https://batnames.org/home.html" target="_self">
+            <h1>
+               Bats of the World 
+            </h1>
+            <h2>
+               A Taxonomic and Geographic Database 
+            </h2>
+          </a>
+        </div>
+        <div class="headerright">
+          <h3>
+            <div class="compile">
+              Compiled and Edited by:
+            </div>
+            <div class="authors">
+              Nancy B. Simmons and Andrea L. Cirranello
+            </div>
+            <div class="museum">
+              <span style="font-style:italic">
+                 American Museum of Natural History
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+    </header>
+    <div id="homeresults">
+      <div>
+        <form class="export-submit" action="https://batnames.org/exploreexport.php" method="post" name="upload_excel" target="_self" enctype="multipart/form-data">
+          <div class="form-group">
+            <div class="col-md-4 col-md-offset-4">
+              <input type="submit" name="export" class="btn btn-success" value="Export"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="resulttxt">
+        Your search for 
+        <em>
+          Miniopterus
+        </em>
+         resulted in 39 species-level matches: 
+        <br/>
+      </div>
+      <div class="link" id="families">
+        <p>
+          <a href="/family/Miniopteridae" target="_blank">
+            Miniopteridae
+          </a>
+        </p>
+      </div>
+      <div class="link" id="genus">
+        <p>
+          <a href="/family/Miniopteridae" target="_self">
+            Miniopteridae
+          </a>
+        </p>
+      </div>
+      <div class="taxon" id="genus">
+        <p>
+          <span>
+            <b>
+              <i>
+                Miniopterus
+              </i>
+            </b>
+          </span>
+           Bonaparte, 1837. 
+          <i>
+            Fauna Ital., 1
+          </i>
+           fasc. 20.
+        </p>
+      </div>
+      <div class="typesp" id="genus">
+        <p>
+          <i>
+            Vespertilio ursinii
+          </i>
+           Bonaparte, 1837 (=
+          <i>
+            Vespertilio schreibersii
+          </i>
+           Kuhl, 1817)
+        </p>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus aelleni 
+                </i>
+              </b>
+            </span>
+            Goodman, Maminirina, Weyeneth, Bradman, Christidis, Ruedi, &amp; Appleton, 2009.
+            <br/>
+            <i>
+              Zoologica Scripta
+            </i>
+             38(4): 353.
+            <br/>
+            Aellen's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus africanus 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1936.
+            <br/>
+            <i>
+              Field Mus. Nat. Hist., Publ., Zool. Ser.
+            </i>
+             20: 111.
+            <br/>
+            African Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus ambohitrensis 
+                </i>
+              </b>
+            </span>
+            Goodman, Ramasindrazana, Naughton &amp; Appleton, 2015.
+            <br/>
+            <i>
+              Zootaxa
+            </i>
+             3936(4): 543.
+            <br/>
+            Ambohitra Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus australis 
+                </i>
+              </b>
+            </span>
+            Tomes, 1858.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1858: 125.
+            <br/>
+            Little Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus brachytragos 
+                </i>
+              </b>
+            </span>
+            Goodman, Maminirina, Bradman, Christidis, &amp; Appleton, 2009.
+            <br/>
+            <i>
+              Am. Mus. Novitates
+            </i>
+             3669: 9.
+            <br/>
+            Broad-tragused Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus egeri 
+                </i>
+              </b>
+            </span>
+            Goodman, Ramasindrazana, Maminirina, Schoeman, &amp; Appleton, 2011.
+            <br/>
+            <i>
+              Zootaxa
+            </i>
+             2880: 9.
+            <br/>
+            Eger's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus eschscholtzii  
+                </i>
+              </b>
+            </span>
+            (Waterhouse, 1845).
+            <br/>
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             13 (1845): 3.
+            <br/>
+            Eschscholtz's Bent-winged Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus fraterculus 
+                </i>
+              </b>
+            </span>
+            Thomas &amp; Schwann, 1906.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1906: 162.
+            <br/>
+            Lesser Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus fuliginosus 
+                </i>
+              </b>
+            </span>
+            (Hodgson, 1835).
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             4(48): 700.
+            <br/>
+            Eastern Bent-winged Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus fuscus 
+                </i>
+              </b>
+            </span>
+            Bonhote, 1902.
+            <br/>
+            <i>
+              Novit. Zool.
+            </i>
+             9: 626.
+            <br/>
+            Southeast Asian Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus gleni 
+                </i>
+              </b>
+            </span>
+            Peterson, Eger &amp; Mitchell, 1995.
+            <br/>
+            <i>
+              Faune de Madagascar, Chiroptères
+            </i>
+             84: 128.
+            <br/>
+            Glen's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus griffithsi 
+                </i>
+              </b>
+            </span>
+            Goodman, Maminirina, Bradman, Christidis &amp; Appleton, 2010.
+            <br/>
+            <i>
+              J. Zool. Syst. Evol. Res.
+            </i>
+             48(1): 81.
+            <br/>
+            Griffiths' Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus griveaudi 
+                </i>
+              </b>
+            </span>
+            Harrison, 1959.
+            <br/>
+            <i>
+              Durban Mus. Novitates
+            </i>
+             5: 192.
+            <br/>
+            Griveaud's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus inflatus 
+                </i>
+              </b>
+            </span>
+            Thomas, 1903.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 12: 634.
+            <br/>
+            Greater Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus macrocneme 
+                </i>
+              </b>
+            </span>
+            Revilliod, 1914.
+            <br/>
+            <i>
+              In Sarasin and Roux, Nova Caledonia, A. Zool.
+            </i>
+             1: 360.
+            <br/>
+            Small Melanesian Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus maghrebensis 
+                </i>
+              </b>
+            </span>
+            Puechmaille, Allegrini, Benda, Bilgin, Ibáñez, &amp; Juste, 2014.
+            <br/>
+            <i>
+              Zootaxa
+            </i>
+             3794(1): 112.
+            <br/>
+            Mahgrebian Bent-wing Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus magnater 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1931.
+            <br/>
+            <i>
+              Field Mus. Nat. Hist. Publ., Zool. Ser.
+            </i>
+             18: 26.
+            <br/>
+            Western Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus mahafaliensis 
+                </i>
+              </b>
+            </span>
+            Goodman, Maminirina, Bradman, Christidis, &amp; Appleton, 2009.
+            <br/>
+            <i>
+              Am. Mus. Novitates
+            </i>
+             3669: 17.
+            <br/>
+            Mahafaly Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus majori 
+                </i>
+              </b>
+            </span>
+            Thomas, 1906.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 17: 175.
+            <br/>
+            Major's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus manavi 
+                </i>
+              </b>
+            </span>
+            Thomas, 1906.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 17: 176.
+            <br/>
+            Manavi Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus medius 
+                </i>
+              </b>
+            </span>
+            Thomas &amp; Wroughton, 1909.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1909: 382.
+            <br/>
+            Intermediate Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus minor 
+                </i>
+              </b>
+            </span>
+            Peters, 1867.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1866: 885.
+            <br/>
+            Least Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus mossambicus 
+                </i>
+              </b>
+            </span>
+            Monadjem, Goodman, Stanley, &amp; Appleton, 2013.
+            <br/>
+            <i>
+              Zootaxa
+            </i>
+             3746(1): 129.
+            <br/>
+            Mozambique Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus natalensis 
+                </i>
+              </b>
+            </span>
+            (A. Smith, 1834).
+            <br/>
+            <i>
+              S. Afr. Quart. J.
+            </i>
+             2:59.
+            <br/>
+            Natal Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus newtoni 
+                </i>
+              </b>
+            </span>
+            Bocage, 1889.
+            <br/>
+            <i>
+              Jornal de Sciencias Mathematicas, Physicas e Naturaes, Lisboa
+            </i>
+             2: 198.
+            <br/>
+            Newton's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus nimbae 
+                </i>
+              </b>
+            </span>
+            Monadjem, Shapiro, Richards, Karabulut, Crawley, Nielsen, Hansen, Bohmann &amp; Mourier, 2020.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             21(2): 245.
+            <br/>
+            Nimba Long-fingered Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Liberia, Nimba Province, Mount Gangra, 10 km
+to the west of Mount Nimba
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            N Liberia, SE Guinea
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            Specimens from N Liberia and SE Guinea previously identified as 
+            <i>
+              M. inflatus
+            </i>
+             are likely referable to this species (see Monadjem et al., 2020).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Monadjem, A., J.T. Shapiro, L.R. Richards, H. Karabulut, W. Crawley, I.B. Nielsen, A. Hansen, K. Bohmann, and T. Mourier. 2019. Systematics of West African 
+            <i>
+              Miniopterus
+            </i>
+             with the description of a new species. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             21(2): 237-256. 
+            <a href="https://bioone.org/journals/acta-chiropterologica/volume-21/issue-2/15081109ACC2019.21.2.001/Systematics-of-West-African-Miniopterus-with-the-Description-of-a/10.3161/15081109ACC2019.21.2.001.short" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus orianae 
+                </i>
+              </b>
+            </span>
+            Thomas, 1922.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 9, 10: 616.
+            <br/>
+            Oriana's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus pallidus 
+                </i>
+              </b>
+            </span>
+            Thomas, 1907.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 20: 197.
+            <br/>
+            Ashen Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus paululus 
+                </i>
+              </b>
+            </span>
+            Hollister, 1913.
+            <br/>
+            <i>
+              Proc. U. S. Nat. Mus.
+            </i>
+             46: 311.
+            <br/>
+            Philippine Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus petersoni 
+                </i>
+              </b>
+            </span>
+            Goodman, Bradman, Maminirina, Ryan, Christidis &amp; Appleton, 2008.
+            <br/>
+            <i>
+              Mamm. Biol.
+            </i>
+             73(3): 201.
+            <br/>
+            Peterson's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus phillipsi 
+                </i>
+              </b>
+            </span>
+            Kusuminda, Mannakkara, Ukuwela, Kruskop, Amarasinghe, Saikia, Venugopal, Karunarathna, Gamage, Ruedi, Csorba, Yapa, &amp; Patterson, 2022.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             24(1): 4.
+            <br/>
+            Phillips' Long-fingered Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Sri Lanka, Uva Province, at an edge of Dunkunda division of Bio Tea Garden tea plantation, near Idulgashinna railway station, Idulgashinna cave
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Sri Lanka and S India
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Not evaluated (new species).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Kusuminda, T., A. Mannakkara, K.D. Ukuwela, S.V. Kruskop, C.J. Amarasinghe, U. Saikia, P. Venugopal, M. Karunarathna, R. Gamage, M. Ruedi, and G. Csorba. 2022. DNA barcoding and morphological analyses reveal a cryptic species of Miniopterusfrom India and Sri Lanka. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             24(1): 1-17. 
+            <a href="https://www.ingentaconnect.com/content/miiz/actac/2022/00000024/00000001/art00001" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus pusillus 
+                </i>
+              </b>
+            </span>
+            Dobson, 1876.
+            <br/>
+            <i>
+              Monogr. Asiatic Chiroptera
+            </i>
+             p. 162.
+            <br/>
+            Small Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus robustior 
+                </i>
+              </b>
+            </span>
+            Revilliod, 1914.
+            <br/>
+            <i>
+              In Sarasin and Roux, Nova Caledonia, A. Zool.
+            </i>
+             1: 359.
+            <br/>
+            Loyalty Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus schreibersii 
+                </i>
+              </b>
+            </span>
+            (Kuhl, 1817).
+            <br/>
+            <i>
+              Die Deutschen Fledermäuse, Hanau
+            </i>
+             p. 14.
+            <br/>
+            Schreiber's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus shortridgei 
+                </i>
+              </b>
+            </span>
+            Laurie &amp; Hill, 1957.
+            <br/>
+            <i>
+              J. Mammal.
+            </i>
+             38: 128.
+            <br/>
+            Shortridge's Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus sororculus 
+                </i>
+              </b>
+            </span>
+            Goodman, Ryan, Maminirina, Christidis, &amp; Appleton, 2007.
+            <br/>
+            <i>
+              J. Mammal.
+            </i>
+             88(5): 1219.
+            <br/>
+            Malagasy Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus tristis 
+                </i>
+              </b>
+            </span>
+            (Waterhouse, 1845).
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1845: 3.
+            <br/>
+            Great Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus villiersi 
+                </i>
+              </b>
+            </span>
+            Aellen, 1956.
+            <br/>
+            <i>
+              Bull. Inst. Français Afr. Noire, Sér. A
+            </i>
+             18: 890.
+            <br/>
+            Villier's Bent-winged Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=4266216&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/4266216">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Guinea, Dalaba, grotte du Marché
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Guinea, Sierra Leone, Liberia
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            Formerly included in 
+            <i>
+              schreibersii
+            </i>
+            , but distinct; see Fahr et al. (2006) and Monadjem et al. (2019).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Aellen, V. 1956. Speologica africana. Chiroptères des  grottes  de  Guinée. 
+            <i>
+              Bulletin de l'Institut français d'Afrique noire. Série A. Sciences naturelles
+            </i>
+             18: 884-894. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Fahr, J., B.A. Djossa, and H. Vierhaus 2013. Rapid assessment of bats (Chiroptera) in Déré, Diécké and Mt. Béro classified forests, southeastern Guinea; Including a review of the distribution of bats in Guinée Forestière.  Pages 168-247
+            <i>
+               In
+            </i>
+             EE Wright, J. McCullough, LE Alonso, &amp; MS Diallo (eds.) 
+            <i>
+              Rapid Biological Assessment of Three Classified Forests in Southeastern Guinea/Évaluation Biologique Rapide de Trois Forêt Classées du Sud-est de la Guinée
+            </i>
+            . 
+            <i>
+              RAP Bulletin of Biological Assessment
+            </i>
+             : 248 pp. 
+            <a href="https://pure.mpg.de/pubman/faces/ViewItemOverviewPage.jsp?itemId=item_2214140" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Monadjem, A., J.T. Shapiro, L.R. Richards, H. Karabulut, W. Crawley, I.B. Nielsen, A. Hansen, K. Bohmann, and T. Mourier. 2019. Systematics of West African 
+            <i>
+              Miniopterus
+            </i>
+             with the description of a new species. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             21(2): 237-256. 
+            <a href="https://bioone.org/journals/acta-chiropterologica/volume-21/issue-2/15081109ACC2019.21.2.001/Systematics-of-West-African-Miniopterus-with-the-Description-of-a/10.3161/15081109ACC2019.21.2.001.short" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus wilsoni 
+                </i>
+              </b>
+            </span>
+            Monadjem, Guyton, Naskrecki, Richards, Kropff, &amp; Dalton, 2020.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             22(1): 7.
+            <br/>
+            Wilson's Long-fingered Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Mozambique, Sofala Province, Gorongosa
+National Park, Mount Gorongosa 
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Mozambique, possibly Malawi
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed (new species).
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Monadjem, A., J Guyton, P. Naskrecki, L.R. Richards, A.S. Kropff, and D.L. Dalton. 2020. Cryptic diversity in the genus 
+            <i>
+              Miniopterus
+            </i>
+             with the description of a new species from southern Africa. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             22(1): 1-19. 
+            <a href="https://www.ingentaconnect.com/contentone/miiz/actac/2020/00000022/00000001/art00001" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="push">
+    </div>
+    <footer>
+      <div class="footertextwrap">
+        <div class="footerleft">
+          <div class="contact">
+            <p>
+               Contact us: acirranello@batnames.org
+            </p>
+          </div>
+          <div class="cite">
+            <p>
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2023. 
+              <i>
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.3
+              </i>
+              . Accessed on 05/16/2023.
+            </p>
+          </div>
+        </div>
+        <div class="footerright">
+          <ul class="footertop">
+            <li>
+              <a href="about.html">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="standards.html">
+                Standards
+              </a>
+            </li>
+            <li>
+              <a href="privacy.html">
+                Privacy
+              </a>
+            </li>
+          </ul>
+          <div class="photo">
+            <p>
+              Background photo: M. Brock Fenton
+            </p>
+          </div>
+          <div class="site">
+            <p>
+              Site and database: Andrea Cirranello
+            </p>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

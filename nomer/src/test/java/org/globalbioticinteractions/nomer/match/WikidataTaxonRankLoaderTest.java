@@ -3,12 +3,16 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.io.IOUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
-import org.globalbioticinteractions.nomer.match.WikidataTaxonRankLoader;
+import org.eol.globi.service.ResourceService;
+import org.eol.globi.util.ResourceServiceHTTP;
+import org.eol.globi.util.ResourceServiceLocal;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,14 +24,37 @@ import static org.junit.Assert.assertTrue;
 public class WikidataTaxonRankLoaderTest {
 
     @Test
-    public void importFromWikidata() throws IOException, URISyntaxException {
+    public void importFromWikidataInternet() throws IOException, URISyntaxException {
         AtomicInteger counter = new AtomicInteger(0);
-        WikidataTaxonRankLoader.importTaxonRanks(taxon -> counter.incrementAndGet());
+        URI req = WikidataTaxonRankLoader.createWikidataTaxonRankQuery();
+
+        WikidataTaxonRankLoader.importTaxonRanks(taxon -> counter.incrementAndGet(), new ResourceServiceHTTP(is -> is), req);
         assertTrue(counter.get() > 10);
     }
 
     @Test
-    public void importStatic() throws URISyntaxException, IOException {
+    public void importFromWikidataContentBased() throws IOException, URISyntaxException {
+        AtomicInteger counter = new AtomicInteger(0);
+        URI req = WikidataTaxonRankLoader.createWikidataTaxonRankQuery();
+
+        ResourceService resourceService = new ResourceService() {
+
+            @Override
+            public InputStream retrieve(URI uri) throws IOException {
+                return getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/util/wikidata-ranks.json");
+            }
+        };
+
+        WikidataTaxonRankLoader.importTaxonRanks(
+                taxon -> counter.incrementAndGet(),
+                resourceService,
+                req
+        );
+        assertTrue(counter.get() > 10);
+    }
+
+    @Test
+    public void importStatic() throws IOException {
         ByteArrayOutputStream out1 = new ByteArrayOutputStream();
         final PrintStream printer1 = new PrintStream(out1, true, CharsetConstant.UTF8);
 

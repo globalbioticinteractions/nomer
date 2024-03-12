@@ -1,8 +1,8 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -11,6 +11,7 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.RowHandler;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -99,7 +100,7 @@ public class AppendingRowHandlerJsonTest {
         InputStream is = IOUtils.toInputStream(inputString, StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
-        TermMatcherContext ctx = new MatchTestUtil.TermMatcherContextDefault();
+        TermMatcherContext ctx = new TestTermMatcherContextDefault();
         TermMatcher matcher = new MappingTermMatcher(termMapper);
         RowHandler rowHandler = new AppendingRowHandler(os, matcher, ctx, new AppenderJSON());
         MatchUtil.apply(is, rowHandler);
@@ -121,7 +122,7 @@ public class AppendingRowHandlerJsonTest {
             for (Term term : list) {
                 Taxon taxon = mapper.mapTerm(term);
                 taxon.setRank("species");
-                termMatchListener.foundTaxonForTerm(null, term, taxon, NameType.SAME_AS);
+                termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, taxon);
             }
         }
 

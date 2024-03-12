@@ -1,0 +1,3364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <title>
+      batnames | genera
+    </title>
+    <link rel="stylesheet" type="text/css" href="/MSOW.css"/>
+    <base target="_blank"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, target-densitydpi=high-dpi"/>
+  </head>
+  <body>
+    <header>
+      <div class="headertextwrap">
+        <div class="headerleft">
+          <a href="https://batnames.org/home.html" target="_self">
+            <h1>
+               Bats of the World 
+            </h1>
+            <h2>
+               A Taxonomic and Geographic Database 
+            </h2>
+          </a>
+        </div>
+        <div class="headerright">
+          <h3>
+            <div class="compile">
+              Compiled and Edited by:
+            </div>
+            <div class="authors">
+              Nancy B. Simmons and Andrea L. Cirranello
+            </div>
+            <div class="museum">
+              <span style="font-style:italic">
+                 American Museum of Natural History
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+    </header>
+    <div id="homeresults">
+      <div>
+        <form class="export-submit" action="https://batnames.org/exploreexport.php" method="post" name="upload_excel" target="_self" enctype="multipart/form-data">
+          <div class="form-group">
+            <div class="col-md-4 col-md-offset-4">
+              <input type="submit" name="export" class="btn btn-success" value="Export"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="resulttxt">
+        Your search for 
+        <em>
+          Rhinolophus
+        </em>
+         resulted in 110 species-level matches: 
+        <br/>
+      </div>
+      <div class="link" id="families">
+        <p>
+          <a href="/family/Rhinolophidae" target="_blank">
+            Rhinolophidae
+          </a>
+        </p>
+      </div>
+      <div class="link" id="genus">
+        <p>
+          <a href="/family/Rhinolophidae" target="_self">
+            Rhinolophidae
+          </a>
+        </p>
+      </div>
+      <div class="taxon" id="genus">
+        <p>
+          <span>
+            <b>
+              <i>
+                Rhinolophus
+              </i>
+            </b>
+          </span>
+           Lacepede, 1799. 
+          <i>
+            Tabl. Div. Subd. Orders Genres Mammiferes
+          </i>
+           p. 15.
+        </p>
+      </div>
+      <div class="typesp" id="genus">
+        <p>
+          <i>
+            Vespertilio ferrum-equuinum
+          </i>
+           Schreber, 1774.  Conserved in ICZN Opinion 91 (1926) and Direction 24 (1955)
+        </p>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus acuminatus 
+                </i>
+              </b>
+            </span>
+            Peters, 1871.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1871: 308.
+            <br/>
+            Accuminate Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus adami 
+                </i>
+              </b>
+            </span>
+            Aellen &amp; Brosset, 1968.
+            <br/>
+            <i>
+              Rev. Suisse Zool.
+            </i>
+             75: 443.
+            <br/>
+            Adam's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus affinis 
+                </i>
+              </b>
+            </span>
+            Horsfield, 1823.
+            <br/>
+            <i>
+              Zool. Res. Java
+            </i>
+             6: pl. figs. a, b.
+            <br/>
+            Intermediate Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus alcyone 
+                </i>
+              </b>
+            </span>
+            Temminck, 1853.
+            <br/>
+            <i>
+              Esquisses Zool. sur la Côte de Guine
+            </i>
+             p. 80.
+            <br/>
+            Halcyon Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus andamanensis 
+                </i>
+              </b>
+            </span>
+            Dobson, 1872.
+            <br/>
+            <i>
+              J. Asiat. Soc. Beng.
+            </i>
+             41(2): 337.
+            <br/>
+            Cryptic Andaman Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus arcuatus 
+                </i>
+              </b>
+            </span>
+            Peters, 1871.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1871: 305.
+            <br/>
+            Arcuate Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus beddomei 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 16: 253.
+            <br/>
+            Bedomme's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus belligerator 
+                </i>
+              </b>
+            </span>
+            Patrick, McCulloch &amp; Ruedas, 2013.
+            <br/>
+            <i>
+              Zool. Scr.
+            </i>
+             42(6): 568.
+            <br/>
+            Belligerent Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus blasii 
+                </i>
+              </b>
+            </span>
+            Peters, 1867.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1866: 17.
+            <br/>
+            Blasius' Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus bocharicus 
+                </i>
+              </b>
+            </span>
+            Kastschenko &amp; Akimov, 1917.
+            <br/>
+            <i>
+              Annu. Mus. Zool. Acad. St. Petersb.
+            </i>
+             22: 221.
+            <br/>
+            Central Asian Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus borneensis 
+                </i>
+              </b>
+            </span>
+            Peters, 1861.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1861: 709.
+            <br/>
+            Bornean Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus canuti 
+                </i>
+              </b>
+            </span>
+            Thomas &amp; Wroughton, 1909.
+            <br/>
+            <i>
+              Abstr. Proc. Zool. Soc. Lond.
+            </i>
+             1909(68): 18.
+            <br/>
+            Canut's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus capensis 
+                </i>
+              </b>
+            </span>
+            Lichtenstein, 1823.
+            <br/>
+            <i>
+              Verz. Doblet. Mus. Univ. Berlin
+            </i>
+             p. 4.
+            <br/>
+            Cape Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus celebensis 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1905(2): 83.
+            <br/>
+            Sulawesi Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus chaseni 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1939.
+            <br/>
+            <i>
+              Publ. Field Mus. Nat. Hist., Zool. ser.
+            </i>
+             24(5): 38.
+            <br/>
+            Chasen's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus chiewkweeae 
+                </i>
+              </b>
+            </span>
+            Yoshiyuki &amp; Lim, 2005.
+            <br/>
+            <i>
+              Bull Natn. Sci Mus Tokyo, Ser. A
+            </i>
+             31(1): 30.
+            <br/>
+            Chiew Kwee's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus chutamasae 
+                </i>
+              </b>
+            </span>
+            Soisook &amp; Bates, 2022.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             18(1): 118.
+            <br/>
+            Mountain Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus clivosus 
+                </i>
+              </b>
+            </span>
+            Cretzschmar, 1828.
+            <br/>
+            <i>
+              In Rüppell, Atlas Reise Nordl. Afr., Zool. Säugeth.
+            </i>
+             p. 47.
+            <br/>
+            Geoffroy's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus coelophyllus 
+                </i>
+              </b>
+            </span>
+            Peters, 1867.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1866: 426.
+            <br/>
+            Croslet Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus cognatus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1906.
+            <br/>
+            <i>
+              Ann. Mus. Civ. Stor. Nat. Genova, ser. 3
+            </i>
+             2: 181.
+            <br/>
+            Andaman Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus cohenae 
+                </i>
+              </b>
+            </span>
+            Taylor, Stoffberg, Monadjem, Schoeman, Bayliss &amp; Cotterill, 2012.
+            <br/>
+            <i>
+              PLoS ONE
+            </i>
+             7(9): 16.
+            <br/>
+            Cohen's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus convexus 
+                </i>
+              </b>
+            </span>
+            Csorba, 1997.
+            <br/>
+            <i>
+              J. Mammal.
+            </i>
+             78: 343.
+            <br/>
+            Convex Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus cornutus 
+                </i>
+              </b>
+            </span>
+            Temminck, 1834.
+            <br/>
+            <i>
+              Tijdschrift Natuurl. Gesch. Physiol.
+            </i>
+             1: 30.
+            <br/>
+            Little Japanese Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus creaghi 
+                </i>
+              </b>
+            </span>
+            Thomas, 1896.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 6, 18: 244.
+            <br/>
+            Creagh's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus damarensis 
+                </i>
+              </b>
+            </span>
+            Roberts, 1946.
+            <br/>
+            <i>
+              Ann. Trans. Mus.
+            </i>
+             20(4): 303.
+            <br/>
+            Damara Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus darlingi 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 15: 70.
+            <br/>
+            Darling's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus deckenii 
+                </i>
+              </b>
+            </span>
+            Peters, 1868.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1867: 705.
+            <br/>
+            Decken's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus denti 
+                </i>
+              </b>
+            </span>
+            Thomas, 1904.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 13: 386.
+            <br/>
+            Dent's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus eloquens 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 15: 74.
+            <br/>
+            Eloquent Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus episcopus 
+                </i>
+              </b>
+            </span>
+            G.M. Allen, 1923.
+            <br/>
+            <i>
+              Am. Mus. Novitates
+            </i>
+             85: 2.
+            <br/>
+            Guardian Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus euryale 
+                </i>
+              </b>
+            </span>
+            Blasius, 1853.
+            <br/>
+            <i>
+              Arch. Naturgesch.
+            </i>
+             19(1): 49.
+            <br/>
+            Mediterranean Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus euryotis 
+                </i>
+              </b>
+            </span>
+            Temminck, 1835.
+            <br/>
+            <i>
+              Monogr. Mamm.
+            </i>
+             2: 26.
+            <br/>
+            Broad-eared Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus ferrumequinum 
+                </i>
+              </b>
+            </span>
+            (Schreber, 1774).
+            <br/>
+            <i>
+              Die Säugethiere
+            </i>
+             1: 174, pl. 62.
+            <br/>
+            Greater Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus foetidus 
+                </i>
+              </b>
+            </span>
+            Andersen, 1918.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             9(2): 378.
+            <br/>
+            Andersen's Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus formosae 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1939.
+            <br/>
+            <i>
+              Publ. Field. Mus. Nat. Hist., Zool.
+            </i>
+             24: 41.
+            <br/>
+            Formosan Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus francisi 
+                </i>
+              </b>
+            </span>
+            Soisook, Struebig, Bates &amp; Miguez, 2015.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             17(1): 24.
+            <br/>
+            Francis' Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus fumigatus 
+                </i>
+              </b>
+            </span>
+            Rüppell, 1842.
+            <br/>
+            <i>
+              Mus. Senckenbergianum
+            </i>
+             3: 132.
+            <br/>
+            Rüppell's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus guineensis 
+                </i>
+              </b>
+            </span>
+            Eisentraut, 1960.
+            <br/>
+            <i>
+              Stuttg. Beitr. Naturk.
+            </i>
+             39: 1.
+            <br/>
+            Guinean Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus hildebrandtii 
+                </i>
+              </b>
+            </span>
+            Peters, 1878.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1878: 195.
+            <br/>
+            Hildebrandt's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus hilli 
+                </i>
+              </b>
+            </span>
+            Aellen, 1973.
+            <br/>
+            <i>
+              Period. Biol. Zagreb
+            </i>
+             75: 101.
+            <br/>
+            Hill's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus hillorum 
+                </i>
+              </b>
+            </span>
+            Koopman, 1989.
+            <br/>
+            <i>
+              Amer. Mus. Novit.
+            </i>
+             2946: 4.
+            <br/>
+            Upland Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus hipposideros 
+                </i>
+              </b>
+            </span>
+            (Borkhausen, 1797).
+            <br/>
+            <i>
+              Deutsche Fauna
+            </i>
+             1: 85.
+            <br/>
+            Lesser Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus hirsutus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 16: 289.
+            <br/>
+            Hairy Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus horaceki 
+                </i>
+              </b>
+            </span>
+            Benda &amp; Vallo, 2012.
+            <br/>
+            <i>
+              Vespertilio
+            </i>
+             16: 84.
+            <br/>
+            Horáček's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus imaizumii 
+                </i>
+              </b>
+            </span>
+            Hill &amp; Yoshiyuki, 1980.
+            <br/>
+            <i>
+              Bull. Natl. Sci. Mus. Tokyo, ser. A (Zool.)
+            </i>
+             6: 180.
+            <br/>
+            Imaizumi's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus inops 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 16: 284.
+            <br/>
+            Philippine Forest Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus keyensis 
+                </i>
+              </b>
+            </span>
+            Peters, 1871.
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1871: 307.
+            <br/>
+            Kai Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus landeri 
+                </i>
+              </b>
+            </span>
+            Martin, 1838.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1837: 101.
+            <br/>
+            Lander's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus lanosus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 16: 248.
+            <br/>
+            Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus lepidus 
+                </i>
+              </b>
+            </span>
+            Blyth, 1844.
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             13: 486.
+            <br/>
+            Blyth's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus lobatus 
+                </i>
+              </b>
+            </span>
+            Peters, 1852.
+            <br/>
+            <i>
+              Reise nach Mossambique
+            </i>
+             3: p. 41, pl. 9, pl. 13.
+            <br/>
+            Lobed Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus luctoides 
+                </i>
+              </b>
+            </span>
+            Volleth, Loidl, Mayer, Yong, Müller, &amp; Heller, 2015.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             17(1): 4.
+            <br/>
+            Luctus-like Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus luctus 
+                </i>
+              </b>
+            </span>
+            Temminck, 1834.
+            <br/>
+            <i>
+              Tijdschrift Natuurl. Gesch. Physiol.
+            </i>
+             1: 23.
+            <br/>
+            Greater Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus mabuensis 
+                </i>
+              </b>
+            </span>
+            Taylor, Stoffberg, Monadjem, Schoeman, Bayliss &amp; Cotterill, 2012.
+            <br/>
+            <i>
+              PLoS ONE
+            </i>
+             7(9): 17.
+            <br/>
+            Mount Mabu Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus maclaudi 
+                </i>
+              </b>
+            </span>
+            Pousargues, 1898.
+            <br/>
+            <i>
+              Bull. Mus. Natn. Hist. Nat. Paris
+            </i>
+             sér. 1, 3: 358, figs. 1,2.
+            <br/>
+            Maclaud's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus macrotis 
+                </i>
+              </b>
+            </span>
+            Blyth, 1844.
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             13: 485.
+            <br/>
+            Big-eared Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus madurensis 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1918.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 9, 2: 375.
+            <br/>
+            Madura Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus maendeleo 
+                </i>
+              </b>
+            </span>
+            Kock, Csorba &amp; Howell, 2000.
+            <br/>
+            <i>
+              Senkenbergiana Biol.
+            </i>
+             80: 234.
+            <br/>
+            Maendeleo Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus malayanus 
+                </i>
+              </b>
+            </span>
+            Bonhote, 1903.
+            <br/>
+            <i>
+              In N. Annandale, Fasciculi Malayenses, Zool.
+            </i>
+             1: 15.
+            <br/>
+            Malayan Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus marshalli 
+                </i>
+              </b>
+            </span>
+            Thonglongya, 1973.
+            <br/>
+            <i>
+              Mammalia
+            </i>
+             37: 590.
+            <br/>
+            Marshall's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus mcintyrei 
+                </i>
+              </b>
+            </span>
+            Hill &amp; Schlitter, 1982.
+            <br/>
+            <i>
+              Ann. Carnegie Mus.
+            </i>
+             51: 459.
+            <br/>
+            McIntyre's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus megaphyllus 
+                </i>
+              </b>
+            </span>
+            Gray, 1834.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1834: 52.
+            <br/>
+            Smaller Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus mehelyi 
+                </i>
+              </b>
+            </span>
+            Matschie, 1901.
+            <br/>
+            <i>
+              Sitzb. Ges. Naturf. Fr. Berlin
+            </i>
+             p. 225.
+            <br/>
+            Mehely's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus microglobosus 
+                </i>
+              </b>
+            </span>
+            Csorba &amp; Jenkins, 1998.
+            <br/>
+            <i>
+              Bulletin of the Natural History Museum, London (Zoology),
+            </i>
+             64(2): 208.
+            <br/>
+            Indo-Chinese Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus mitratus 
+                </i>
+              </b>
+            </span>
+            Blyth, 1844.
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             13: 483.
+            <br/>
+            Mitred Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus monoceros 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1905(2): 131.
+            <br/>
+            Formosan Lesser Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus montanus 
+                </i>
+              </b>
+            </span>
+            Goodwin, 1979.
+            <br/>
+            <i>
+              Bull. Amer. Mus. Nat. Hist.
+            </i>
+             163: 112.
+            <br/>
+            Timorese Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus morio 
+                </i>
+              </b>
+            </span>
+            Gray, 1842.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 1, 10: 257.
+            <br/>
+            Jester's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus mossambicus 
+                </i>
+              </b>
+            </span>
+            Taylor, Stoffberg, Monadjem, Schoeman, Bayliss &amp; Cotterill, 2012.
+            <br/>
+            <i>
+              PLoS ONE
+            </i>
+             7(9): 19.
+            <br/>
+            Mozambican Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus nereis 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1905: 90.
+            <br/>
+            Anamban Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus nippon 
+                </i>
+              </b>
+            </span>
+            Temminck, 1835.
+            <br/>
+            <i>
+              Monogr. Mamm.
+            </i>
+             2: 30a.
+            <br/>
+            Greater Japanese Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus osgoodi 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1939.
+            <br/>
+            <i>
+              Field Mus. Nat. Hist. Publ., Zool. Ser.
+            </i>
+             24: 40.
+            <br/>
+            Osgood's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus pearsonii 
+                </i>
+              </b>
+            </span>
+            Horsfield, 1851.
+            <br/>
+            <i>
+              Cat. Mamm. Mus. E. India Co.
+            </i>
+             p. 33.
+            <br/>
+            Pearson's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus perditus 
+                </i>
+              </b>
+            </span>
+            Andersen, 1918.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 9, 2: 377.
+            <br/>
+            Yaeyama Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Japan, southern Liu-Kiu, Ishigaki
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Yaeyama Group (Ryuku Isls)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Endangered (2018).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              pusillus
+            </i>
+             species group; distinct from 
+            <i>
+              cornutus
+            </i>
+             and 
+            <i>
+              imaizumii
+            </i>
+            ; see Wu et al. (2012).  See also Yoshiyuki (1989), Csorba et al. (2003), and Sano and Armstrong (2009). Csorba et al. (2019) consider 
+            <i>
+              imaizumii
+            </i>
+             as subspecies of 
+            <i>
+              perditus
+            </i>
+            , but given the data presented by Wu et al. (2012), we continue to recognize it as a distinct species.   
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Andersen, K. 1918. Diagnoses of new bats of the families Rhinolophidae and Megadermatidae. 
+            <i>
+              Annals and Magazine of Natural History
+            </i>
+             ser. 9, 2: 374-384. 
+            <a href="https://www.biodiversitylibrary.org/page/22103257" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Sano A., and K.N. Armstrong. 2009. 
+            <i>
+              Rhinolophus cornutus
+            </i>
+            , 
+            <i>
+              Rhinolophus pumilus
+            </i>
+            , 
+            <i>
+              Rhinolophus  perditus
+            </i>
+            .  Pages 60-65
+            <i>
+               In
+            </i>
+             S.D. Ohdaci, Y. IShibashi, M.A. Iwasa, and T. Saitoh (eds.) 
+            <i>
+              The Wild Mammals of Japan
+            </i>
+            . Kyoto: Shoukadoh. 
+            <a href="https://academic.oup.com/mspecies/issue/number/hastatus" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus philippinensis 
+                </i>
+              </b>
+            </span>
+            Waterhouse, 1843.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1843: 68.
+            <br/>
+            Large-eared Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus proconsulis 
+                </i>
+              </b>
+            </span>
+            Hill, 1959.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 13, 2: 88.
+            <br/>
+            Proconsul's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus pumilus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             1905(2): 127.
+            <br/>
+            Little Okinawan Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus pusillus 
+                </i>
+              </b>
+            </span>
+            Temminck, 1834.
+            <br/>
+            <i>
+              Tijdschr. Nat. Gesch. Physiol.
+            </i>
+             1: 29.
+            <br/>
+            Least Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus refulgens 
+                </i>
+              </b>
+            </span>
+            Andersen, 1906.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             2: 124.
+            <br/>
+            Glossy Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus rex 
+                </i>
+              </b>
+            </span>
+            G. M. Allen, 1923.
+            <br/>
+            <i>
+              Am. Mus. Novitates
+            </i>
+             85: 3.
+            <br/>
+            King Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus rhodesiae 
+                </i>
+              </b>
+            </span>
+            Roberts, 1946.
+            <br/>
+            <i>
+              Ann. Transvaal Mus.
+            </i>
+             20(4): 304.
+            <br/>
+            Zimbabwean Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus robinsoni 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1918.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 9, 2: 375.
+            <br/>
+            Peninsular Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus rouxii 
+                </i>
+              </b>
+            </span>
+            Temminck, 1835.
+            <br/>
+            <i>
+              Monogr. Mamm.
+            </i>
+             2: 30
+            <i>
+              b
+            </i>
+            .
+            <br/>
+            Rufous Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432664&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/2432664">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  rouxii
+                </p>
+              </i>
+            </b>
+             Temminck, 1835:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 cinerascens
+              </i>
+               Kelaart, 1852;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 fulvidus
+              </i>
+               Blyth, 1851;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 indorouxii
+              </i>
+               Chattopadhyay, Garg, Kumar, Doss, Ramakrishnan &amp; Kandula, 2012 [
+              <i>
+                nomen nudum
+              </i>
+              ];
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 petersii
+              </i>
+               Dobson, 1872;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 rammanika
+              </i>
+               Kelaart, 1852.
+            </p>
+          </div>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  rubidus
+                </p>
+              </i>
+            </b>
+             Kelaart, 1850
+            <p>
+            </p>
+            .
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            India, Pondicherry and Calcutta
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Sri Lanka, peninsular India to S Myanmar; possibly S China. Reports of this species from Cambodia are likely erroneous; see Kock (2000a)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Least Concern (2018).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              rouxii
+            </i>
+             species group. Includes 
+            <i>
+              petersii;
+            </i>
+             see Sinha (1973).  Does not include 
+            <i>
+              sinicus
+            </i>
+            ; see Thomas (2000). Reviewed in part by Bates and Harrison (1997) and Horácek et al. (2000); revised by Thomas (2000). Sometimes spelled 
+            <i>
+              rouxi
+            </i>
+             (e.g., Horácek et al., 2000; Koopman, 1993).  The name proposed by Chattopadhyay et al. (2012) for an Indian phonic variant is a 
+            <i>
+              nomen nudum 
+            </i>
+             awaiting proper description.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Bates, P.J.J., and D.L. Harrison. 1997. 
+            <i>
+              Bats of the Indian Subcontinent
+            </i>
+            . Harrison Zoological Museum, Sevenoaks: 258. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Chattopadhyay, B., Garg, K.M., AK, V.K., Ramakrishnan, U. and Kandula, S. 2012. Sibling species in South Indian populations of the rufous horse-shoe bat 
+            <i>
+              Rhinolophus rouxii
+            </i>
+            . 
+            <i>
+              Conservation Genetics
+            </i>
+             13(6): 1435-1445. 
+            <a href="https://link.springer.com/article/10.1007/s10592-012-0361-y" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Horáček, I., V.Hanák, and J. Gaisler. 2000. Bats of the Palearctic region: a taxonomic and biogeographic review.  Pages 11-157
+            <i>
+               In
+            </i>
+             B.W. Woloszyn (eds.) 
+            <i>
+              Proceedings of the VIIIth European Bat Research Symposium. Vol I. Approaches to Biogeography and Ecology of Bats
+            </i>
+            . Krakow, Poland: Chiropterological Information Center, Institute of Systematics and Evolution of Animals PAS. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Koopman, K.F. 1993. Chiroptera.  Pages 137-241
+            <i>
+               In
+            </i>
+             D.E. Wilson and D.M. Reeder (eds.) 
+            <i>
+              Mammal Species of the World. A Taxonomic and Geographic Reference
+            </i>
+            . Washington, D.C.: Smithsonian Institution Press. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Sinha, Y.P. 1973. Taxonomic studies on the Indian horseshoe bats of the genus 
+            <i>
+              Rhinolophus
+            </i>
+             Lacépède. 
+            <i>
+              Mammalia
+            </i>
+             37: 603-630. 
+            <a href="https://www.degruyter.com/view/journals/mamm/37/4/article-p603.xml" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Temminck, C.J. 1835. 
+            <i>
+              Monographies de Mammalogie, Tome Second
+            </i>
+            . A. Bertrand, Leiden: 492pp. 
+            <a href="https://play.google.com/books/reader?id=Lw9jAAAAcAAJ&amp;hl=en&amp;pg=GBS.PP5" target="_blank">
+              Read volume
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Thomas, N.M. 2000. Morphological and mitochondrial-DNA variation in 
+            <i>
+              Rhinolophus rouxii
+            </i>
+             (Chiroptera). 
+            <i>
+              Bonner Zoologische Beiträge
+            </i>
+             49: 1-18. 
+            <a href="http://zoologicalbulletin.de/BzB_Volumes/Volume_49_1_2_3_4/001_018_BZB49_1_2_3_4_Thomas_NikkyM.PDF" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus rufus 
+                </i>
+              </b>
+            </span>
+            Eydoux &amp; Gervais, 1839.
+            <br/>
+            <i>
+              In Laplace, Voy. autour du monde par les mers de l'Inde...la Favorite
+            </i>
+             5(Zoologie)(pt. 2): 9.
+            <br/>
+            Large Rufous Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus ruwenzorii 
+                </i>
+              </b>
+            </span>
+            J. Eric Hill, 1942.
+            <br/>
+            <i>
+              Amer. Mus. Novit.
+            </i>
+             1180: 1.
+            <br/>
+            Ruwenzori Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus sakejiensis 
+                </i>
+              </b>
+            </span>
+            Cotterill, 2002.
+            <br/>
+            <i>
+              J. Zool.
+            </i>
+             256: 166.
+            <br/>
+            Sakeji Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus schnitzleri 
+                </i>
+              </b>
+            </span>
+            Wu &amp; Thong, 2011.
+            <br/>
+            <i>
+              Zool. Sci.
+            </i>
+             28: 236.
+            <br/>
+            Schnitzler's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus sedulus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 16: 244, 247.
+            <br/>
+            Lesser Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus septentrionalis 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1939.
+            <br/>
+            <i>
+              Field Mus. Nat. Hist. Publ., Zool. Ser.
+            </i>
+             24(5): 40.
+            <br/>
+            Northern Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=4266716&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/4266716">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            China, Yunnan, north of Likiang, Nguluko
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            S China
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Least Concern under 
+            <i>
+              Rhinolophus sinicus
+            </i>
+             (2018).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              rouxii
+            </i>
+             species group. Originally described as a subspecies of 
+            <i>
+              thomasi
+            </i>
+            .  Transferred to 
+            <i>
+              sinicus
+            </i>
+             as a subspecies by  Csorba (2002), but apparently distinct both morphologically (Csorba, 2002) and molecularly (Mao et al., 2013, 2019).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G. 2002. Remarks on some types of the genus 
+            <i>
+              Rhinolophus
+            </i>
+            . 
+            <i>
+              Annales Historico-Naturales Musei Nationalis Hungarici
+            </i>
+             94: 217-226. 
+            <a href="http://publication.nhmus.hu/pdf/annHNHM/Annals_HNHM_2002_Vol_94_217.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Mao, X., G. He, J. Zhang, S.J. Rossiter, S. Zhang. 2013. Lineage divergence and historical gene flow in the Chinese Horseshoe Bat (
+            <i>
+              Rhinolophus sinicus
+            </i>
+            ). 
+            <i>
+              PLoS ONE
+            </i>
+             8(2): e56786. 
+            <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0056786" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Mao, X., Tsagkogeorga, G., Thong, V.D. and Rossiter, S.J. 2019. Resolving evolutionary relationships among six closely related taxa of the horseshoe bats (
+            <i>
+              Rhinolophus
+            </i>
+            ) with targeted resequencing data. 
+            <i>
+              Molecular Phylogenetics and Evolution
+            </i>
+             139(2): 106551. 
+            <a href="https://www.sciencedirect.com/science/article/abs/pii/S1055790319301241" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Sanborn, C.C. 1939. Eight  new  bats of the genus 
+            <i>
+              Rhinolophus
+            </i>
+            . 
+            <i>
+              Field Museum of Natural History, Zoological Series
+            </i>
+             24: 37-43. 
+            <a href="https://www.biodiversitylibrary.org/page/2744782" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus shameli 
+                </i>
+              </b>
+            </span>
+            Tate, 1943.
+            <br/>
+            <i>
+              Am. Mus. Novitates
+            </i>
+             1219: 3.
+            <br/>
+            Shamel's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus shortridgei 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1918.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 9, 2: 376.
+            <br/>
+            Shortridge's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus siamensis 
+                </i>
+              </b>
+            </span>
+            Gyldenstolpe, 1917.
+            <br/>
+            <i>
+              Kungliga Svenska VetenskAkad. Handl.
+            </i>
+             57: 12.
+            <br/>
+            Northern Thai Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus silvestris 
+                </i>
+              </b>
+            </span>
+            Aellen, 1959.
+            <br/>
+            <i>
+              Arch. Sci. Phys. Nat. Geneve
+            </i>
+             12: 228.
+            <br/>
+            Forest Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus simulator 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1904.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 14: 384.
+            <br/>
+            Bushveld Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus sinicus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             2: 98.
+            <br/>
+            Chinese Rufous Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe width="275" height="275" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="Rhinolophus sinicus" src="//stonybrook.maps.arcgis.com/apps/Embed/index.html?webmap=0d63136344ee48079e6e614adb782b79&amp;extent=73.9747,10.5174,125.7422,36.9388&amp;zoom=true&amp;previewImage=false&amp;scale=false&amp;disable_scroll=true&amp;theme=light">
+            </iframe>
+            <a id="GBIFlink" href="GBIFlink" target="_blank">
+            </a>
+          </p>
+          <p>
+            View large map with legend
+          </p>
+          <p>
+             Data sources: 
+            <a id="sourcelink" href="https://www.iucnredlist.org/species/41529/22005184" target="_blank">
+              IUCN
+            </a>
+            <a id="sourcelink" href="https://www.gbif.org/species/7261960" target="_blank">
+              GBIF
+            </a>
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            China, Anhwei (= Anhui), Chinteh
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            N India, Nepal, SW China (including Tibet), N Myanmar, N and C Vietnam
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Least Concern (2018).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              rouxii
+            </i>
+             species group. Previously included in 
+            <i>
+              rouxii,
+            </i>
+             but distinct; see Thomas (2000), Wu et al. (2003), and Wu and Harada (2005). Does not include 
+            <i>
+              septentrionalis,
+            </i>
+             see Csorba (2002) and Mao et al. (2013, 2019). May contain cryptic diversity; see Chornelia et al. (2022).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Andersen, K. 1905. On some bats of the genus 
+            <i>
+              Rhinolophus
+            </i>
+             with remarks on their mutual affinities, and descriptions of twenty-six new forms. 
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             1905(2): 75-145. 
+            <a href="https://www.biodiversitylibrary.org/page/31887794" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G. 2002. Remarks on some types of the genus 
+            <i>
+              Rhinolophus
+            </i>
+            . 
+            <i>
+              Annales Historico-Naturales Musei Nationalis Hungarici
+            </i>
+             94: 217-226. 
+            <a href="http://publication.nhmus.hu/pdf/annHNHM/Annals_HNHM_2002_Vol_94_217.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Mao, X., He, G., Zhang, J., Rossiter, S.J. and Zhang, S. 2013. Lineage divergence and historical gene flow in the Chinese horseshoe bat (
+            <i>
+              Rhinolophus sinicus
+            </i>
+            ). 
+            <i>
+              PLoS One
+            </i>
+             8(2): e56786. 
+            <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0056786" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Mao, X., Tsagkogeorga, G., Thong, V.D. and Rossiter, S.J. 2019. Resolving evolutionary relationships among six closely related taxa of the horseshoe bats (
+            <i>
+              Rhinolophus
+            </i>
+            ) with targeted resequencing data. 
+            <i>
+              Molecular Phylogenetics and Evolution
+            </i>
+             139(2): 106551. 
+            <a href="https://www.sciencedirect.com/science/article/abs/pii/S1055790319301241" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Thomas, N.M. 2000. Morphological and mitochondrial-DNA variation in 
+            <i>
+              Rhinolophus rouxii
+            </i>
+             (Chiroptera). 
+            <i>
+              Bonner Zoologische Beiträge
+            </i>
+             49: 1-18. 
+            <a href="http://zoologicalbulletin.de/BzB_Volumes/Volume_49_1_2_3_4/001_018_BZB49_1_2_3_4_Thomas_NikkyM.PDF" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Wu, Y. and Harada, M. 2005. Karyology of five species of the Rhinolophus (Chiroptera: Rhinolophidae) from Guangdong, China. 
+            <i>
+              Acta Theriologica Sinica
+            </i>
+             25(2): 163-167. 
+            <a href="http://www.mammal.cn/EN/article/searchArticle.do#" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Wu, Y., Harada, M. and Li, Y. 2004. Karyology of seven species bats from Sichuan, China. 
+            <i>
+              Acta Theriologica Sinica
+            </i>
+             24(1): 30-35. 
+            <a href="http://www.mammal.cn//EN/article/searchArticle.do" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus smithersi 
+                </i>
+              </b>
+            </span>
+            Taylor, Stoffberg, Monadjem, Schoeman, Bayliss &amp; Cotterill, 2012.
+            <br/>
+            <i>
+              PLoS One
+            </i>
+             7(9): 19.
+            <br/>
+            Smithers' Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus stheno 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1905: 91.
+            <br/>
+            Lesser Brown Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus subbadius 
+                </i>
+              </b>
+            </span>
+            Blyth, 1844.
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             13: 486.
+            <br/>
+            Little Nepalese Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus subrufus 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser. 7, 16: 283.
+            <br/>
+            Small Rufous Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus swinnyi 
+                </i>
+              </b>
+            </span>
+            Gough, 1908.
+            <br/>
+            <i>
+              Ann. Transvaal Mus.
+            </i>
+             1: 72.
+            <br/>
+            Swinny's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus tatar 
+                </i>
+              </b>
+            </span>
+            Bergmans and Rozendaal, 1982.
+            <br/>
+            <i>
+              Bijdr.
+Dierk.
+            </i>
+             52: 170.
+            <br/>
+            Tatar Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus thailandensis 
+                </i>
+              </b>
+            </span>
+            Wu, Harada &amp; Motokawa, 2009.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             11(2): 238.
+            <br/>
+            Thai Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus thomasi 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1905, II: 100, pl. III, fig. 10.
+            <br/>
+            Thomas's Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432660&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/2432660">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  thomasi
+                </p>
+              </i>
+            </b>
+             K. Andersen, 1905:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 latifolius
+              </i>
+               Sanborn, 1939.
+            </p>
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Burma, Karin Hills
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            S China, E Myanmar, Laos, Vietnam, Thailand
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            Not listed.
+            <b>
+               IUCN - 
+            </b>
+            Least Concern (2018).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              rouxii
+            </i>
+             species group. Does not include 
+            <i>
+              septentrionalis
+            </i>
+            ; see Csorba (2002) and Csorba et al. (2003, 2019). Also see Corbet and Hill (1992) and Hendrichsen et al.(2001).  Zhang et al (2009) suggested that 
+            <i>
+              thomasi
+            </i>
+             and 
+            <i>
+              sinicus
+            </i>
+             may be conspecific (see also Csorba, 2002), but data from Mao et al. (2019) support the distinctiveness of both taxa.  Following Csorba et al. (2003, 2019) we do not recognize any subspecies of 
+            <i>
+              thomasi
+            </i>
+            .
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Andersen, K. 1905. On some bats of the genus 
+            <i>
+              Rhinolophus
+            </i>
+             with remarks on their mutual affinities, and descriptions of twenty-six new forms. 
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             1905(2): 75-145. 
+            <a href="https://www.biodiversitylibrary.org/page/31887794" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Corbet, G.B., and J.E. Hill 1992. 
+            <i>
+              Mammals of the Indomalayan Region. A Systematic Review
+            </i>
+            . Oxford University Press, Oxford: 1-488. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G. 2002. Remarks on some types of the genus 
+            <i>
+              Rhinolophus
+            </i>
+            . 
+            <i>
+              Annales Historico-Naturales Musei Nationalis Hungarici
+            </i>
+             94: 217-226. 
+            <a href="http://publication.nhmus.hu/pdf/annHNHM/Annals_HNHM_2002_Vol_94_217.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G., A. Hutso, S. Rossiter, and C. Burgin. 2019. Family Rhinolophidae (Horseshoe Bats).  Pages 
+            <i>
+               In
+            </i>
+             Wilson, Don E., Mittermeier, Russell A (eds.) 
+            <i>
+              Handbook of the Mammals of the World – Volume 9 Bats
+            </i>
+            . Barcelona: Lynx Edicions. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G., P. Ujhelyi, and N. Thomas. 2003. 
+            <i>
+              Horseshoe Bats of the World
+            </i>
+            . Alana Books, Bishop's Castle: 160pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Hendrichsen, D.K., P.J.J. Bates, B.D. Hayes, and J.L. Walston. 2001. Recent records of bats (Mammalia: Chiroptera) from Vietnam with six species new to the country. 
+            <i>
+              Myotis
+            </i>
+             39: 35-122. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Mao, X., Tsagkogeorga, G., Thong, V.D. and Rossiter, S.J. 2019. Resolving evolutionary relationships among six closely related taxa of the horseshoe bats (
+            <i>
+              Rhinolophus
+            </i>
+            ) with targeted resequencing data. 
+            <i>
+              Molecular Phylogenetics and Evolution
+            </i>
+             139(2): 106551. 
+            <a href="https://www.sciencedirect.com/science/article/abs/pii/S1055790319301241" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Zhang, L.,  G. Jones, J. Zhang, G. Zhu, S. Parsons, S.J. Rossiter, and S. Zhang 2009. Recent surveys of bats (Mammalia: Chiroptera) from China. I. Rhinolophidae and Hipposideridae. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             11(1): 71-88. 
+            <a href="https://www.ingentaconnect.com/content/miiz/actac/2009/00000011/00000001/art00006" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus trifoliatus 
+                </i>
+              </b>
+            </span>
+            Temminck, 1834.
+            <br/>
+            <i>
+              Tijdschr. Nat. Gesch. Physiol.
+            </i>
+             1: 24.
+            <br/>
+            Trefoil Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus virgo 
+                </i>
+              </b>
+            </span>
+            K. Andersen, 1905.
+            <br/>
+            <i>
+              Proc. Zool. Soc. Lond.
+            </i>
+             1905, II: 88.
+            <br/>
+            Yellow-faced Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus willardi 
+                </i>
+              </b>
+            </span>
+            Kerbis Peterhans and Fahr, 2013.
+            <br/>
+            <i>
+              Bonn Zool Bull
+            </i>
+             62(2): 190.
+            <br/>
+            Willard's Horsehoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus xinanzhongguoensis 
+                </i>
+              </b>
+            </span>
+            Zhou, Guillén-Servent, Lim, Eger, Wang &amp; Jiang, 2009.
+            <br/>
+            <i>
+              J. Mammal.
+            </i>
+             90(1): 64.
+            <br/>
+            Southwestern-Chinese Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus yonghoiseni 
+                </i>
+              </b>
+            </span>
+            Volleth &amp; Heller, 2021.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             21(1): 9.
+            <br/>
+            Yong Hoi Sen's Woolly Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus yunanensis 
+                </i>
+              </b>
+            </span>
+            Dobson, 1872.
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             41: 336.
+            <br/>
+            Dobson's Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus ziama 
+                </i>
+              </b>
+            </span>
+            Fahr, Vierhaus, Hutterer &amp; Kock, 2002.
+            <br/>
+            <i>
+              Myotis
+            </i>
+             40: 109.
+            <br/>
+            Ziama Horseshoe Bat
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="push">
+    </div>
+    <footer>
+      <div class="footertextwrap">
+        <div class="footerleft">
+          <div class="contact">
+            <p>
+               Contact us: acirranello@batnames.org
+            </p>
+          </div>
+          <div class="cite">
+            <p>
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2022B. 
+              <i>
+                Bat Species of the World: A taxonomic and geographic database
+              </i>
+              . Accessed on 07/21/2022.
+            </p>
+          </div>
+        </div>
+        <div class="footerright">
+          <ul class="footertop">
+            <li>
+              <a href="about.html">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="standards.html">
+                Standards
+              </a>
+            </li>
+            <li>
+              <a href="privacy.html">
+                Privacy
+              </a>
+            </li>
+          </ul>
+          <div class="photo">
+            <p>
+              Interactive web maps: Maria Brown
+            </p>
+            <p>
+              Background photo: M. Brock Fenton
+            </p>
+          </div>
+          <div class="site">
+            <p>
+              Site and database: Andrea Cirranello
+            </p>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

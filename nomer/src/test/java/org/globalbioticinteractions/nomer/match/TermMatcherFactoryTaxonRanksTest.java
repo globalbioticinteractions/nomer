@@ -6,6 +6,7 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.MatchTestUtil;
+import org.globalbioticinteractions.nomer.util.TestTermMatcherContextDefault;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class TermMatcherFactoryTaxonRanksTest {
 
     @Before
     public void init() {
-        FileUtils.deleteQuietly(new File(new MatchTestUtil.TermMatcherContextDefault().getCacheDir()));
+        FileUtils.deleteQuietly(new File(new TestTermMatcherContextDefault().getCacheDir()));
         termMatcher = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
     }
 
@@ -32,7 +33,7 @@ public class TermMatcherFactoryTaxonRanksTest {
     public void ranks() throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("", "genus"));
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), is("WD:Q34740"));
             assertThat(taxon.getName(), is("genus"));
             found.set(true);
@@ -44,7 +45,7 @@ public class TermMatcherFactoryTaxonRanksTest {
     public void ranksShort() throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("", "sp."));
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), is("WD:Q7432"));
             assertThat(taxon.getName(), is("species"));
             found.set(true);
@@ -60,7 +61,7 @@ public class TermMatcherFactoryTaxonRanksTest {
     private void assertFoundById(TermMatcher termMatcher) throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("WD:Q7432", ""));
         AtomicBoolean found = new AtomicBoolean(false);
-        termMatcher.match(bla, (aLong, s, taxon, nameType) -> {
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
             assertThat(taxon.getExternalId(), is("WD:Q7432"));
             assertThat(taxon.getName(), is("species"));
             found.set(true);
@@ -70,8 +71,11 @@ public class TermMatcherFactoryTaxonRanksTest {
 
     @Test
     public void twoMatchersSameCacheDir() throws PropertyEnricherException {
-        termMatcher = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
-        TermMatcher termMatcher2 = new TermMatcherFactoryTaxonRanks().createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+        termMatcher = new TermMatcherFactoryTaxonRanks()
+                .createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
+
+        TermMatcher termMatcher2 = new TermMatcherFactoryTaxonRanks()
+                .createTermMatcher(MatchTestUtil.getLocalTermMatcherCache());
 
         assertFoundById(termMatcher);
         assertFoundById(termMatcher2);

@@ -2,6 +2,8 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
@@ -25,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -163,13 +166,14 @@ public class EOLTaxonService extends PropertyEnricherSimple {
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
                 .make();
 
         if (db.exists(DENORMALIZED_NODES)) {
-            LOG.info("EOL taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("EOL taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             eolDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
         } else {
             LOG.info("EOL taxonomy importing...");
@@ -179,19 +183,17 @@ public class EOLTaxonService extends PropertyEnricherSimple {
             BTreeMap<String, Map<String, String>> eolNodes = db
                     .createTreeMap("nodes")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             BTreeMap<String, String> childParent = db
                     .createTreeMap("childParent")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             try {
-                String taxonUrl = ctx.getProperty("nomer.eol.taxon");
-                if (taxonUrl == null) {
-                    throw new PropertyEnricherException("no url for taxon resource [nomer.eol.taxon] found");
-                }
-                InputStream resource = ctx.getResource(taxonUrl);
+                InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, "nomer.eol.taxon"));
                 parseNodes(eolNodes, childParent, resource);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse EOL nodes", e);
@@ -200,6 +202,7 @@ public class EOLTaxonService extends PropertyEnricherSimple {
             eolDenormalizedNodes = db
                     .createTreeMap(DENORMALIZED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
             denormalizeTaxa(eolNodes, eolDenormalizedNodes, childParent);
 

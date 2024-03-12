@@ -8,6 +8,7 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.eol.globi.util.ResourceServiceHTTP;
 import org.eol.globi.util.ResourceUtil;
 import org.globalbioticinteractions.nomer.util.OpenBiodivUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -21,7 +22,7 @@ import java.util.List;
 public class TermMatcherOpenBiodivFactory implements TermMatcherFactory {
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "openbiodiv";
     }
 
@@ -40,16 +41,25 @@ public class TermMatcherOpenBiodivFactory implements TermMatcherFactory {
                     if (UUIDUtil.isaUUID(term.getId())) {
                         try {
                             SparqlClient sparqlClient = new SparqlClientImpl(
-                                    resourceName -> ResourceUtil.asInputStream(resourceName, in -> in),
+                                    resourceName -> new ResourceServiceHTTP(in -> in).retrieve(resourceName),
                                     PropertyAndValueDictionary.SPARQL_ENDPOINT_OPEN_BIODIV
                             );
 
                             final Taxon taxon = OpenBiodivUtil
                                     .retrieveTaxonHierarchyById(term.getId(), sparqlClient);
                             if (taxon == null) {
-                                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
+                                termMatchListener.foundTaxonForTerm(
+                                        null,
+                                        term,
+                                        NameType.NONE,
+                                        new TaxonImpl(term.getName(), term.getId()));
                             } else {
-                                termMatchListener.foundTaxonForTerm(null, term, taxon, NameType.SAME_AS);
+                                termMatchListener.foundTaxonForTerm(
+                                        null,
+                                        term,
+                                        NameType.SAME_AS,
+                                        taxon
+                                );
                             }
                         } catch (IOException e) {
                             throw new PropertyEnricherException("failed to query openbiodiv with [" + term.getId() + "]", e);

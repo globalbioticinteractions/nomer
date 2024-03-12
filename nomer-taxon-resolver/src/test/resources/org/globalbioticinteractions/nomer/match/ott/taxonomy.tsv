@@ -1,0 +1,12 @@
+uid	|	parent_uid	|	name	|	rank	|	sourceinfo	|	uniqname	|	flags	|	
+805080	|		|	life	|	no rank	|	silva:0,ncbi:1,gbif:0,irmng:0	|		|		|	
+93302	|	805080	|	cellular organisms	|	no rank	|	ncbi:131567	|		|		|	
+844192	|	93302	|	Bacteria	|	domain	|	silva:A16379/#1,ncbi:2,worms:6,gbif:3,irmng:13,irmng:109739,irmng:109741	|		|		|	
+248067	|	844192	|	Proteobacteria	|	phylum	|	silva:A16379/#2,ncbi:1224,worms:178054,gbif:111,irmng:192	|	Proteobacteria (phylum silva:A16379/#2)	|		|	
+822744	|	248067	|	Gammaproteobacteria	|	class	|	silva:A16379/#3,ncbi:1236,worms:393018,gbif:362,irmng:1392	|		|	sibling_higher	|	
+767311	|	822744	|	Pasteurellales	|	order	|	silva:A16379/#4,ncbi:135625,worms:394199,gbif:1472,irmng:11731	|		|	sibling_higher	|	
+1098176	|	767311	|	Pasteurellaceae	|	family	|	silva:A16379/#5,ncbi:712,worms:394200,gbif:9536,irmng:104984	|	Pasteurellaceae (family silva:A16379/#5)	|		|	
+470454	|	1098176	|	Haemophilus	|	genus	|	silva:A16379/#6,ncbi:724,worms:571392,gbif:3219815,irmng:1307220	|		|		|	
+525972	|	470454	|	Haemophilus pittmaniae HK 85	|	no rank - terminal	|	silva:AFUV01000004,ncbi:1035188	|		|		|
+139650	|	704260	|	Ariopsis felis	|	species	|	ncbi:75286,gbif:7819720,gbif:5202927,irmng:10572147	|		|		|
+7035713	|	470454	|	Glaesserella sp. HHC-2018	|	species	|	ncbi:2094024	|		|	incertae_sedis	|

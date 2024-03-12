@@ -47,6 +47,8 @@ class AppenderUtil {
             colValue = taxon.getName();
         } else if (StringUtils.equalsIgnoreCase(taxonPropertyName, "rank")) {
             colValue = taxon.getRank();
+        } else if (StringUtils.equalsIgnoreCase(taxonPropertyName, "authorship")) {
+            colValue = taxon.getAuthorship();
         } else if (StringUtils.equalsIgnoreCase(taxonPropertyName, "path.id")) {
             colValue = taxon.getPathIds();
         } else if (StringUtils.equalsIgnoreCase(taxonPropertyName, "path.name")) {

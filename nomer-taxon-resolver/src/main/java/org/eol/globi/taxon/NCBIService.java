@@ -2,14 +2,13 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.ExternalIdUtil;
-import org.eol.globi.util.HttpUtil;
+import org.eol.globi.util.ResourceServiceHTTP;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -19,15 +18,26 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @PropertyEnricherInfo(name = "ncbi-taxon-id-web", description = "Lookup NCBI taxon by id with NCBI:* prefix using web apis.")
 public class NCBIService extends PropertyEnricherSimple {
+
+    private final ResourceService resourceService;
+
+    public NCBIService() {
+        this(new ResourceServiceHTTP(is -> is));
+    }
+
+    public NCBIService(ResourceService resourceService) {
+        this.resourceService = resourceService;
+    }
 
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
@@ -37,9 +47,15 @@ public class NCBIService extends PropertyEnricherSimple {
         String tsn = getNCBITaxonId(properties);
 
         if (StringUtils.isNotBlank(tsn) && tsn.matches("^\\d+$")) {
-            String fullHierarchy = getResponse("db=taxonomy&id=" + tsn + "&email=info%40globalbioticinteractions.org&tool=10.5281%2Fzenodo.1145474");
-            if (fullHierarchy.contains("<Taxon>")) {
-                parseAndPopulate(enriched, tsn, fullHierarchy);
+            URI uri = getRequestURI("db=taxonomy&id=" + tsn + "&email=info%40globalbioticinteractions.org&tool=10.5281%2Fzenodo.1145474");
+            try {
+                InputStream retrieve = resourceService.retrieve(uri);
+                String fullHierarchy = IOUtils.toString(retrieve, StandardCharsets.UTF_8);
+                if (fullHierarchy.contains("<Taxon>")) {
+                    parseAndPopulate(enriched, tsn, fullHierarchy);
+                }
+            } catch (IOException e) {
+                throw new PropertyEnricherException("failed to retrieve [" + uri + "]", e);
             }
         }
         return enriched;
@@ -75,8 +91,12 @@ public class NCBIService extends PropertyEnricherSimple {
         enriched.put(PropertyAndValueDictionary.PATH_IDS, taxonPathIdsString);
 
         String genBankCommonName = XmlUtil.extractPath(fullHierarchy, "GenbankCommonName", "", " @en");
-        String commonName = XmlUtil.extractPath(fullHierarchy, "CommonName", "", " @en");
-        enriched.put(PropertyAndValueDictionary.COMMON_NAMES, commonName + CharsetConstant.SEPARATOR + genBankCommonName);
+        List<String> commonNames = XmlUtil.extractPathNoJoin(fullHierarchy, "CommonName", "", " @en");
+        ArrayList<String> commonNamesAll = new ArrayList<String>(commonNames) {{
+            add(genBankCommonName);
+        }};
+        String commonNamesJoined = StringUtils.join(commonNamesAll.stream().filter(StringUtils::isNotBlank).collect(Collectors.joining(CharsetConstant.SEPARATOR)));
+        enriched.put(PropertyAndValueDictionary.COMMON_NAMES, commonNamesJoined);
 
         setPropertyToFirstValue(PropertyAndValueDictionary.NAME, taxonNames, enriched);
         setPropertyToFirstValue(PropertyAndValueDictionary.RANK, rankNames, enriched);
@@ -120,23 +140,14 @@ public class NCBIService extends PropertyEnricherSimple {
         }
     }
 
-    private String getResponse(String queryString) throws PropertyEnricherException {
+    private URI getRequestURI(String queryString) throws PropertyEnricherException {
         URI uri;
         try {
             uri = new URI("https", null, "eutils.ncbi.nlm.nih.gov", 443, "/entrez/eutils/efetch.fcgi", queryString, null);
         } catch (URISyntaxException e) {
             throw new PropertyEnricherException("failed to create uri", e);
         }
-        HttpGet get = new HttpGet(uri);
-
-        BasicResponseHandler responseHandler = new BasicResponseHandler();
-        String response;
-        try {
-            response = HttpUtil.executeWithTimer(get, responseHandler);
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to execute query to [" + uri.toString() + "]", e);
-        }
-        return response;
+        return uri;
     }
 
     public void shutdown() {

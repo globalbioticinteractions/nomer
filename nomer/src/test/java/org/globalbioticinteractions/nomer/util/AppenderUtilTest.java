@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.util;
 import org.eol.globi.domain.TaxonImpl;
 import org.junit.Test;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -19,6 +20,32 @@ public class AppenderUtilTest {
                 "path.kingdom.name");
 
         assertThat(kingdomName, is("someKingdom"));
+    }
+
+    @Test
+    public void getUnknownKingdomFromPath() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setPathNames("genus | species");
+        taxon.setPath("someGenus | someSpecies");
+        taxon.setPathIds("foo:1 | foo:2");
+        String kingdomName = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "path.kingdom.name");
+
+        assertThat(kingdomName, is(""));
+    }
+
+    @Test   
+    public void getUnknownAuthorship() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setPathNames("kingdom | species");
+        taxon.setPath("someKingdom | someSpecies");
+        taxon.setPathIds("foo:1 | foo:2");
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "authorship");
+
+        assertThat(authorship, is(nullValue()));
     }
 
     @Test
@@ -54,6 +81,17 @@ public class AppenderUtilTest {
                 "path.id");
 
         assertThat(pathIds, is("foo:1 | foo:2"));
+    }
+
+    @Test
+    public void getAuthorshipFromTaxon() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setAuthorship("Duck 1931");
+        String pathIds = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "authorship");
+
+        assertThat(pathIds, is("Duck 1931"));
     }
 
 

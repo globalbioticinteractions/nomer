@@ -1,122 +1,118 @@
-@prefix mods:  <http://www.loc.gov/mods/v3> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix bibo: <http://purl.org/ontology/bibo/> .
+@prefix cito: <http://purl.org/spar/cito/> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dwc: <http://rs.tdwg.org/dwc/terms/> .
 @prefix dwcFP: <http://filteredpush.org/ontologies/oa/dwcFP#> .
 @prefix fabio: <http://purl.org/spar/fabio/> .
-@prefix cnt:   <http://www.w3.org/2011/content#> .
-@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
-@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix cito:  <http://purl.org/spar/cito/> .
-@prefix dwc:   <http://rs.tdwg.org/dwc/terms/> .
-@prefix sdd:   <http://tdwg.org/sdd#> .
-@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix trt:   <http://plazi.org/vocab/treatment#> .
-@prefix bibo:  <http://purl.org/ontology/bibo/> .
-@prefix sdo:   <http://schema.org/> .
+@prefix mods: <http://www.loc.gov/mods/v3> .
+@prefix trt: <http://plazi.org/vocab/treatment#> .
 @prefix xlink: <http://www.w3.org/1999/xlink> .
-@prefix dc:    <http://purl.org/dc/elements/1.1/> .
 
-<http://taxon-name.plazi.org/id/Animalia/Chordata>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia> ;
-        dwc:kingdom        "Animalia" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "phylum" .
-
-<http://taxon-name.plazi.org/id/Animalia/Hominidae>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Primates> ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Hominidae" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Primates" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "family" .
+<http://taxon-concept.plazi.org/id/Animalia/Homo_Sapiens_ferus_Linnaeus_1758>
+    trt:hasTaxonName <http://taxon-name.plazi.org/id/Animalia/Homo_Sapiens_ferus> ;
+    dwc:LSID "urn:lsid:zoobank.org:act:ADAA382F-6794-4AB2-B43B-5412B0394005" ;
+    dwc:authority "Linnaeus, 1758" ;
+    dwc:authorityName "Linnaeus" ;
+    dwc:authorityYear "1758" ;
+    dwc:class "Mammalia" ;
+    dwc:family "Hominidae" ;
+    dwc:genus "Homo" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Primates" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "subSpecies" ;
+    dwc:species "Sapiens" ;
+    dwc:subSpecies "ferus" ;
+    dwc:zbkClass "Mammalia" ;
+    dwc:zbkKingdom "Animalia" ;
+    dwc:zbkOrder "Primates" ;
+    a dwcFP:TaxonConcept .
 
 <http://taxon-name.plazi.org/id/Animalia>
-        a            dwcFP:TaxonName ;
-        dwc:kingdom  "Animalia" ;
-        dwc:rank     "kingdom" .
+    dwc:kingdom "Animalia" ;
+    dwc:rank "kingdom" ;
+    a dwcFP:TaxonName .
 
-<http://taxon-concept.plazi.org/id/Animalia/Homo_sapiens_ferus_Linnaeus_1758>
-        a                  dwcFP:TaxonConcept ;
-        trt:hasTaxonName   <http://taxon-name.plazi.org/id/Animalia/Homo_sapiens_ferus> ;
-        dwc:LSID           "urn:lsid:zoobank.org:act:ADAA382F-6794-4AB2-B43B-5412B0394005" ;
-        dwc:authority      "Linnaeus, 1758" ;
-        dwc:authorityName  "Linnaeus" ;
-        dwc:authorityYear  "1758" ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Hominidae" ;
-        dwc:genus          "Homo" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Primates" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "subSpecies" ;
-        dwc:species        "sapiens" ;
-        dwc:subSpecies     "ferus" ;
-        dwc:zbkClass       "Mammalia" ;
-        dwc:zbkKingdom     "Animalia" ;
-        dwc:zbkOrder       "Primates" .
+<http://taxon-name.plazi.org/id/Animalia/Chordata>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia> ;
+    dwc:kingdom "Animalia" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "phylum" ;
+    a dwcFP:TaxonName .
 
-<http://taxon-name.plazi.org/id/Animalia/Mammalia>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Chordata> ;
-        dwc:class          "Mammalia" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "class" .
-
-<http://taxon-name.plazi.org/id/Animalia/Homo_sapiens>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Homo> ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Hominidae" ;
-        dwc:genus          "Homo" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Primates" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "species" ;
-        dwc:species        "sapiens" .
-
-<http://taxon-name.plazi.org/id/Animalia/Homo_sapiens_ferus>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  "http://taxon-name.plazi.org/id/Animalia/Homo_sapiens" ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Hominidae" ;
-        dwc:genus          "Homo" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Primates" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "subSpecies" ;
-        dwc:species        "sapiens" ;
-        dwc:subSpecies     "ferus" .
-
-<http://treatment.plazi.org/id/0B6AC9BA1E03488CE06DCAA62DC4AA02>
-        a                        trt:Treatment ;
-        trt:definesTaxonConcept  <http://taxon-concept.plazi.org/id/Animalia/Homo_sapiens_ferus_Linnaeus_1758> ;
-        trt:publishedIn          <http://doi.org/10.5281/zenodo.3915968> ;
-        dc:creator               "Linnaeus, Carolus" .
+<http://taxon-name.plazi.org/id/Animalia/Hominidae>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Primates> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Hominidae" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Primates" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "family" ;
+    a dwcFP:TaxonName .
 
 <http://taxon-name.plazi.org/id/Animalia/Homo>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Hominidae> ;
-        dwc:class          "Mammalia" ;
-        dwc:family         "Hominidae" ;
-        dwc:genus          "Homo" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Primates" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "genus" .
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Hominidae> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Hominidae" ;
+    dwc:genus "Homo" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Primates" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "genus" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Homo_Sapiens>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Homo> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Hominidae" ;
+    dwc:genus "Homo" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Primates" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "species" ;
+    dwc:species "Sapiens" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Homo_Sapiens_ferus>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Homo_Sapiens> ;
+    dwc:class "Mammalia" ;
+    dwc:family "Hominidae" ;
+    dwc:genus "Homo" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Primates" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "subSpecies" ;
+    dwc:species "Sapiens" ;
+    dwc:subSpecies "ferus" ;
+    a dwcFP:TaxonName .
+
+<http://taxon-name.plazi.org/id/Animalia/Mammalia>
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Chordata> ;
+    dwc:class "Mammalia" ;
+    dwc:kingdom "Animalia" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "class" ;
+    a dwcFP:TaxonName .
 
 <http://taxon-name.plazi.org/id/Animalia/Primates>
-        a                  dwcFP:TaxonName ;
-        trt:hasParentName  <http://taxon-name.plazi.org/id/Animalia/Mammalia> ;
-        dwc:class          "Mammalia" ;
-        dwc:kingdom        "Animalia" ;
-        dwc:order          "Primates" ;
-        dwc:phylum         "Chordata" ;
-        dwc:rank           "order" .
+    trt:hasParentName <http://taxon-name.plazi.org/id/Animalia/Mammalia> ;
+    dwc:class "Mammalia" ;
+    dwc:kingdom "Animalia" ;
+    dwc:order "Primates" ;
+    dwc:phylum "Chordata" ;
+    dwc:rank "order" ;
+    a dwcFP:TaxonName .
 
-<http://doi.org/10.5281/zenodo.3915968>
-        a           fabio:Book ;
-        dc:creator  "Linnaeus, Carolus" ;
-        dc:date     "1758" ;
-        dc:title    "Systema Naturae per regna tria naturae: secundum classes, ordines, genera, species, cum characteribus, differentiis, synonymis, locis" .
+<http://treatment.plazi.org/id/0B6AC9BA1E03488CE06DCAA62DC4AA02>
+    trt:definesTaxonConcept <http://taxon-concept.plazi.org/id/Animalia/Homo_Sapiens_ferus_Linnaeus_1758> ;
+    trt:publishedIn <https://doi.org/10.5962/bhl.title.542> ;
+    dc:creator "Linnaeus, Carolus" ;
+    a trt:Treatment .
+
+<https://doi.org/10.5962/bhl.title.542>
+    dc:creator "Linnaeus, Carolus" ;
+    dc:date "1758" ;
+    dc:title "Systema Naturae per regna tria naturae: secundum classes, ordines, genera, species, cum characteribus, differentiis, synonymis, locis" ;
+    a fabio:Book .
+

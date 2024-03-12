@@ -7,6 +7,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.service.HttpTimedUtil;
 import org.eol.globi.service.LanguageCodeLookup;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.util.CSVTSVUtil;
@@ -51,7 +52,7 @@ public class WoRMSService extends PropertyEnricherSimple {
     }
 
     private String getResponse(String methodName, String paramName, String paramValue) throws PropertyEnricherException {
-        HttpPost post = new HttpPost("http://www.marinespecies.org/aphia.php?p=soap");
+        HttpPost post = new HttpPost("https://www.marinespecies.org/aphia.php?p=soap");
         post.setHeader("SOAPAction", "http://tempuri.org/getAphiaID");
         post.setHeader("Content-Type", "text/xml;charset=utf-8");
         String requestBody = "<?xml version=\"1.0\" ?>";
@@ -76,7 +77,7 @@ public class WoRMSService extends PropertyEnricherSimple {
         BasicResponseHandler responseHandler = new BasicResponseHandler();
         String response;
         try {
-            response = HttpUtil.executeWithTimer(post, responseHandler);
+            response = HttpTimedUtil.executeWithTimer(post, responseHandler);
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to connect to [" + post.getURI().toString() + "]", e);
         }

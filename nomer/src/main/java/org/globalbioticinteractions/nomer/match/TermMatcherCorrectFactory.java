@@ -1,6 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
-import org.eol.globi.taxon.TaxonNameCorrector;
+import org.eol.globi.taxon.TaxonNameSuggestor;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -8,11 +8,11 @@ public class TermMatcherCorrectFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return new TaxonNameCorrector(ctx);
+        return new TaxonNameSuggestor(ctx);
     }
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "globi-correct";
     }
 

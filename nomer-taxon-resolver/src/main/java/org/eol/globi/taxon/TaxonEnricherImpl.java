@@ -104,7 +104,11 @@ public class TaxonEnricherImpl extends PropertyEnricherSimple implements TermMat
             }});
             if (enriched != null) {
                 NameType nameMatchType = TaxonUtil.isResolved(enriched) ? NameType.SAME_AS : NameType.NONE;
-                termMatchListener.foundTaxonForTerm(null, name, TaxonUtil.mapToTaxon(enriched), nameMatchType);
+                termMatchListener.foundTaxonForTerm(null,
+                        name,
+                        nameMatchType,
+                        TaxonUtil.mapToTaxon(enriched)
+                );
             }
         }
     }

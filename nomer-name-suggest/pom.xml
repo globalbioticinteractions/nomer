@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.globalbioticinteractions</groupId>
+        <artifactId>nomer-parent</artifactId>
+        <version>0.5.7-SNAPSHOT</version>
+        <relativePath>../nomer-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>nomer-name-correct</artifactId>
+    <name>Nomer Name Correct</name>
+    <description>Attempts to cleanup and correct troublesome names</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>nomer-taxon-resolver</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.globalnames</groupId>
+            <artifactId>gnparser_2.10</artifactId>
+            <version>0.3.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.healthmarketscience.jackcess</groupId>
+            <artifactId>jackcess</artifactId>
+            <version>2.1.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gbif</groupId>
+            <artifactId>name-parser</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>gbif-repository</id>
+            <url>https://repository.gbif.org/content/groups/gbif</url>
+        </repository>
+    </repositories>
+
+
+</project>

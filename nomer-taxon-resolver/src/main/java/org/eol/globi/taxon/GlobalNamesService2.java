@@ -1,16 +1,14 @@
 package org.eol.globi.taxon;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.message.BasicNameValuePair;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
@@ -25,6 +23,8 @@ import org.eol.globi.tool.TermRequestImpl;
 import org.eol.globi.util.CSVTSVUtil;
 import org.eol.globi.util.ExternalIdUtil;
 import org.eol.globi.util.HttpUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -79,7 +79,10 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
         findTermsForNames(Collections.singletonList(termRequested), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long nodeId, Term termRequested, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long nodeId,
+                                          Term termRequested,
+                                          NameType nameType,
+                                          Taxon taxon) {
                 if (NameType.SAME_AS.equals(nameType)) {
                     exactMatches.add(taxon);
                 } else if (NameType.SYNONYM_OF.equals(nameType)) {
@@ -252,8 +255,9 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
         Term termRequested = createTermRequested(termService, suppliedNameString, requestId);
         termMatchListener.foundTaxonForTerm(requestId,
                 termRequested,
-                new TaxonImpl(suppliedNameString),
-                NameType.NONE);
+                NameType.NONE,
+                new TaxonImpl(suppliedNameString)
+        );
     }
 
     private Term createTermRequested(RequestedTermService termService, String suppliedNameString, Long requestId) {
@@ -374,8 +378,9 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                     termMatchListener.foundTaxonForTerm(
                             requestId,
                             termRequested,
-                            taxon,
-                            nameType);
+                            nameType,
+                            taxon
+                    );
                 }
             }
         }
@@ -400,7 +405,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
     private static boolean canonicalMatchForNCBIVirusSpeciesOrStrain(JsonNode matchResult, TaxonomyProvider providerMatched, Taxon matchedTaxon) {
         boolean isCanonicalMatch = matchResult.has("match_type")
-                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS.contains(matchResult.get("match_type").getIntValue());
+                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS.contains(matchResult.get("match_type").asInt());
 
         return isCanonicalMatch
                 && isNCBIVirusOrStream(providerMatched, matchedTaxon);
@@ -410,7 +415,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
                                                       TaxonomyProvider providerMatched,
                                                       Taxon matchedTaxon) {
         boolean isCanonicalMatch = matchResult.has("match_type")
-                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS.contains(matchResult.get("match_type").getIntValue());
+                && MATCH_TYPES_EXACT_BY_CANONICAL_FORM_OR_GENUS.contains(matchResult.get("match_type").asInt());
 
         String[] split = StringUtils.split(matchedTaxon.getName());
         return isCanonicalMatch
@@ -434,7 +439,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
 
     private static boolean isExactMatch(JsonNode matchResult) {
         return matchResult.has("match_type")
-                && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").getIntValue());
+                && MATCH_TYPES_EXACT.contains(matchResult.get("match_type").asInt());
     }
 
     private boolean mismatchingNCBITaxonIds(
@@ -455,7 +460,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
     }
 
     private String getSuppliedNameString(JsonNode data) {
-        return data.get("supplied_name_string").getTextValue();
+        return data.get("supplied_name_string").asText();
     }
 
     private Long requestId(JsonNode data) {
@@ -465,7 +470,7 @@ public class GlobalNamesService2 extends PropertyEnricherSimple implements TermM
     private TaxonomyProvider getTaxonomyProvider(JsonNode aResult) {
         TaxonomyProvider provider = null;
         if (aResult.has("data_source_id")) {
-            int sourceId = aResult.get("data_source_id").getIntValue();
+            int sourceId = aResult.get("data_source_id").asInt();
 
             GlobalNamesSources2[] values = GlobalNamesSources2.values();
             for (GlobalNamesSources2 value : values) {

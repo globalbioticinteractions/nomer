@@ -1,7 +1,9 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.collections4.list.TreeList;
+import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.CSVTSVUtil;
 
 import java.io.PrintStream;
@@ -13,13 +15,11 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.eol.globi.domain.PropertyAndValueDictionary.*;
+
 public class AppenderTSV implements Appender {
 
     private final Map<Integer, String> outputSchema;
-
-    public AppenderTSV() {
-        this(Collections.emptyMap());
-    }
 
     public AppenderTSV(Map<Integer, String> outputSchema) {
         this.outputSchema = new TreeMap<>(outputSchema);
@@ -27,33 +27,22 @@ public class AppenderTSV implements Appender {
 
 
     @Override
-    public void appendLinesForRow(String[] row, Taxon taxonProvided, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf) {
+    public void appendLinesForRow(String[] row,
+                                  Taxon providedTaxon,
+                                  NameTypeOf nameTypeOf,
+                                  Stream<Taxon> resolvedTaxa,
+                                  PrintStream out) {
+
         Stream<String> provided = Stream.of(row);
 
-        Stream<Stream<String>> appended = hasDefaultSchema()
-                ? handleDefaultSchema(resolvedTaxa, nameTypeOf)
-                : handleWithCustomOutputSchema(resolvedTaxa, nameTypeOf);
+        Stream<Stream<String>> appended = handleWithCustomOutputSchema(resolvedTaxa, nameTypeOf);
 
         Stream<Stream<String>> lines = appended
                 .map(resolved -> Stream.concat(provided, resolved));
 
         lines.map(combinedLine -> CSVTSVUtil.mapEscapedValues(combinedLine)
                 .collect(Collectors.joining("\t")))
-                .forEach(p::println);
-    }
-
-    private Stream<Stream<String>> handleDefaultSchema(Stream<Taxon> resolvedTaxa, NameTypeOf nameTypeOf) {
-        return resolvedTaxa.map(taxon -> Stream.of(
-                nameTypeOf.nameTypeOf(taxon).name(),
-                taxon.getExternalId(),
-                taxon.getName(),
-                taxon.getRank(),
-                taxon.getCommonNames(),
-                taxon.getPath(),
-                taxon.getPathIds(),
-                taxon.getPathNames(),
-                taxon.getExternalUrl(),
-                taxon.getThumbnailUrl()));
+                .forEach(out::println);
     }
 
     private Stream<Stream<String>> handleWithCustomOutputSchema(Stream<Taxon> resolvedTaxa, NameTypeOf nameTypeOf) {

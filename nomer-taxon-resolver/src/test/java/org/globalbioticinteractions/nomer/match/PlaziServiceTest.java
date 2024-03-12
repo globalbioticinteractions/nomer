@@ -12,6 +12,7 @@ import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.doi.DOI;
 import org.globalbioticinteractions.doi.MalformedDOIException;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
@@ -44,8 +45,9 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl(null, "Carvalhoma")), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
+                        assertThat(nameType, is(NameType.OCCURS_IN));
                     }
                 });
 
@@ -58,6 +60,30 @@ public class PlaziServiceTest {
         assertThat(taxon.getName(), is("Carvalhoma"));
     }
 
+    @Test
+    public void noMatch() throws PropertyEnricherException {
+
+        TermMatcher service = createService();
+
+        List<Taxon> found = new ArrayList<>();
+        service.match(
+                Collections.singletonList(new TermImpl(null, "Donald duck")), new TermMatchListener() {
+                    @Override
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                        found.add(taxon);
+                        assertThat(nameType, is(NameType.NONE));
+                    }
+                });
+
+
+        assertThat(found.size(), is(1));
+        Taxon taxon = found.get(0);
+        assertThat(taxon.getPath(), is(nullValue()));
+        assertThat(taxon.getExternalId(), is(nullValue()));
+        assertThat(taxon.getPathNames(), is(nullValue()));
+        assertThat(taxon.getName(), is("Donald duck"));
+    }
+
 
     @Test
     public void enrichById() throws PropertyEnricherException {
@@ -67,7 +93,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("http://treatment.plazi.org/id/000087F6E320FF95FF7EFDC1FAE4FA7B", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
                     }
                 });
@@ -90,7 +116,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("PLAZI:000087F6E320FF95FF7EFDC1FAE4FA7B", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         found.add(taxon);
                     }
                 });
@@ -111,7 +137,7 @@ public class PlaziServiceTest {
         List<Taxon> found = new ArrayList<>();
         service.match(
                 Collections.singletonList(new TermImpl("doi:10.5281/zenodo.3854772", null)),
-                (aLong, term, taxon, nameType) -> found.add(taxon));
+                (aLong, term, nameType , taxon) -> found.add(taxon));
 
 
         assertThat(found.size(), is(1));
@@ -131,7 +157,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("ITIS:999999999", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         counter.getAndIncrement();
                         assertThat(nameType, is(NameType.NONE));
                     }
@@ -148,7 +174,7 @@ public class PlaziServiceTest {
         service.match(
                 Collections.singletonList(new TermImpl("FOO:2", null)), new TermMatchListener() {
                     @Override
-                    public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+                    public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                         counter.getAndIncrement();
                         assertThat(nameType, is(NameType.NONE));
                     }
@@ -166,8 +192,8 @@ public class PlaziServiceTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
+            public InputStream retrieve(URI uri) throws IOException {
+                return getClass().getResourceAsStream(uri.toString());
             }
 
             @Override
@@ -182,6 +208,11 @@ public class PlaziServiceTest {
 
             @Override
             public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

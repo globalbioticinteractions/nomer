@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import com.Ostermiller.util.LabeledCSVParser;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
@@ -32,7 +33,7 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
     private static final Logger LOG = LoggerFactory.getLogger(TermMatcherPMDID2DOIFactory.class);
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "pmid-doi";
     }
 
@@ -44,49 +45,71 @@ public class TermMatcherPMDID2DOIFactory implements TermMatcherFactory {
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
         if (null != ctx) {
-            String pmidCache = ctx.getProperty(NOMER_PMID_CACHE);
-            try {
-                InputStream resource = ctx.getResource(pmidCache);
+            return new TermMatcher() {
+                private Map<Long, DOI> pmidToDOI = null;
 
-                LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(new InputStreamReader(new BufferedInputStream(resource), StandardCharsets.UTF_8));
-
-                Map<Long, DOI> pmidToDOI = new TreeMap<>();
-
-                while (labeledCSVParser.getLine() != null) {
-                    String pmid = labeledCSVParser.getValueByLabel("PMID");
-                    String doiString = labeledCSVParser.getValueByLabel("DOI");
-                    if (StringUtils.isNotBlank(doiString) && NumberUtils.isDigits(pmid)) {
-                        try {
-                            pmidToDOI.put(Long.parseLong(pmid), DOI.create(doiString));
-                        } catch (MalformedDOIException e) {
-                            LOG.warn("skipping invalid doi [" + doiString + "]", e);
-                        }
+                private Map<Long, DOI> init(TermMatcherContext ctx) throws IOException {
+                    InputStream resource;
+                    try {
+                        resource = ctx.retrieve(CacheUtil.getValueURI(ctx, NOMER_PMID_CACHE));
+                    } catch (PropertyEnricherException e) {
+                        throw new IOException("failed to access properties", e);
                     }
 
-                }
-                return new TermMatcher() {
+                    LabeledCSVParser labeledCSVParser = CSVTSVUtil.createLabeledCSVParser(new InputStreamReader(new BufferedInputStream(resource), StandardCharsets.UTF_8));
 
-                    @Override
-                    public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
-                        for (Term term : list) {
-                            String id = term.getId();
-                            DOI doi = null;
-                            if (NumberUtils.isDigits(id)) {
-                                doi = pmidToDOI.get(Long.parseLong(id));
+                    Map<Long, DOI> pmidToDOI = new TreeMap<>();
+
+                    while (labeledCSVParser.getLine() != null) {
+                        String pmid = labeledCSVParser.getValueByLabel("PMID");
+                        String doiString = labeledCSVParser.getValueByLabel("DOI");
+                        if (StringUtils.isNotBlank(doiString) && NumberUtils.isDigits(pmid)) {
+                            try {
+                                pmidToDOI.put(Long.parseLong(pmid), DOI.create(doiString));
+                            } catch (MalformedDOIException e) {
+                                LOG.warn("skipping invalid doi [" + doiString + "]", e);
                             }
-                            Taxon found = doi == null
-                                    ? new TaxonImpl(term.getName(), term.getId())
-                                    : new TaxonImpl(null, doi.toString());
-                            termMatchListener.foundTaxonForTerm(null, term, found, doi == null ? NameType.NONE : NameType.SAME_AS);
+                        }
+
+                    }
+                    return pmidToDOI;
+                }
+
+                @Override
+                public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                    initIfNeeded();
+                    for (Term term : list) {
+                        String id = term.getId();
+                        DOI doi = null;
+                        if (NumberUtils.isDigits(id)) {
+                            doi = pmidToDOI.get(Long.parseLong(id));
+                        }
+                        Taxon found = doi == null
+                                ? new TaxonImpl(term.getName(), term.getId())
+                                : new TaxonImpl(null, doi.toString());
+                        termMatchListener.foundTaxonForTerm(
+                                null,
+                                term,
+                                doi == null ? NameType.NONE : NameType.SAME_AS,
+                                found);
+                    }
+                }
+
+                private void initIfNeeded() throws PropertyEnricherException {
+                    if (pmidToDOI == null) {
+                        try {
+                            pmidToDOI = init(ctx);
+                        } catch (IOException e) {
+                            throw new PropertyEnricherException("failed to create pmid-doi lookup", e);
                         }
                     }
-                };
-            } catch (IOException e) {
-                throw new RuntimeException("failed to initialize [" + this.getName() + "]", e);
-            }
+                }
+            };
+
 
         }
         return null;
     }
+
 
 }

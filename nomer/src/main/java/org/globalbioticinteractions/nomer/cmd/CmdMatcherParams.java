@@ -1,12 +1,15 @@
 package org.globalbioticinteractions.nomer.cmd;
 
-import com.beust.jcommander.Parameter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections4.MapUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.globalbioticinteractions.nomer.match.TermMatcherContextCaching;
+import picocli.CommandLine;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +18,13 @@ import java.util.TreeMap;
 
 public abstract class CmdMatcherParams extends TermMatcherContextCaching implements Runnable {
 
-    @Parameter(description = "[matcher]")
+    @CommandLine.Parameters(description = "[matcher]", arity = "1")
     private List<String> matchers = new ArrayList<>();
+
+    @Override
+    public OutputFormat getOutputFormat() {
+        return CmdOutput.OUTPUT_FORMAT_DEFAULT;
+    }
 
     @Override
     public List<String> getMatchers() {
@@ -25,7 +33,11 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
 
     @Override
     public String getCacheDir() {
-        return getProperty("nomer.cache.dir");
+        String property = getProperty("nomer.cache.dir");
+        File cacheDir = StringUtils.isBlank(property)
+                ? getOrCreateDefaultCacheDir()
+                : getOrCreateCacheDir(new File(property));
+        return cacheDir.getAbsolutePath();
     }
 
     @Override
@@ -41,10 +53,12 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
     public static Map<Integer, String> parseSchema(String schema) {
         Map<Integer, String> schemaMap = new TreeMap<>();
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(schema);
-            if (jsonNode.isArray() && jsonNode.size() > 0) {
-                for (JsonNode node : jsonNode) {
-                    schemaMap.put(node.get("column").asInt(), node.get("type").asText());
+            if (StringUtils.isNoneBlank(schema)) {
+                JsonNode jsonNode = new ObjectMapper().readTree(schema);
+                if (jsonNode.isArray() && jsonNode.size() > 0) {
+                    for (JsonNode node : jsonNode) {
+                        schemaMap.put(node.get("column").asInt(), node.get("type").asText());
+                    }
                 }
             }
         } catch (IOException e) {
@@ -58,4 +72,21 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
                 ? defaultSchema
                 : schemaMap);
     }
+
+    public static File getOrCreateDefaultCacheDir() {
+        File userHome = new File(System.getProperty("user.home"));
+        return getOrCreateCacheDir(new File(userHome, ".cache/nomer"));
+    }
+
+    private static File getOrCreateCacheDir(File cacheDir) {
+        if (!cacheDir.exists()) {
+            try {
+                FileUtils.forceMkdir(cacheDir);
+            } catch (IOException ex) {
+                throw new IllegalArgumentException("invalid or missing cachedir [" + cacheDir.getAbsolutePath() + "]");
+            }
+        }
+        return cacheDir;
+    }
+
 }

@@ -30,11 +30,11 @@ public class TermMatcherHierarchicalTest {
                     if ("Anura".equals(term.getName())) {
                         TaxonImpl homoSapiens = new TaxonImpl("Anura", "FOO:123");
                         homoSapiens.setPath("Amphibia | Anura");
-                        termMatchListener.foundTaxonForTerm(null, term, homoSapiens, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, homoSapiens);
 
                         TaxonImpl anuraPlant = new TaxonImpl("Anura", "FOO:456");
                         anuraPlant.setPath("Plantae | Magnoliophyta | Anura");
-                        termMatchListener.foundTaxonForTerm(null, term, anuraPlant, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, anuraPlant);
                     }
                 }
             }
@@ -47,7 +47,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl(null, "Amphibia | Anura")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();
@@ -72,14 +72,14 @@ public class TermMatcherHierarchicalTest {
                         TaxonImpl homoSapiens = new TaxonImpl("Anura", "FOO:123");
                         homoSapiens.setPath("Amphibia | Anura");
                         homoSapiens.setPathIds("FOO:1 | FOO:123");
-                        termMatchListener.foundTaxonForTerm(null, term, homoSapiens, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, homoSapiens);
                     }
 
                     else if ("FOO:456".equals(term.getId())) {
                         TaxonImpl anuraPlant = new TaxonImpl("Anura", "FOO:456");
                         anuraPlant.setPath("Plantae | Magnoliophyta | Anura");
                         anuraPlant.setPathIds("FOO:X | FOO:Y | FOO:456");
-                        termMatchListener.foundTaxonForTerm(null, term, anuraPlant, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, anuraPlant);
                     }
                 }
             }
@@ -92,7 +92,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl("FOO:1 | FOO:123", null)), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();
@@ -117,14 +117,14 @@ public class TermMatcherHierarchicalTest {
                         TaxonImpl homoSapiens = new TaxonImpl("Anura", "FOO:123");
                         homoSapiens.setPath("Amphibia | Anura");
                         homoSapiens.setPathIds("FOO:1 | FOO:123");
-                        termMatchListener.foundTaxonForTerm(null, term, homoSapiens, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, homoSapiens);
                     }
 
                     else if ("FOO:456".equals(term.getId())) {
                         TaxonImpl anuraPlant = new TaxonImpl("Anura", "FOO:456");
                         anuraPlant.setPath("Plantae | Magnoliophyta | Anura");
                         anuraPlant.setPathIds("FOO:X | FOO:Y | FOO:456");
-                        termMatchListener.foundTaxonForTerm(null, term, anuraPlant, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, anuraPlant);
                     }
                 }
             }
@@ -137,7 +137,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl("FOO:1 | FOO:123", "Amphibia | Anura")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();
@@ -163,14 +163,14 @@ public class TermMatcherHierarchicalTest {
                         TaxonImpl homoSapiens = new TaxonImpl("Anura", "FOO:123");
                         homoSapiens.setPath("Amphibia | Anura");
                         homoSapiens.setPathIds("FOO:1 | FOO:123");
-                        termMatchListener.foundTaxonForTerm(null, term, homoSapiens, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, homoSapiens);
                     }
 
                     else if ("FOO:456".equals(term.getId())) {
                         TaxonImpl anuraPlant = new TaxonImpl("Anura", "FOO:456");
                         anuraPlant.setPath("Plantae | Magnoliophyta | Anura");
                         anuraPlant.setPathIds("FOO:X | FOO:Y | FOO:456");
-                        termMatchListener.foundTaxonForTerm(null, term, anuraPlant, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, anuraPlant);
                     }
                 }
             }
@@ -183,7 +183,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl("FOO:1 | FOO:123", "Anura")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();
@@ -208,12 +208,12 @@ public class TermMatcherHierarchicalTest {
                         TaxonImpl homoSapiens = new TaxonImpl("Anura", "FOO:123");
                         homoSapiens.setPath("Amphibia | Anura");
                         homoSapiens.setPathIds("FOO:1 | FOO:123");
-                        termMatchListener.foundTaxonForTerm(null, term, homoSapiens, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, homoSapiens);
 
                         TaxonImpl anuraPlant = new TaxonImpl("Anura", "FOO:456");
                         anuraPlant.setPath("Plantae | Magnoliophyta | Anura");
                         anuraPlant.setPathIds("FOO:X | FOO:Y | FOO:456");
-                        termMatchListener.foundTaxonForTerm(null, term, anuraPlant, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, anuraPlant);
                     }
                 }
             }
@@ -226,7 +226,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl("", "Anura")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();
@@ -251,7 +251,7 @@ public class TermMatcherHierarchicalTest {
                         TaxonImpl someTaxon = new TaxonImpl("Bar", "FOO:123");
                         someTaxon.setPath("Foo | Bar");
                         someTaxon.setPathIds("FOO:1 | FOO:123");
-                        termMatchListener.foundTaxonForTerm(null, term, someTaxon, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, someTaxon);
                     }
                 }
             }
@@ -264,7 +264,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl("", "Anura")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();
@@ -289,7 +289,7 @@ public class TermMatcherHierarchicalTest {
                         TaxonImpl someTaxon = new TaxonImpl("Anura", "FOO:123");
                         someTaxon.setPath("Amphibia | SomeAlternateAnuraName");
                         someTaxon.setPathIds("FOO:1 | FOO:123");
-                        termMatchListener.foundTaxonForTerm(null, term, someTaxon, NameType.SAME_AS);
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, someTaxon);
                     }
                 }
             }
@@ -302,7 +302,7 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl("", "Amphibia | Anura")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long aLong, Term term, Taxon taxon, NameType nameType) {
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
                 if (!NameType.NONE.equals(nameType)) {
                     countMatches.incrementAndGet();

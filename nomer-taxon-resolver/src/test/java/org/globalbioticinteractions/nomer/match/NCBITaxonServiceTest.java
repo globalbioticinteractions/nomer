@@ -7,12 +7,14 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,7 +55,7 @@ public class NCBITaxonServiceTest {
         String externalId = "NCBI:2";
         service.match(Arrays.asList(new TaxonImpl(null, externalId)), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 assertThat(nameType, is(NameType.SAME_AS));
                 assertThat(resolvedTaxon.getName(), is("Bacteria"));
                 gotReply.set(true);
@@ -70,7 +72,7 @@ public class NCBITaxonServiceTest {
         AtomicBoolean gotReply = new AtomicBoolean(false);
         service.match(Arrays.asList(new TaxonImpl("Anteholosticha manca")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 assertThat(nameType, is(NameType.SAME_AS));
                 assertThat(resolvedTaxon.getName(), is("Anteholosticha manca"));
                 assertThat(resolvedTaxon.getId(), is("NCBI:385028"));
@@ -88,7 +90,7 @@ public class NCBITaxonServiceTest {
         AtomicBoolean gotReply = new AtomicBoolean(false);
         service.match(Arrays.asList(new TaxonImpl("Holosticha manca")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 assertThat(nameType, is(NameType.SYNONYM_OF));
                 assertThat(providedTerm.getName(), is("Holosticha manca"));
                 assertThat(resolvedTaxon.getName(), is("Anteholosticha manca"));
@@ -107,7 +109,7 @@ public class NCBITaxonServiceTest {
         AtomicBoolean gotReply = new AtomicBoolean(false);
         service.match(Arrays.asList(new TaxonImpl("eubacteria")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 assertThat(nameType, is(NameType.COMMON_NAME_OF));
                 assertThat(providedTerm.getName(), is("eubacteria"));
                 assertThat(resolvedTaxon.getName(), is("Bacteria"));
@@ -126,7 +128,7 @@ public class NCBITaxonServiceTest {
         AtomicBoolean gotReply = new AtomicBoolean(false);
         service.match(Collections.singletonList(new TaxonImpl("Eubacteria")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 assertThat(nameType, is(NameType.NONE));
                 gotReply.set(true);
             }
@@ -144,7 +146,7 @@ public class NCBITaxonServiceTest {
                 new TaxonImpl("Holosticha manca"),
                 new TaxonImpl(null, "NCBI:2")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 resolvedNames.add(resolvedTaxon.getName());
             }
         });
@@ -224,29 +226,14 @@ public class NCBITaxonServiceTest {
     }
 
     private NCBITaxonService createService() {
-        return new NCBITaxonService(new TermMatcherContext() {
+        return new NCBITaxonService(new TermMatcherContextClasspath() {
             @Override
             public String getCacheDir() {
                 return new File("target/ncbiCache" + UUID.randomUUID()).getAbsolutePath();
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
-                return getClass().getResourceAsStream(uri);
-            }
-
-            @Override
-            public List<String> getMatchers() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getInputSchema() {
-                return null;
-            }
-
-            @Override
-            public Map<Integer, String> getOutputSchema() {
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
 
 public class OpenBiodivUtilTest {
 
-    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/36")
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/122")
     @Test
     public void retrieveTaxonFamily() throws IOException {
         Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("4B689A17-2541-4F5F-A896-6F0C2EEA3FB4",
@@ -35,6 +35,7 @@ public class OpenBiodivUtilTest {
         assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family"));
     }
 
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/122")
     @Test
     public void retrieveTaxonSpecies() throws IOException {
         Taxon taxon = OpenBiodivUtil
@@ -49,14 +50,13 @@ public class OpenBiodivUtilTest {
         assertThat(taxon.getPathNames(), is(""));
     }
 
-    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/36")
+    @Ignore("see https://github.com/globalbioticinteractions/nomer/issues/122")
     @Test
     public void retrieveTaxonSpecies2() throws IOException {
         Taxon taxon = OpenBiodivUtil.retrieveTaxonHierarchyById("22A7F215-829B-458A-AEBB-39FFEA6D4A91",
                 getSparqlClient());
         assertNotNull(taxon);
         assertThat(taxon.getName(), is("Bolacothrips striatopennatus"));
-        assertThat(taxon.getRank(), is("species"));
         assertThat(taxon.getExternalId(), is("http://openbiodiv.net/22A7F215-829B-458A-AEBB-39FFEA6D4A91"));
         assertThat(taxon.getPath(), is("Animalia | Arthropoda | Insecta | Thysanoptera | Thripidae | Bolacothrips | Bolacothrips striatopennatus"));
         assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family | genus | species"));
@@ -65,6 +65,7 @@ public class OpenBiodivUtilTest {
     public SparqlClient getSparqlClient() {
         return new SparqlClientImpl(getResourceServiceTest(), PropertyAndValueDictionary.SPARQL_ENDPOINT_OPEN_BIODIV);
     }
+
 
     public static ResourceService getResourceServiceTest() {
         return resourceName -> {

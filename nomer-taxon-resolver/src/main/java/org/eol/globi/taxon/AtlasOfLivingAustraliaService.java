@@ -1,17 +1,18 @@
 package org.eol.globi.taxon;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.service.HttpTimedUtil;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.util.HttpUtil;
@@ -84,13 +85,15 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
                 if (searchResults.has("results")) {
                     JsonNode results = searchResults.get("results");
                     for (JsonNode result : results) {
-                        if (result.has("name") && result.has("idxtype") && result.has("guid")) {
-                            if (StringUtils.equals(taxonName, result.get("name").getTextValue())
-                                    && StringUtils.equals("TAXON", result.get("idxtype").getTextValue())) {
+                        if (result.has("name")
+                                && result.has("idxtype")
+                                && result.has("guid")) {
+                            if (StringUtils.equals(taxonName, result.get("name").asText())
+                                    && StringUtils.equals("TAXON", result.get("idxtype").asText())) {
                                 if (result.has("acceptedConceptID")) {
                                     guid = result.get("acceptedConceptID").asText();
                                 } else {
-                                    guid = result.get("guid").getTextValue();
+                                    guid = result.get("guid").asText();
                                 }
                                 break;
                             }
@@ -102,8 +105,6 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
             throw new PropertyEnricherException("failed to create uri", e);
         } catch (JsonProcessingException e) {
             throw new PropertyEnricherException("failed to parse response", e);
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to get response", e);
         }
         return guid;
     }
@@ -136,8 +137,6 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
             throw new PropertyEnricherException("failed to create uri", e);
         } catch (JsonProcessingException e) {
             throw new PropertyEnricherException("failed to parse response", e);
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to get response", e);
         }
         return info;
     }
@@ -146,7 +145,7 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
         final List<String> commonNameList = new ArrayList<String>();
         for (final JsonNode commonName : commonNames) {
             if (commonName.has("nameString") && commonName.has("language")) {
-                commonNameList.add(commonName.get("nameString").getTextValue() + " @" + commonName.get("language").getTextValue().split("-")[0]);
+                commonNameList.add(commonName.get("nameString").asText() + " @" + commonName.get("language").asText().split("-")[0]);
             }
         }
         return new HashMap<String, String>() {{
@@ -169,7 +168,7 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
 
         for (String rank : ranks) {
             if (classification.has(rank)) {
-                String textValue = classification.get(rank).getTextValue();
+                String textValue = classification.get(rank).asText();
                 path.add(StringUtils.capitalize(StringUtils.lowerCase(textValue)));
                 pathNames.add(getRankString(rank));
                 String guid = "";
@@ -190,16 +189,16 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
     private Map<String, String> parseTaxonConcept(JsonNode classification) {
         Map<String, String> info = new HashMap<String, String>();
         if (classification.has("nameString")) {
-            info.put(PropertyAndValueDictionary.NAME, classification.get("nameString").getTextValue());
+            info.put(PropertyAndValueDictionary.NAME, classification.get("nameString").asText());
         }
 
         if (classification.has("rankString")) {
-            String rank = classification.get("rankString").getTextValue();
+            String rank = classification.get("rankString").asText();
             info.put(PropertyAndValueDictionary.RANK, getRankString(rank));
         }
 
         if (classification.has("guid")) {
-            String guid = classification.get("guid").getTextValue();
+            String guid = classification.get("guid").asText();
             String externalId = ATLAS_OF_LIVING_AUSTRALIA_TAXON + guid;
             info.put(PropertyAndValueDictionary.EXTERNAL_ID, externalId);
         }
@@ -216,7 +215,7 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
         BasicResponseHandler responseHandler = new BasicResponseHandler();
         String response;
         try {
-            response = HttpUtil.executeWithTimer(get, responseHandler);
+            response = HttpTimedUtil.executeWithTimer(get, responseHandler);
         } catch (HttpResponseException e) {
             if (HttpStatus.SC_NOT_FOUND == e.getStatusCode()) {
                 response = "{}";

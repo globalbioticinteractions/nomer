@@ -10,12 +10,14 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.SuggesterFactory;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -58,8 +60,10 @@ public class TermMatcherCorrectFactoryTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
-                return IOUtils.toInputStream("map".equals(uri) ? "copepods,Copepoda" : "unidentified", StandardCharsets.UTF_8);
+            public InputStream retrieve(URI uri) throws IOException {
+                return IOUtils.toInputStream("map".equals(uri.toString())
+                        ? "copepods,Copepoda"
+                        : "unidentified", StandardCharsets.UTF_8);
             }
 
             @Override
@@ -74,6 +78,11 @@ public class TermMatcherCorrectFactoryTest {
 
             @Override
             public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 
@@ -117,12 +126,13 @@ public class TermMatcherCorrectFactoryTest {
     }
 
     private void assertCorrection(final String nameToBeCorrected, String expectedCorrection) throws PropertyEnricherException {
-        TermMatcher termMatcher = new TermMatcherCorrectFactory().createTermMatcher(createTestContext());
+        TermMatcher termMatcher = new TermMatcherCorrectFactory()
+                .createTermMatcher(createTestContext());
         AtomicBoolean found = new AtomicBoolean(false);
         Term batVirusTerm = new TermImpl(null, nameToBeCorrected);
         termMatcher.match(
                 Collections.singletonList(batVirusTerm),
-                (nodeId, name1, taxon, nameType) -> {
+                (nodeId, name1, nameType, taxon) -> {
                     assertThat(taxon.getName(), Is.is(expectedCorrection));
                     found.set(true);
                 });

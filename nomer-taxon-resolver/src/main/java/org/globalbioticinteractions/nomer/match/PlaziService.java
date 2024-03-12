@@ -7,10 +7,6 @@ import org.apache.commons.io.input.CloseShieldInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.lucene.store.Directory;
-import org.eol.globi.taxon.TaxonLookupBuilder;
-import org.globalbioticinteractions.nomer.util.CacheUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -19,15 +15,20 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TaxonCacheListener;
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.taxon.TaxonLookupBuilder;
 import org.eol.globi.taxon.TaxonLookupServiceImpl;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -52,8 +53,8 @@ public class PlaziService implements TermMatcher {
                 termMatchListener.foundTaxonForTerm(
                         null,
                         term,
-                        new TaxonImpl(term.getName(), term.getId()),
-                        NameType.NONE
+                        NameType.NONE,
+                        new TaxonImpl(term.getName(), term.getId())
                 );
             } else {
                 for (Taxon taxon : taxons) {
@@ -63,7 +64,12 @@ public class PlaziService implements TermMatcher {
                         taxonToBeSubmitted = new TaxonImpl(taxon.getExternalId(), taxon.getExternalId());
                         taxonToBeSubmitted.setPath(taxon.getExternalId());
                     }
-                    termMatchListener.foundTaxonForTerm(null, term, taxonToBeSubmitted, NameType.SAME_AS);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.OCCURS_IN,
+                            taxonToBeSubmitted
+                    );
                 }
             }
         }
@@ -104,13 +110,13 @@ public class PlaziService implements TermMatcher {
 
         try {
             if (preExistingCacheDir) {
-                LOG.info("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
+                LOG.debug("Plazi taxonomy already indexed at [" + cacheDir.getAbsolutePath() + "], no need to import.");
             } else {
-                try (SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir)) {
+                try (SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir.toPath())) {
                     indexTreatments(indexDir);
                 }
             }
-            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir);
+            SimpleFSDirectory indexDir = new SimpleFSDirectory(cacheDir.toPath());
             taxonLookupService = new TaxonLookupServiceImpl(indexDir);
 
         } catch (IOException e) {
@@ -127,7 +133,7 @@ public class PlaziService implements TermMatcher {
 
         try (TaxonLookupBuilder taxonLookupBuilder = new TaxonLookupBuilder(indexDir)) {
             taxonLookupBuilder.start();
-            InputStream resource = this.ctx.getResource(getArchiveUrl());
+            InputStream resource = this.ctx.retrieve(getArchiveUrl());
             TaxonCacheListener listener = new TaxonCacheListener() {
 
                 @Override
@@ -151,8 +157,8 @@ public class PlaziService implements TermMatcher {
             ArchiveEntry nextEntry;
             while ((nextEntry = archiveInputStream.getNextEntry()) != null) {
                 if (!nextEntry.isDirectory() && StringUtils.endsWith(nextEntry.getName(), ".ttl")) {
-                    CloseShieldInputStream closeShieldInputStream = new CloseShieldInputStream(archiveInputStream);
-                    PlaziTreatmentsLoader.importTreatment(closeShieldInputStream, listener);
+                    CloseShieldInputStream closeShieldInputStream = CloseShieldInputStream.wrap(archiveInputStream);
+                    PlaziTreatmentRDFLoader.importTreatment(closeShieldInputStream, listener);
                 }
             }
 
@@ -170,8 +176,8 @@ public class PlaziService implements TermMatcher {
         return taxonLookupService == null;
     }
 
-    private String getArchiveUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.plazi.treatments.archive");
+    private URI getArchiveUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.plazi.treatments.archive");
     }
 
 }

@@ -1,78 +1,55 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.eol.globi.data.CharsetConstant;
-import org.eol.globi.domain.PropertyAndValueDictionary;
-import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
-@PropertyEnricherInfo(name = "itis-taxon-id", description = "Lookup ITIS taxon by id with ITIS:* prefix using offline-enabled database dump")
-public class ITISTaxonService extends PropertyEnricherSimple {
-
+public class ITISTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(ITISTaxonService.class);
-    private static final String DENORMALIZED_NODES = "denormalizedNodes";
-    private static final String MERGED_NODES = "mergedNodes";
 
+    private static final String AUTHORS = "author";
+    private BTreeMap<Long, String> authorIds;
 
-    private final TermMatcherContext ctx;
-
-    private BTreeMap<String, String> mergedNodes = null;
-    private BTreeMap<String, Map<String, String>> itisDenormalizedNodes = null;
 
     public ITISTaxonService(TermMatcherContext ctx) {
-        this.ctx = ctx;
+        super(ctx);
     }
 
     @Override
-    public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-        Map<String, String> enriched = new TreeMap<>(properties);
-        String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.ID_PREFIX_ITIS)) {
-            if (needsInit()) {
-                if (ctx == null) {
-                    throw new PropertyEnricherException("context needed to initialize");
-                }
-                lazyInit();
-            }
-            String idForLookup = mergedNodes.getOrDefault(externalId, externalId);
-            Map<String, String> enrichedProperties = itisDenormalizedNodes.get(idForLookup);
-            enriched = enrichedProperties == null ? enriched : new TreeMap<>(enrichedProperties);
-        }
-        return enriched;
+    public TaxonomyProvider getTaxonomyProvider() {
+        return TaxonomyProvider.ITIS;
     }
 
-
-    static void parseNodes(Map<String, Map<String, String>> taxonMap,
-                           Map<String, String> childParent,
-                           Map<String, String> rankIdNameMap,
-                           InputStream resourceAsStream) throws PropertyEnricherException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+    void parseNodes(Map<Long, Map<String, String>> taxonMap,
+                    Map<Long, Long> childParent,
+                    Map<String, String> rankIdNameMap,
+                    Map<String, List<Long>> name2nodeIds,
+                    Map<Long, String> authorIds,
+                    InputStream is) throws PropertyEnricherException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
         String line;
         try {
@@ -81,21 +58,41 @@ public class ITISTaxonService extends PropertyEnricherSimple {
                 if (rowValues.length > 24) {
                     String taxId = rowValues[0];
                     String parentTaxId = rowValues[17];
+                    String authorId = rowValues[18];
+
+                    String authorship = "ITIS:AUTHORSHIP:" + authorId;
+                    if (StringUtils.isNumeric(authorId)) {
+                        authorship = authorIds.getOrDefault(Long.parseLong(authorId), authorship);
+                    }
+
                     String rankKingdomId = rowValues[20];
+
                     String rankId = rowValues[21];
                     String rankKey = rankKingdomId + "-" + rankId;
                     String rank = rankIdNameMap.getOrDefault(rankKey, rankKey);
 
                     String completeName = rowValues[25];
 
-                    String externalId = TaxonomyProvider.ID_PREFIX_ITIS + taxId;
-                    TaxonImpl taxon = new TaxonImpl(completeName, externalId);
+                    TaxonImpl taxon = new TaxonImpl(completeName, TaxonomyProvider.ID_PREFIX_ITIS + taxId);
                     taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
-                    taxonMap.put(externalId, TaxonUtil.taxonToMap(taxon));
-                    childParent.put(
-                            TaxonomyProvider.ID_PREFIX_ITIS + taxId,
-                            TaxonomyProvider.ID_PREFIX_ITIS + parentTaxId
-                    );
+
+                    if (StringUtils.isNotBlank(authorship)) {
+                        taxon.setAuthorship(authorship);
+                    }
+
+                    if (NumberUtils.isCreatable(taxId)) {
+                        Long taxonKey = Long.parseLong(taxId);
+                        registerIdForName(taxonKey, taxon, name2nodeIds);
+                        taxonMap.put(taxonKey, TaxonUtil.taxonToMap(taxon));
+                        if (NumberUtils.isCreatable(parentTaxId)) {
+                            childParent.put(
+                                    taxonKey,
+                                    Long.parseLong(parentTaxId)
+                            );
+                        }
+                    }
+
+
                 }
             }
         } catch (IOException e) {
@@ -122,55 +119,26 @@ public class ITISTaxonService extends PropertyEnricherSimple {
         }
     }
 
-    static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonMapDenormalized, Map<String, String> childParent) {
-        Set<Map.Entry<String, Map<String, String>>> taxa = taxonMap.entrySet();
-        for (Map.Entry<String, Map<String, String>> taxon : taxa) {
-            denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxon);
-        }
-    }
+    static void parseAuthors(Map<Long, String> authorIds, InputStream resourceAsStream) throws PropertyEnricherException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
 
-    private static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap,
-                                        Map<String, Map<String, String>> taxonEnrichMap,
-                                        Map<String, String> childParent,
-                                        Map.Entry<String, Map<String, String>> taxon) {
-        Map<String, String> childTaxon = taxon.getValue();
-        List<String> pathNames = new ArrayList<>();
-        List<String> pathIds = new ArrayList<>();
-        List<String> path = new ArrayList<>();
-
-        Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);
-
-        path.add(StringUtils.defaultIfBlank(origTaxon.getName(), ""));
-
-        String externalId = origTaxon.getExternalId();
-        pathIds.add(StringUtils.defaultIfBlank(externalId, ""));
-
-        pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
-
-        String parent = childParent.get(taxon.getKey());
-        while (StringUtils.isNotBlank(parent) && !pathIds.contains(parent)) {
-            Map<String, String> parentTaxonProperties = taxonMap.get(parent);
-            if (parentTaxonProperties != null) {
-                Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);
-                path.add(StringUtils.defaultIfBlank(parentTaxon.getName(), ""));
-                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
-                pathIds.add(StringUtils.defaultIfBlank(parentTaxon.getExternalId(), ""));
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "|");
+                if (rowValues.length > 3) {
+                    String authorIdString = rowValues[0];
+                    String authorship = rowValues[1];
+                    authorIds.put(Long.parseLong(authorIdString), authorship);
+                }
             }
-            parent = childParent.get(parent);
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
         }
-
-        Collections.reverse(pathNames);
-        Collections.reverse(pathIds);
-        Collections.reverse(path);
-
-        origTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
-        origTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
-        origTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
-
-        taxonEnrichMap.put(taxon.getKey(), TaxonUtil.taxonToMap(origTaxon));
     }
 
-    static void parseMerged(Map<String, String> mergedMap, InputStream resourceAsStream) throws PropertyEnricherException {
+
+    static void parseMerged(Map<Long, Long> mergedMap, InputStream resourceAsStream) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
         String line;
         try {
@@ -181,8 +149,8 @@ public class ITISTaxonService extends PropertyEnricherSimple {
                     String newTaxId = rowValues[1];
                     if (StringUtils.isNotBlank(oldTaxId) && StringUtils.isNotBlank(newTaxId)) {
                         mergedMap.put(
-                                TaxonomyProvider.ID_PREFIX_ITIS + oldTaxId,
-                                TaxonomyProvider.ID_PREFIX_ITIS + newTaxId
+                                Long.parseLong(oldTaxId),
+                                Long.parseLong(newTaxId)
                         );
                     }
                 }
@@ -192,86 +160,108 @@ public class ITISTaxonService extends PropertyEnricherSimple {
         }
     }
 
+    @Override
+    protected void lazyInit() throws PropertyEnricherException {
 
-    private void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir(this.ctx);
-        if (!cacheDir.exists()) {
-            if (!cacheDir.mkdirs()) {
-                throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
-            }
-        }
-
-        File taxonomyDir = new File(cacheDir, "itis");
+        File taxonomyDir = new File(getCacheDir(), StringUtils.lowerCase(getTaxonomyProvider().name()));
         DB db = DBMaker
                 .newFileDB(taxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES) && db.exists(MERGED_NODES)) {
-            LOG.info("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            itisDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
+        if (db.exists(NODES)
+                && db.exists(CHILD_PARENT)
+                && db.exists(MERGED_NODES)
+                && db.exists(NAME_TO_NODE_IDS)
+                && db.exists(AUTHORS)) {
+            LOG.debug("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
             mergedNodes = db.getTreeMap(MERGED_NODES);
+            name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
+            authorIds = db.getTreeMap(AUTHORS);
         } else {
-            LOG.info("ITIS taxonomy importing...");
-            StopWatch watch = new StopWatch();
-            watch.start();
-
-            BTreeMap<String, String> rankIdNameMap = db
-                    .createTreeMap("rankIdNameMap")
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-            try {
-                parseTaxonUnitTypes(rankIdNameMap, this.ctx.getResource(getTaxonUnitTypes()));
-            } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
-            }
-
-            BTreeMap<String, Map<String, String>> ncbiNodes = db
-                    .createTreeMap("nodes")
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-            BTreeMap<String, String> childParent = db
-                    .createTreeMap("childParent")
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-            try {
-                parseNodes(ncbiNodes, childParent, rankIdNameMap, this.ctx.getResource(getNodesUrl()));
-            } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse ITIS nodes", e);
-            }
-
-            mergedNodes = db
-                    .createTreeMap(MERGED_NODES)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-
-
-            try {
-                parseMerged(mergedNodes, this.ctx.getResource(getMergedNodesUrl()));
-            } catch (IOException e) {
-                throw new PropertyEnricherException("failed to parse ITIS nodes", e);
-            }
-
-            itisDenormalizedNodes = db
-                    .createTreeMap(DENORMALIZED_NODES)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .make();
-            denormalizeTaxa(ncbiNodes, itisDenormalizedNodes, childParent);
-
-            watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), ncbiNodes.size(), LOG);
-            LOG.info("ITIS taxonomy imported.");
+            indexITIS(db);
         }
     }
 
-    private boolean needsInit() {
-        return itisDenormalizedNodes == null;
+    private void indexITIS(DB db) throws PropertyEnricherException {
+        LOG.info("ITIS taxonomy importing...");
+        StopWatch watch = new StopWatch();
+        watch.start();
+
+        BTreeMap<String, String> rankIdNameMap = DBMaker.newTempTreeMap();
+
+        try {
+            InputStream resource = getCtx().retrieve(getTaxonUnitTypes());
+            if (resource == null) {
+                throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonUnitTypes() + "]");
+            }
+            parseTaxonUnitTypes(rankIdNameMap, resource);
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
+        }
+
+        authorIds = db
+                .createTreeMap(AUTHORS)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.STRING)
+                .make();
+
+        try {
+            InputStream resource = getCtx().retrieve(getTaxonAuthors());
+            if (resource == null) {
+                throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonAuthors() + "]");
+            }
+            parseAuthors(authorIds, resource);
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
+        }
+
+        nodes = db
+                .createTreeMap(NODES)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.JAVA)
+                .make();
+
+        childParent = db
+                .createTreeMap(CHILD_PARENT)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.LONG)
+                .make();
+
+        name2nodeIds = db
+                .createTreeMap(NAME_TO_NODE_IDS)
+                .keySerializer(BTreeKeySerializer.STRING)
+                .valueSerializer(Serializer.JAVA)
+                .make();
+
+        try {
+            parseNodes(nodes, childParent, rankIdNameMap, name2nodeIds, authorIds, getCtx().retrieve(getNodesUrl()));
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS nodes", e);
+        }
+
+        mergedNodes = db
+                .createTreeMap(MERGED_NODES)
+                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                .valueSerializer(Serializer.LONG)
+                .make();
+
+
+        try {
+            parseMerged(mergedNodes, getCtx().retrieve(getMergedNodesUrl()));
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to parse ITIS nodes", e);
+        }
+
+        watch.stop();
+        TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
+        LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
     }
 
     @Override
@@ -279,22 +269,20 @@ public class ITISTaxonService extends PropertyEnricherSimple {
 
     }
 
-    private File getCacheDir(TermMatcherContext ctx) {
-        File cacheDir = new File(ctx.getCacheDir(), "itis");
-        cacheDir.mkdirs();
-        return cacheDir;
+    private URI getNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.taxonomic_units");
     }
 
-    private String getNodesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.itis.taxonomic_units");
+    private URI getTaxonUnitTypes() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.taxon_unit_types");
     }
 
-    private String getTaxonUnitTypes() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.itis.taxon_unit_types");
+    private URI getMergedNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.synonym_links");
     }
 
-    private String getMergedNodesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.itis.synonym_links");
+    private URI getTaxonAuthors() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(getCtx(), "nomer.itis.taxon_authors_lkp");
     }
 
 }

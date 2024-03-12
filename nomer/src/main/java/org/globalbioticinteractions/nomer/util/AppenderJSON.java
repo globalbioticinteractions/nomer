@@ -1,9 +1,9 @@
 package org.globalbioticinteractions.nomer.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class AppenderJSON implements Appender {
 
     @Override
-    public void appendLinesForRow(String[] row, Taxon taxonProvided, Stream<Taxon> resolvedTaxa, PrintStream p, NameTypeOf nameTypeOf) {
+    public void appendLinesForRow(String[] row, Taxon taxonProvided, NameTypeOf nameTypeOf, Stream<Taxon> resolvedTaxa, PrintStream out) {
         ObjectMapper obj = new ObjectMapper();
         ObjectNode resolved = obj.createObjectNode();
         resolvedTaxa.forEach(taxon -> {
@@ -29,11 +29,11 @@ public class AppenderJSON implements Appender {
                 ArrayNode ranks = addArray(pathNode, "ranks", taxon.getPathNames());
                 if ((ids == null || names.size() == ids.size())
                         && (names == null || ranks == null || names.size() == ranks.size())) {
-                    resolved.put("path", pathNode);
+                    resolved.set("path", pathNode);
                 }
             }
 
-            p.println(resolved.toString());
+            out.println(resolved.toString());
         });
 
     }
@@ -70,7 +70,7 @@ public class AppenderJSON implements Appender {
         ObjectNode resolvedTaxon = asJsonNode(taxon, obj);
         ObjectNode provided = asJsonNode(taxonProvided, obj);
         String relationString = nameType == NameType.SAME_AS ? "equivalent_to" : nameType.name().toLowerCase();
-        resolvedTaxon.put(relationString, provided);
+        resolvedTaxon.set(relationString, provided);
 
         appendRankedTaxon(resolved, resolvedTaxon, taxon.getRank());
     }
@@ -78,7 +78,7 @@ public class AppenderJSON implements Appender {
     private void appendRankedTaxon(ObjectNode resolved, ObjectNode resolvedTaxon, String rank) {
         String rankLabel = StringUtils.isBlank(rank) ? "norank" : rank.toLowerCase();
         if (!resolved.has(rankLabel)) {
-            resolved.put(rankLabel, resolvedTaxon);
+            resolved.set(rankLabel, resolvedTaxon);
         }
     }
 

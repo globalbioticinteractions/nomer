@@ -1,10 +1,12 @@
 package org.eol.globi.taxon;
 
+import org.apache.http.client.cache.Resource;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.data.FileUtils;
 import org.eol.globi.util.ResourceUtil;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -26,15 +28,34 @@ public class GulfBaseTaxonReaderFactory implements TaxonReaderFactory {
 
 
     @Override
-    public Map<String, BufferedReader> getAllReaders() throws IOException {
-        Map<String, BufferedReader> readers = new HashMap<String, BufferedReader>();
+    public Map<String, Resource> getResources() throws IOException {
+        Map<String, Resource> readers = new HashMap<String, Resource>();
         for (String filename : DATA_FILES) {
             String resourceName = "/org/eol/globi/taxon/gulfbase/" + filename;
-            InputStream resourceAsStream = getClass().getResourceAsStream(resourceName);
-            if (null == resourceAsStream) {
-                throw new IOException("failed to open resource with name [" + resourceName + "]");
-            }
-            readers.put(resourceName, FileUtils.getUncompressedBufferedReader(new GZIPInputStream(resourceAsStream), CharsetConstant.UTF8));
+            Resource resource = new Resource() {
+
+                @Override
+                public InputStream getInputStream() throws IOException {
+                    InputStream resourceAsStream = getClass().getResourceAsStream(resourceName);
+                    if (null == resourceAsStream) {
+                        throw new IOException("failed to open resource with name [" + resourceName + "]");
+                    }
+
+                    return new GZIPInputStream(resourceAsStream);
+                }
+
+                @Override
+                public long length() {
+                    return new File(getClass().getResource(resourceName).getFile()).length();
+                }
+
+                @Override
+                public void dispose() {
+
+                }
+            };
+
+            readers.put(resourceName, resource);
         }
         return readers;
     }

@@ -15,11 +15,13 @@ import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -93,16 +96,35 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
 
             if (matchedTaxa.isEmpty() && matchedSynonyms.isEmpty() && matchedCommonNames.isEmpty()) {
-                termMatchListener.foundTaxonForTerm(null, term, new TaxonImpl(term.getName(), term.getId()), NameType.NONE);
+                termMatchListener.foundTaxonForTerm(null,
+                        term,
+                        NameType.NONE,
+                        new TaxonImpl(term.getName(), term.getId())
+                );
             } else {
                 matchedTaxa.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SAME_AS);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.SAME_AS,
+                            matchedTerm
+                    );
                 });
                 matchedSynonyms.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.SYNONYM_OF);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.SYNONYM_OF,
+                            matchedTerm
+                    );
                 });
                 matchedCommonNames.forEach(matchedTerm -> {
-                    termMatchListener.foundTaxonForTerm(null, term, matchedTerm, NameType.COMMON_NAME_OF);
+                    termMatchListener.foundTaxonForTerm(
+                            null,
+                            term,
+                            NameType.COMMON_NAME_OF,
+                            matchedTerm
+                    );
                 });
             }
         }
@@ -188,6 +210,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         DB db = DBMaker
                 .newFileDB(ncbiTaxonomyDir)
                 .mmapFileEnableIfSupported()
+                .mmapFileCleanerHackDisable()
                 .compressionEnable()
                 .closeOnJvmShutdown()
                 .transactionDisable()
@@ -195,7 +218,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
         if (db.exists(DENORMALIZED_NODES)
                 && db.exists(MERGED_NODES)) {
-            LOG.info("NCBI taxonomy already indexed at [" + ncbiTaxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("NCBI taxonomy already indexed at [" + ncbiTaxonomyDir.getAbsolutePath() + "], no need to import.");
             ncbiDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
             mergedNodes = db.getTreeMap(MERGED_NODES);
             nameIds = db.getTreeMap(NAME_IDS);
@@ -209,15 +232,17 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             BTreeMap<String, Map<String, String>> ncbiNodes = db
                     .createTreeMap("nodes")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             BTreeMap<String, String> childParent = db
                     .createTreeMap("childParent")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             try {
-                parseNodes(ncbiNodes, childParent, ctx.getResource(getNodesUrl()));
+                parseNodes(ncbiNodes, childParent, ctx.retrieve(getNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -225,26 +250,30 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             mergedNodes = db
                     .createTreeMap(MERGED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             nameIds = db
                     .createTreeMap(NAME_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             synonymIds = db
                     .createTreeMap(SYNONYM_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
             commonNameIds = db
                     .createTreeMap(COMMON_NAME_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
 
 
             try {
-                parseMerged(mergedNodes, ctx.getResource(getMergedNodesUrl()));
+                parseMerged(mergedNodes, ctx.retrieve(getMergedNodesUrl()));
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -252,10 +281,11 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             BTreeMap<String, String> ncbiNames = db
                     .createTreeMap("names")
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.STRING)
                     .make();
 
             try {
-                parseNames(ctx.getResource(getNamesUrl()), ncbiNames, nameIds, commonNameIds, synonymIds);
+                parseNames(ctx.retrieve(getNamesUrl()), ncbiNames, nameIds, commonNameIds, synonymIds);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -264,6 +294,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             ncbiDenormalizedNodes = db
                     .createTreeMap(DENORMALIZED_NODES)
                     .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
                     .make();
             denormalizeTaxa(ncbiNodes, ncbiDenormalizedNodes, childParent, ncbiNames);
 
@@ -288,16 +319,16 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         return cacheDir;
     }
 
-    private String getNodesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.ncbi.nodes");
+    private URI getNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.ncbi.nodes");
     }
 
-    private String getMergedNodesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.ncbi.merged");
+    private URI getMergedNodesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.ncbi.merged");
     }
 
-    private String getNamesUrl() throws PropertyEnricherException {
-        return ctx.getProperty("nomer.ncbi.names");
+    private URI getNamesUrl() throws PropertyEnricherException {
+        return CacheUtil.getValueURI(ctx, "nomer.ncbi.names");
     }
 
     static void parseNodes(Map<String, Map<String, String>> taxonMap, Map<String, String> childParent, InputStream resourceAsStream) throws PropertyEnricherException {

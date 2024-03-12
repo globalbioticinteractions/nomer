@@ -5,13 +5,20 @@
     <parent>
         <groupId>org.globalbioticinteractions</groupId>
         <artifactId>nomer-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.5.7-SNAPSHOT</version>
         <relativePath>../nomer-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>nomer</artifactId>
-    <name>Nomer Commandline</name>
+    <name>Nomer</name>
     <description>maps identifiers and names to taxonomic names and ontological terms</description>
+
+    <properties>
+        <asciidoctor-maven-plugin.version>2.2.2</asciidoctor-maven-plugin.version>
+        <asciidoctorj.version>2.5.3</asciidoctorj.version>
+        <generated.docs.dir>${project.build.outputDirectory}/org/globalbioticinteractions/nomer/docs
+        </generated.docs.dir>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -21,45 +28,64 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eol</groupId>
-            <artifactId>eol-globi-doi-resolver</artifactId>
+            <groupId>org.globalbioticinteractions</groupId>
+            <artifactId>wikidata</artifactId>
             <version>${globi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-codec</groupId>
+                    <artifactId>commons-codec</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.eol</groupId>
+            <artifactId>eol-globi-taxon-resolver</artifactId>
+            <version>${globi.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-lang3</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-vfs2</artifactId>
-            <version>2.2</version>
+            <groupId>bio.guoda</groupId>
+            <artifactId>preston-get</artifactId>
+            <version>${preston.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.beust</groupId>
+                    <artifactId>jcommander</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
+            <version>1.26.0</version>
         </dependency>
 
         <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>${picocli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-codegen</artifactId>
+            <version>${picocli.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.72</version>
-        </dependency>
 
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -89,6 +115,164 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>org.globalbioticinteractions.nomer.Nomer</argument>
+                        <argument>gen-manpage</argument>
+                        <argument>--outdir</argument>
+                        <argument>${generated.docs.dir}/adoc</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>${asciidoctor-maven-plugin.version}</version>
+                <configuration>
+                    <sourceDirectory>${generated.docs.dir}/adoc</sourceDirectory>
+                    <outputDirectory>${generated.docs.dir}/manpage</outputDirectory>
+                    <attributes>
+                        <sourcedir>${project.build.sourceDirectory}</sourcedir>
+                    </attributes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>asciidoc-to-manpage</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>manpage</backend>
+                            <sourceDocumentName>${project.artifactId}.adoc</sourceDocumentName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.4</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                            <includeScope>compile</includeScope>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>jdeb</artifactId>
+                <groupId>org.vafer</groupId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <controlDir>${basedir}/src/deb/control</controlDir>
+                            <dataSet>
+
+                                <data>
+                                    <src>${project.build.directory}/${project.build.finalName}.jar</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/share/${project.artifactId}/lib</prefix>
+                                        <filemode>644</filemode>
+                                        <user>${project.artifactId}</user>
+                                        <group>${project.artifactId}</group>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>${project.basedir}/src/deb/bin/${project.artifactId}</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/share/${project.artifactId}/bin</prefix>
+                                        <filemode>755</filemode>
+                                        <user>${project.artifactId}</user>
+                                        <group>${project.artifactId}</group>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>${project.build.directory}/lib</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/share/${project.artifactId}/lib</prefix>
+                                        <filemode>644</filemode>
+                                        <user>${project.artifactId}</user>
+                                        <group>${project.artifactId}</group>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <src>${generated.docs.dir}/manpage</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/usr/local/share/man/man1/</prefix>
+                                        <filemode>644</filemode>
+                                        <user>${project.artifactId}</user>
+                                        <group>${project.artifactId}</group>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <type>template</type>
+                                    <paths>
+                                        <path>etc/${project.artifactId}</path>
+                                        <path>var/lib/${project.artifactId}</path>
+                                        <path>var/log/${project.artifactId}</path>
+                                        <path>var/run/${project.artifactId}</path>
+                                    </paths>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <filemode>750</filemode>
+                                        <user>${project.artifactId}</user>
+                                        <group>${project.artifactId}</group>
+                                    </mapper>
+                                </data>
+
+                                <data>
+                                    <type>link</type>
+                                    <symlink>true</symlink>
+                                    <linkName>/usr/local/bin/${project.artifactId}</linkName>
+                                    <linkTarget>/usr/share/${project.artifactId}/bin/${project.artifactId}</linkTarget>
+                                </data>
+
+                            </dataSet>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

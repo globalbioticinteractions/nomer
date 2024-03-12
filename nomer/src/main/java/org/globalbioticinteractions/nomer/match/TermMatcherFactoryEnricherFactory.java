@@ -32,7 +32,7 @@ public class TermMatcherFactoryEnricherFactory {
                         }
 
                         @Override
-                        public String getName() {
+                        public String getPreferredName() {
                             PropertyEnricherInfo info = getInfoFor(enricher);
                             return info == null ? enricher.getClass().getSimpleName() : info.name();
                         }

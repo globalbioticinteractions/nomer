@@ -51,6 +51,8 @@ http://purl.obolibrary.org/obo/RO_0002638	intercellular endoparasite of	A sub-re
 http://purl.obolibrary.org/obo/RO_0002639	has intercellular endoparasite	inverse of intercellular endoparasite of
 http://purl.obolibrary.org/obo/RO_0002640	intracellular endoparasite of	A sub-relation of endoparasite-of in which the parasite inhabits host cells.
 http://purl.obolibrary.org/obo/RO_0002641	has intracellular endoparasite	inverse of intracellular endoparasite of
+http://purl.obolibrary.org/obo/RO_0002802	reservoir host of	A relation between a host organism and a hosted organism in which the hosted organism naturally occurs in an indefinitely maintained reservoir provided by the host.
+http://purl.obolibrary.org/obo/RO_0002803	has reservoir host	inverse of reservoir host of
 http://purl.obolibrary.org/obo/RO_0008501	epiphyte of	An interaction relationship wherein a plant or algae is living on the outside surface of another plant.
 http://purl.obolibrary.org/obo/RO_0008502	has epiphyte	inverse of epiphyte of
 http://purl.obolibrary.org/obo/RO_0008503	kleptoparasite of	A sub-relation of parasite of in which a parasite steals resources from another organism, usually food or nest material

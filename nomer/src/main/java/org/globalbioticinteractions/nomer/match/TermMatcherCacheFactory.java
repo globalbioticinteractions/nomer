@@ -13,6 +13,7 @@ import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.globalbioticinteractions.nomer.util.TermValidatorPredicates;
 
 import java.io.File;
+import java.net.URI;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -27,13 +28,13 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
         TaxonCacheService cacheService = createCacheService(ctx);
-        cacheService.setCacheDir(new File(ctx.getCacheDir(), "term-cache"));
+        cacheService.setCacheDir(new File(ctx.getCacheDir(), "term_cache"));
         cacheService.setMaxTaxonLinks(getMaxTermLinks(ctx));
         return cacheService;
     }
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "globi-taxon-cache";
     }
 
@@ -78,7 +79,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
                 return Objects::nonNull;
             }
         };
-        return new TaxonCacheService(terms, links);
+        return new TaxonCacheService(terms, links, ctx);
     }
 
     public static String getTermMapUrl(TermMatcherContext ctx) {

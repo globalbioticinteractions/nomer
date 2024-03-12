@@ -74,14 +74,12 @@ public abstract class OfflineService extends PropertyEnricherSimple {
     }
 
     private void lazyInit() throws PropertyEnricherException {
-        LOG.info("lazy init of taxonomy index [" + getServiceName() + "] started...");
         TaxonomyImporter importer = createTaxonomyImporter();
         try {
             taxonLookupService = importer.createLookupService();
         } catch (StudyImporterException e) {
             throw new PropertyEnricherException("failed to build index for [" + getServiceName() + "]", e);
         }
-        LOG.info("lazy init of taxonomy index [" + getServiceName() + "] done.");
     }
 
     protected abstract TaxonomyImporter createTaxonomyImporter();

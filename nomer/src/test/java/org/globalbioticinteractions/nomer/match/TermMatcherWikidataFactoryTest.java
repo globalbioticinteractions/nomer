@@ -7,12 +7,14 @@ import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
+import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +34,7 @@ public class TermMatcherWikidataFactoryTest {
                 new TermMatcherWikidataFactory().createTermMatcher(testContext());
         termMatcher.match(Collections.singletonList(new TermImpl("NCBI:9606", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 resolveTaxa.add(resolvedTaxon);
                 matchesOnly.set(NameType.SAME_AS.equals(nameType) && matchesOnly.get());
 
@@ -51,7 +53,7 @@ public class TermMatcherWikidataFactoryTest {
                 new TermMatcherWikidataFactory().createTermMatcher(testContext());
         termMatcher.match(Collections.singletonList(new TermImpl("WD:Q140", "")), new TermMatchListener() {
             @Override
-            public void foundTaxonForTerm(Long requestId, Term providedTerm, Taxon resolvedTaxon, NameType nameType) {
+            public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon ) {
                 resolveTaxa.add(resolvedTaxon);
                 matchesOnly.set(NameType.SAME_AS.equals(nameType) && matchesOnly.get());
 
@@ -70,7 +72,7 @@ public class TermMatcherWikidataFactoryTest {
             }
 
             @Override
-            public InputStream getResource(String uri) throws IOException {
+            public InputStream retrieve(URI uri) throws IOException {
                 return null;
             }
 
@@ -86,6 +88,11 @@ public class TermMatcherWikidataFactoryTest {
 
             @Override
             public Map<Integer, String> getOutputSchema() {
+                return null;
+            }
+
+            @Override
+            public OutputFormat getOutputFormat() {
                 return null;
             }
 

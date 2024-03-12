@@ -1,12 +1,12 @@
 package org.eol.globi.taxon;
 
 import com.Ostermiller.util.LabeledCSVParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -150,7 +150,7 @@ public class BOLDService extends PropertyEnricherSimple {
         List<String> ids = new ArrayList<>();
         List<String> ranks = new ArrayList<>();
 
-        for (Iterator<Map.Entry<String, JsonNode>> it = jsonNode.getFields(); it.hasNext(); ) {
+        for (Iterator<Map.Entry<String, JsonNode>> it = jsonNode.fields(); it.hasNext(); ) {
             JsonNode node = it.next().getValue();
             if (node.has("taxon")
                     && node.has("taxid")

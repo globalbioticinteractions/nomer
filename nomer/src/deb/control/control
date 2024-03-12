@@ -1,0 +1,9 @@
+Package: [[name]]
+Version: [[version]]
+Section: misc
+Priority: low
+Architecture: all
+Description: [[description]]
+Maintainer: GloBI Community <info@globalbioticinteractions.org>
+Website: https://github.com/globalbioticinteractions/nomer
+Depends: openjdk-8-jdk-headless | openjdk-11-jdk-headless

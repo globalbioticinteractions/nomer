@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.eol.globi.domain.NameType;
@@ -17,6 +18,7 @@ import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.doi.DOI;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,7 +32,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
     private static final Logger LOG = LoggerFactory.getLogger(TermMatcherDOIFactory.class);
 
     @Override
-    public String getName() {
+    public String getPreferredName() {
         return "crossref-doi";
     }
 
@@ -56,7 +58,12 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
                             NameType matchType = null == doi
                                     ? NameType.NONE
                                     : NameType.SAME_AS;
-                            termMatchListener.foundTaxonForTerm(null, term, found, matchType);
+                            termMatchListener.foundTaxonForTerm(
+                                    null,
+                                    term,
+                                    matchType,
+                                    found
+                            );
                         }
                     } catch (IOException e) {
                         throw new PropertyEnricherException("failed to resolver doi for [" + term.getName() + "]", e);
@@ -70,14 +77,15 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         String taxonRankCacheUrl = ctx == null ? null : ctx.getProperty(NOMER_DOI_CACHE_URL);
         return StringUtils.isBlank(taxonRankCacheUrl)
                 ? createWithAPI(ctx)
-                : createWithCache(ctx, taxonRankCacheUrl);
+                : createWithCache(ctx, NOMER_DOI_CACHE_URL);
     }
 
     private DOIResolver createWithCache(TermMatcherContext ctx, String taxonRankCacheUrl) {
         DOIResolver doiResolver;
         try {
-            InputStream resource = ctx.getResource(taxonRankCacheUrl);
+            InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, taxonRankCacheUrl));
             DOIResolverCache doiResolverCache = new DOIResolverCache();
+            doiResolverCache.setCacheDir(new File(ctx.getCacheDir(), "doi-cache"));
             doiResolverCache.init(new InputStreamReader(resource, StandardCharsets.UTF_8));
             doiResolver = doiResolverCache;
         } catch (IOException | PropertyEnricherException e) {
@@ -91,7 +99,7 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         if (ctx != null) {
             String property = ctx.getProperty(NOMER_DOI_CROSSREF_MIN_SCORE);
             if (StringUtils.isNotBlank(property)) {
-                if (NumberUtils.isNumber(property)) {
+                if (NumberUtils.isCreatable(property)) {
                     double minScore = Double.parseDouble(property);
                     doiResolver.setMinMatchScore(minScore);
                 } else {

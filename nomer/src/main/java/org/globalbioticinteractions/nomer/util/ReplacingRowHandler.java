@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
@@ -84,10 +85,10 @@ public class ReplacingRowHandler implements RowHandler {
         return rowMerged;
     }
 
-    private Map<String, String> mergeTaxon(Taxon taxon, Taxon otherTaxon, NameType nameType) {
+    private Map<String, String> mergeTaxon(Taxon taxon, NameType nameType, Taxon otherTaxon) {
         return new TreeMap<String, String>() {{
             putAll(TaxonUtil.taxonToMap(taxon));
-            if (NameType.SAME_AS.equals(nameType)) {
+            if (!NameType.NONE.equals(nameType)) {
                 putAll(TaxonUtil.taxonToMap(otherTaxon));
             }
             put("matchType", nameType.name());
@@ -104,10 +105,14 @@ public class ReplacingRowHandler implements RowHandler {
             Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMapEntry.getValue());
             List<Term> terms = Collections.singletonList(providedTaxon);
             AtomicBoolean replacedOne = new AtomicBoolean(false);
-            termMatcher.match(terms, (id, name, resolvedTaxon, nameType) -> {
+            termMatcher.match(terms, (id, nameToBeReplaced, nameType, resolvedTaxon) -> {
                 if (!replacedOne.get()) {
                     replacedOne.set(true);
-                    taxonReplaced.put(taxonMapEntry.getKey(), mergeTaxon(providedTaxon, resolvedTaxon, nameType));
+                    Taxon taxonToBeReplaced = new TaxonImpl(nameToBeReplaced.getName(), nameToBeReplaced.getId());
+                    taxonReplaced.put(
+                            taxonMapEntry.getKey(),
+                            mergeTaxon(taxonToBeReplaced, nameType, resolvedTaxon)
+                    );
                 }
             });
         }
