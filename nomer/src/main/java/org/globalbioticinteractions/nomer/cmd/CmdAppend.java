@@ -6,7 +6,7 @@ import picocli.CommandLine;
 
 import java.util.List;
 
-@CommandLine.Command(name = "append", description = "Append term match to row using id and name columns specified in input schema. Multiple matches result in multiple rows.")
+@CommandLine.Command(name = "append", description = "Append term match to row from stdin using id and name columns specified in input schema. Multiple matches result in multiple rows.")
 public class CmdAppend extends CmdOutput {
 
     @Override
