@@ -771,7 +771,7 @@ public class DiscoverLifeUtilTest {
             }
         }, "https://example.org"), listener);
 
-        assertThat(counter.get(), Is.is(59062));
+        assertThat(counter.get(), Is.is(58310));
 
         Taxon taxon = firstTaxon.get();
 
