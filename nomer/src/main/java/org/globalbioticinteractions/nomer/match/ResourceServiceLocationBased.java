@@ -39,8 +39,7 @@ public class ResourceServiceLocationBased extends ResourceServiceReadOnly {
         LOG.info(msg + "...");
 
         ResourceService resourceService = new ResourceServiceLocalAndRemote(is -> is);
-        try (OutputStream output = StringUtils.endsWith(resource.toString(), ".gz") ?
-                new FileOutputStream(cachedFile) :
+        try (OutputStream output =
                 ResourceServiceUtil.getOutputStreamForCache(cachedFile)) {
             IOUtils.copyLarge(resourceService.retrieve(resource), output);
             output.flush();
