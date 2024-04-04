@@ -1,0 +1,542 @@
+<xml guide="Apoidea_species" schema="http://www.discoverlife.org/nh/id/help.html" sub="&xml3 20q v4.378 20061017" when="20091018150440gmt">
+<20q_controls>
+	<who_default>John Ascher</who_default>
+	<email_default>ascher@amnh.org</email_default>
+	<base_path>Insecta/Hymenoptera/Apoidea</base_path>
+	<levels_default>class order superfamily family genus species</levels_default>
+	<c_initial>
+		<character>Family</character>
+		<character>Subfamily</character>
+		<character>Country</character>
+		<character>Tribe</character>
+		<character>Subtribe</character>
+		<character>Genus</character>
+		<character>Subgenus</character>
+		<character>Original genus</character>
+		<character>Museum</character>
+		<character>Host plant</character>
+		<character>Host insect or prey</character>
+		<character>Region</character>
+	</c_initial>
+	<when_gmt>20060612034040</when_gmt>
+	<IP_address>68.84.150.183</IP_address>
+</20q_controls>
+
+<checklist_credit>
+<div align="center">
+Compiled by
+<p>
+John Ascher<br>
+Department of Biological Sciences<br>
+National University of Singapore<br>
+and Research Associate<br>
+Division of Invertebrate Zoology<br>
+American Museum of Natural History<br>
+and<br>
+John Pickering<br>
+University of Georgia, Athens<br>
+and Sam Houston State University, Texas<p>
+<a href="/mp/20q?guide=Apoidea_species&act=x_guide_credit">
+<u>For contributors please see credits</u></a>
+<p>
+<font color="green">
+Draft-57, 27 February, 2024
+<p>
+Please cite this compilation as
+<p>
+<b>Ascher, J. S. and J. Pickering. 2024.<br>
+Discover Life bee species guide and world checklist (Hymenoptera: Apoidea: Anthophila).<br>
+http://www.discoverlife.org/mp/20q?guide=Apoidea_species</b>
+<p>
+Please also cite additional primary sources as appropriate.
+<p>
+Send corrections to dbsajs@nus.edu.sg</font>
+<p>
+</div>
+</checklist_credit>
+
+<guide_credit>
+<div align="center">
+Compiled by
+<p>
+John Ascher<br>
+Department of Biological Sciences<br>
+National University of Singapore<br>
+and Research Associate<br>
+Division of Invertebrate Zoology<br>
+American Museum of Natural History<br>
+and<br>
+John Pickering<br>
+University of Georgia, Athens<br>
+and Sam Houston State University, Texas<p>
+<a href="/mp/20q?guide=Apoidea_species&act=x_guide_credit">
+<u>For contributors please see credits</u></a>
+<p>
+<font color="green">
+Draft-57, 27 February, 2024
+<p>
+<div align="center">
+Please cite this compilation as
+<p>
+<b>Ascher, J. S. and J. Pickering. 2020.<br>
+Discover Life bee species guide and world checklist (Hymenoptera: Apoidea: Anthophila).<br>
+http://www.discoverlife.org/mp/20q?guide=Apoidea_species</b>
+<p>
+Please also cite additional primary sources as appropriate.
+<p>
+Send corrections to dbsajs@nus.edu.sg</font>
+<p>
+The original credits for this compilation, previously known as the Apoidea species guide, follow:
+<p>
+</div>
+
+<div align="center">
+<table width="80%"><tr><td>
+<div align="center">
+<a href="/mp/20q?guide=Apoidea_species&flags=HAS:" target="_top">
+Discover Life bee species guide and world checklist (Hymenoptera: Apoidea: Anthophila)</a>
+</div>
+<p>
+Compiled by John S. Ascher at the Department of Biological Sciences,
+National University of Singapore, and 
+the American Museum of Natural History
+with support from Jerome G. Rozen, Jr. and Toby Schuh,and funding from Robert G. Goelet.<p>
+Computer applications for Discover Life were designed and implemented
+by John Pickering and his team.These included new error-checking programs for both the checklist of names and the global mapper.<p>
+Species names included in the Discover Life checklist have been peer-reviewed by ITIS as part of the GBIF-supported World Bee Checklist project led by Michael Ruggiero, although the lists are not identical due to differing generic concepts, treatment of nomina dubia, etc. Checklists submitted as contributions to the World Bee Checklist by numerous bee taxonomists were assembled and cross-checked by David Nicolson and Natapot Warrit of ITIS and reviewed by John Ascher of the AMNH and many other bee specialists. Reviewed lists were then sent to all major contributors to and leaders of the World Bee Checklist project and selected additional experts for final review. The World Bee Checklist is now online at ITIS. Additions and corrections to the ITIS checklist are made as time and resources allow.The Discover Life bee checklist was compiled with reference to all available taxonomic and distributional work on bees.Members of the bee community listed below may not be aware of this project and do not necessarily endorse it,but their excellent work nonetheless proved essential.The name of each person credited is followed by an indication of their principal taxa and/or areas of expertise relevant to this project.<p>
+The following generously provided particularly timely
+and useful published and unpublished information about bee taxonomy:<ul>
+<li>Sam Droege: eastern North America</li>
+<li>Connal C. Eardley: sub-Saharan Africa</li>
+<li>Michael S. Engel: classification; phylogeny; nomenclature; literature</li>
+<li>Terry Griswold: North and Middle America; Anthidiini</li>
+<li>Charles D. Michener: subgeneric classification; nomenclature</li>
+<li>Sébastien Patiny: Old World Panurginae</li>
+<li>Alain Pauly: Palearctic Halictidae; African Nomiinae; Madagascar; New Caledonia</li>
+<li>Claus Rasmussen: Names of H. Friese; Ecuador and Peru; Meliponini</li>
+<li>Molly G. Rightmyer: Epeolini</li>
+<li>Maximilian Schwarz: Palearctic; literature; <i>Nomada</i></li>
+<li>Robert L. Zuparko: Names of T. D. A. Cockerell; Essig Museum inventory</li>
+</ul>
+<p>
+The excellent published and in some cases unpublished work of
+the following bee experts proved of great use for compiling this checklist:
+<ul><li>Antônio J. C. Aguiar: <i>Paratetrapedia</i><br>
+</li><li>Eduardo A. B. Almeida: Colletidae; Brazil<br>
+</li><li>Ricardo Ayala: Mexico<br>
+</li><li>Robert W. Brooks: <i>Anthophora</i>; Madagascar<br>
+</li><li>João M. F. Camargo: Meliponini<br>
+</li><li>Josephine C. Cardale: Australia<br>
+</li><li>Howell V. Daly: <i>Ceratina</i>; <i>Hylaeus</i><br>
+</li><li>Bryan N. Danforth: molecular phylogeny<br>
+</li><li>Holger H. Dathe: <i>Hylaeus</i><br>
+</li><li>Greg B. P. Davies: <i>Scrapter</i><br>
+</li><li>Andreas Ebmer: Palearctic Halictidae<br>
+</li><li>Elizabeth E. M. Exley: Euryglossini<br>
+</li><li>Julio A. Genaro: West Indies<br>
+</li><li>Fritz Gusenleitner: <i>Andrena</i><br>
+</li><li>Brian Harris: Smithsonian inventory<br>
+</li><li>Lynn S. Kimsey: <i>Eufriesea</i><br>
+</li><li>Michael Kuhlmann: <i>Colletes</i><br>
+</li><li>Leah L. Larkin: Neartic <i>Andrena</i><br>
+</li><li>Gérard LeGoff: Paleartic Osmiini<br>
+</li><li>Karl N. Magnacca: Hawaiian <i>Hylaeus</i><br>
+</li><li>Gabriel A. R. Melo: Neotropics<br>
+</li><li>Denis Michez: Melittidae<br>
+</li><li>Jesus S. Moure: Neotropics<br>
+</li><li>Marcio L. de Oliveira: <i>Eulaema</i><br>
+</li><li>Laurence Packer: Xeromelissini<br>
+</li><li>Silvia R. M. Pedro: Neotropical Meliponini<br>
+</li><li>Yuri A. Pesenko: Palearctic Halictinae<br>
+</li><li>Anthony Raw: Neotropical <i>Megachile</i><br>
+</li><li>Santiago Ramírez: Euglossini<br>
+</li><li>Stephan Risch: Palearctic Eucerini<br>
+</li><li>Arturo Roig-Alsina: Argentina<br>
+</li><li>David W. Roubik: Euglossini, Meliponini<br>
+</li><li>Fernando A. Silveira: Brazil; Exomalopsini<br>
+</li><li>Roy R. Snelling: <i>Nomada, Hylaeus, Centris, and others</i><br>
+</li><li>Osamu Tadauchi: Asian <i>Andrena</i> and others<br>
+</li><li>Borek Tkalc&#367;: Palearctic Osmiini and Eucerini<br>
+</li><li>Danúncia Urban: Neotropics<br>
+</li><li>Ros P. Urban: sub-Saharan Africa<br>
+</li><li>Danny Vélez: Centridini<br>
+</li><li>Felipe Vivallo: <i>Centris</i>; <i>Alloscirtetica</i>; Chile<br>
+</li><li>Ken L. Walker: Australia<br> Paul Williams: <i>Bombus</i><br>
+</li><li>Chen Xuan: China, especially Colletidae<br>
+</li><li>Douglas Yanega: Mexico<br>
+</li><li>Fernando C. V. Zanella: <i>Centris</i>
+</li></ul>
+<p>
+Many people contributed unpublished or obscure distributional records including the following:
+<ul>
+<li>Michael Arduser: Central United States, especially Missouri</li>
+<li>Øistein Berg: Norway</li>
+<li>Sam Droege: North America, especially the eastern United States</li>
+<li>Andrej Gogala: Slovenia <a href="http://www2.pms-lj.si/andrej/bees.htm">http://www2.pms-lj.si/andrej/bees.htm</a></li>
+<li>Terry Griswold: North America, especially the western United States</li>
+<li>Steven K. Javorek: Maritime Canada; Belize</li>
+<li>Laurence Packer: northern Chile</li>
+<li>Andrea Patenaude: Manitoba</li>
+<li>Claus Rasmussen: Andean South America</li>
+<li>Enrique Reyes: Yucatán, Mexico</li>
+<li>Cory S. Sheffield: Canada</li>
+<li>Bogdan Tomozei: Romania</li>
+<li>Julianna Tuell: Michigan</li>
+<li>Michael Veit: New England</li>
+<li>Amy Wolf: Wisconsin</li>
+</ul>
+<p>
+The following recent publications were primary sources of names and/or distributional data for the area indicated,
+subsequently updated with substantial modifications, additions, and corrections:
+<ul><li>
+Neotropics: Moure, J. S., D. Urban, and G. A. R. Melo (Orgs.). 2007. Catalogue of Bees (Hymenoptera, Apoidea) in the Neotropical Region. 1058 pp. Curitiba: Sociedade Brasileira de Entomologia. This volume includes an extraordinarily complete section on Meliponini by J. M. F. Camargo and S. R. M. Pedro.
+</li><li>
+The online version of Moure's Bee Catalogue was consulted to verify the names of Neotropical Colletidae,Exomalopsini, Teratognathini, Protopeolini, and Anthiidini. Full credits for this project can be found here: <a href="http://moure.cria.org.br/credits"> http://moure.cria.org.br/credits</a> .
+</li><li>
+Brazil: Silveira, F. A., G. A. R. Melo, and E. A. B. Almeida. 2002.<i>Abelhas Brasileiras: Sistemática e Identifição</i>
+.253 pp. Belo Horizonte: Fernando A. Silveira. 
+</li><li>
+Colombia: Smith-Pardo, A. H. 2003.A preliminary account of the bees of Colombia (Hymenoptera: Apoidea):
+Present knowledge and future directions.Journal of the Kansas Entomological Society 76: 335-341.
+</li><li>
+Mexico: Ayala, R., T. L. Griswold, and D. Yanega. 1996.Apoidea (Hymenoptera). pp. 423-464, in
+<i>Biodiversidad Taxonomía y Biogeografía des Artópodos de México:Hacia una Síntesis de su Conocimiento</i>
+.J. Llorente B., A. N. García A., and E. González S., Eds.México: Instituto de Biología, Universidad Nacional Autónomo de México.
+</li><li>
+Palearctic Osmiini: Ungricht, S., A. Müller, and S. Dorn. 2008.
+A taxonomic catalogue of the Palaearctic bees of the tribe Osmiini (Hymenoptera: Apoidea: Megachilidae). Zootaxa 1865:1-253.
+</li><li>
+Robert L. Zuparko's "The Published Names of TDA Cockerell" project and associatedMS Access database can be found online here:
+<a href="http://essig.berkeley.edu/docs/Cockerell_bz_v2.doc">essig.berkeley.edu/docs/Cockerell_bz_v2.doc</a>
+</li></ul>
+<p>
+Given the scope of this project, these initial credits are necessarily selective and incomplete. Please notify John Ascher of any omissions. <p>
+A partial bibliography of revisions and other relevant publications examined can be found in:<ul><li>
+Michener, C. D. 2007. <i>The Bees of the World</i>
+. xvi 953 pp.Baltimore, Maryland: The Johns Hopkins University Press.</li></ul>
+<p>
+We very much welcome suggestions and additional contributions and will be happy to acknowledge these.
+Please send feedback to John Asher (dbsajs@nus.edu.sg).</td></tr></table>
+</div>
+<p>
+</guide_credit>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Andrenidae
+<set level="family"><name>Andrenidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Andrenidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Apidae
+<set level="family"><name>Apidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Apidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Colletidae
+<set level="family"><name>Colletidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Colletidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Halictidae
+<set level="family"><name>Halictidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Halictidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Megachilidae
+<set level="family"><name>Megachilidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Megachilidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Melittidae
+<set level="family"><name>Melittidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Melittidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Stenotritidae
+<set level="family"><name>Stenotritidae</name>
+<path>Insecta/Hymenoptera/Apoidea</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Stenotritidae
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum argentinum
+<set level="species"><name>Acamptopoeum argentinum</name><authority>&#40;Friese, 1906&#41;</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<common_name language="english">Perdita argentina Friese, 1906</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>40</state>
+	<state>Friese</state>
+<character>Country</character>
+	<state>Argentina</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Acamptopoeum</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Amnh</state>
+	<state>Cuic</state>
+<character>Original genus</character>
+	<state>Perdita</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Panurginae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Calliopsini</state>
+</attributes>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum argentinum
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum calchaqui
+<set level="species"><name>Acamptopoeum calchaqui</name><authority>Compagnucci, 2004</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Compagnucci</state>
+<character>Country</character>
+	<state>Argentina</state>
+	<state>Bolivia</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Acamptopoeum</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Acamptopoeum</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Panurginae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Calliopsini</state>
+</attributes>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum calchaqui
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum colombiense
+<set level="species"><name>Acamptopoeum colombiense</name><authority>Shinn, 1965</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<common_name language="english">Acamptopoeum colombiensis_sic Shinn, 1965</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Shinn</state>
+<character>Country</character>
+	<state>Colombia</state>
+	<state>Venezuela</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Acamptopoeum</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Acamptopoeum</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Panurginae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Calliopsini</state>
+</attributes>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum colombiense
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum fernandezi
+<set level="species"><name>Acamptopoeum fernandezi</name><authority>Gonzalez, 2004</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Gonzalez</state>
+<character>Country</character>
+	<state>Colombia</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Acamptopoeum</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Other</state>
+<character>Original genus</character>
+	<state>Acamptopoeum</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Panurginae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Calliopsini</state>
+</attributes>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum fernandezi
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum inauratum
+<set level="species"><name>Acamptopoeum inauratum</name><authority>&#40;Cockerell, 1926&#41;</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<common_name language="english">Camptopoeum &#40;Acamptopoeum&#41; inauratum Cockerell, 1926</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>40</state>
+	<state>Cockerell</state>
+<character>Country</character>
+	<state>Peru</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Acamptopoeum</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Camptopoeum</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Panurginae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Calliopsini</state>
+</attributes>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum inauratum
+__START__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum melanogaster
+<set level="species"><name>Acamptopoeum melanogaster</name><authority>Compagnucci, 2004</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Compagnucci</state>
+<character>Country</character>
+	<state>Argentina</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Acamptopoeum</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Acamptopoeum</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Panurginae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Calliopsini</state>
+</attributes>
+</set>
+__STOP__20240227125640..dl@discoverlife.org Apoidea_species2, name=Acamptopoeum melanogaster
+__END__
+</xml>
