@@ -49,6 +49,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
         this.ctx = ctx;
     }
 
+
     @Override
     public void match(List<Term> terms, TermMatchListener termMatchListener) throws PropertyEnricherException {
         try {
