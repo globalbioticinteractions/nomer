@@ -65,7 +65,7 @@ public class DiscoverLifeUtil {
 
         if (StringUtils.equals("i", currentNode.getNodeName())) {
             Map<String, String> taxonMap = new TreeMap<>();
-            String taxonName = trimNameNodeTextContent(nameNodeCandidate);
+            String taxonName = trimNameNodeTextContent(nameNodeCandidate.getTextContent());
             taxonMap.put(PropertyAndValueDictionary.NAME, taxonName);
 
             Node expectedTextNode = currentNode.getNextSibling();
@@ -135,7 +135,8 @@ public class DiscoverLifeUtil {
 
                 Map<String, String> relatedName = new TreeMap<>();
 
-                String authorshipString = enrichFromNameString(currentNode, relatedName);
+                Node authorshipNodeCandidate = currentNode.getNextSibling();
+                String authorshipString = enrichFromNameString(relatedName, currentNode.getTextContent(), authorshipNodeCandidate == null ? null : authorshipNodeCandidate.getTextContent());
 
                 currentNode = currentNode.getNextSibling();
 
@@ -251,13 +252,12 @@ public class DiscoverLifeUtil {
         }
     }
 
-    private static String enrichFromNameString(Node currentNode, Map<String, String> relatedName) {
-        String altName = trimNameNodeTextContent(currentNode);
+    private static String enrichFromNameString(Map<String, String> relatedName, String altNameText, String authorshipText) {
+        String altName = trimNameNodeTextContent(altNameText);
 
         String authorship = null;
-        Node authorshipNode = currentNode.getNextSibling();
-        if (authorshipNode != null) {
-            authorship = StringUtils.trim(authorshipNode.getTextContent());
+        if (StringUtils.isNotBlank(authorshipText)) {
+            authorship = StringUtils.trim(authorshipText);
             if (StringUtils.startsWith(authorship, ",")) {
                 authorship = StringUtils.trim(authorship.substring(1));
             }
@@ -275,9 +275,9 @@ public class DiscoverLifeUtil {
         return authorship;
     }
 
-    private static String trimNameNodeTextContent(Node currentNode) {
+    private static String trimNameNodeTextContent(String textContent) {
         return StringUtils.replace(
-                StringUtils.trim(currentNode.getTextContent()),
+                StringUtils.trim(textContent),
                 "_sic",
                 "");
     }
