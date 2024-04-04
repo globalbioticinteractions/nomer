@@ -50,10 +50,10 @@ public class DiscoverLifeTestUtil {
                 StandardCharsets.UTF_8
         );
 
-        IOUtils.copy(
-                IOUtils.toInputStream(actual, StandardCharsets.UTF_8),
-                new FileOutputStream(new File("/tmp/bees.xml"))
-        );
+//        IOUtils.copy(
+//                IOUtils.toInputStream(actual, StandardCharsets.UTF_8),
+//                new FileOutputStream(new File("/tmp/bees.xml"))
+//        );
 
         assertThat(actual, Is.is(localCopy));
     }
