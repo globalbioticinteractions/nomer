@@ -38,7 +38,7 @@ public class DiscoverLifeUtil {
 
     private static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
     public static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
-    private static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
+    public static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
             "/mp/20q?search=";
     private static final List<String> PATH_STATIC_IDS = PATH_STATIC
             .stream()

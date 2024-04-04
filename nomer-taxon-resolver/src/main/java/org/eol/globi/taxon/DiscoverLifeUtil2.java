@@ -70,9 +70,12 @@ public class DiscoverLifeUtil2 {
             @Override
             public void accept(String recordXml) {
                 try {
-                    // escape unescaped ampersands
-                    String scrubbedXml = StringUtils.replace(recordXml, " & ", " &amp; ");
-                    Document doc = builder.parse(IOUtils.toInputStream(scrubbedXml, StandardCharsets.UTF_8));
+                    InputStream recordInputStream = IOUtils.toInputStream(
+                            escapeUnescapedAmpersands(recordXml), StandardCharsets.UTF_8
+                    );
+
+                    Document doc = builder.parse(recordInputStream
+                    );
                     Map<String, String> nameMap = parseFocalTaxon(doc);
                     listener.foundTaxonForTerm(
                             null,
@@ -90,6 +93,10 @@ public class DiscoverLifeUtil2 {
                     throw new RuntimeException("failed to parse DiscoverLife record [" + recordXml + "]", e);
                 }
 
+            }
+
+            private String escapeUnescapedAmpersands(String recordXml) {
+                return StringUtils.replace(recordXml, " & ", " &amp; ");
             }
         });
     }
@@ -112,7 +119,9 @@ public class DiscoverLifeUtil2 {
         Node level = setNode.getAttributes().getNamedItem("level");
         String taxonomicRank = level == null ? null : level.getTextContent();
         nameMap.put(PropertyAndValueDictionary.RANK, taxonomicRank);
-        nameMap.put(taxonomicRank, nameMap.get(PropertyAndValueDictionary.NAME));
+        String name = nameMap.get(PropertyAndValueDictionary.NAME);
+        nameMap.put(taxonomicRank, name);
+        nameMap.put(PropertyAndValueDictionary.EXTERNAL_ID, DiscoverLifeUtil.URL_ENDPOINT_DISCOVER_LIFE_SEARCH + StringUtils.replace(name, " ", "+"));
 
 
         NodeList attr = (NodeList) XmlUtil.applyXPath(setNode, "//attributes", XPathConstants.NODESET);

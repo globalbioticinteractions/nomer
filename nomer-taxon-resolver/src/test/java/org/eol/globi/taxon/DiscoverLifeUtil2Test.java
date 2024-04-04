@@ -35,6 +35,7 @@ public class DiscoverLifeUtil2Test {
         Taxon taxon = TaxonUtil.mapToTaxon(nameMap);
         assertThat(taxon.getName(), is("Agapostemon texanus"));
         assertThat(taxon.getRank(), is("species"));
+        assertThat(taxon.getId(), is("https://www.discoverlife.org/mp/20q?search=Agapostemon+texanus"));
         assertThat(taxon.getAuthorship(), is("Cresson, 1872"));
         assertThat(taxon.getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Halictidae | Halictinae | Halictini | Caenohalictina | Agapostemon | Agapostemon | Agapostemon texanus"));
         assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family | subfamily | tribe | subtribe | genus | subgenus | species"));
