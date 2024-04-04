@@ -1,0 +1,42 @@
+<set level="species"><name>Agapostemon texanus</name><authority>Cresson, 1872</authority>
+<path>Insecta/Hymenoptera/Apoidea/Halictidae</path>
+<common_name language="english">Agapostemon texanus subtilior Cockerell, 1898; Agapostemon borealis Crawford, 1901; Agapostemon californicus Crawford, 1901; Halictus &#40;Agapostemon&#41; brachycerus Vachal, 1903; Agapostemon texanus iowensis Cockerell, 1910; Agapostemon proscriptus Cockerell, 1912; Agapostemon joseanus Friese, 1917; Agapostemon sulfuripes Friese, 1917; Agapostemon cyanozonus Cockerell, 1924; Agapostemon proscriptellus Cockerell, 1924; Agapostemon texanus vandykei Cockerell, 1925; Agapostemon californicus psammobius Cockerell, 1937; Agapostemon angelicus idahoensis Michener, 1937; Agapostemon californicus clementinus Cockerell, 1939</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Cresson</state>
+<character>Country</character>
+	<state>Canada</state>
+	<state>Costa Rica</state>
+	<state>Guatemala</state>
+	<state>Honduras</state>
+	<state>Mexico</state>
+	<state>Nicaragua</state>
+	<state>United States</state>
+<character>Family</character>
+	<state>Halictidae</state>
+<character>Genus</character>
+	<state>Agapostemon</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or none</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or none</state>
+<character>Museum</character>
+	<state>Other</state>
+<character>Original genus</character>
+	<state>Agapostemon</state>
+<character>Region</character>
+	<state>North America</state>
+<character>Subfamily</character>
+	<state>Halictinae</state>
+<character>Subgenus</character>
+	<state>Agapostemon</state>
+<character>Subtribe</character>
+	<state>Caenohalictina</state>
+<character>Tribe</character>
+	<state>Halictini</state>
+</attributes>
+</set>
