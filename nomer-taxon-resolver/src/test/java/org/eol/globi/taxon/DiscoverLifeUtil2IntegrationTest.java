@@ -3,6 +3,7 @@ package org.eol.globi.taxon;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
+import org.eol.globi.service.TaxonUtil;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -32,9 +33,14 @@ public class DiscoverLifeUtil2IntegrationTest {
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 counter.incrementAndGet();
+                Taxon providedTaxon = (Taxon) providedTerm;
+                if (!NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
+                    System.out.println(providedTaxon.getName());
+                    System.out.println(providedTaxon.getAuthorship());
+                }
             }
         });
-        assertThat(counter.get(), Is.is(20932));
+        assertThat(counter.get(), Is.is(51164));
     }
 
 }

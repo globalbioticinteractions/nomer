@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
-import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
+import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.service.TaxonUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -26,15 +27,26 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.eol.globi.service.TaxonUtil.generateTaxonPathNames;
+import static org.eol.globi.taxon.DiscoverLifeUtil.emitNameRelatedToFocalTaxon;
 
 public class DiscoverLifeUtil2 {
 
     public static final List<String> RANKS = Arrays.asList("Family", "Subfamily", "Tribe", "Subtribe", "Genus", "Subgenus");
+    public static final String NAME_PATTERN_AUTHORSHIP_PARENTHESES = "(?<name>[A-Z][a-z]+[ ][a-z]+)[ ]+(?<authorship>[(][^,]+[,][ ][0-9]{4}[)])";
+    public static final String NAME_PATTERN_WITH_NOTE = "(?<name>[A-Z][a-z]+[ ][a-z]+)(?<note>[_][_a-z]+)[ ]+(?<authorship>[^,]+[,][ ][0-9]{4})";
+    public static final String NAME_PATTERN_WITH_PARENTHESIS = "(?<name>[A-Z][a-z]+[ ][(][A-Z][a-z]+[)][ ][a-z]+)[ ]+(?<authorship>[^,]+[,][ ][0-9]{4})";
+    public static final String NAME_PATTERN_AUTHORSHIP_MULTIPLE_AUTHORS = "(?<name>[A-Z][a-z]+[ ][a-z]+)[ ]+(?<authorship>([A-Z][a-z]+)([ ]and[ ])([A-Z][a-z]+)[,][ ][0-9]{4})";
+    public static final List<String> NAME_PATTERNS = Arrays.asList(NAME_PATTERN_AUTHORSHIP_PARENTHESES, NAME_PATTERN_WITH_NOTE, NAME_PATTERN_WITH_PARENTHESIS, NAME_PATTERN_AUTHORSHIP_MULTIPLE_AUTHORS);
 
     public static void splitRecords(InputStream is, Consumer<String> lineConsumer) {
         Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name());
@@ -74,11 +86,15 @@ public class DiscoverLifeUtil2 {
                             escapeUnescapedAmpersands(recordXml), StandardCharsets.UTF_8
                     );
 
-                    Document doc = builder.parse(recordInputStream
-                    );
+                    Document doc = builder.parse(recordInputStream);
                     Map<String, String> nameMap = parseFocalTaxon(doc);
-
                     DiscoverLifeUtil.emitNameRelation(listener, nameMap, TaxonUtil.mapToTaxon(nameMap));
+
+                    List<Taxon> relatedTaxa = parseRelatedNames(doc);
+
+                    for (Taxon relatedTaxon : relatedTaxa) {
+                        emitNameRelatedToFocalTaxon(listener, nameMap, TaxonUtil.mapToTaxon(nameMap), TaxonUtil.taxonToMap(relatedTaxon), relatedTaxon);
+                    }
 
 
                 } catch (SAXException | IOException | XPathExpressionException e) {
@@ -175,5 +191,61 @@ public class DiscoverLifeUtil2 {
         if (nameNode != null) {
             nameMap.put(targetName, nameNode.getTextContent());
         }
+    }
+
+    public static List<Taxon> parseRelatedNames(Document doc) throws XPathExpressionException {
+        Stream<Taxon> relatedNames = Stream.empty();
+        Node commonNameNode = (Node) XmlUtil.applyXPath(doc, "set/common_name", XPathConstants.NODE);
+
+        if (commonNameNode != null) {
+            String textContent = ensureDelimitersWithNote(ensureDelimiters(commonNameNode.getTextContent()));
+            relatedNames = Stream
+                    .of(StringUtils.split(textContent, ";"))
+                    .map(StringUtils::trim)
+                    .map(name -> {
+                        String[] nameParts = StringUtils.split(name, ",");
+                        List<String> namesWithoutRemarks = Arrays.asList(nameParts).subList(0, nameParts.length > 2 ? nameParts.length - 1 : nameParts.length);
+                        return StringUtils.join(namesWithoutRemarks, ",");
+                    })
+                    .map(DiscoverLifeUtil2::parse)
+                    .filter(Objects::nonNull);
+        }
+        return relatedNames.collect(Collectors.toList());
+    }
+
+    public static String ensureDelimiters(String name) {
+        Pattern compile = Pattern.compile("(?<year>[0-9]{4})(?<parenthesis>[ )]+)");
+        Matcher matcher = compile.matcher(name);
+        while (matcher.find()) {
+            String target = matcher.group("year") + matcher.group("parenthesis");
+            name = StringUtils.replace(name, target, target + ";");
+        }
+        return name;
+    }
+
+    public static String ensureDelimitersWithNote(String name) {
+        Pattern compile = Pattern.compile("(?<year>[0-9]{4})(?<parenthesis>[ ),]+)(?<note>[^A-Z]+)");
+        Matcher matcher = compile.matcher(name);
+        while (matcher.find()) {
+            String target = matcher.group("year") + matcher.group("parenthesis") + matcher.group("note");
+            name = StringUtils.replace(name, target, target + ";");
+        }
+        return name;
+    }
+
+    public static Taxon parse(String name) {
+        Taxon matched = null;
+
+        for (String namePattern : NAME_PATTERNS) {
+            Pattern compile = Pattern.compile(namePattern);
+            Matcher matcher = compile.matcher(name);
+            if (matcher.matches()) {
+                matched = new TaxonImpl(matcher.group("name"));
+                matched.setAuthorship(matcher.group("authorship"));
+                break;
+            }
+
+        }
+        return matched;
     }
 }
