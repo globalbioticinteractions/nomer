@@ -39,9 +39,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.eol.globi.service.TaxonUtil.generateTaxonPathNames;
-import static org.eol.globi.taxon.DiscoverLifeUtil.emitNameRelatedToFocalTaxon;
+import static org.eol.globi.taxon.DiscoverLifeUtilXHTML.emitNameRelatedToFocalTaxon;
 
-public class DiscoverLifeUtil2 {
+public class DiscoverLifeUtilXML {
 
     public static final List<String> RANKS = Arrays.asList("Family", "Subfamily", "Tribe", "Subtribe", "Genus", "Subgenus");
 
@@ -112,7 +112,7 @@ public class DiscoverLifeUtil2 {
 
                     Document doc = builder.parse(recordInputStream);
                     Map<String, String> nameMap = parseFocalTaxon(doc);
-                    DiscoverLifeUtil.emitNameRelation(listener, nameMap, TaxonUtil.mapToTaxon(nameMap));
+                    DiscoverLifeUtilXHTML.emitNameRelation(listener, nameMap, TaxonUtil.mapToTaxon(nameMap));
 
                     List<Taxon> relatedTaxa = parseRelatedNames(doc);
 
@@ -162,7 +162,7 @@ public class DiscoverLifeUtil2 {
         nameMap.put(PropertyAndValueDictionary.RANK, taxonomicRank);
         String name = nameMap.get(PropertyAndValueDictionary.NAME);
         nameMap.put(taxonomicRank, name);
-        nameMap.put(PropertyAndValueDictionary.EXTERNAL_ID, DiscoverLifeUtil.URL_ENDPOINT_DISCOVER_LIFE_SEARCH + StringUtils.replace(name, " ", "+"));
+        nameMap.put(PropertyAndValueDictionary.EXTERNAL_ID, DiscoverLifeUtilXHTML.URL_ENDPOINT_DISCOVER_LIFE_SEARCH + StringUtils.replace(name, " ", "+"));
 
 
         NodeList attr = (NodeList) XmlUtil.applyXPath(setNode, "//attributes", XPathConstants.NODESET);
@@ -231,7 +231,7 @@ public class DiscoverLifeUtil2 {
                         List<String> namesWithoutRemarks = Arrays.asList(nameParts).subList(0, nameParts.length > 2 ? nameParts.length - 1 : nameParts.length);
                         return StringUtils.join(namesWithoutRemarks, ",");
                     })
-                    .map(DiscoverLifeUtil2::parse)
+                    .map(DiscoverLifeUtilXML::parse)
                     .filter(Objects::nonNull);
         }
         return relatedNames.collect(Collectors.toList());

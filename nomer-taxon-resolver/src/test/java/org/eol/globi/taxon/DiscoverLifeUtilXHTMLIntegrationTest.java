@@ -1,34 +1,23 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.io.IOUtils;
-import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.Term;
 import org.eol.globi.service.ResourceService;
 import org.hamcrest.core.Is;
 import org.junit.Test;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
 
-public class DiscoverLifeUtilIntegrationTest {
+public class DiscoverLifeUtilXHTMLIntegrationTest {
 
     private static final String DISCOVER_LIFE_URL
-            = DiscoverLifeUtil.URL_ENDPOINT_DISCOVER_LIFE +
+            = DiscoverLifeUtilXHTML.URL_ENDPOINT_DISCOVER_LIFE +
             "/mp/20q" +
             "?act=x_checklist" +
             "&guide=Apoidea_species" +
@@ -50,7 +39,7 @@ public class DiscoverLifeUtilIntegrationTest {
             }
         };
 
-        DiscoverLifeUtil.parse(DiscoverLifeUtil.getBeeNameTable(new ResourceService() {
+        DiscoverLifeUtilXHTML.parse(DiscoverLifeUtilXHTML.getBeeNameTable(new ResourceService() {
             @Override
             public InputStream retrieve(URI uri) throws IOException {
                 return DiscoverLifeTestUtil.getStreamOfBees(BEE_NAMES_CACHED);

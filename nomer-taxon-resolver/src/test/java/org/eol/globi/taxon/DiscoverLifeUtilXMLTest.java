@@ -24,13 +24,13 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DiscoverLifeUtil2Test {
+public class DiscoverLifeUtilXMLTest {
 
     @Test
     public void parseXMLRecord() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
 
-        Map<String, String> nameMap = DiscoverLifeUtil2.parseFocalTaxon(doc);
+        Map<String, String> nameMap = DiscoverLifeUtilXML.parseFocalTaxon(doc);
 
         Taxon taxon = TaxonUtil.mapToTaxon(nameMap);
         assertThat(taxon.getName(), is("Agapostemon texanus"));
@@ -46,7 +46,7 @@ public class DiscoverLifeUtil2Test {
     public void parseRelatedNames() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/andrena_cressonii.xml");
 
-        List<Taxon> taxons = DiscoverLifeUtil2.parseRelatedNames(doc);
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc);
 
         assertThat(taxons.size(), is(17));
 
@@ -60,7 +60,7 @@ public class DiscoverLifeUtil2Test {
     public void parseCommonNames() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
 
-        List<Taxon> names = DiscoverLifeUtil2.parseRelatedNames(doc);
+        List<Taxon> names = DiscoverLifeUtilXML.parseRelatedNames(doc);
         assertThat(names.size(), is(14));
 
         assertThat(names.get(0).getName(), is("Agapostemon texanus subtilior"));
@@ -78,7 +78,7 @@ public class DiscoverLifeUtil2Test {
     public void parseAcamptopoeum_melanogaster() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/record_Acamptopoeum_melanogaster.xml");
 
-        Map<String, String> nameMap = DiscoverLifeUtil2.parseFocalTaxon(doc);
+        Map<String, String> nameMap = DiscoverLifeUtilXML.parseFocalTaxon(doc);
 
         Taxon taxon = TaxonUtil.mapToTaxon(nameMap);
         assertThat(taxon.getName(), is("Acamptopoeum melanogaster"));
@@ -94,7 +94,7 @@ public class DiscoverLifeUtil2Test {
 
         List<String> records = new ArrayList<>();
 
-        DiscoverLifeUtil2.splitRecords(is, records::add);
+        DiscoverLifeUtilXML.splitRecords(is, records::add);
         assertThat(records.get(0), is(IOUtils.toString(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/discoverlife/record_Adrenidae.xml"), StandardCharsets.UTF_8)));
         assertThat(records.get(records.size() - 1), is(IOUtils.toString(getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/discoverlife/record_Acamptopoeum_melanogaster.xml"), StandardCharsets.UTF_8)));
     }
@@ -105,7 +105,7 @@ public class DiscoverLifeUtil2Test {
 
         List<Triple<Term, NameType, Taxon>> records = new ArrayList<>();
 
-        DiscoverLifeUtil2.parse(is, new TermMatchListener() {
+        DiscoverLifeUtilXML.parse(is, new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 records.add(Triple.of(providedTerm, nameType, resolvedTaxon));
@@ -130,7 +130,7 @@ public class DiscoverLifeUtil2Test {
 
     @Test
     public void parseName() {
-        Taxon matched = DiscoverLifeUtil2.parse("Pterandrena aliciae (Robertson, 1891)");
+        Taxon matched = DiscoverLifeUtilXML.parse("Pterandrena aliciae (Robertson, 1891)");
 
         assertNotNull(matched);
         assertThat(matched.getName(), is("Pterandrena aliciae"));
@@ -141,14 +141,14 @@ public class DiscoverLifeUtil2Test {
     public void parseNameAlt1() {
         String name = "Acamptopoeum colombiensis_sic Shinn, 1965";
 
-        Taxon matched = DiscoverLifeUtil2.parse(name);
+        Taxon matched = DiscoverLifeUtilXML.parse(name);
         assertThat(matched.getName(), is("Acamptopoeum colombiensis"));
         assertThat(matched.getAuthorship(), is("Shinn, 1965"));
     }
 
     @Test
     public void parseNameAlt2() {
-        Taxon matched = DiscoverLifeUtil2.parse("Camptopoeum (Acamptopoeum) nigritarse Vachal, 1909");
+        Taxon matched = DiscoverLifeUtilXML.parse("Camptopoeum (Acamptopoeum) nigritarse Vachal, 1909");
         assertThat(matched.getName(), is("Camptopoeum (Acamptopoeum) nigritarse"));
         assertThat(matched.getAuthorship(), is("Vachal, 1909"));
 
@@ -156,14 +156,14 @@ public class DiscoverLifeUtil2Test {
 
     @Test
     public void parseNameAlt3() {
-        Taxon matched = DiscoverLifeUtil2.parse("Allodapula minor Michener and Syed, 1962");
+        Taxon matched = DiscoverLifeUtilXML.parse("Allodapula minor Michener and Syed, 1962");
         assertThat(matched.getName(), is("Allodapula minor"));
         assertThat(matched.getAuthorship(), is("Michener and Syed, 1962"));
     }
 
     @Test
     public void parseNameAlt4() {
-        Taxon matched = DiscoverLifeUtil2.parse("Zadontomerus metallica (H. S. Smith, 1907)");
+        Taxon matched = DiscoverLifeUtilXML.parse("Zadontomerus metallica (H. S. Smith, 1907)");
         assertThat(matched.getName(), is("Zadontomerus metallica"));
         assertThat(matched.getAuthorship(), is("(H. S. Smith, 1907)"));
 
@@ -171,7 +171,7 @@ public class DiscoverLifeUtil2Test {
 
     @Test
     public void parseNameAlt5() {
-        Taxon matched = DiscoverLifeUtil2.parse("Agapostemon texanus subtilior Cockerell, 1898");
+        Taxon matched = DiscoverLifeUtilXML.parse("Agapostemon texanus subtilior Cockerell, 1898");
         assertThat(matched.getName(), is("Agapostemon texanus subtilior"));
         assertThat(matched.getAuthorship(), is("Cockerell, 1898"));
 
@@ -180,7 +180,7 @@ public class DiscoverLifeUtil2Test {
     @Test
     public void patchCommonNames() {
         String name = "Protandrena bachue Gonzalez and Ruz, 2007 Rhophitulus bachue (Gonzalez and Ruz, 2007)";
-        name = DiscoverLifeUtil2.ensureDelimiters(name);
+        name = DiscoverLifeUtilXML.ensureDelimiters(name);
 
         assertThat(name, is("Protandrena bachue Gonzalez and Ruz, 2007 ;Rhophitulus bachue (Gonzalez and Ruz, 2007);"));
     }
@@ -188,7 +188,7 @@ public class DiscoverLifeUtil2Test {
     @Test
     public void patchCommonNames2() {
         String name = "Centris (Melanocentris) rhodoprocta Moure and Seabra, 1960, replacement name Centris (Melacentris) rufosuffusa Cockerell, 1900";
-        name = DiscoverLifeUtil2.ensureDelimitersWithNote(name);
+        name = DiscoverLifeUtilXML.ensureDelimitersWithNote(name);
 
         assertThat(name, is("Centris (Melanocentris) rhodoprocta Moure and Seabra, 1960, replacement name ;Centris (Melacentris) rufosuffusa Cockerell, 1900"));
     }
@@ -196,7 +196,7 @@ public class DiscoverLifeUtil2Test {
     @Test
     public void patchCommonNames3() {
         String name = "Centris (Melanocentris) rhodoprocta (Moure and Seabra, 1960), replacement name Centris (Melacentris) rufosuffusa Cockerell, 1900";
-        name = DiscoverLifeUtil2.ensureDelimitersWithNote(name);
+        name = DiscoverLifeUtilXML.ensureDelimitersWithNote(name);
 
         assertThat(name, is("Centris (Melanocentris) rhodoprocta (Moure and Seabra, 1960), replacement name ;Centris (Melacentris) rufosuffusa Cockerell, 1900"));
     }

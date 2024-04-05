@@ -14,7 +14,7 @@ import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.BatNamesUtil;
-import org.eol.globi.taxon.DiscoverLifeUtil;
+import org.eol.globi.taxon.DiscoverLifeUtilXHTML;
 import org.eol.globi.taxon.HtmlUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -242,7 +241,7 @@ public class BatNamesTaxonService implements TermMatcher {
                 nameMap.put(homonymToBeResolvedTaxon.getName(), candidatePairs);
             } else {
                 List<Triple<Map<String, String>, NameType, Map<String, String>>> candidatePairsTrimmed
-                        = nameMap.get(DiscoverLifeUtil.trimScientificName(homonymToBeResolvedTaxon.getName()));
+                        = nameMap.get(DiscoverLifeUtilXHTML.trimScientificName(homonymToBeResolvedTaxon.getName()));
                 List<Triple<Map<String, String>, NameType, Map<String, String>>> candidates = new ArrayList<>();
 
                 if (candidatePairsTrimmed == null) {

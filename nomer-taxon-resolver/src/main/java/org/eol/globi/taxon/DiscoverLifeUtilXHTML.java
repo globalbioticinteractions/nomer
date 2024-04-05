@@ -34,7 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class DiscoverLifeUtil {
+public class DiscoverLifeUtilXHTML {
 
     private static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
     public static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";

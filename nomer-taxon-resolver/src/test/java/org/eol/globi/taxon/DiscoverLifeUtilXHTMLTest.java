@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
-import org.eol.globi.service.ResourceService;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 import org.w3c.dom.NodeList;
@@ -17,17 +16,15 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
 
-public class DiscoverLifeUtilTest {
+public class DiscoverLifeUtilXHTMLTest {
 
     @Test
     public void parseNameAncylandrenaAtoposoma() throws SAXException, ParserConfigurationException, XPathExpressionException, IOException {
@@ -61,7 +58,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -208,7 +205,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -272,7 +269,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -339,7 +336,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -393,7 +390,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -445,7 +442,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -557,7 +554,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -614,7 +611,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -665,7 +662,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -702,7 +699,7 @@ public class DiscoverLifeUtilTest {
 
         List<Triple<Term, NameType, Taxon>> relatedTaxa = new ArrayList<>();
 
-        DiscoverLifeUtil.parseNames(null, nodes.item(0), new TermMatchListener() {
+        DiscoverLifeUtilXHTML.parseNames(null, nodes.item(0), new TermMatchListener() {
 
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
@@ -729,27 +726,27 @@ public class DiscoverLifeUtilTest {
 
     @Test
     public void guessRank() throws IOException {
-        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla"), Is.is("species"));
+        assertThat(DiscoverLifeUtilXHTML.guessRankFromName("Bla bla"), Is.is("species"));
     }
 
     @Test
     public void guessRankFamily() throws IOException {
-        assertThat(DiscoverLifeUtil.guessRankFromName("Bla (Bla) bla"), Is.is("species"));
+        assertThat(DiscoverLifeUtilXHTML.guessRankFromName("Bla (Bla) bla"), Is.is("species"));
     }
 
     @Test
     public void guessRankSubspecies() throws IOException {
-        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla"), Is.is("subspecies"));
+        assertThat(DiscoverLifeUtilXHTML.guessRankFromName("Bla bla bla"), Is.is("subspecies"));
     }
 
     @Test
     public void guessRankVariant() throws IOException {
-        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla var bla"), Is.is("variety"));
+        assertThat(DiscoverLifeUtilXHTML.guessRankFromName("Bla bla var bla"), Is.is("variety"));
     }
 
     @Test
     public void guessRankSubvariant() throws IOException {
-        assertThat(DiscoverLifeUtil.guessRankFromName("Bla bla bla var bla"), Is.is("subvariety"));
+        assertThat(DiscoverLifeUtilXHTML.guessRankFromName("Bla bla bla var bla"), Is.is("subvariety"));
     }
 
     @Test
@@ -770,7 +767,7 @@ public class DiscoverLifeUtilTest {
             }
         };
 
-        DiscoverLifeUtil.parseTaxonPage(is, termMatchListener);
+        DiscoverLifeUtilXHTML.parseTaxonPage(is, termMatchListener);
 
 
         assertThat(acceptedFound.get().getName(), Is.is("Agapostemon texanus"));

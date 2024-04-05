@@ -6,26 +6,16 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.DiscoverLifeUtil;
+import org.eol.globi.taxon.DiscoverLifeUtilXHTML;
 import org.eol.globi.taxon.TermMatchListener;
-import org.globalbioticinteractions.nomer.cmd.OutputFormat;
-import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.hamcrest.core.Is;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -120,7 +110,7 @@ public abstract class DiscoverLifeTaxonServiceTestBase {
     @Test
     public void trimScientificName() {
         String actual = "Xylocopa (Proxylocopa) sinensis";
-        String trimmedName = DiscoverLifeUtil.trimScientificName(actual);
+        String trimmedName = DiscoverLifeUtilXHTML.trimScientificName(actual);
         assertThat(trimmedName, Is.is("Xylocopa sinensis"));
     }
 
@@ -216,7 +206,7 @@ public abstract class DiscoverLifeTaxonServiceTestBase {
                         }
                         if (NameType.SYNONYM_OF.equals(nameType)) {
                             Taxon providedTaxon = (Taxon) providedTerm;
-                            assertFalse(DiscoverLifeUtil.isSelfReferential(providedTaxon, resolvedTaxon));
+                            assertFalse(DiscoverLifeUtilXHTML.isSelfReferential(providedTaxon, resolvedTaxon));
                             synonymCounter.getAndIncrement();
                         }
                         if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
