@@ -98,25 +98,29 @@ public class DiscoverLifeUtil {
 
             focalTaxon.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
 
-            if (isHomonym(taxonMap)) {
-                listener.foundTaxonForTerm(
-                        null,
-                        focalTaxon,
-                        NameType.HOMONYM_OF,
-                        null
-                );
-            } else {
-                listener.foundTaxonForTerm(
-                        null,
-                        focalTaxon,
-                        NameType.HAS_ACCEPTED_NAME,
-                        focalTaxon
-                );
-
-            }
+            emitNameRelation(listener, taxonMap, focalTaxon);
             handleRelatedNames(listener, taxonMap, currentNode, focalTaxon);
         }
 
+    }
+
+    public static void emitNameRelation(TermMatchListener listener, Map<String, String> taxonMap, Taxon focalTaxon) {
+        if (isHomonym(taxonMap)) {
+            listener.foundTaxonForTerm(
+                    null,
+                    focalTaxon,
+                    NameType.HOMONYM_OF,
+                    null
+            );
+        } else {
+            listener.foundTaxonForTerm(
+                    null,
+                    focalTaxon,
+                    NameType.HAS_ACCEPTED_NAME,
+                    focalTaxon
+            );
+
+        }
     }
 
     private static boolean isHomonym(Map<String, String> taxonMap) {
@@ -126,58 +130,67 @@ public class DiscoverLifeUtil {
 
     private static void handleRelatedNames(
             TermMatchListener listener,
-            Map<String, String> taxonMap,
+            Map<String, String> focalTaxonMap,
             Node currentNode,
             Taxon focalTaxon) {
         while ((currentNode = currentNode == null ? null : currentNode.getNextSibling()) != null) {
 
             if ("i".equals(currentNode.getNodeName())) {
 
-                Map<String, String> relatedName = new TreeMap<>();
+                Map<String, String> relatedTaxonMap = new TreeMap<>();
 
                 Node authorshipNodeCandidate = currentNode.getNextSibling();
-                String authorshipString = enrichFromNameString(relatedName, currentNode.getTextContent(), authorshipNodeCandidate == null ? null : authorshipNodeCandidate.getTextContent());
+                String authorshipString = enrichFromNameString(relatedTaxonMap, currentNode.getTextContent(), authorshipNodeCandidate == null ? null : authorshipNodeCandidate.getTextContent());
 
                 currentNode = currentNode.getNextSibling();
 
-                enrichFromAuthorString(StringUtils.trim(authorshipString), relatedName);
+                enrichFromAuthorString(StringUtils.trim(authorshipString), relatedTaxonMap);
 
-                Taxon relatedTaxon = toTaxon(relatedName);
+                Taxon relatedTaxon = toTaxon(relatedTaxonMap);
                 String id = urlForName(relatedTaxon);
                 relatedTaxon.setExternalId(id);
 
-                boolean relatedNameIsHomonym = isHomonym(relatedName);
-                if (relatedNameIsHomonym) {
-                    listener.foundTaxonForTerm(
-                            null,
-                            relatedTaxon,
-                            NameType.HOMONYM_OF,
-                            null
-                    );
-                }
-
-                boolean focalTaxonIsHomonym = isHomonym(taxonMap);
-                if (focalTaxonIsHomonym) {
-                    listener.foundTaxonForTerm(
-                            null,
-                            focalTaxon,
-                            NameType.HOMONYM_OF,
-                            null
-                    );
-                }
-
-                if (!relatedNameIsHomonym
-                        && !focalTaxonIsHomonym
-                        && !isSelfReferential(relatedTaxon, focalTaxon)) {
-
-                    listener.foundTaxonForTerm(
-                            null,
-                            relatedTaxon,
-                            NameType.SYNONYM_OF,
-                            focalTaxon
-                    );
-                }
+                emitNameRelatedToFocalTaxon(listener, focalTaxonMap, focalTaxon, relatedTaxonMap, relatedTaxon);
             }
+        }
+    }
+
+    public static void emitNameRelatedToFocalTaxon(
+            TermMatchListener listener,
+            Map<String, String> focalTaxonMap,
+            Taxon focalTaxon,
+            Map<String, String> relatedTaxonMap,
+            Taxon relatedTaxon) {
+        boolean relatedNameIsHomonym = isHomonym(relatedTaxonMap);
+        if (relatedNameIsHomonym) {
+            listener.foundTaxonForTerm(
+                    null,
+                    relatedTaxon,
+                    NameType.HOMONYM_OF,
+                    null
+            );
+        }
+
+        boolean focalTaxonIsHomonym = isHomonym(focalTaxonMap);
+        if (focalTaxonIsHomonym) {
+            listener.foundTaxonForTerm(
+                    null,
+                    focalTaxon,
+                    NameType.HOMONYM_OF,
+                    null
+            );
+        }
+
+        if (!relatedNameIsHomonym
+                && !focalTaxonIsHomonym
+                && !isSelfReferential(relatedTaxon, focalTaxon)) {
+
+            listener.foundTaxonForTerm(
+                    null,
+                    relatedTaxon,
+                    NameType.SYNONYM_OF,
+                    focalTaxon
+            );
         }
     }
 

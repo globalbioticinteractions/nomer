@@ -77,12 +77,9 @@ public class DiscoverLifeUtil2 {
                     Document doc = builder.parse(recordInputStream
                     );
                     Map<String, String> nameMap = parseFocalTaxon(doc);
-                    listener.foundTaxonForTerm(
-                            null,
-                            TaxonUtil.mapToTaxon(nameMap),
-                            NameType.HAS_ACCEPTED_NAME,
-                            TaxonUtil.mapToTaxon(nameMap)
-                    );
+
+                    DiscoverLifeUtil.emitNameRelation(listener, nameMap, TaxonUtil.mapToTaxon(nameMap));
+
 
                 } catch (SAXException | IOException | XPathExpressionException e) {
                     try {
@@ -115,6 +112,10 @@ public class DiscoverLifeUtil2 {
 
         putTextValueForElement(nameMap, setNode, "name", PropertyAndValueDictionary.NAME);
         putTextValueForElement(nameMap, setNode, "authority", PropertyAndValueDictionary.AUTHORSHIP);
+        if (StringUtils.isNotBlank(nameMap.get(PropertyAndValueDictionary.AUTHORSHIP))) {
+            nameMap.put(PropertyAndValueDictionary.STATUS_ID, "discoverlife:accepted");
+            nameMap.put(PropertyAndValueDictionary.STATUS_LABEL, "accepted");
+        }
 
         Node level = setNode.getAttributes().getNamedItem("level");
         String taxonomicRank = level == null ? null : level.getTextContent();

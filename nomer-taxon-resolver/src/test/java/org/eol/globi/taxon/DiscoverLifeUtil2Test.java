@@ -1,26 +1,34 @@
 package org.eol.globi.taxon;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.TaxonUtil;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.eol.globi.service.TaxonUtil.generateTaxonPathNames;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -34,11 +42,37 @@ public class DiscoverLifeUtil2Test {
 
         Taxon taxon = TaxonUtil.mapToTaxon(nameMap);
         assertThat(taxon.getName(), is("Agapostemon texanus"));
+        assertThat(taxon.getStatus().getName(), is("accepted"));
         assertThat(taxon.getRank(), is("species"));
         assertThat(taxon.getId(), is("https://www.discoverlife.org/mp/20q?search=Agapostemon+texanus"));
         assertThat(taxon.getAuthorship(), is("Cresson, 1872"));
         assertThat(taxon.getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Halictidae | Halictinae | Halictini | Caenohalictina | Agapostemon | Agapostemon | Agapostemon texanus"));
         assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family | subfamily | tribe | subtribe | genus | subgenus | species"));
+    }
+
+    @Test
+    public void parseCommonNames() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
+
+        Node commonNameNode = (Node) XmlUtil.applyXPath(doc, "set/common_name", XPathConstants.NODE);
+
+        Stream<Taxon> relatedNames = Stream
+                .of(StringUtils.split(commonNameNode.getTextContent(), ";"))
+                .map(StringUtils::trim)
+                .map(name -> {
+                    Matcher matcher = Pattern.compile("(?<name>.*)(?<authorship>[A-Z].*[,][ ][1-2][0-9]{3}$)").matcher(name);
+                    TaxonImpl name1 = new TaxonImpl(name);
+                    if (matcher.matches()) {
+                        name1.setName(StringUtils.trim(matcher.group("name")));
+                        name1.setAuthorship(StringUtils.trim(matcher.group("authorship")));
+                    }
+                    return name1;
+                });
+        List<Taxon> names = relatedNames.collect(Collectors.toList());
+        assertThat(names.size(), is(14));
+
+        assertThat(names.get(0).getName(), is("Agapostemon texanus subtilior") );
+        assertThat(names.get(0).getAuthorship(), is("Cockerell, 1898") );
     }
 
     private Document docForResource(String resourcePath) throws SAXException, IOException, ParserConfigurationException {
