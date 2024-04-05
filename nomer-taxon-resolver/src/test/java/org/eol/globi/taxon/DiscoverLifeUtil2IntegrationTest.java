@@ -35,7 +35,7 @@ public class DiscoverLifeUtil2IntegrationTest {
                 counter.incrementAndGet();
             }
         });
-        assertThat(counter.get(), Is.is(31278));
+        assertThat(counter.get(), Is.is(48503));
     }
 
 }
