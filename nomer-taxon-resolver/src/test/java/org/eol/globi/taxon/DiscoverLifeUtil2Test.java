@@ -53,6 +53,7 @@ public class DiscoverLifeUtil2Test {
         Taxon lastTaxon = taxons.get(taxons.size() - 1);
         assertThat(lastTaxon.getName(), is("Andrena (Holandrena) cressonii"));
         assertThat(lastTaxon.getAuthorship(), is("Robertson, 1891"));
+        assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
     }
 
     @Test

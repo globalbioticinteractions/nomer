@@ -161,7 +161,7 @@ public class DiscoverLifeUtil {
             Taxon focalTaxon,
             Map<String, String> relatedTaxonMap,
             Taxon relatedTaxon) {
-        boolean relatedNameIsHomonym = isHomonym(relatedTaxonMap);
+        boolean relatedNameIsHomonym = isHomonym(relatedTaxonMap) || (relatedTaxon.getStatus() != null && NameType.HOMONYM_OF.name().equals(relatedTaxon.getStatus().getName()));
         if (relatedNameIsHomonym) {
             listener.foundTaxonForTerm(
                     null,

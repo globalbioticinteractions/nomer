@@ -6,9 +6,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.TaxonUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -268,6 +270,13 @@ public class DiscoverLifeUtil2 {
             }
 
         }
+
+        if (matched != null) {
+            NameType status = StringUtils.contains(name, "_sic") ? NameType.TRANSLATES_TO : NameType.SYNONYM_OF;
+            status = StringUtils.contains(name, "_homonym") ? NameType.HOMONYM_OF : status;
+            matched.setStatus(new TermImpl(status.name(), status.name()));
+        }
+
         return matched;
     }
 }
