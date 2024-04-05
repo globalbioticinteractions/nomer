@@ -1,0 +1,37 @@
+<set level="species"><name>Andrena cressonii</name><authority>Robertson, 1891</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<common_name language="english">Andrena bridwelli Cockerell, 1899; Andrena dubia Robertson, 1902; Andrena &#40;Trachandrena&#41; trumani Viereck and Cockerell, 1914; Opandrena cressonii &#40;Robertson, 1891&#41;; Andrena &#40;Opandrena&#41; cressonii Robertson, 1891; Andrena &#40;Opandrena&#41; cressonii transformans Cockerell, 1933; Andrena &#40;Opandrena&#41; cressonii ivanensis Mitchell, 1960; Andrena &#40;Opandrena&#41; cressonii tallahasensis Mitchell, 1960; Andrena &#40;Opandrena&#41; cressonii tallahasseensis Mitchell, 1960, emend.; Andrena kansensis Cockerell, 1899; Andrena latisigna Viereck and Cockerell, 1914; Andrena cressonii kansensis Cockerell, 1899; Andrena &#40;Holandrena&#41; cressonii kansensis Cockerell, 1899; Andrena &#40;Opandrena&#41; cressonii kansensis Cockerell, 1899, valid subspecies; Andrena &#40;Opandrena&#41; cressonii infasciata Lanham, 1949, valid subspecies; Andrena &#40;Holandrena&#41; cressonii infasciata Lanham, 1949; Andrena &#40;Holandrena&#41; cressonii Robertson, 1891</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Robertson</state>
+<character>Country</character>
+	<state>Canada</state>
+	<state>United States</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Andrena</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or none</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or none</state>
+<character>Museum</character>
+	<state>Other</state>
+<character>Original genus</character>
+	<state>Andrena</state>
+<character>Region</character>
+	<state>North America</state>
+<character>Subfamily</character>
+	<state>Andreninae</state>
+<character>Subgenus</character>
+	<state>Opandrena</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Andrenini</state>
+</attributes>
+</set>
