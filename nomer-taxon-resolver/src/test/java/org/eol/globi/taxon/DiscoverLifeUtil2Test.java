@@ -48,9 +48,9 @@ public class DiscoverLifeUtil2Test {
 
         List<Taxon> taxons = DiscoverLifeUtil2.parseRelatedNames(doc);
 
-        assertThat(taxons.size(), is(13));
+        assertThat(taxons.size(), is(17));
 
-        Taxon lastTaxon = taxons.get(12);
+        Taxon lastTaxon = taxons.get(taxons.size() - 1);
         assertThat(lastTaxon.getName(), is("Andrena (Holandrena) cressonii"));
         assertThat(lastTaxon.getAuthorship(), is("Robertson, 1891"));
     }
@@ -165,6 +165,14 @@ public class DiscoverLifeUtil2Test {
         Taxon matched = DiscoverLifeUtil2.parse("Zadontomerus metallica (H. S. Smith, 1907)");
         assertThat(matched.getName(), is("Zadontomerus metallica"));
         assertThat(matched.getAuthorship(), is("(H. S. Smith, 1907)"));
+
+    }
+
+    @Test
+    public void parseNameAlt5() {
+        Taxon matched = DiscoverLifeUtil2.parse("Agapostemon texanus subtilior Cockerell, 1898");
+        assertThat(matched.getName(), is("Agapostemon texanus subtilior"));
+        assertThat(matched.getAuthorship(), is("Cockerell, 1898"));
 
     }
 

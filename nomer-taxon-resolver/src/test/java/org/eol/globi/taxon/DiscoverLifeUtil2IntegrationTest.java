@@ -33,14 +33,9 @@ public class DiscoverLifeUtil2IntegrationTest {
             @Override
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 counter.incrementAndGet();
-                Taxon providedTaxon = (Taxon) providedTerm;
-                if (!NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
-                    System.out.println(providedTaxon.getName());
-                    System.out.println(providedTaxon.getAuthorship());
-                }
             }
         });
-        assertThat(counter.get(), Is.is(51164));
+        assertThat(counter.get(), Is.is(31278));
     }
 
 }

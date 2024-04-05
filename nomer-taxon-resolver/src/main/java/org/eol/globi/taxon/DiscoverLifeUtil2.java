@@ -42,11 +42,33 @@ import static org.eol.globi.taxon.DiscoverLifeUtil.emitNameRelatedToFocalTaxon;
 public class DiscoverLifeUtil2 {
 
     public static final List<String> RANKS = Arrays.asList("Family", "Subfamily", "Tribe", "Subtribe", "Genus", "Subgenus");
-    public static final String NAME_PATTERN_AUTHORSHIP_PARENTHESES = "(?<name>[A-Z][a-z]+[ ][a-z]+)[ ]+(?<authorship>[(][^,]+[,][ ][0-9]{4}[)])";
-    public static final String NAME_PATTERN_WITH_NOTE = "(?<name>[A-Z][a-z]+[ ][a-z]+)(?<note>[_][_a-z]+)[ ]+(?<authorship>[^,]+[,][ ][0-9]{4})";
-    public static final String NAME_PATTERN_WITH_PARENTHESIS = "(?<name>[A-Z][a-z]+[ ][(][A-Z][a-z]+[)][ ][a-z]+)[ ]+(?<authorship>[^,]+[,][ ][0-9]{4})";
-    public static final String NAME_PATTERN_AUTHORSHIP_MULTIPLE_AUTHORS = "(?<name>[A-Z][a-z]+[ ][a-z]+)[ ]+(?<authorship>([A-Z][a-z]+)([ ]and[ ])([A-Z][a-z]+)[,][ ][0-9]{4})";
-    public static final List<String> NAME_PATTERNS = Arrays.asList(NAME_PATTERN_AUTHORSHIP_PARENTHESES, NAME_PATTERN_WITH_NOTE, NAME_PATTERN_WITH_PARENTHESIS, NAME_PATTERN_AUTHORSHIP_MULTIPLE_AUTHORS);
+
+    public static final String NAME = "(?<name>([A-Z][a-z]+)([ ][a-z]+)([ ][a-z]+){0,1})";
+    public static final String NAME_PARENTHESIS = "(?<name>[A-Z][a-z]+[ ][(][A-Z][a-z]+[)][ ][a-z]+)";
+    public static final String AUTHORSHIP = "(?<authorship>[^,]+[,][ ][0-9]{4})";
+    public static final String AUTHORSHIP_PARENTHESIS = "(?<authorship>[(][^,]+[,][ ][0-9]{4}[)])";
+    public static final String AUTHORSHIP_AND = "(?<authorship>([A-Z][a-z]+)([ ]and[ ])([A-Z][a-z]+)[,][ ][0-9]{4})";
+    public static final String SPACE = "[ ]+";
+    public static final String NOTE = "(?<note>[_][_a-z]+)";
+
+    public static final String NAME_AUTHORSHIP_PARENTHESES
+            = NAME + SPACE + AUTHORSHIP_PARENTHESIS;
+    public static final String NAME_AUTHORSHIP
+            = NAME + SPACE + AUTHORSHIP;
+    public static final String NAME_WITH_NOTE
+            = NAME + NOTE + SPACE + AUTHORSHIP;
+    public static final String NAME_WITH_PARENTHESIS
+            = NAME_PARENTHESIS + SPACE + AUTHORSHIP;
+    public static final String NAME_AUTHORSHIP_MULTIPLE_AUTHORS
+            = NAME + SPACE + AUTHORSHIP_AND;
+
+
+    public static final List<String> NAME_PATTERNS = Arrays.asList(
+            NAME_AUTHORSHIP,
+            NAME_AUTHORSHIP_PARENTHESES,
+            NAME_WITH_NOTE,
+            NAME_WITH_PARENTHESIS,
+            NAME_AUTHORSHIP_MULTIPLE_AUTHORS);
 
     public static void splitRecords(InputStream is, Consumer<String> lineConsumer) {
         Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name());
