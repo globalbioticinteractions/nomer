@@ -23,7 +23,7 @@
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>nomer-name-correct</artifactId>
+            <artifactId>nomer-name-suggest</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -38,8 +38,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>nomer-name-parse</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.eol</groupId>
             <artifactId>eol-globi-taxon-resolver</artifactId>

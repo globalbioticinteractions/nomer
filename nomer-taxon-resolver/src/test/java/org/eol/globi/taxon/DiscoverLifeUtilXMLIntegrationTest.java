@@ -33,7 +33,7 @@ public class DiscoverLifeUtilXMLIntegrationTest {
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 counter.incrementAndGet();
             }
-        });
+        }, new DiscoverLifeUtilXML.ParserService());
         assertThat(counter.get(), Is.is(48518));
     }
 

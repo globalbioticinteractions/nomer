@@ -4,8 +4,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
+import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.globalbioticinteractions.nomer.match.ParserServiceGBIF;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -46,7 +49,7 @@ public class DiscoverLifeUtilXMLTest {
     public void parseRelatedNames() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/andrena_cressonii.xml");
 
-        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc);
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new DiscoverLifeUtilXML.ParserService());
 
         assertThat(taxons.size(), is(17));
 
@@ -57,10 +60,42 @@ public class DiscoverLifeUtilXMLTest {
     }
 
     @Test
+    public void parseNamesWithStatus() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/andrena_erberi.xml");
+
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxons.size(), is(7));
+
+        Taxon secondTaxon = taxons.get(1);
+        assertThat(secondTaxon.getName(), is("Andrena fulvocrustatus"));
+        assertThat(secondTaxon.getAuthorship(), is("Dours, 1873"));
+        assertThat(secondTaxon.getPath(), is("Andrena |git  Campylogaster | fulvocrustatus"));
+        assertThat(secondTaxon.getPathNames(), is("genus | infragenericEpithet | specificEpithet"));
+        assertThat(secondTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+
+        Taxon thirdTaxon = taxons.get(3);
+        assertThat(thirdTaxon.getName(), is("Andena squamigera"));
+        assertThat(thirdTaxon.getAuthorship(), is("Bramson, 1879"));
+        assertThat(thirdTaxon.getStatus().getName(), is(NameType.HOMONYM_OF.name()));
+
+        Taxon fourthTaxon = taxons.get(4);
+        assertThat(fourthTaxon.getName(), is("Andrena erberi var. sanguiniventris"));
+        assertThat(fourthTaxon.getAuthorship(), is("Friese, 1921"));
+        assertThat(fourthTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+
+
+        Taxon lastTaxon = taxons.get(taxons.size() - 1);
+        assertThat(lastTaxon.getName(), is("Andrena erberi migrans"));
+        assertThat(lastTaxon.getAuthorship(), is("Warncke, 1967"));
+        assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+    }
+
+    @Test
     public void parseCommonNames() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
 
-        List<Taxon> names = DiscoverLifeUtilXML.parseRelatedNames(doc);
+        List<Taxon> names = DiscoverLifeUtilXML.parseRelatedNames(doc, new DiscoverLifeUtilXML.ParserService());
         assertThat(names.size(), is(14));
 
         assertThat(names.get(0).getName(), is("Agapostemon texanus subtilior"));
@@ -110,7 +145,7 @@ public class DiscoverLifeUtilXMLTest {
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 records.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
-        });
+        }, new DiscoverLifeUtilXML.ParserService());
 
         assertThat(records.size(), is(16));
 
@@ -175,6 +210,22 @@ public class DiscoverLifeUtilXMLTest {
         assertThat(matched.getName(), is("Agapostemon texanus subtilior"));
         assertThat(matched.getAuthorship(), is("Cockerell, 1898"));
 
+    }
+
+    @Test
+    public void parseNameAlt6() {
+        Taxon matched = DiscoverLifeUtilXML.parse("Andena squamigera_homonym Bramson, 1879");
+        assertThat(matched.getName(), is("Andena squamigera"));
+        assertThat(matched.getAuthorship(), is("Bramson, 1879"));
+
+    }
+
+    @Test
+    public void parseNameAlt7() throws PropertyEnricherException {
+        String name = "Andrena erberi var. sanguiniventris Friese, 1922";
+        Taxon matched = new ParserServiceGBIF().parse(new TaxonImpl(), name);
+        assertThat(matched.getAuthorship(), is("Friese, 1922"));
+        assertThat(matched.getName(), is("Andrena erberi var. sanguiniventris"));
     }
 
     @Test

@@ -11,7 +11,7 @@
         <relativePath>../nomer-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>nomer-name-correct</artifactId>
+    <artifactId>nomer-name-suggest</artifactId>
     <name>Nomer Name Correct</name>
     <description>Attempts to cleanup and correct troublesome names</description>
 
@@ -40,11 +40,6 @@
             <groupId>com.healthmarketscience.jackcess</groupId>
             <artifactId>jackcess</artifactId>
             <version>2.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gbif</groupId>
-            <artifactId>name-parser</artifactId>
-            <version>3.7.1</version>
         </dependency>
     </dependencies>
 

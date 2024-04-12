@@ -1,0 +1,48 @@
+<set level="species"><name>Andrena erberi</name><authority>Morawitz, 1871</authority>
+<path>Insecta/Hymenoptera/Apoidea/Andrenidae</path>
+<common_name language="english">Andrena &#40;Campylogaster&#41; fulvo-crustatus Dours, 1873; Andrena &#40;Campylogaster&#41; fulvocrustatus Dours, 1873; Andrena amasia Radoszkowski, 1876; Andena squamigera_homonym Bramson, 1879; Andrena erberi var. sanguiniventris Friese, 1921; Andrena erberi var. sanguiniventris_homonym Friese, 1922; Andrena erberi migrans Warncke, 1967</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Morawitz</state>
+<character>Country</character>
+	<state>Armenia</state>
+	<state>Ashmore and Cartier Islands</state>
+	<state>Azerbaijan</state>
+	<state>Bulgaria</state>
+	<state>Egypt</state>
+	<state>Georgia</state>
+	<state>Greece</state>
+	<state>Iran</state>
+	<state>Macedonia</state>
+	<state>Romania</state>
+	<state>Syria</state>
+	<state>Turkey</state>
+	<state>Ukraine</state>
+<character>Family</character>
+	<state>Andrenidae</state>
+<character>Genus</character>
+	<state>Andrena</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_none</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_none</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Andrena</state>
+<character>Region</character>
+	<state>Old World</state>
+<character>Subfamily</character>
+	<state>Andreninae</state>
+<character>Subgenus</character>
+	<state>Campylogaster</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Andrenini</state>
+</attributes>
+</set>

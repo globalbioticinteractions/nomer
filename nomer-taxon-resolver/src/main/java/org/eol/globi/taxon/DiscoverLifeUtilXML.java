@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
+import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -98,7 +101,7 @@ public class DiscoverLifeUtilXML {
         return record;
     }
 
-    public static void parse(InputStream is, final TermMatchListener listener) throws ParserConfigurationException {
+    public static void parse(InputStream is, final TermMatchListener listener, final ParserService parser) throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -114,7 +117,7 @@ public class DiscoverLifeUtilXML {
                     Map<String, String> nameMap = parseFocalTaxon(doc);
                     DiscoverLifeUtilXHTML.emitNameRelation(listener, nameMap, TaxonUtil.mapToTaxon(nameMap));
 
-                    List<Taxon> relatedTaxa = parseRelatedNames(doc);
+                    List<Taxon> relatedTaxa = parseRelatedNames(doc, parser);
 
                     for (Taxon relatedTaxon : relatedTaxa) {
                         emitNameRelatedToFocalTaxon(listener, nameMap, TaxonUtil.mapToTaxon(nameMap), TaxonUtil.taxonToMap(relatedTaxon), relatedTaxon);
@@ -217,9 +220,10 @@ public class DiscoverLifeUtilXML {
         }
     }
 
-    public static List<Taxon> parseRelatedNames(Document doc) throws XPathExpressionException {
+    public static List<Taxon> parseRelatedNames(Document doc, org.globalbioticinteractions.nomer.match.ParserService parser) throws XPathExpressionException {
         Stream<Taxon> relatedNames = Stream.empty();
         Node commonNameNode = (Node) XmlUtil.applyXPath(doc, "set/common_name", XPathConstants.NODE);
+
 
         if (commonNameNode != null) {
             String textContent = ensureDelimitersWithNote(ensureDelimiters(commonNameNode.getTextContent()));
@@ -231,7 +235,16 @@ public class DiscoverLifeUtilXML {
                         List<String> namesWithoutRemarks = Arrays.asList(nameParts).subList(0, nameParts.length > 2 ? nameParts.length - 1 : nameParts.length);
                         return StringUtils.join(namesWithoutRemarks, ",");
                     })
-                    .map(DiscoverLifeUtilXML::parse)
+                    .map(name -> {
+                                try {
+                                    Taxon parsed = parser.parse(null, RegExUtils.replaceAll(name, "_[a-z]+", ""));
+                                    inferStatus(name, parsed);
+                                    return parsed;
+                                } catch (PropertyEnricherException ex) {
+                                    return null;
+                                }
+                            }
+                    )
                     .filter(Objects::nonNull);
         }
         return relatedNames.collect(Collectors.toList());
@@ -258,6 +271,14 @@ public class DiscoverLifeUtilXML {
     }
 
     public static Taxon parse(String name) {
+        try {
+            return new ParserService().parse(null, name);
+        } catch (PropertyEnricherException e) {
+            return null;
+        }
+    }
+
+    public static Taxon parse1(String name) {
         Taxon matched = null;
 
         for (String namePattern : NAME_PATTERNS) {
@@ -271,12 +292,24 @@ public class DiscoverLifeUtilXML {
 
         }
 
+        inferStatus(name, matched);
+
+        return matched;
+    }
+
+    private static void inferStatus(String name, Taxon matched) {
         if (matched != null) {
             NameType status = StringUtils.contains(name, "_sic") ? NameType.TRANSLATES_TO : NameType.SYNONYM_OF;
             status = StringUtils.contains(name, "_homonym") ? NameType.HOMONYM_OF : status;
             matched.setStatus(new TermImpl(status.name(), status.name()));
         }
+    }
 
-        return matched;
+    public static class ParserService implements org.globalbioticinteractions.nomer.match.ParserService {
+
+        @Override
+        public Taxon parse(Term term, String name) throws PropertyEnricherException {
+            return DiscoverLifeUtilXML.parse1(name);
+        }
     }
 }

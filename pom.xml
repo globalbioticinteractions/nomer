@@ -11,6 +11,7 @@
     <modules>
         <module>nomer-parent</module>
         <module>nomer-name-suggest</module>
+        <module>nomer-name-parse</module>
         <module>nomer-taxon-resolver</module>
         <module>nomer</module>
     </modules>

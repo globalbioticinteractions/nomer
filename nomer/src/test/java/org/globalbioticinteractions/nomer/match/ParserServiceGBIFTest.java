@@ -44,6 +44,27 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
         assertTrue(foundMatch.get());
     }
 
+    @Test
+    public void nameWithVariantAndAuthorship() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Andrena erberi var. sanguiniventris Friese, 1922")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Andrena erberi var. sanguiniventris Friese, 1922"));
+                assertThat(taxon.getName(), Is.is("Andrena erberi var. sanguiniventris"));
+                assertThat(taxon.getAuthorship(), Is.is("Friese, 1922"));
+                assertThat(taxon.getRank(), Is.is("variety"));
+                assertThat(taxon.getPath(), Is.is("Andrena | erberi | sanguiniventris"));
+                assertThat(taxon.getPathNames(), Is.is("genus | specificEpithet | infraspecificEpithet"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
 
 
 }
