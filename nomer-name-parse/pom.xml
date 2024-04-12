@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.globalbioticinteractions</groupId>
+        <artifactId>nomer-parent</artifactId>
+        <version>0.5.8-SNAPSHOT</version>
+        <relativePath>../nomer-parent/pom.xml</relativePath>
+    </parent>
+
+    <artifactId>nomer-name-parse</artifactId>
+    <name>Nomer Name Parsing</name>
+    <description>Methods to parse taxonomic names</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.eol</groupId>
+            <artifactId>eol-globi-taxon-resolver</artifactId>
+            <version>${globi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.gbif</groupId>
+            <artifactId>name-parser</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2/</url>
+        </repository>
+        <repository>
+            <id>gbif-repository</id>
+            <url>https://repository.gbif.org/content/groups/gbif</url>
+        </repository>
+    </repositories>
+
+</project>
