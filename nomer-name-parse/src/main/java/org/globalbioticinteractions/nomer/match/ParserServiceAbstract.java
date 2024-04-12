@@ -9,11 +9,6 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
-import org.gbif.nameparser.NameParserGBIF;
-import org.gbif.nameparser.api.NameParser;
-import org.gbif.nameparser.api.ParsedName;
-import org.gbif.nameparser.api.Rank;
-import org.gbif.nameparser.api.UnparsableNameException;
 
 import java.util.List;
 

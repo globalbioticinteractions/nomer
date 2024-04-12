@@ -11,7 +11,6 @@ import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
-import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
@@ -48,32 +47,6 @@ public class DiscoverLifeUtilXML {
 
     public static final List<String> RANKS = Arrays.asList("Family", "Subfamily", "Tribe", "Subtribe", "Genus", "Subgenus");
 
-    public static final String NAME = "(?<name>([A-Z][a-z]+)([ ][a-z]+)([ ][a-z]+){0,1})";
-    public static final String NAME_PARENTHESIS = "(?<name>[A-Z][a-z]+[ ][(][A-Z][a-z]+[)][ ][a-z]+)";
-    public static final String AUTHORSHIP = "(?<authorship>[^,]+[,][ ][0-9]{4})";
-    public static final String AUTHORSHIP_PARENTHESIS = "(?<authorship>[(][^,]+[,][ ][0-9]{4}[)])";
-    public static final String AUTHORSHIP_AND = "(?<authorship>([A-Z][a-z]+)([ ]and[ ])([A-Z][a-z]+)[,][ ][0-9]{4})";
-    public static final String SPACE = "[ ]+";
-    public static final String NOTE = "(?<note>[_][_a-z]+)";
-
-    public static final String NAME_AUTHORSHIP_PARENTHESES
-            = NAME + SPACE + AUTHORSHIP_PARENTHESIS;
-    public static final String NAME_AUTHORSHIP
-            = NAME + SPACE + AUTHORSHIP;
-    public static final String NAME_WITH_NOTE
-            = NAME + NOTE + SPACE + AUTHORSHIP;
-    public static final String NAME_WITH_PARENTHESIS
-            = NAME_PARENTHESIS + SPACE + AUTHORSHIP;
-    public static final String NAME_AUTHORSHIP_MULTIPLE_AUTHORS
-            = NAME + SPACE + AUTHORSHIP_AND;
-
-
-    public static final List<String> NAME_PATTERNS = Arrays.asList(
-            NAME_AUTHORSHIP,
-            NAME_AUTHORSHIP_PARENTHESES,
-            NAME_WITH_NOTE,
-            NAME_WITH_PARENTHESIS,
-            NAME_AUTHORSHIP_MULTIPLE_AUTHORS);
 
     public static void splitRecords(InputStream is, Consumer<String> lineConsumer) {
         Scanner scanner = new Scanner(is, StandardCharsets.UTF_8.name());
@@ -101,7 +74,7 @@ public class DiscoverLifeUtilXML {
         return record;
     }
 
-    public static void parse(InputStream is, final TermMatchListener listener, final ParserService parser) throws ParserConfigurationException {
+    public static void parse(InputStream is, final TermMatchListener listener, final org.globalbioticinteractions.nomer.match.ParserService parser) throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -270,34 +243,7 @@ public class DiscoverLifeUtilXML {
         return name;
     }
 
-    public static Taxon parse(String name) {
-        try {
-            return new ParserService().parse(null, name);
-        } catch (PropertyEnricherException e) {
-            return null;
-        }
-    }
-
-    public static Taxon parse1(String name) {
-        Taxon matched = null;
-
-        for (String namePattern : NAME_PATTERNS) {
-            Pattern compile = Pattern.compile(namePattern);
-            Matcher matcher = compile.matcher(name);
-            if (matcher.matches()) {
-                matched = new TaxonImpl(matcher.group("name"));
-                matched.setAuthorship(matcher.group("authorship"));
-                break;
-            }
-
-        }
-
-        inferStatus(name, matched);
-
-        return matched;
-    }
-
-    private static void inferStatus(String name, Taxon matched) {
+    public static void inferStatus(String name, Taxon matched) {
         if (matched != null) {
             NameType status = StringUtils.contains(name, "_sic") ? NameType.TRANSLATES_TO : NameType.SYNONYM_OF;
             status = StringUtils.contains(name, "_homonym") ? NameType.HOMONYM_OF : status;
@@ -305,11 +251,4 @@ public class DiscoverLifeUtilXML {
         }
     }
 
-    public static class ParserService implements org.globalbioticinteractions.nomer.match.ParserService {
-
-        @Override
-        public Taxon parse(Term term, String name) throws PropertyEnricherException {
-            return DiscoverLifeUtilXML.parse1(name);
-        }
-    }
 }

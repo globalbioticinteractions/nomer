@@ -73,7 +73,7 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
         } catch (UnparsableNameException e) {
             return term instanceof Taxon
                     ? TaxonUtil.copy((Taxon) term)
-                    : new TaxonImpl(term.getName(), term.getId());
+                    : (term == null ? new TaxonImpl(nameString) : new TaxonImpl(term.getName(), term.getId()));
         }
     }
 

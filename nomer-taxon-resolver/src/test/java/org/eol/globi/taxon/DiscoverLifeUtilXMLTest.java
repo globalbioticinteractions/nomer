@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -49,12 +48,12 @@ public class DiscoverLifeUtilXMLTest {
     public void parseRelatedNames() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/andrena_cressonii.xml");
 
-        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new DiscoverLifeUtilXML.ParserService());
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
 
-        assertThat(taxons.size(), is(17));
+        assertThat(taxons.size(), is(21));
 
         Taxon lastTaxon = taxons.get(taxons.size() - 1);
-        assertThat(lastTaxon.getName(), is("Andrena (Holandrena) cressonii"));
+        assertThat(lastTaxon.getName(), is("Andrena cressonii"));
         assertThat(lastTaxon.getAuthorship(), is("Robertson, 1891"));
         assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
     }
@@ -70,7 +69,7 @@ public class DiscoverLifeUtilXMLTest {
         Taxon secondTaxon = taxons.get(1);
         assertThat(secondTaxon.getName(), is("Andrena fulvocrustatus"));
         assertThat(secondTaxon.getAuthorship(), is("Dours, 1873"));
-        assertThat(secondTaxon.getPath(), is("Andrena |git  Campylogaster | fulvocrustatus"));
+        assertThat(secondTaxon.getPath(), is("Andrena | Campylogaster | fulvocrustatus"));
         assertThat(secondTaxon.getPathNames(), is("genus | infragenericEpithet | specificEpithet"));
         assertThat(secondTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
 
@@ -95,7 +94,7 @@ public class DiscoverLifeUtilXMLTest {
     public void parseCommonNames() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
 
-        List<Taxon> names = DiscoverLifeUtilXML.parseRelatedNames(doc, new DiscoverLifeUtilXML.ParserService());
+        List<Taxon> names = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceDiscoverLifeCustom());
         assertThat(names.size(), is(14));
 
         assertThat(names.get(0).getName(), is("Agapostemon texanus subtilior"));
@@ -145,7 +144,7 @@ public class DiscoverLifeUtilXMLTest {
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 records.add(Triple.of(providedTerm, nameType, resolvedTaxon));
             }
-        }, new DiscoverLifeUtilXML.ParserService());
+        }, new ParserServiceDiscoverLifeCustom());
 
         assertThat(records.size(), is(16));
 
@@ -163,62 +162,6 @@ public class DiscoverLifeUtilXMLTest {
         assertThat(last.getRight().getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Panurginae | Calliopsini | None | Acamptopoeum | None | Acamptopoeum melanogaster"));
     }
 
-    @Test
-    public void parseName() {
-        Taxon matched = DiscoverLifeUtilXML.parse("Pterandrena aliciae (Robertson, 1891)");
-
-        assertNotNull(matched);
-        assertThat(matched.getName(), is("Pterandrena aliciae"));
-        assertThat(matched.getAuthorship(), is("(Robertson, 1891)"));
-    }
-
-    @Test
-    public void parseNameAlt1() {
-        String name = "Acamptopoeum colombiensis_sic Shinn, 1965";
-
-        Taxon matched = DiscoverLifeUtilXML.parse(name);
-        assertThat(matched.getName(), is("Acamptopoeum colombiensis"));
-        assertThat(matched.getAuthorship(), is("Shinn, 1965"));
-    }
-
-    @Test
-    public void parseNameAlt2() {
-        Taxon matched = DiscoverLifeUtilXML.parse("Camptopoeum (Acamptopoeum) nigritarse Vachal, 1909");
-        assertThat(matched.getName(), is("Camptopoeum (Acamptopoeum) nigritarse"));
-        assertThat(matched.getAuthorship(), is("Vachal, 1909"));
-
-    }
-
-    @Test
-    public void parseNameAlt3() {
-        Taxon matched = DiscoverLifeUtilXML.parse("Allodapula minor Michener and Syed, 1962");
-        assertThat(matched.getName(), is("Allodapula minor"));
-        assertThat(matched.getAuthorship(), is("Michener and Syed, 1962"));
-    }
-
-    @Test
-    public void parseNameAlt4() {
-        Taxon matched = DiscoverLifeUtilXML.parse("Zadontomerus metallica (H. S. Smith, 1907)");
-        assertThat(matched.getName(), is("Zadontomerus metallica"));
-        assertThat(matched.getAuthorship(), is("(H. S. Smith, 1907)"));
-
-    }
-
-    @Test
-    public void parseNameAlt5() {
-        Taxon matched = DiscoverLifeUtilXML.parse("Agapostemon texanus subtilior Cockerell, 1898");
-        assertThat(matched.getName(), is("Agapostemon texanus subtilior"));
-        assertThat(matched.getAuthorship(), is("Cockerell, 1898"));
-
-    }
-
-    @Test
-    public void parseNameAlt6() {
-        Taxon matched = DiscoverLifeUtilXML.parse("Andena squamigera_homonym Bramson, 1879");
-        assertThat(matched.getName(), is("Andena squamigera"));
-        assertThat(matched.getAuthorship(), is("Bramson, 1879"));
-
-    }
 
     @Test
     public void parseNameAlt7() throws PropertyEnricherException {

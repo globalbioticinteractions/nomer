@@ -3,6 +3,7 @@ package org.eol.globi.taxon;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.Term;
+import org.globalbioticinteractions.nomer.match.ParserServiceGBIF;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
@@ -33,8 +34,8 @@ public class DiscoverLifeUtilXMLIntegrationTest {
             public void foundTaxonForTerm(Long requestId, Term providedTerm, NameType nameType, Taxon resolvedTaxon) {
                 counter.incrementAndGet();
             }
-        }, new DiscoverLifeUtilXML.ParserService());
-        assertThat(counter.get(), Is.is(48518));
+        }, new ParserServiceGBIF());
+        assertThat(counter.get(), Is.is(57380));
     }
 
 }

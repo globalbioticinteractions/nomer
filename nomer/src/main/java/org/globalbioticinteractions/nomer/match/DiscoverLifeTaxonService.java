@@ -174,7 +174,7 @@ public class DiscoverLifeTaxonService implements TermMatcher {
 
             String endpoint = ctx.getProperty("nomer.discoverlife.url");
             if (StringUtils.endsWith(endpoint, ".xml")) {
-                DiscoverLifeUtilXML.parse(ctx.retrieve(URI.create(endpoint)), listener, new DiscoverLifeUtilXML.ParserService());
+                DiscoverLifeUtilXML.parse(ctx.retrieve(URI.create(endpoint)), listener, new ParserServiceGBIF());
             } else {
                 DiscoverLifeUtilXHTML.parse(DiscoverLifeUtilXHTML.getBeeNameTable(ctx, endpoint), listener);
             }
