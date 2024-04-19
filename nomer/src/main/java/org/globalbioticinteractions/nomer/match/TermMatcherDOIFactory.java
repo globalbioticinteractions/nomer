@@ -84,8 +84,8 @@ public class TermMatcherDOIFactory implements TermMatcherFactory {
         DOIResolver doiResolver;
         try {
             InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, taxonRankCacheUrl));
-            DOIResolverCache doiResolverCache = new DOIResolverCache();
-            doiResolverCache.setCacheDir(new File(ctx.getCacheDir(), "doi-cache"));
+            File cacheDir = new File(ctx.getCacheDir(), "doi-cache");
+            DOIResolverCache doiResolverCache = new DOIResolverCache(cacheDir);
             doiResolverCache.init(new InputStreamReader(resource, StandardCharsets.UTF_8));
             doiResolver = doiResolverCache;
         } catch (IOException | PropertyEnricherException e) {

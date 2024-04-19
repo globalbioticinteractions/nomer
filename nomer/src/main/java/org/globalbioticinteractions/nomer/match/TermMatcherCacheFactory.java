@@ -27,8 +27,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        TaxonCacheService cacheService = createCacheService(ctx);
-        cacheService.setCacheDir(new File(ctx.getCacheDir(), "term_cache"));
+        TaxonCacheService cacheService = createCacheService(ctx, new File(ctx.getCacheDir(), "term_cache"));
         cacheService.setMaxTaxonLinks(getMaxTermLinks(ctx));
         return cacheService;
     }
@@ -43,7 +42,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
         return "Uses GloBI's Taxon Graph to lookup terms by id or name across many taxonomies / ontologies. Caches a copy locally on first use to allow for subsequent offline usage. Use properties [nomer.term.cache.url] and [nomer.term.map.url] to override default cache and map locations. See https://doi.org/10.5281/zenodo.755513 for more information.";
     }
 
-    public static TaxonCacheService createCacheService(TermMatcherContext ctx) {
+    public static TaxonCacheService createCacheService(TermMatcherContext ctx, File cacheDir) {
         TermResource<Taxon> terms = new TermResource<Taxon>() {
 
             @Override
@@ -79,7 +78,7 @@ public class TermMatcherCacheFactory implements TermMatcherFactory {
                 return Objects::nonNull;
             }
         };
-        return new TaxonCacheService(terms, links, ctx);
+        return new TaxonCacheService(terms, links, ctx, cacheDir);
     }
 
     public static String getTermMapUrl(TermMatcherContext ctx) {

@@ -15,6 +15,7 @@ import org.mapdb.DB;
 import org.mapdb.Fun;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
@@ -30,11 +31,12 @@ public class DOIResolverCache extends CacheService implements DOIResolver {
     private final String doiCacheResource;
     private Map<String, DOI> doiCitationMap = null;
 
-    public DOIResolverCache() {
-        this("/tsv/citations.tsv.gz");
+    public DOIResolverCache(File cacheDir) {
+        this(cacheDir, "/tsv/citations.tsv.gz");
     }
 
-    public DOIResolverCache(String doiCacheResource) {
+    public DOIResolverCache(File cacheDir, String doiCacheResource) {
+        super(cacheDir);
         this.doiCacheResource = doiCacheResource;
     }
 
