@@ -32,6 +32,7 @@ public class GBIFTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("GBIF:3220631"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Lien & Beeder, 1997"));
     }
 
     @Test

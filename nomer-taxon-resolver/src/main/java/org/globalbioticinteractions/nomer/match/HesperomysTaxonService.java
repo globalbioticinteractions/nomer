@@ -99,7 +99,12 @@ public class HesperomysTaxonService extends CommonLongTaxonService {
                     return value;
                 });
 
+        Stream<String> pathAuthorshipStream = RANKS
+                .stream()
+                .map(rank -> "");
+
         taxon.setPath(pathStream.collect(Collectors.joining(CharsetConstant.SEPARATOR)));
+        taxon.setPathAuthorships(pathAuthorshipStream.collect(Collectors.joining(CharsetConstant.SEPARATOR)));
         String rankNames = RANKS
                 .stream()
                 .map(rank -> StringUtils.remove(rank, '_'))

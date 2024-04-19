@@ -22,6 +22,7 @@ import static org.eol.globi.domain.PropertyAndValueDictionary.AUTHORSHIP;
 import static org.eol.globi.domain.PropertyAndValueDictionary.EXTERNAL_ID;
 import static org.eol.globi.domain.PropertyAndValueDictionary.NAME_SOURCE;
 import static org.eol.globi.domain.PropertyAndValueDictionary.PATH;
+import static org.eol.globi.domain.PropertyAndValueDictionary.PATH_AUTHORSHIPS;
 import static org.eol.globi.domain.PropertyAndValueDictionary.PATH_NAMES;
 
 public class TabularTaxonUtil {
@@ -81,6 +82,7 @@ public class TabularTaxonUtil {
         Map<String, String> taxonMap = new TreeMap<>();
         List<String> path = new ArrayList<>();
         List<String> pathNames = new ArrayList<>();
+        List<String> pathAuthorships = new ArrayList<>();
 
         for (TabularColumn orderedRank : ORDERED_RANKS) {
             String value = labeledCSVParser.getValueByLabel(orderedRank.getColumnName());
@@ -88,6 +90,7 @@ public class TabularTaxonUtil {
                     && !StringUtils.equals(value, "NA")) {
                 path.add(value);
                 pathNames.add(orderedRank.getColumnName());
+                pathAuthorships.add("");
             }
         }
 
@@ -104,6 +107,7 @@ public class TabularTaxonUtil {
 
         taxonMap.put(PATH, StringUtils.join(path, CharsetConstant.SEPARATOR));
         taxonMap.put(PATH_NAMES, StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
+        taxonMap.put(PATH_AUTHORSHIPS, StringUtils.join(pathAuthorships, CharsetConstant.SEPARATOR));
 
         List<String> collect = ORDERED_RANKS
                 .stream()

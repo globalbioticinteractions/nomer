@@ -44,6 +44,7 @@ public class WorldOfFloraOnlineTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Syneilesis | Syneilesis palmata"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WFO:4000037295 | WFO:0000000100"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Maxim. | Maxim."));
     }
 
     @Test
@@ -140,6 +141,7 @@ public class WorldOfFloraOnlineTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Rodriguez & Alfonso"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Cyperus violifolia"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Rodriguez & Alfonso"));
     }
 
     @Test

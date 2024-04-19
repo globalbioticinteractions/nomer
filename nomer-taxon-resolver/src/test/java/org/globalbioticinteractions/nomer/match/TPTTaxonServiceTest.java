@@ -44,6 +44,7 @@ public class TPTTaxonServiceTest {
         assertThat(mapToTaxon(enriched).getRank(), is("species"));
         assertThat(mapToTaxon(enriched).getPath(), is("Animalia | Arthropoda | Arachnida | Holothyrida | Holothyridae | Dicrogonatus | gardineri"));
         assertThat(mapToTaxon(enriched).getPathNames(), is("kingdom | phylum | class | order | family | genus | specificEpithet"));
+        assertThat(mapToTaxon(enriched).getPathAuthorships(), is(" |  |  |  |  |  | "));
     }
 
     @Test

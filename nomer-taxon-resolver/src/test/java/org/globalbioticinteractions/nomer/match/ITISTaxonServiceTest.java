@@ -37,6 +37,7 @@ public class ITISTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("ITIS:AUTHORSHIP:177805"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("ITIS:AUTHORSHIP:184763 | ITIS:AUTHORSHIP:177805"));
     }
 
     @Test
@@ -53,6 +54,7 @@ public class ITISTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ariopsis felis"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:680665"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("(Linnaeus, 1766)"));
     }
 
     @Test
@@ -68,6 +70,7 @@ public class ITISTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("ITIS:AUTHORSHIP:184763 | ITIS:AUTHORSHIP:177805"));
     }
 
     @Test
@@ -83,6 +86,7 @@ public class ITISTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("genus"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("ITIS:956340 | ITIS:57"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("ITIS:AUTHORSHIP:184763 | ITIS:AUTHORSHIP:177805"));
     }
 
     @Test

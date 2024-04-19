@@ -47,6 +47,7 @@ public class MDDTaxonServiceTest {
         assertThat(enrichedTaxon.getAuthorship(), is("K. Andersen, 1905"));
         assertThat(enrichedTaxon.getPath(), is("Theria | Placentalia | Boreoeutheria | Laurasiatheria | Chiroptera | Pteropodiformes |  |  | Rhinolophoidea | Rhinolophidae |  |  | Rhinolophus |  | sinicus"));
         assertThat(enrichedTaxon.getPathNames(), is("subclass | infraclass | magnorder | superorder | order | suborder | infraorder | parvorder | superfamily | family | subfamily | tribe | genus | subgenus | specificEpithet"));
+        assertThat(enrichedTaxon.getPathAuthorships(), is(" |  |  |  |  |  |  |  |  |  |  |  |  |  | "));
     }
 
     @Test

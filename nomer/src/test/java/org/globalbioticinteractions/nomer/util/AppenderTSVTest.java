@@ -148,6 +148,18 @@ public class AppenderTSVTest {
         assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\n"));
     }
 
+    @Test
+    public void appendWithFullPathAndAuthorities() {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        appendTo(new AppenderTSV(new HashMap<Integer, String>() {{
+            put(0, "path.name");
+            put(1, "path.id");
+            put(2, "path.rank");
+            put(3, "path.authorship");
+        }}), out);
+        assertThat(out.toString(), is("col1\tcol2\tSAME_AS\tpath1 | path2\tpathId1 | pathId2\tpathName1 | pathName2\tauth1 | auth2\n"));
+    }
+
     private void appendTo(Appender appender, ByteArrayOutputStream out) {
         String[] row = {"col1", "col2"};
         TaxonImpl provided = new TaxonImpl("providedName", "providedId");
@@ -155,6 +167,7 @@ public class AppenderTSVTest {
         resolved.setPath("path1 | path2");
         resolved.setPathIds("pathId1 | pathId2");
         resolved.setPathNames("pathName1 | pathName2");
+        resolved.setPathAuthorships("auth1 | auth2");
         resolved.setRank("resolvedRank");
         resolved.setNameSource("resolvedCatalog");
         resolved.setNameSourceURL("resolvedCatalogURL");

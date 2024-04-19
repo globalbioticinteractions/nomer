@@ -40,6 +40,7 @@ public class PBDBTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Hominini | Homo | Homo sapiens"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("PBDB:91486 | PBDB:40901 | PBDB:83088"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("tribe | genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is(" | C. Linnaeus 1758 | C. Linnaeus 1758"));
     }
 
     @Test

@@ -423,16 +423,18 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
             Taxon resolvedTaxon
     ) {
         if (shouldResolveHierarchy(childParent, resolvedTaxon)) {
-            List<String> pathNames = new ArrayList<>();
-            List<String> pathIds = new ArrayList<>();
             List<String> path = new ArrayList<>();
-
+            List<String> pathIds = new ArrayList<>();
+            List<String> pathNames = new ArrayList<>();
+            List<String> pathAuthorships = new ArrayList<>();
 
             path.add(StringUtils.defaultIfBlank(resolvedTaxon.getName(), ""));
 
             pathIds.add(resolvedTaxon.getExternalId());
 
             pathNames.add(StringUtils.defaultIfBlank(resolvedTaxon.getRank(), ""));
+
+            pathAuthorships.add(StringUtils.defaultIfBlank(resolvedTaxon.getAuthorship(), ""));
 
             T parent = childParent.get(focalTaxonKey);
             List<T> visitedParents = new ArrayList<T>();
@@ -444,20 +446,23 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 if (parentTaxonProperties != null) {
                     Taxon parentTaxon = TaxonUtil.mapToTaxon(parentTaxonProperties);
                     path.add(StringUtils.defaultIfBlank(parentTaxon.getName(), ""));
-                    pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
                     pathIds.add(parentTaxon.getExternalId());
+                    pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
+                    pathAuthorships.add(StringUtils.defaultIfBlank(parentTaxon.getAuthorship(), ""));
                 }
                 visitedParents.add(parent);
                 parent = childParent.get(parent);
             }
 
-            Collections.reverse(pathNames);
-            Collections.reverse(pathIds);
             Collections.reverse(path);
+            Collections.reverse(pathIds);
+            Collections.reverse(pathNames);
+            Collections.reverse(pathAuthorships);
 
             resolvedTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
             resolvedTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
             resolvedTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
+            resolvedTaxon.setPathAuthorships(StringUtils.join(pathAuthorships, CharsetConstant.SEPARATOR));
         }
     }
 

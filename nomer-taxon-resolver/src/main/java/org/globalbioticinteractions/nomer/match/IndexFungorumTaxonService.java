@@ -27,6 +27,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IndexFungorumTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(IndexFungorumTaxonService.class);
@@ -74,7 +76,9 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
                         taxon.setAuthorship(authorship);
                     }
                     taxon.setPath(StringUtils.join(new String[]{kingdomName, phylumName, subphylumName, className, subclassName, orderName, familyName, completeName}, CharsetConstant.SEPARATOR));
-                    taxon.setPathNames(StringUtils.join(new String[]{"kingdom", "phylum", "subphylum", "class", "subclass", "order", "family", ""}, CharsetConstant.SEPARATOR));
+                    String[] ranks = {"kingdom", "phylum", "subphylum", "class", "subclass", "order", "family", ""};
+                    taxon.setPathNames(StringUtils.join(ranks, CharsetConstant.SEPARATOR));
+                    taxon.setPathAuthorships(Stream.of(ranks).map(r -> "").collect(Collectors.joining(CharsetConstant.SEPARATOR)));
                     if (NumberUtils.isCreatable(taxId)) {
                         Long taxonKey = Long.parseLong(taxId);
                         registerIdForName(taxonKey, taxon, name2nodeIds);

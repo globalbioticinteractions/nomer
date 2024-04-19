@@ -46,6 +46,7 @@ public class HesperomysTaxonServiceTest {
         assertThat(enrichedTaxon.getAuthorship(), is("Andersen, 1905"));
         assertThat(enrichedTaxon.getPath(), is("Mammalia | Chiroptera | Rhinolophidae | Rhinolophus | sinicus | sinicus"));
         assertThat(enrichedTaxon.getPathNames(), is("class | order | family | genus | specificEpithet | subspecificEpithet"));
+        assertThat(enrichedTaxon.getPathAuthorships(), is(" |  |  |  |  | "));
     }
 
     @Test

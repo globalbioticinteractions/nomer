@@ -95,8 +95,15 @@ public class MDDTaxonService extends CommonStringTaxonService {
                                 : StringUtils.defaultIfBlank(value, "");
                     });
 
+            Stream<String> pathAuthorshipStream = RANKS
+                    .stream()
+                    .map(rank -> {
+                        return "";
+                    });
+
             taxon.setPath(pathStream.collect(Collectors.joining(CharsetConstant.SEPARATOR)));
             taxon.setPathNames(String.join(CharsetConstant.SEPARATOR, RANKS));
+            taxon.setPathAuthorships(pathAuthorshipStream.collect(Collectors.joining(CharsetConstant.SEPARATOR)));
 
 
             String id = "https://www.mammaldiversity.org/explore.html#genus=" + genus + "&species=" + specificEpithet + "&id=" + taxonId;
@@ -124,19 +131,19 @@ public class MDDTaxonService extends CommonStringTaxonService {
                 Stream<Taxon> subspeciesTaxa = subspecies
                         .stream()
                         .map(subspecificEpithetAndAuthor -> {
-                    String[] s = subspecificEpithetAndAuthor.split(" ");
-                    String subspecificEpithet = s[0];
-                    String subspecificAuthorship = StringUtils.trim(RegExUtils.replaceFirst(subspecificEpithetAndAuthor, subspecificEpithet, ""));
-                    Taxon subspecificTaxon = TaxonUtil.copy(taxon);
-                    subspecificTaxon.setName(taxon.getName() + " " + subspecificEpithet);
-                    subspecificTaxon.setPath(taxon.getPath() + CharsetConstant.SEPARATOR + subspecificEpithet);
-                    subspecificTaxon.setPathNames(taxon.getPathNames() + CharsetConstant.SEPARATOR + "subspecificEpithet");
-                    subspecificTaxon.setAuthorship(subspecificAuthorship);
-                    String suspecificId = taxon.getExternalId() + "&subspecies=" + subspecificEpithet;
-                    subspecificTaxon.setExternalId(suspecificId);
-                    subspecificTaxon.setExternalUrl(suspecificId);
-                    return subspecificTaxon;
-                });
+                            String[] s = subspecificEpithetAndAuthor.split(" ");
+                            String subspecificEpithet = s[0];
+                            String subspecificAuthorship = StringUtils.trim(RegExUtils.replaceFirst(subspecificEpithetAndAuthor, subspecificEpithet, ""));
+                            Taxon subspecificTaxon = TaxonUtil.copy(taxon);
+                            subspecificTaxon.setName(taxon.getName() + " " + subspecificEpithet);
+                            subspecificTaxon.setPath(taxon.getPath() + CharsetConstant.SEPARATOR + subspecificEpithet);
+                            subspecificTaxon.setPathNames(taxon.getPathNames() + CharsetConstant.SEPARATOR + "subspecificEpithet");
+                            subspecificTaxon.setAuthorship(subspecificAuthorship);
+                            String suspecificId = taxon.getExternalId() + "&subspecies=" + subspecificEpithet;
+                            subspecificTaxon.setExternalId(suspecificId);
+                            subspecificTaxon.setExternalUrl(suspecificId);
+                            return subspecificTaxon;
+                        });
 
                 subspeciesTaxa.forEach(t -> {
                     registerTaxon(taxonMap, name2nodeIds, t.getExternalId(), t);

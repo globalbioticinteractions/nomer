@@ -8,13 +8,10 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
-import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -33,18 +30,37 @@ import static org.hamcrest.core.IsNull.nullValue;
 public class NCBITaxonServiceTest {
 
     @Test
-    public void enrich() throws PropertyEnricherException {
+    public void enrichSuperkingdom() throws PropertyEnricherException {
         NCBITaxonService service = createService();
 
         String externalId = "NCBI:2";
         Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, externalId)));
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bacteria"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:2"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Bacteria"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:2"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("superkingdom"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is(""));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Bacteria"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:2"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("superkingdom"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is(""));
+    }
+
+    @Test
+    public void enrichSpecies() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        String externalId = "NCBI:385028";
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, externalId)));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Anteholosticha manca"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:385028"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Kahl, 1932) Berger, 2003"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:584654 | NCBI:385028"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(" | Anteholosticha manca"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is(" | (Kahl, 1932) Berger, 2003"));
     }
 
     @Test
@@ -298,14 +314,21 @@ public class NCBITaxonServiceTest {
             put("2", "two name");
         }};
 
+        Map<String, List<String>> authorityNames = new TreeMap<String, List<String>>() {{
+            put("1", Arrays.asList("one name Doe 2021"));
+            put("2", Arrays.asList("two name Doe 1758"));
+        }};
 
-        NCBITaxonService.denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxonNames);
+
+        NCBITaxonService.denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxonNames, authorityNames);
 
         Taxon actual = TaxonUtil.mapToTaxon(taxonMapDenormalized.get("1"));
         assertThat(actual.getPath(), is("two name | one name"));
         assertThat(actual.getPathIds(), is("2 | 1"));
         assertThat(actual.getPathNames(), is("rank two | rank one"));
+        assertThat(actual.getPathAuthorships(), is("Doe 1758 | Doe 2021"));
         assertThat(actual.getRank(), is("rank one"));
+        assertThat(actual.getAuthorship(), is("Doe 2021"));
         assertThat(actual.getName(), is("one name"));
         assertThat(actual.getExternalId(), is("1"));
 
@@ -313,9 +336,11 @@ public class NCBITaxonServiceTest {
         assertThat(two.getPath(), is("two name"));
         assertThat(two.getPathIds(), is("2"));
         assertThat(two.getPathNames(), is("rank two"));
-        assertThat(two.getRank(), is("rank two"));
+        assertThat(two.getPathAuthorships(), is("Doe 1758"));
         assertThat(two.getName(), is("two name"));
         assertThat(two.getExternalId(), is("2"));
+        assertThat(two.getRank(), is("rank two"));
+        assertThat(two.getAuthorship(), is("Doe 1758"));
 
 
     }
@@ -325,11 +350,12 @@ public class NCBITaxonServiceTest {
         Map<String, String> nameMap = new TreeMap<>();
         Map<String, List<String>> nameIds = new TreeMap<>();
         Map<String, List<String>> commonNameIds = new TreeMap<>();
+        Map<String, List<String>> nameAuthorities = new TreeMap<>();
         Map<String, List<String>> synonymIds = new TreeMap<>();
 
         InputStream namesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/ncbi/names.dmp");
 
-        NCBITaxonService.parseNames(namesStream, nameMap, nameIds, commonNameIds, synonymIds);
+        NCBITaxonService.parseNames(namesStream, nameMap, nameIds, commonNameIds, synonymIds, nameAuthorities);
 
         assertThat(nameMap.size(), is(3));
         assertThat(nameMap.get("NCBI:1"), is("root"));
@@ -339,6 +365,9 @@ public class NCBITaxonServiceTest {
         assertThat(nameIds.get("Anteholosticha manca"), hasItem("NCBI:385028"));
         assertThat(synonymIds.get("Holosticha manca"), hasItem("NCBI:385028"));
         assertThat(commonNameIds.get("eubacteria"), hasItem("NCBI:2"));
+        assertThat(nameAuthorities.get("NCBI:385028").size(), is(2));
+        assertThat(nameAuthorities.get("NCBI:385028"), hasItem("Holosticha manca Kahl, 1932"));
+        assertThat(nameAuthorities.get("NCBI:385028"), hasItem("Anteholosticha manca (Kahl, 1932) Berger, 2003"));
     }
 
 

@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class NCBITaxonService extends PropertyEnricherSimple implements TermMatcher {
@@ -47,6 +48,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
     private static final String NAME_IDS = "nameIds";
     private static final String SYNONYM_IDS = "synonymIds";
     private static final String COMMON_NAME_IDS = "commonNamesIds";
+    private static final String AUTHORITY_IDS = "authorityIds";
 
 
     private final TermMatcherContext ctx;
@@ -54,6 +56,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
     private BTreeMap<String, List<String>> nameIds = null;
     private BTreeMap<String, List<String>> synonymIds = null;
     private BTreeMap<String, List<String>> commonNameIds = null;
+    private BTreeMap<String, List<String>> authoritiesIds = null;
     private BTreeMap<String, String> mergedNodes = null;
     private BTreeMap<String, Map<String, String>> ncbiDenormalizedNodes = null;
 
@@ -224,6 +227,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
             nameIds = db.getTreeMap(NAME_IDS);
             synonymIds = db.getTreeMap(SYNONYM_IDS);
             commonNameIds = db.getTreeMap(COMMON_NAME_IDS);
+            authoritiesIds = db.getTreeMap(AUTHORITY_IDS);
         } else {
             LOG.info("NCBI taxonomy importing...");
             StopWatch watch = new StopWatch();
@@ -271,6 +275,12 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .valueSerializer(Serializer.JAVA)
                     .make();
 
+            authoritiesIds = db
+                    .createTreeMap(AUTHORITY_IDS)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
+                    .make();
+
 
             try {
                 parseMerged(mergedNodes, ctx.retrieve(getMergedNodesUrl()));
@@ -285,7 +295,14 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .make();
 
             try {
-                parseNames(ctx.retrieve(getNamesUrl()), ncbiNames, nameIds, commonNameIds, synonymIds);
+                parseNames(
+                        ctx.retrieve(getNamesUrl()),
+                        ncbiNames,
+                        nameIds,
+                        commonNameIds,
+                        synonymIds,
+                        authoritiesIds
+                );
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse NCBI nodes", e);
             }
@@ -296,7 +313,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                     .keySerializer(BTreeKeySerializer.STRING)
                     .valueSerializer(Serializer.JAVA)
                     .make();
-            denormalizeTaxa(ncbiNodes, ncbiDenormalizedNodes, childParent, ncbiNames);
+            denormalizeTaxa(ncbiNodes, ncbiDenormalizedNodes, childParent, ncbiNames, authoritiesIds);
 
             watch.stop();
             TaxonCacheService.logCacheLoadStats(watch.getTime(), ncbiNodes.size(), LOG);
@@ -353,24 +370,37 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         }
     }
 
-    static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonMapDenormalized, Map<String, String> childParent, Map<String, String> taxonNames) {
+    static void denormalizeTaxa(
+            Map<String, Map<String, String>> taxonMap,
+            Map<String, Map<String, String>> taxonMapDenormalized,
+            Map<String, String> childParent,
+            Map<String, String> taxonNames,
+            Map<String, List<String>> authoritiesIds) {
         Set<Map.Entry<String, Map<String, String>>> taxa = taxonMap.entrySet();
         for (Map.Entry<String, Map<String, String>> taxon : taxa) {
-            denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxonNames, taxon);
+            denormalizeTaxa(taxonMap, taxonMapDenormalized, childParent, taxonNames, taxon, authoritiesIds);
         }
     }
 
-    private static void denormalizeTaxa(Map<String, Map<String, String>> taxonMap, Map<String, Map<String, String>> taxonEnrichMap, Map<String, String> childParent, Map<String, String> names, Map.Entry<String, Map<String, String>> taxon) {
+    private static void denormalizeTaxa(
+            Map<String, Map<String, String>> taxonMap,
+            Map<String, Map<String, String>> taxonEnrichMap,
+            Map<String, String> childParent,
+            Map<String, String> names,
+            Map.Entry<String, Map<String, String>> taxon,
+            Map<String, List<String>> authorityIds) {
         Map<String, String> childTaxon = taxon.getValue();
-        List<String> pathNames = new ArrayList<>();
-        List<String> pathIds = new ArrayList<>();
         List<String> path = new ArrayList<>();
+        List<String> pathIds = new ArrayList<>();
+        List<String> pathNames = new ArrayList<>();
+        List<String> pathAuthorships = new ArrayList<>();
 
         Taxon origTaxon = TaxonUtil.mapToTaxon(childTaxon);
 
-        String str = names.get(origTaxon.getExternalId());
-        origTaxon.setName(str);
-        path.add(StringUtils.defaultIfBlank(str, ""));
+        String name = names.get(origTaxon.getExternalId());
+        origTaxon.setName(name);
+        path.add(StringUtils.defaultIfBlank(name, ""));
+
         String externalId = origTaxon.getExternalId();
         origTaxon.setExternalId(externalId);
         pathIds.add(StringUtils.defaultIfBlank(externalId, ""));
@@ -378,33 +408,56 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         origTaxon.setRank(origTaxon.getRank());
         pathNames.add(StringUtils.defaultIfBlank(origTaxon.getRank(), ""));
 
+        String authorship = getAuthorshipById(authorityIds, name, origTaxon.getExternalId());
+        origTaxon.setAuthorship(authorship);
+        pathAuthorships.add(StringUtils.defaultIfBlank(origTaxon.getAuthorship(), ""));
+
         String parent = childParent.get(taxon.getKey());
         while (StringUtils.isNotBlank(parent) && !pathIds.contains(parent)) {
             Map<String, String> stringStringMap = taxonMap.get(parent);
             if (stringStringMap != null) {
                 Taxon parentTaxon = TaxonUtil.mapToTaxon(stringStringMap);
-                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
+                String parentName = names.get(parentTaxon.getExternalId());
+                path.add(StringUtils.defaultIfBlank(parentName, ""));
+
+                String parentAuthorship = getAuthorshipById(authorityIds, parentName, parentTaxon.getExternalId());
+
                 pathIds.add(StringUtils.defaultIfBlank(parentTaxon.getExternalId(), ""));
-                path.add(StringUtils.defaultIfBlank(names.get(parentTaxon.getExternalId()), ""));
+                pathNames.add(StringUtils.defaultIfBlank(parentTaxon.getRank(), ""));
+                pathAuthorships.add(StringUtils.defaultIfBlank(parentAuthorship, ""));
             }
             parent = childParent.get(parent);
         }
 
-        Collections.reverse(pathNames);
-        Collections.reverse(pathIds);
         Collections.reverse(path);
+        Collections.reverse(pathIds);
+        Collections.reverse(pathNames);
+        Collections.reverse(pathAuthorships);
 
         origTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
         origTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
         origTaxon.setPathNames(StringUtils.join(pathNames, CharsetConstant.SEPARATOR));
+        origTaxon.setPathAuthorships(StringUtils.join(pathAuthorships, CharsetConstant.SEPARATOR));
 
         taxonEnrichMap.put(taxon.getKey(), TaxonUtil.taxonToMap(origTaxon));
+    }
+
+    private static String getAuthorshipById(Map<String, List<String>> authorityIds, String name, String externalId) {
+        List<String> authorships = authorityIds.get(externalId);
+        List<String> collect = authorships == null
+                ? Collections.emptyList()
+                : authorships.stream().filter(auth -> StringUtils.startsWith(auth, name)).collect(Collectors.toList());
+
+        return collect.size() == 0
+                ? ""
+                : StringUtils.defaultIfBlank(StringUtils.trim(StringUtils.replace(collect.get(0), name, "")), "");
     }
 
     static void parseNames(InputStream resourceAsStream, Map<String, String> nameMap,
                            Map<String, List<String>> nameIds,
                            Map<String, List<String>> commonNameIds,
-                           Map<String, List<String>> synonymIds) throws PropertyEnricherException {
+                           Map<String, List<String>> synonymIds,
+                           Map<String, List<String>> authorityIds) throws PropertyEnricherException {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
         String line;
@@ -434,15 +487,15 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                             "teleomorph",
                             "type material");
 
+                    String ncbiTaxonId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
                     if (StringUtils.equals("scientific name", taxonNameClass)) {
-                        String ncbiTaxonId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
                         nameMap.put(ncbiTaxonId, taxonName);
                         addIdMapEntry(nameIds, taxonName, ncbiTaxonId);
+                    } else if (StringUtils.equals("authority", taxonNameClass)) {
+                        addIdMapEntry(authorityIds, ncbiTaxonId, taxonName);
                     } else if (StringUtils.equals("synonym", taxonNameClass)) {
-                        String ncbiTaxonId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
                         addIdMapEntry(synonymIds, taxonName, ncbiTaxonId);
                     } else if (Arrays.asList("genbank common name", "common name").contains(taxonNameClass)) {
-                        String ncbiTaxonId = TaxonomyProvider.ID_PREFIX_NCBI + taxId;
                         addIdMapEntry(commonNameIds, taxonName, ncbiTaxonId);
                     }
 
@@ -453,17 +506,17 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         }
     }
 
-    private static void addIdMapEntry(Map<String, List<String>> nameIds,
-                                      String taxonName,
-                                      String key) {
-        List<String> ids = nameIds.get(taxonName);
-        if (ids == null) {
-            ids = new ArrayList<>();
+    private static void addIdMapEntry(Map<String, List<String>> lookupTable,
+                                      String key,
+                                      String value) {
+        List<String> values = lookupTable.get(key);
+        if (values == null) {
+            values = new ArrayList<>();
         }
-        if (!ids.contains(key)) {
-            ids.add(key);
+        if (!values.contains(value)) {
+            values.add(value);
         }
-        nameIds.put(taxonName, ids);
+        lookupTable.put(key, values);
     }
 
     static void parseMerged(Map<String, String> mergedMap, InputStream resourceAsStream) throws PropertyEnricherException {

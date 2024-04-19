@@ -30,6 +30,7 @@ public class CatalogueOfLifeTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Phryganellidae | Phryganella"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("COL:625ZT | COL:63MJH"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is(" | "));
     }
 
     @Test
