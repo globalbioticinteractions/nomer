@@ -58,11 +58,12 @@ public class ITISTaxonService extends CommonLongTaxonService {
                 if (rowValues.length > 24) {
                     String taxId = rowValues[0];
                     String parentTaxId = rowValues[17];
-                    String authorId = rowValues[18];
+                    String authorIdString = rowValues[18];
 
-                    String authorship = "ITIS:AUTHORSHIP:" + authorId;
-                    if (StringUtils.isNumeric(authorId)) {
-                        authorship = authorIds.getOrDefault(Long.parseLong(authorId), authorship);
+                    String authorship = "ITIS:AUTHORSHIP:" + authorIdString;
+                    if (StringUtils.isNumeric(authorIdString)) {
+                        long authorId = Long.parseLong(authorIdString);
+                        authorship = authorId == 0 ? "" : authorIds.getOrDefault(authorId, authorship);
                     }
 
                     String rankKingdomId = rowValues[20];
