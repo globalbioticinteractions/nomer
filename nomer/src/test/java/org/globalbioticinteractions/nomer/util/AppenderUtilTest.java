@@ -35,6 +35,26 @@ public class AppenderUtilTest {
         assertThat(kingdomName, is(""));
     }
 
+    @Test
+    public void getKnownKingdomFromPath() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setPathNames("kingdom | genus | species");
+        taxon.setPath("someKingdom | someGenus | someSpecies");
+        taxon.setPathIds("foo:0 | foo:1 | foo:2");
+        taxon.setPathAuthorships("Doe 2013 | Smith 2031 | Johnson 2012");
+        String kingdomName = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "path.kingdom.name");
+
+        assertThat(kingdomName, is("someKingdom"));
+
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "path.kingdom.authorship");
+
+        assertThat(authorship, is("Doe 2013"));
+    }
+
     @Test   
     public void getUnknownAuthorship() {
         TaxonImpl taxon = new TaxonImpl("someName", "someId");

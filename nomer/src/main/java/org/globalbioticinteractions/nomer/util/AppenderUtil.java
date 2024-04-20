@@ -40,6 +40,7 @@ class AppenderUtil {
         List<String> ranks = splitAndTrim(taxon.getPathNames());
         List<String> ids = splitAndTrim(taxon.getPathIds());
         List<String> names = splitAndTrim(taxon.getPath());
+        List<String> authorships = splitAndTrim(taxon.getPathAuthorships());
         String colValue = "";
         if (StringUtils.equalsIgnoreCase(taxonPropertyName, "id")) {
             colValue = taxon.getExternalId();
@@ -67,10 +68,14 @@ class AppenderUtil {
                 int i1 = ranks.indexOf(rank);
                 if (i1 > -1) {
                     if (split.length > 2) {
-                        boolean shouldUseId = "id".equalsIgnoreCase(split[2]);
-                        colValue = shouldUseId
-                                ? ids.get(i1)
-                                : names.get(i1);
+                        String propertyName = split[2];
+                        if ("id".equalsIgnoreCase(propertyName)) {
+                            colValue = ids.get(i1);
+                        } else if ("name".equalsIgnoreCase(propertyName)) {
+                            colValue = names.get(i1);
+                        } else if ("authorship".equalsIgnoreCase(propertyName)) {
+                            colValue = authorships.get(i1);
+                        }
                     } else {
                         colValue = rank;
                     }

@@ -18,6 +18,8 @@ import java.util.TreeMap;
 
 public abstract class CmdMatcherParams extends TermMatcherContextCaching implements Runnable {
 
+    public static final String NOMER_SCHEMA_INPUT = "nomer.schema.input";
+    public static final String NOMER_SCHEMA_OUTPUT = "nomer.schema.output";
     @CommandLine.Parameters(description = "[matcher]", arity = "1")
     private List<String> matchers = new ArrayList<>();
 
@@ -34,12 +36,12 @@ public abstract class CmdMatcherParams extends TermMatcherContextCaching impleme
 
     @Override
     public Map<Integer, String> getInputSchema() {
-        return parseSchema(getProperty("nomer.schema.input"));
+        return parseSchema(getProperty(NOMER_SCHEMA_INPUT));
     }
 
     @Override
     public Map<Integer, String> getOutputSchema() {
-        return parseSchema(getProperty("nomer.schema.output"));
+        return parseSchema(getProperty(NOMER_SCHEMA_OUTPUT));
     }
 
     public static Map<Integer, String> parseSchema(String schema) {
