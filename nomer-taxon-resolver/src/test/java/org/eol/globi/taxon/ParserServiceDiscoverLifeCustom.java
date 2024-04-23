@@ -52,7 +52,7 @@ public class ParserServiceDiscoverLifeCustom implements org.globalbioticinteract
 
         }
 
-        DiscoverLifeUtilXML.inferStatus(name, matched);
+        DiscoverLifeUtilXML.inferStatus(name);
 
         return matched;
     }

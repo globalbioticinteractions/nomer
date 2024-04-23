@@ -50,7 +50,7 @@ public class DiscoverLifeUtilXMLTest {
 
         List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
 
-        assertThat(taxons.size(), is(21));
+        assertThat(taxons.size(), is(17));
 
         Taxon lastTaxon = taxons.get(taxons.size() - 1);
         assertThat(lastTaxon.getName(), is("Andrena cressonii"));
@@ -88,6 +88,27 @@ public class DiscoverLifeUtilXMLTest {
         assertThat(lastTaxon.getName(), is("Andrena erberi migrans"));
         assertThat(lastTaxon.getAuthorship(), is("Warncke, 1967"));
         assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+    }
+
+    @Test
+    public void parseNamesWithValidSubspecies() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/melissodes_tepida.xml");
+
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxons.size(), is(5));
+
+        Taxon firstTaxon = taxons.get(0);
+        assertThat(firstTaxon.getName(), is("Melissodes tepida"));
+        assertThat(firstTaxon.getAuthorship(), is("Cresson, 1878"));
+        assertThat(firstTaxon.getPath(), is("Melissodes | tepida"));
+        assertThat(firstTaxon.getPathNames(), is("genus | specificEpithet"));
+        assertThat(firstTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+
+        Taxon secondTaxon = taxons.get(2);
+        assertThat(secondTaxon.getName(), is("Melissodes tepidus timberlakei"));
+        assertThat(secondTaxon.getAuthorship(), is("Cockerell, 1926"));
+        assertThat(secondTaxon.getStatus().getName(), is(DiscoverLifeUtilXML.VALID_SUBSPECIES_OF));
     }
 
     @Test

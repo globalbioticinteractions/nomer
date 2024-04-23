@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
+import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
@@ -46,6 +48,7 @@ import static org.eol.globi.taxon.DiscoverLifeUtilXHTML.emitNameRelatedToFocalTa
 public class DiscoverLifeUtilXML {
 
     public static final List<String> RANKS = Arrays.asList("Family", "Subfamily", "Tribe", "Subtribe", "Genus", "Subgenus");
+    public static final String VALID_SUBSPECIES_OF = "VALID_SUBSPECIES_OF";
 
 
     public static void splitRecords(InputStream is, Consumer<String> lineConsumer) {
@@ -94,6 +97,15 @@ public class DiscoverLifeUtilXML {
 
                     for (Taxon relatedTaxon : relatedTaxa) {
                         emitNameRelatedToFocalTaxon(listener, nameMap, TaxonUtil.mapToTaxon(nameMap), TaxonUtil.taxonToMap(relatedTaxon), relatedTaxon);
+                        if (VALID_SUBSPECIES_OF.equalsIgnoreCase(relatedTaxon.getStatus().getName())) {
+                            listener.foundTaxonForTerm(
+                                    null,
+                                    relatedTaxon,
+                                    NameType.HAS_ACCEPTED_NAME,
+                                    relatedTaxon
+                            );
+
+                        }
                     }
 
 
@@ -203,15 +215,20 @@ public class DiscoverLifeUtilXML {
             relatedNames = Stream
                     .of(StringUtils.split(textContent, ";"))
                     .map(StringUtils::trim)
+                    .filter(StringUtils::isNoneBlank)
                     .map(name -> {
-                        String[] nameParts = StringUtils.split(name, ",");
+                        Taxon dummy = new TaxonImpl();
+                        return Pair.of(inferStatus(name), name);
+                    })
+                    .map(name -> {
+                        String[] nameParts = StringUtils.split(name.getRight(), ",");
                         List<String> namesWithoutRemarks = Arrays.asList(nameParts).subList(0, nameParts.length > 2 ? nameParts.length - 1 : nameParts.length);
-                        return StringUtils.join(namesWithoutRemarks, ",");
+                        return Pair.of(name.getLeft(), StringUtils.join(namesWithoutRemarks, ","));
                     })
                     .map(name -> {
                                 try {
-                                    Taxon parsed = parser.parse(null, RegExUtils.replaceAll(name, "_[a-z]+", ""));
-                                    inferStatus(name, parsed);
+                                    Taxon parsed = parser.parse(null, RegExUtils.replaceAll(name.getRight(), "_[a-z]+", ""));
+                                    parsed.setStatus(name.getLeft());
                                     return parsed;
                                 } catch (PropertyEnricherException ex) {
                                     return null;
@@ -243,12 +260,15 @@ public class DiscoverLifeUtilXML {
         return name;
     }
 
-    public static void inferStatus(String name, Taxon matched) {
-        if (matched != null) {
-            NameType status = StringUtils.contains(name, "_sic") ? NameType.TRANSLATES_TO : NameType.SYNONYM_OF;
-            status = StringUtils.contains(name, "_homonym") ? NameType.HOMONYM_OF : status;
-            matched.setStatus(new TermImpl(status.name(), status.name()));
+    public static Term inferStatus(String name) {
+        String relation = NameType.SYNONYM_OF.name();
+        if (StringUtils.contains(name, "valid subspecies")) {
+            relation = VALID_SUBSPECIES_OF;
+        } else {
+            relation = StringUtils.contains(name, "_sic") ? NameType.TRANSLATES_TO.name() : relation;
+            relation = StringUtils.contains(name, "_homonym") ? NameType.HOMONYM_OF.name() : relation;
         }
+        return new TermImpl(relation, relation);
     }
 
 }
