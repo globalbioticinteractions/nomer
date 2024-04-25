@@ -100,6 +100,7 @@ public class DiscoverLifeUtilXMLTest {
 
         Taxon firstTaxon = taxons.get(0);
         assertThat(firstTaxon.getName(), is("Melissodes tepida"));
+        assertThat(firstTaxon.getRank(), is("species"));
         assertThat(firstTaxon.getAuthorship(), is("Cresson, 1878"));
         assertThat(firstTaxon.getPath(), is("Melissodes | tepida"));
         assertThat(firstTaxon.getPathNames(), is("genus | specificEpithet"));
@@ -107,6 +108,7 @@ public class DiscoverLifeUtilXMLTest {
 
         Taxon secondTaxon = taxons.get(2);
         assertThat(secondTaxon.getName(), is("Melissodes tepidus timberlakei"));
+        assertThat(secondTaxon.getRank(), is("subspecies"));
         assertThat(secondTaxon.getAuthorship(), is("Cockerell, 1926"));
         assertThat(secondTaxon.getStatus().getName(), is(DiscoverLifeUtilXML.VALID_SUBSPECIES_OF));
     }

@@ -96,7 +96,6 @@ public class DiscoverLifeUtilXML {
                     List<Taxon> relatedTaxa = parseRelatedNames(doc, parser);
 
                     for (Taxon relatedTaxon : relatedTaxa) {
-                        emitNameRelatedToFocalTaxon(listener, nameMap, TaxonUtil.mapToTaxon(nameMap), TaxonUtil.taxonToMap(relatedTaxon), relatedTaxon);
                         if (VALID_SUBSPECIES_OF.equalsIgnoreCase(relatedTaxon.getStatus().getName())) {
                             listener.foundTaxonForTerm(
                                     null,
@@ -104,7 +103,8 @@ public class DiscoverLifeUtilXML {
                                     NameType.HAS_ACCEPTED_NAME,
                                     relatedTaxon
                             );
-
+                        } else {
+                            emitNameRelatedToFocalTaxon(listener, nameMap, TaxonUtil.mapToTaxon(nameMap), TaxonUtil.taxonToMap(relatedTaxon), relatedTaxon);
                         }
                     }
 

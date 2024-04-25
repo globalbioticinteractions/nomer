@@ -29,7 +29,9 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
             taxonParsed.setName(nameParsed.canonicalNameWithoutAuthorship());
             taxonParsed.setAuthorship(nameParsed.authorshipComplete());
             if (!nameParsed.getRank().isAmbiguous()) {
-                taxonParsed.setRank(StringUtils.lowerCase(nameParsed.getRank().toString()));
+                String rankName = StringUtils.lowerCase(nameParsed.getRank().toString());
+                rankName = StringUtils.replace(rankName, "infraspecific_name", "subspecies");
+                taxonParsed.setRank(rankName);
                 List<String> path = new ArrayList<>();
                 List<String> pathNames = new ArrayList<>();
                 String genus = nameParsed.getGenus();
