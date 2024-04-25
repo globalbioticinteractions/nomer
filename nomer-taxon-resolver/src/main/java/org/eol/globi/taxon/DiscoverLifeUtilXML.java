@@ -210,14 +210,11 @@ public class DiscoverLifeUtilXML {
 
 
         if (commonNameNode != null) {
+            String removeWhitespace = StringUtils.replace(commonNameNode.getTextContent(), " )", ")");
             String textContent =
                     ensureDelimitersWithNote(
                             ensureDelimiters(
-                                    StringUtils.replace(
-                                            StringUtils.replace(
-                                                    StringUtils.replace(commonNameNode.getTextContent(), " )", ")")
-                                                    , "unpublished synonymy of Snelling", ""),
-                                            "subgeneric placement by Ascher", "")
+                                    removeNotes(removeWhitespace)
                             )
                     );
             relatedNames = Stream
@@ -258,6 +255,29 @@ public class DiscoverLifeUtilXML {
                     .filter(Objects::nonNull);
         }
         return relatedNames.collect(Collectors.toList());
+    }
+
+    private static String removeNotes(String removeWhitespace) {
+        List<String> notes = Arrays.asList(
+                "unpublished synonymy of Snelling",
+                "subgeneric placement by Ascher",
+                "probable unpublished synonym by Ascher",
+                "possible unpublished synonym proposed by Ascher",
+                "unpublished probable synonym of Ascher",
+                "unpublished synonym of Ascher",
+                "unpublished synonymy by Ascher",
+                "unpublished synonymy of Ascher",
+                "unpublished synonym proposed by Ascher",
+                "new synonym of Ascher",
+                "subgeneric placement confirmed by Ascher",
+                "unpublished combination by Ascher",
+                "new combination of Ascher unpublished");
+
+        for (String note : notes) {
+            removeWhitespace = StringUtils.remove(removeWhitespace, note);
+        }
+
+        return removeWhitespace;
     }
 
     public static String scrubNotesFromName(String providedName) {
