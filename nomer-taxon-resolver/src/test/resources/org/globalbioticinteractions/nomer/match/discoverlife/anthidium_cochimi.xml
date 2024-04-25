@@ -1,0 +1,36 @@
+<set level="species"><name>Anthidium cochimi</name><authority>Snelling, 1992</authority>
+<path>Insecta/Hymenoptera/Apoidea/Megachilidae</path>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Snelling</state>
+<character>Country</character>
+	<state>Mexico</state>
+	<state>United States</state>
+<character>Family</character>
+	<state>Megachilidae</state>
+<character>Genus</character>
+	<state>Anthidium</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or none</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or none</state>
+<character>Museum</character>
+	<state>Other</state>
+<character>Original genus</character>
+	<state>Anthidium</state>
+<character>Region</character>
+	<state>North America</state>
+<character>Subfamily</character>
+	<state>Megachilinae</state>
+<character>Subgenus</character>
+	<state>Anthidium</state>
+<character>Subtribe</character>
+	<state>Anthidiina</state>
+<character>Tribe</character>
+	<state>Anthidiini</state>
+</attributes>
+</set>

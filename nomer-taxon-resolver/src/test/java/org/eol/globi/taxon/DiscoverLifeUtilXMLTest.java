@@ -59,6 +59,83 @@ public class DiscoverLifeUtilXMLTest {
     }
 
     @Test
+    public void parseRelatedNamesWithReplacementName() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/osmia_versicolor.xml");
+
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxons.size(), is(5));
+
+        Taxon lastTaxon = taxons.get(2);
+        assertThat(lastTaxon.getName(), is("Megachile algarbiensis"));
+        assertThat(lastTaxon.getAuthorship(), is("Strand, 1917"));
+        assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+    }
+
+    @Test
+    public void parseRelatedNamesWithoutRelatedNames() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/anthidium_cochimi.xml");
+
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxons.size(), is(0));
+
+        Map<String, String> focalTaxon = DiscoverLifeUtilXML.parseFocalTaxon(doc);
+
+        Taxon lastTaxon = TaxonUtil.mapToTaxon(focalTaxon);
+
+        assertThat(lastTaxon.getName(), is("Anthidium cochimi"));
+        assertThat(lastTaxon.getAuthorship(), is("Snelling, 1992"));
+        assertThat(lastTaxon.getStatus().getName(), is("accepted"));
+    }
+
+    @Test
+    public void parseRelatedNamesDanglingParenthesis() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/pseudoanthidium_tropicum.xml");
+
+        List<Taxon> taxa = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxa.size(), is(3));
+
+
+        Taxon lastTaxon = taxa.get(taxa.size() - 1);
+
+        assertThat(lastTaxon.getName(), is("Pseudoanthidium nanum tropicum"));
+        assertThat(lastTaxon.getAuthorship(), is("(Warncke, 1982)"));
+    }
+
+    @Test
+    public void parseRelatedNamesUnpublishedSynonymy() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/nomada_vicina.xml");
+
+        List<Taxon> taxa = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxa.size(), is(3));
+
+
+        Taxon lastTaxon = taxa.get(taxa.size() - 1);
+
+        assertThat(lastTaxon.getName(), is("Nomada vicina stevensi"));
+        assertThat(lastTaxon.getAuthorship(), is("Swenk, 1913"));
+    }
+
+    @Test
+    public void parseRelatedNamesSubgenericPlacement() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/megachile_scheviakovi.xml");
+
+        List<Taxon> taxa = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxa.size(), is(1));
+
+
+        Taxon lastTaxon = taxa.get(taxa.size() - 1);
+
+        assertThat(lastTaxon.getName(), is("Megachile scheviakovi"));
+        assertThat(lastTaxon.getAuthorship(), is("Cockerell, 1928"));
+    }
+
+
+    @Test
     public void parseNamesWithStatus() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
         Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/andrena_erberi.xml");
 
@@ -216,6 +293,15 @@ public class DiscoverLifeUtilXMLTest {
         name = DiscoverLifeUtilXML.ensureDelimitersWithNote(name);
 
         assertThat(name, is("Centris (Melanocentris) rhodoprocta (Moure and Seabra, 1960), replacement name ;Centris (Melacentris) rufosuffusa Cockerell, 1900"));
+    }
+
+
+    @Test
+    public void scrubNotesFromName() {
+        assertThat(
+                DiscoverLifeUtilXML.scrubNotesFromName("Donald duckus_homonym"),
+                is("Donald duckus")
+        );
     }
 
 

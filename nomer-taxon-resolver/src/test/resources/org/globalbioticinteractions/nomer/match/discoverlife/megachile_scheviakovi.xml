@@ -1,0 +1,36 @@
+<set level="species"><name>Megachile scheviakovi</name><authority>Cockerell, 1928</authority>
+<path>Insecta/Hymenoptera/Apoidea/Megachilidae</path>
+<common_name language="english">Megachile &#40;Megachile&#41; scheviakovi Cockerell, 1928, subgeneric placement by Ascher</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Cockerell</state>
+<character>Country</character>
+	<state>Russia</state>
+<character>Family</character>
+	<state>Megachilidae</state>
+<character>Genus</character>
+	<state>Megachile</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_none</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_none</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Megachile</state>
+<character>Region</character>
+	<state>Old World</state>
+<character>Subfamily</character>
+	<state>Megachilinae</state>
+<character>Subgenus</character>
+	<state>Uncertain</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Megachilini</state>
+</attributes>
+</set>

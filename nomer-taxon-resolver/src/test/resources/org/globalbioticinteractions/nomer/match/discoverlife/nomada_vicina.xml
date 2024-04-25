@@ -1,0 +1,37 @@
+<set level="species"><name>Nomada vicina</name><authority>Cresson, 1863</authority>
+<path>Insecta/Hymenoptera/Apoidea/Apidae</path>
+<common_name language="english">Nomada beulahensis Cockerell, 1903, unpublished synonymy of Snelling; Nomada &#40;Nomada&#41; vicina stevensi Swenk, 1913; Nomada vicina stevensi Swenk, 1913, unpublished synonymy of Snelling</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Cresson</state>
+<character>Country</character>
+	<state>Canada</state>
+	<state>United States</state>
+<character>Family</character>
+	<state>Apidae</state>
+<character>Genus</character>
+	<state>Nomada</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Andrena</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or none</state>
+<character>Museum</character>
+	<state>Other</state>
+<character>Original genus</character>
+	<state>Nomada</state>
+<character>Region</character>
+	<state>North America</state>
+<character>Subfamily</character>
+	<state>Nomadinae</state>
+<character>Subgenus</character>
+	<state>None</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Nomadini</state>
+</attributes>
+</set>

@@ -1,0 +1,37 @@
+<set level="species"><name>Pseudoanthidium tropicum</name><authority>&#40;Warncke, 1982&#41;</authority>
+<path>Insecta/Hymenoptera/Apoidea/Megachilidae</path>
+<common_name language="english">Anthidium &#40;Pseudoanthidium&#41; lituratum tropicum Warncke, 1982 ; Pseudoanthidium &#40;Pseudoanthidium&#41; lituratum tropicum &#40;Warncke, 1982 &#41;; Pseudoanthidium &#40;Pseudoanthidium&#41; nanum tropicum &#40;Warncke, 1982 &#41;</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>40</state>
+	<state>Warncke</state>
+<character>Country</character>
+	<state>Iran</state>
+<character>Family</character>
+	<state>Megachilidae</state>
+<character>Genus</character>
+	<state>Pseudoanthidium</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_none</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_none</state>
+<character>Museum</character>
+	<state>Other</state>
+<character>Original genus</character>
+	<state>Anthidium</state>
+<character>Region</character>
+	<state>Old World</state>
+<character>Subfamily</character>
+	<state>Megachilinae</state>
+<character>Subgenus</character>
+	<state>Pseudoanthidium</state>
+<character>Subtribe</character>
+	<state>Anthidiina</state>
+<character>Tribe</character>
+	<state>Anthidiini</state>
+</attributes>
+</set>

@@ -11,7 +11,6 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
-import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -211,23 +210,43 @@ public class DiscoverLifeUtilXML {
 
 
         if (commonNameNode != null) {
-            String textContent = ensureDelimitersWithNote(ensureDelimiters(commonNameNode.getTextContent()));
+            String textContent =
+                    ensureDelimitersWithNote(
+                            ensureDelimiters(
+                                    StringUtils.replace(
+                                            StringUtils.replace(
+                                                    StringUtils.replace(commonNameNode.getTextContent(), " )", ")")
+                                                    , "unpublished synonymy of Snelling", ""),
+                                            "subgeneric placement by Ascher", "")
+                            )
+                    );
             relatedNames = Stream
                     .of(StringUtils.split(textContent, ";"))
                     .map(StringUtils::trim)
                     .filter(StringUtils::isNoneBlank)
-                    .map(name -> {
-                        Taxon dummy = new TaxonImpl();
-                        return Pair.of(inferStatus(name), name);
-                    })
+                    .map(name -> Pair.of(inferStatus(name), name))
                     .map(name -> {
                         String[] nameParts = StringUtils.split(name.getRight(), ",");
                         List<String> namesWithoutRemarks = Arrays.asList(nameParts).subList(0, nameParts.length > 2 ? nameParts.length - 1 : nameParts.length);
                         return Pair.of(name.getLeft(), StringUtils.join(namesWithoutRemarks, ","));
                     })
+                    .filter(name -> {
+                        String[] notes = {
+                                "replacement name",
+                                "possible synonym",
+                                "Probable synonym",
+                                "incorrect spelling",
+                                "Incorrect termination",
+                                "emend",
+                                "valid subspecies",
+                                "citation",
+                                "validated"
+                        };
+                        return !StringUtils.containsAnyIgnoreCase(name.getRight(), notes);
+                    })
                     .map(name -> {
                                 try {
-                                    Taxon parsed = parser.parse(null, RegExUtils.replaceAll(name.getRight(), "_[a-z]+", ""));
+                                    Taxon parsed = parser.parse(null, scrubNotesFromName(name.getRight()));
                                     parsed.setRank(narrowRankTypeIfNeeded(parsed));
                                     parsed.setStatus(name.getLeft());
                                     return parsed;
@@ -239,6 +258,10 @@ public class DiscoverLifeUtilXML {
                     .filter(Objects::nonNull);
         }
         return relatedNames.collect(Collectors.toList());
+    }
+
+    public static String scrubNotesFromName(String providedName) {
+        return RegExUtils.replaceAll(providedName, "_[a-z]+", "");
     }
 
     private static String narrowRankTypeIfNeeded(Taxon parsed) {
@@ -267,7 +290,7 @@ public class DiscoverLifeUtilXML {
 
     public static Term inferStatus(String name) {
         String relation = NameType.SYNONYM_OF.name();
-        if (StringUtils.contains(name, "valid subspecies")) {
+        if (StringUtils.containsIgnoreCase(name, "valid subspecies")) {
             relation = VALID_SUBSPECIES_OF;
         } else {
             relation = StringUtils.contains(name, "_sic") ? NameType.TRANSLATES_TO.name() : relation;
