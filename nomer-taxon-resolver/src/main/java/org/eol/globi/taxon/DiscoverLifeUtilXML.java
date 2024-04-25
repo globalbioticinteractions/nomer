@@ -228,6 +228,7 @@ public class DiscoverLifeUtilXML {
                     .map(name -> {
                                 try {
                                     Taxon parsed = parser.parse(null, RegExUtils.replaceAll(name.getRight(), "_[a-z]+", ""));
+                                    parsed.setRank(narrowRankTypeIfNeeded(parsed));
                                     parsed.setStatus(name.getLeft());
                                     return parsed;
                                 } catch (PropertyEnricherException ex) {
@@ -238,6 +239,10 @@ public class DiscoverLifeUtilXML {
                     .filter(Objects::nonNull);
         }
         return relatedNames.collect(Collectors.toList());
+    }
+
+    private static String narrowRankTypeIfNeeded(Taxon parsed) {
+        return StringUtils.replace(parsed.getRank(), "infraspecific_name", "subspecies");
     }
 
     public static String ensureDelimiters(String name) {
