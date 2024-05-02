@@ -217,14 +217,14 @@ public class DiscoverLifeUtilXHTMLTest {
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Andrena accepta"));
-        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+accepta"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Andrena+accepta"));
         assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Viereck, 1916"));
         assertThat(((Taxon) firstNameRelation.getLeft()).getRank(), Is.is("species"));
         assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
 
         Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
         assertThat(secondNameRelation.getLeft().getName(), Is.is("Andrena pulchella"));
-        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Andrena+pulchella"));
+        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Andrena+pulchella"));
         assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("Robertson, 1891"));
         assertThat(secondNameRelation.getMiddle(), Is.is(NameType.HOMONYM_OF));
         assertNull(secondNameRelation.getRight());
@@ -355,7 +355,7 @@ public class DiscoverLifeUtilXHTMLTest {
 
         Triple<Term, NameType, Taxon> secondNameRelation = relatedTaxa.get(1);
         assertThat(secondNameRelation.getLeft().getName(), Is.is("Xylocopa (Xylocopa) rufipes var inconspicua"));
-        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Xylocopa+(Xylocopa)+rufipes+var+inconspicua"));
+        assertThat(secondNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Xylocopa+(Xylocopa)+rufipes+var+inconspicua"));
         assertThat(((Taxon) secondNameRelation.getLeft()).getAuthorship(), Is.is("Maa, 1937"));
         assertThat(secondNameRelation.getMiddle(), Is.is(NameType.SYNONYM_OF));
         assertThat(secondNameRelation.getRight().getName(), Is.is("Xylocopa inconspicua"));

@@ -39,7 +39,7 @@ public class DiscoverLifeUtilXHTML {
     private static final List<String> PATH_STATIC = Arrays.asList("Animalia", "Arthropoda", "Insecta", "Hymenoptera");
     public static final String URL_ENDPOINT_DISCOVER_LIFE = "https://www.discoverlife.org";
     public static final String URL_ENDPOINT_DISCOVER_LIFE_SEARCH = URL_ENDPOINT_DISCOVER_LIFE +
-            "/mp/20q?search=";
+            "/mp/20q?guide=Apoidea_species&search=";
     private static final List<String> PATH_STATIC_IDS = PATH_STATIC
             .stream()
             .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
@@ -96,7 +96,7 @@ public class DiscoverLifeUtilXHTML {
 
             currentNode = authorshipNode;
 
-            focalTaxon.setExternalId(StringUtils.prependIfMissing(id, URL_ENDPOINT_DISCOVER_LIFE));
+            focalTaxon.setExternalId(StringUtils.prependIfMissing(StringUtils.remove(id, "/mp/20q?search="), URL_ENDPOINT_DISCOVER_LIFE_SEARCH));
 
             emitNameRelation(listener, taxonMap, focalTaxon);
             handleRelatedNames(listener, taxonMap, currentNode, focalTaxon);
@@ -346,7 +346,7 @@ public class DiscoverLifeUtilXHTML {
         List<String> pathIds = new ArrayList<String>(PATH_STATIC_IDS) {{
             add(URL_ENDPOINT_DISCOVER_LIFE + familyId);
             if (StringUtils.isNoneBlank(genusName)) {
-                add(URL_ENDPOINT_DISCOVER_LIFE + "/mp/20q?search=" + genusName);
+                add(URL_ENDPOINT_DISCOVER_LIFE_SEARCH + genusName);
             }
             add(URL_ENDPOINT_DISCOVER_LIFE + t.getId());
         }};
