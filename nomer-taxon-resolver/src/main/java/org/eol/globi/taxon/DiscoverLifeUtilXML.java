@@ -11,6 +11,7 @@ import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -77,6 +78,7 @@ public class DiscoverLifeUtilXML {
     }
 
     public static void parse(InputStream is, final TermMatchListener listener, final org.globalbioticinteractions.nomer.match.ParserService parser) throws ParserConfigurationException {
+        List<String> emittedHigherOrderPaths = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -91,6 +93,15 @@ public class DiscoverLifeUtilXML {
                     Document doc = builder.parse(recordInputStream);
                     Map<String, String> nameMap = parseFocalTaxon(doc);
                     DiscoverLifeUtilXHTML.emitNameRelation(listener, nameMap, TaxonUtil.mapToTaxon(nameMap));
+
+                    List<Taxon> higherOrder = higherOrderTaxaFor(nameMap);
+                    for (Taxon taxon : higherOrder) {
+                        if (!StringUtils.equals(taxon.getName(), "None")
+                                && !emittedHigherOrderPaths.contains(taxon.getPath())) {
+                            listener.foundTaxonForTerm(null, taxon, NameType.HAS_ACCEPTED_NAME, taxon);
+                            emittedHigherOrderPaths.add(taxon.getPath());
+                        }
+                    }
 
                     List<Taxon> relatedTaxa = parseRelatedNames(doc, parser);
 
@@ -319,4 +330,34 @@ public class DiscoverLifeUtilXML {
         return new TermImpl(relation, relation);
     }
 
+    public static List<Taxon> higherOrderTaxaFor(Map<String, String> focalTaxon) {
+        List<Taxon> higherOrder = new ArrayList<>();
+        Taxon taxon = TaxonUtil.mapToTaxon(focalTaxon);
+
+        String taxonPath = taxon.getPath();
+        String ranks = taxon.getPathNames();
+
+        if (StringUtils.isNoneBlank(taxonPath) && StringUtils.isNoneBlank(ranks)) {
+            List<String> pathElems = new ArrayList<>(Arrays.asList(StringUtils.splitByWholeSeparator(taxonPath, CharsetConstant.SEPARATOR)));
+            List<String> rankElems = new ArrayList<>(Arrays.asList(StringUtils.splitByWholeSeparator(ranks, CharsetConstant.SEPARATOR)));
+
+            if (pathElems.size() == rankElems.size()) {
+                for (int i = 1; i < pathElems.size(); i++) {
+                    int higherOrderIndex = pathElems.size() - i;
+                    List<String> truncatedPath = pathElems.subList(0, higherOrderIndex);
+                    List<String> truncatedPathNames = rankElems.subList(0, higherOrderIndex);
+                    Taxon truncated = new TaxonImpl();
+                    String name = pathElems.get(higherOrderIndex - 1);
+                    truncated.setName(name);
+                    String higherOrderName = rankElems.get(higherOrderIndex - 1);
+                    truncated.setRank(higherOrderName);
+                    truncated.setExternalId(DiscoverLifeUtilXHTML.URL_ENDPOINT_DISCOVER_LIFE_SEARCH + name);
+                    truncated.setPath(StringUtils.join(truncatedPath, CharsetConstant.SEPARATOR));
+                    truncated.setPathNames(StringUtils.join(truncatedPathNames, CharsetConstant.SEPARATOR));
+                    higherOrder.add(truncated);
+                }
+            }
+        }
+        return higherOrder;
+    }
 }

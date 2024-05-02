@@ -30,9 +30,7 @@ public class DiscoverLifeUtilXMLTest {
 
     @Test
     public void parseXMLRecord() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
-        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
-
-        Map<String, String> nameMap = DiscoverLifeUtilXML.parseFocalTaxon(doc);
+        Map<String, String> nameMap = getFocalTaxon();
 
         Taxon taxon = TaxonUtil.mapToTaxon(nameMap);
         assertThat(taxon.getName(), is("Agapostemon texanus"));
@@ -42,6 +40,42 @@ public class DiscoverLifeUtilXMLTest {
         assertThat(taxon.getAuthorship(), is("Cresson, 1872"));
         assertThat(taxon.getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Halictidae | Halictinae | Halictini | Caenohalictina | Agapostemon | Agapostemon | Agapostemon texanus"));
         assertThat(taxon.getPathNames(), is("kingdom | phylum | class | order | family | subfamily | tribe | subtribe | genus | subgenus | species"));
+    }
+
+    private Map<String, String> getFocalTaxon() throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/agapostemon_texanus.xml");
+
+        return DiscoverLifeUtilXML.parseFocalTaxon(doc);
+    }
+
+    @Test
+    public void deriveHigherOrderXMLRecord() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+
+        List<Taxon> higherOrder = DiscoverLifeUtilXML.higherOrderTaxaFor(getFocalTaxon());
+
+
+        assertThat(higherOrder.size(), is(10));
+
+        Taxon subgenus = higherOrder.get(0);
+        assertThat(subgenus.getName(), is("Agapostemon"));
+        assertThat(subgenus.getRank(), is("subgenus"));
+        assertThat(subgenus.getId(), is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Agapostemon"));
+        assertThat(subgenus.getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Halictidae | Halictinae | Halictini | Caenohalictina | Agapostemon | Agapostemon"));
+        assertThat(subgenus.getPathNames(), is("kingdom | phylum | class | order | family | subfamily | tribe | subtribe | genus | subgenus"));
+
+        Taxon genus = higherOrder.get(1);
+        assertThat(genus.getName(), is("Agapostemon"));
+        assertThat(genus.getRank(), is("genus"));
+        assertThat(genus.getId(), is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Agapostemon"));
+        assertThat(genus.getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Halictidae | Halictinae | Halictini | Caenohalictina | Agapostemon"));
+        assertThat(genus.getPathNames(), is("kingdom | phylum | class | order | family | subfamily | tribe | subtribe | genus"));
+
+        Taxon subtribe = higherOrder.get(2);
+        assertThat(subtribe.getName(), is("Caenohalictina"));
+        assertThat(subtribe.getRank(), is("subtribe"));
+        assertThat(subtribe.getId(), is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Caenohalictina"));
+        assertThat(subtribe.getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Halictidae | Halictinae | Halictini | Caenohalictina"));
+        assertThat(subtribe.getPathNames(), is("kingdom | phylum | class | order | family | subfamily | tribe | subtribe"));
     }
 
     @Test
@@ -246,7 +280,7 @@ public class DiscoverLifeUtilXMLTest {
             }
         }, new ParserServiceDiscoverLifeCustom());
 
-        assertThat(records.size(), is(16));
+        assertThat(records.size(), is(24));
 
         Triple<Term, NameType, Taxon> first = records.get(0);
         assertThat(first.getLeft().getName(), is("Andrenidae"));
@@ -254,12 +288,19 @@ public class DiscoverLifeUtilXMLTest {
         assertThat(first.getRight().getName(), is("Andrenidae"));
         assertThat(first.getRight().getRank(), is("family"));
 
+        Triple<Term, NameType, Taxon> second = records.get(2);
+        assertThat(second.getLeft().getName(), is("Colletidae"));
+        assertThat(second.getMiddle(), is(NameType.HAS_ACCEPTED_NAME));
+        assertThat(second.getRight().getName(), is("Colletidae"));
+        assertThat(second.getRight().getRank(), is("family"));
+
         Triple<Term, NameType, Taxon> last = records.get(records.size() - 1);
         assertThat(last.getLeft().getName(), is("Acamptopoeum melanogaster"));
         assertThat(last.getMiddle(), is(NameType.HAS_ACCEPTED_NAME));
         assertThat(last.getRight().getName(), is("Acamptopoeum melanogaster"));
         assertThat(last.getRight().getRank(), is("species"));
         assertThat(last.getRight().getPath(), is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Panurginae | Calliopsini | None | Acamptopoeum | None | Acamptopoeum melanogaster"));
+
     }
 
 
