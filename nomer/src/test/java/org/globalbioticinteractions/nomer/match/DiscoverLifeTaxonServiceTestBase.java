@@ -212,7 +212,7 @@ public abstract class DiscoverLifeTaxonServiceTestBase {
                         if (NameType.HAS_ACCEPTED_NAME.equals(nameType)) {
                             Taxon providedTaxon = (Taxon) providedTerm;
                             assertThat(resolvedTaxon.getName(), Is.is(providedTaxon.getName()));
-                            assertThat(resolvedTaxon.getExternalId(), Is.is("https://www.discoverlife.org/mp/20q?search=Pseudapis+neumayeri"));
+                            assertThat(resolvedTaxon.getExternalId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Pseudapis+neumayeri"));
                             assertThat(resolvedTaxon.getAuthorship(), Is.is("Bossert and Pauly, 2019"));
                             acceptedNameCounter.getAndIncrement();
                         }
@@ -238,7 +238,7 @@ public abstract class DiscoverLifeTaxonServiceTestBase {
                             assertThat(providedTerm.getName(), Is.is("Acamptopoeum argentinum"));
                             assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
                             assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
-                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                            assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Acamptopoeum+argentinum"));
                         }
 
                         counter.getAndIncrement();
@@ -274,11 +274,11 @@ public abstract class DiscoverLifeTaxonServiceTestBase {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.HAS_ACCEPTED_NAME));
                         assertThat(resolvedTaxon.getPath(), Is.is("Animalia | Arthropoda | Insecta | Hymenoptera | Andrenidae | Acamptopoeum | Acamptopoeum argentinum"));
-                        assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?search=Animalia | https://www.discoverlife.org/mp/20q?search=Arthropoda | https://www.discoverlife.org/mp/20q?search=Insecta | https://www.discoverlife.org/mp/20q?search=Hymenoptera | https://www.discoverlife.org/mp/20q?search=Andrenidae | https://www.discoverlife.org/mp/20q?search=Acamptopoeum | https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        assertThat(resolvedTaxon.getPathIds(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Animalia | https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Arthropoda | https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Insecta | https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Hymenoptera | https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Andrenidae | https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Acamptopoeum | https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Acamptopoeum+argentinum"));
                         assertThat(resolvedTaxon.getPathNames(), Is.is("kingdom | phylum | class | order | family | genus | species"));
                         assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
                         assertThat(resolvedTaxon.getRank(), Is.is("species"));
-                        assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Acamptopoeum+argentinum"));
                         counter.getAndIncrement();
                     }
                 });
@@ -298,7 +298,7 @@ public abstract class DiscoverLifeTaxonServiceTestBase {
                         assertThat(providedTerm.getName(), Is.is(providedName));
                         assertThat(nameType, Is.is(NameType.SYNONYM_OF));
                         assertThat(resolvedTaxon.getName(), Is.is("Acamptopoeum argentinum"));
-                        assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Acamptopoeum+argentinum"));
+                        assertThat(resolvedTaxon.getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Acamptopoeum+argentinum"));
                         counter.getAndIncrement();
                     }
                 });
