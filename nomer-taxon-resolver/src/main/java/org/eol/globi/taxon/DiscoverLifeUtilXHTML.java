@@ -42,7 +42,7 @@ public class DiscoverLifeUtilXHTML {
             "/mp/20q?guide=Apoidea_species&search=";
     private static final List<String> PATH_STATIC_IDS = PATH_STATIC
             .stream()
-            .map(x -> StringUtils.prependIfMissing(x, URL_ENDPOINT_DISCOVER_LIFE_SEARCH))
+            .map(DiscoverLifeUtilXHTML::generateExternalId)
             .collect(Collectors.toList());
     private static final List<String> PATH_NAMES_STATIC = Arrays.asList("kingdom", "phylum", "class", "order", "family");
     public static final String HOMONYM_SUFFIX = "_homonym";
@@ -88,7 +88,7 @@ public class DiscoverLifeUtilXHTML {
 
 
             Taxon parsedTaxon = toTaxon(taxonMap);
-            parsedTaxon.setExternalId(id);
+            parsedTaxon.setExternalId(generateExternalId(id));
 
             Taxon focalTaxon = familyNameNode == null
                     ? parsedTaxon
@@ -96,12 +96,16 @@ public class DiscoverLifeUtilXHTML {
 
             currentNode = authorshipNode;
 
-            focalTaxon.setExternalId(StringUtils.prependIfMissing(StringUtils.remove(id, "/mp/20q?search="), URL_ENDPOINT_DISCOVER_LIFE_SEARCH));
+            focalTaxon.setExternalId(generateExternalId(id));
 
             emitNameRelation(listener, taxonMap, focalTaxon);
             handleRelatedNames(listener, taxonMap, currentNode, focalTaxon);
         }
 
+    }
+
+    private static String generateExternalId(String id) {
+        return StringUtils.prependIfMissing(StringUtils.remove(id, "/mp/20q?search="), URL_ENDPOINT_DISCOVER_LIFE_SEARCH);
     }
 
     public static void emitNameRelation(TermMatchListener listener, Map<String, String> taxonMap, Taxon focalTaxon) {
@@ -344,11 +348,11 @@ public class DiscoverLifeUtilXHTML {
         targetTaxon.setPath(StringUtils.join(path, CharsetConstant.SEPARATOR));
 
         List<String> pathIds = new ArrayList<String>(PATH_STATIC_IDS) {{
-            add(URL_ENDPOINT_DISCOVER_LIFE + familyId);
+            add(generateExternalId(familyId));
             if (StringUtils.isNoneBlank(genusName)) {
-                add(URL_ENDPOINT_DISCOVER_LIFE_SEARCH + genusName);
+                add(generateExternalId(genusName));
             }
-            add(URL_ENDPOINT_DISCOVER_LIFE + t.getId());
+            add(t.getId());
         }};
 
         targetTaxon.setPathIds(StringUtils.join(pathIds, CharsetConstant.SEPARATOR));
