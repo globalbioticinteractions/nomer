@@ -70,14 +70,14 @@ public class DiscoverLifeUtilXHTMLTest {
 
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Ancylandrena atoposoma"));
-        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Ancylandrena+atoposoma"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Ancylandrena+atoposoma"));
         assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("(Cockerell, 1934)"));
         assertThat(((Taxon) firstNameRelation.getLeft()).getRank(), Is.is("species"));
         assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
         assertThat(firstNameRelation.getRight().getName(), Is.is("Ancylandrena atoposoma"));
-        assertThat(firstNameRelation.getRight().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Ancylandrena+atoposoma"));
-        assertThat(((Taxon) firstNameRelation.getRight()).getAuthorship(), Is.is("(Cockerell, 1934)"));
-        assertThat(((Taxon) firstNameRelation.getRight()).getRank(), Is.is("species"));
+        assertThat(firstNameRelation.getRight().getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Ancylandrena+atoposoma"));
+        assertThat(firstNameRelation.getRight().getAuthorship(), Is.is("(Cockerell, 1934)"));
+        assertThat(firstNameRelation.getRight().getRank(), Is.is("species"));
 
     }
 
@@ -349,7 +349,7 @@ public class DiscoverLifeUtilXHTMLTest {
         Triple<Term, NameType, Taxon> firstNameRelation = relatedTaxa.get(0);
         //assertThat(firstRelatedName.get("status"), Is.is("accepted"));
         assertThat(firstNameRelation.getLeft().getName(), Is.is("Xylocopa inconspicua"));
-        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?search=Xylocopa+inconspicua"));
+        assertThat(firstNameRelation.getLeft().getId(), Is.is("https://www.discoverlife.org/mp/20q?guide=Apoidea_species&search=Xylocopa+inconspicua"));
         assertThat(firstNameRelation.getMiddle(), Is.is(NameType.HAS_ACCEPTED_NAME));
         assertThat(((Taxon) firstNameRelation.getLeft()).getAuthorship(), Is.is("Maa, 1937"));
 

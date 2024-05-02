@@ -35,7 +35,7 @@ public class DiscoverLifeUtilXMLIntegrationTest {
                 counter.incrementAndGet();
             }
         }, new ParserServiceGBIF());
-        assertThat(counter.get(), Is.is(52682));
+        assertThat(counter.get(), Is.is(54525));
     }
 
 }
