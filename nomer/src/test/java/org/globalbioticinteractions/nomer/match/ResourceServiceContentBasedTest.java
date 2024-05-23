@@ -2,8 +2,8 @@ package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.globalbioticinteractions.nomer.cmd.CmdMatcherParams;
 import org.hamcrest.core.Is;
 import org.junit.Rule;
@@ -82,7 +82,10 @@ public class ResourceServiceContentBasedTest {
     }
 
     private void unpack(String filename) throws IOException {
-        ZipFile zipFile = new ZipFile(getClass().getResource(filename).getFile());
+        ZipFile zipFile = ZipFile
+                .builder()
+                .setFile(getClass().getResource(filename).getFile())
+                .get();
 
         Enumeration<ZipArchiveEntry> entries = zipFile.getEntries();
 
