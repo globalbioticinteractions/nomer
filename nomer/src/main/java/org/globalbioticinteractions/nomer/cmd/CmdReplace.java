@@ -11,7 +11,8 @@ import picocli.CommandLine;
                 "The input schema is used to select the id and/or name to match to. " +
                 "The output schema is used to select the columns to write into. " +
                 "If a term has multiple matches, first match is used." +
-                "%nExample:%n"+ "echo -e '\\tHomo sapiens' | nomer replace col"
+                "%nFor example:%n"+ "echo -e '\\tHomo sapiens' | nomer replace col" +
+                "%nhas expected result:%n"+ "COL:6MB3T\tHomo sapiens"
 )
 public class CmdReplace extends CmdMatcherParams  {
 
