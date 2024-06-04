@@ -10,7 +10,9 @@ import java.util.List;
 
 @CommandLine.Command(name = "list",
         aliases = {"ls", "dump", "export"},
-        description = "Dumps all terms into the defined output schema."
+        description = "Dumps all terms into the defined output schema." +
+                "%nExample:%n"+ "nomer ls col"
+
 )
 public class CmdDump extends CmdOutput {
 
