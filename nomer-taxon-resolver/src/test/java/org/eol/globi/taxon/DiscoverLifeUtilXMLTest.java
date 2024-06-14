@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DiscoverLifeUtilXMLTest {
@@ -89,6 +90,28 @@ public class DiscoverLifeUtilXMLTest {
         Taxon lastTaxon = taxons.get(taxons.size() - 1);
         assertThat(lastTaxon.getName(), is("Andrena cressonii"));
         assertThat(lastTaxon.getAuthorship(), is("Robertson, 1891"));
+        assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+    }
+
+    @Test
+    public void parseRelatedNamesBombus() throws ParserConfigurationException, XPathExpressionException, IOException, SAXException {
+        // also see https://github.com/globalbioticinteractions/nomer/issues/178
+        Document doc = docForResource("/org/globalbioticinteractions/nomer/match/discoverlife/bombus_pauloensis.xml");
+
+        List<Taxon> taxons = DiscoverLifeUtilXML.parseRelatedNames(doc, new ParserServiceGBIF());
+
+        assertThat(taxons.size(), is(15));
+
+        Taxon lastTaxon = taxons.get(10);
+        assertThat(lastTaxon.getName(), is("Bombus"));
+        assertThat(lastTaxon.getRank(), is("variety"));
+        assertThat(lastTaxon.getAuthorship(), is(nullValue()));
+        assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
+
+        lastTaxon = taxons.get(11);
+        assertThat(lastTaxon.getName(), is("Bombus cayennensis var. paufer"));
+        assertThat(lastTaxon.getRank(), is("variety"));
+        assertThat(lastTaxon.getAuthorship(), is("Friese, 1931"));
         assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
     }
 

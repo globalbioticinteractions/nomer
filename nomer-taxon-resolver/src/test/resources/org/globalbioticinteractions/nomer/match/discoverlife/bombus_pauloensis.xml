@@ -1,0 +1,44 @@
+<set level="species"><name>Bombus pauloensis</name><authority>Friese, 1913</authority>
+<path>Insecta/Hymenoptera/Apoidea/Apidae</path>
+<common_name language="english">Bombus &#40;Bombus&#41; atratus_homonym Franklin, 1913 Bombus cayennensis var. pauloensis Friese, 1913 Bombus cayennensis var. nigriventris Friese, 1913 Bremus atratus var. alternans Frison, 1925 Bremus atratus var. annulatus Frison, 1925 Bremus niger var. signatus Frison, 1925 Bombus cayennensis var. nigriventris_homonym Friese, 1931 Bombus cayennensis var. albidoanalis Friese, 1931 Bombus cayennensis var. buchwaldi Friese, 1931 Bombus var. cayennensis draenerti Friese, 1931 Bombus var cayennensis jundiahyensis Friese, 1931 Bombus cayennensis var paufer Friese, 1931 Bombus cayennensis var. uberabensis Friese, 1931 Bombus thoracicus var. umbricollis Friese, 1931 Bombus &#40;Fervidobombus&#41; atratus_homonym Franklin, 1913</common_name>
+<who>John Ascher</who><email>dl@discoverlife.org</email>
+<IP_address>107.211.202.217</IP_address>
+<attributes>
+<character>Author</character>
+	<state>Friese</state>
+<character>Country</character>
+	<state>Argentina</state>
+	<state>Bolivia</state>
+	<state>Brazil</state>
+	<state>Colombia</state>
+	<state>Ecuador</state>
+	<state>Paraguay</state>
+	<state>Peru</state>
+	<state>Uruguay</state>
+	<state>Venezuela</state>
+<character>Family</character>
+	<state>Apidae</state>
+<character>Genus</character>
+	<state>Bombus</state>
+<character>Group</character>
+	<state>Bee</state>
+<character>Host insect or prey</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Host plant</character>
+	<state>Other,_unknown,_or_other</state>
+<character>Museum</character>
+	<state>Amnh</state>
+<character>Original genus</character>
+	<state>Bombus</state>
+<character>Region</character>
+	<state>South America</state>
+<character>Subfamily</character>
+	<state>Apinae</state>
+<character>Subgenus</character>
+	<state>Thoracobombus</state>
+<character>Subtribe</character>
+	<state>None</state>
+<character>Tribe</character>
+	<state>Bombini</state>
+</attributes>
+</set>
