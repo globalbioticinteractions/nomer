@@ -23,6 +23,18 @@ public class AppenderUtilTest {
     }
 
     @Test
+    public void getKingdomFromPath2() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setPath("Animalia | Arthropoda | Insecta | Hymenoptera | Apidae | Apinae | Apini | None | Apis | Apis | Apis mellifera");
+        taxon.setPathNames("kingdom | phylum | class | order | family | subfamily | tribe | subtribe | genus | subgenus | species");
+        String kingdomName = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "path.kingdom.name");
+
+        assertThat(kingdomName, is("Animalia"));
+    }
+
+    @Test
     public void getUnknownKingdomFromPath() {
         TaxonImpl taxon = new TaxonImpl("someName", "someId");
         taxon.setPathNames("genus | species");

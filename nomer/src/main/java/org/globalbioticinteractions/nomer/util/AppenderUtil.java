@@ -59,9 +59,7 @@ class AppenderUtil {
         } else if (StringUtils.equalsIgnoreCase(taxonPropertyName, "path.authorship")) {
             colValue = taxon.getPathAuthorships();
         } else if (StringUtils.startsWith(taxonPropertyName, "path.")
-                && ranks.size() > 0
-                && ranks.size() == ids.size()
-                && names.size() == ids.size()) {
+                && ranks.size() > 0) {
             String[] split = StringUtils.split(taxonPropertyName, '.');
             if (split != null && split.length > 1) {
                 String rank = split[1];
@@ -69,11 +67,11 @@ class AppenderUtil {
                 if (i1 > -1) {
                     if (split.length > 2) {
                         String propertyName = split[2];
-                        if ("id".equalsIgnoreCase(propertyName)) {
+                        if ("id".equalsIgnoreCase(propertyName) && ranks.size() == ids.size()) {
                             colValue = ids.get(i1);
-                        } else if ("name".equalsIgnoreCase(propertyName)) {
+                        } else if ("name".equalsIgnoreCase(propertyName) && ranks.size() == names.size()) {
                             colValue = names.get(i1);
-                        } else if ("authorship".equalsIgnoreCase(propertyName)) {
+                        } else if ("authorship".equalsIgnoreCase(propertyName) && ranks.size() == authorships.size()) {
                             colValue = authorships.get(i1);
                         }
                     } else {
