@@ -5,7 +5,7 @@
 
     <groupId>org.globalbioticinteractions</groupId>
     <artifactId>nomer-all</artifactId>
-    <version>0.5.10</version>
+    <version>0.5.11-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Nomer Modules</name>
     <modules>
