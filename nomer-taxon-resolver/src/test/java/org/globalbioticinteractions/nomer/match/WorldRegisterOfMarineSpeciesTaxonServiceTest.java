@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -32,10 +33,10 @@ public class WorldRegisterOfMarineSpeciesTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalUrl(), is("https://www.marinespecies.org/aphia.php?p=taxdetails&id=158709"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Linnaeus, 1766)"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ariopsis | Ariopsis felis"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WORMS:158708 | WORMS:158709"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Gill, 1861 | (Linnaeus, 1766)"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ariidae | Ariopsis | Ariopsis felis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WORMS:154659 | WORMS:158708 | WORMS:158709"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Bleeker, 1858 | Gill, 1861 | (Linnaeus, 1766)"));
     }
 
     @Test
@@ -48,10 +49,26 @@ public class WorldRegisterOfMarineSpeciesTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalUrl(), is("https://www.marinespecies.org/aphia.php?p=taxdetails&id=158709"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("(Linnaeus, 1766)"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ariopsis | Ariopsis felis"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WORMS:158708 | WORMS:158709"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Gill, 1861 | (Linnaeus, 1766)"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Ariidae | Ariopsis | Ariopsis felis"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WORMS:154659 | WORMS:158708 | WORMS:158709"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is("Bleeker, 1858 | Gill, 1861 | (Linnaeus, 1766)"));
+    }
+
+    @Test
+    public void enrichById3() throws PropertyEnricherException {
+        TaxonImpl taxon = new TaxonImpl(null, "WORMS:1");
+        Map<String, String> enriched = ((PropertyEnricherSimple) createService()).enrich(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("WORMS:1"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Biota"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalUrl(), is("https://www.marinespecies.org/aphia.php?p=taxdetails&id=1"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is(""));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is(""));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Biota"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("WORMS:1"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is(""));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is(""));
     }
 
 

@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.match;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RegExUtils;
@@ -30,6 +29,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -39,6 +40,24 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
     private static final String ACCEPTED_LABEL = "accepted";
     private static final String SYNONYM_LABEL = "unaccepted";
     private static final String UNCHECKED_LABEL = "UNCHECKED";
+    public static final String TAXON_ID = "http://rs.tdwg.org/dwc/terms/taxonID";
+    public static final String PARENT_NAME_USAGE_ID = "http://rs.tdwg.org/dwc/terms/parentNameUsageID";
+    public static final String ACCEPTED_NAME_USAGE_ID = "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID";
+    public static final String TAXONOMIC_STATUS = "http://rs.tdwg.org/dwc/terms/taxonomicStatus";
+    public static final String SCIENTIFIC_NAME = "http://rs.tdwg.org/dwc/terms/scientificName";
+    public static final String SCIENTIFIC_NAME_AUTHORSHIP = "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship";
+    public static final String TAXON_RANK = "http://rs.tdwg.org/dwc/terms/taxonRank";
+
+    public static final List<String> requiredFields =
+            Arrays.asList(
+                    TAXON_ID,
+                    PARENT_NAME_USAGE_ID,
+                    ACCEPTED_NAME_USAGE_ID,
+                    TAXONOMIC_STATUS,
+                    SCIENTIFIC_NAME,
+                    SCIENTIFIC_NAME_AUTHORSHIP,
+                    TAXON_RANK
+            );
 
 
     public WorldRegisterOfMarineSpeciesTaxonService(TermMatcherContext ctx) {
@@ -160,23 +179,33 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
 
         JsonNode jsonNode = new ObjectMapper().readTree(line);
 
-        String taxonIdName = "http://rs.tdwg.org/dwc/terms/taxonID";
-        String taxIdString = pruneTaxonId(jsonNode, taxonIdName);
+        long numberOfMissingFields = requiredFields
+                .stream()
+                .filter(fieldName -> !jsonNode.has(fieldName))
+                .count();
+
+        if (numberOfMissingFields == 0) {
+            parseLine(nameUsageListener, jsonNode);
+        }
+
+
+    }
+
+    private void parseLine(NameUsageListener<Long> nameUsageListener, JsonNode jsonNode) {
+        String taxIdString = pruneTaxonId(jsonNode, TAXON_ID);
         Long taxId = getIdAsLong(taxIdString);
-        String parentTaxIdString = pruneTaxonId(jsonNode, "http://rs.tdwg.org/dwc/terms/parentNameUsageID");
+        String parentTaxIdString = pruneTaxonId(jsonNode, PARENT_NAME_USAGE_ID);
         Long parentTaxId = getIdAsLong(parentTaxIdString);
-        String acceptedNameUsageIdString = pruneTaxonId(jsonNode, "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID");
+        String acceptedNameUsageIdString = pruneTaxonId(jsonNode, ACCEPTED_NAME_USAGE_ID);
         Long acceptedNameUsageId = getIdAsLong(acceptedNameUsageIdString);
-        String status = jsonNode.get("http://rs.tdwg.org/dwc/terms/taxonomicStatus").asText();
-        String completeName = removeQuotes(jsonNode.get("http://rs.tdwg.org/dwc/terms/scientificName").asText());
-        String authorship = removeQuotes(jsonNode.get("http://rs.tdwg.org/dwc/terms/scientificNameAuthorship").asText());
-        String rank = StringUtils.lowerCase(jsonNode.get("http://rs.tdwg.org/dwc/terms/taxonRank").asText());
+        String status = jsonNode.get(TAXONOMIC_STATUS).asText("");
+        String completeName = removeQuotes(jsonNode.get(SCIENTIFIC_NAME).asText(""));
+        String authorship = removeQuotes(jsonNode.get(SCIENTIFIC_NAME_AUTHORSHIP).asText(""));
+        String rank = StringUtils.lowerCase(jsonNode.get(TAXON_RANK).asText(""));
 
         String idPrefix = getTaxonomyProvider().getIdPrefix();
         TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxIdString);
-        if (StringUtils.isNoneBlank(authorship)) {
-            taxon.setAuthorship(StringUtils.trim(authorship));
-        }
+        taxon.setAuthorship(StringUtils.trim(authorship));
 
         taxon.setStatus(new TermImpl(null, status));
 
@@ -185,17 +214,17 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
         nameUsageListener.handle(
                 status,
                 taxId,
-                Objects.equals(taxId, acceptedNameUsageId)
-                        ? parentTaxId
-                        : acceptedNameUsageId,
+                parentTaxId,
+                acceptedNameUsageId,
                 taxon
         );
-
-
     }
 
     private String pruneTaxonId(JsonNode jsonNode, String taxonIdName) {
-        return StringUtils.remove(jsonNode.get(taxonIdName).asText(), "urn:lsid:marinespecies.org:taxname:");
+        JsonNode jsonNode1 = jsonNode.get(taxonIdName);
+        return jsonNode1 == null
+                ? null
+                : StringUtils.remove(jsonNode1.asText(""), "urn:lsid:marinespecies.org:taxname:");
     }
 
     private String removeQuotes(String rowValue) {
@@ -207,7 +236,7 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
     }
 
     interface NameUsageListener<T> {
-        void handle(String status, T childTaxId, T parentTaxId, Taxon taxon);
+        void handle(String status, T childTaxId, T parentTaxId, T acceptedNameUsage, Taxon taxon);
     }
 
     private NameType getNameType(String statusValue) {
@@ -245,29 +274,20 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
         }
 
         @Override
-        public void handle(String status, Long childTaxId, Long parentTaxId, Taxon taxon) {
+        public void handle(String status, Long childTaxId, Long parentTaxId, Long acceptedNameUsageId, Taxon taxon) {
             registerIdForName(childTaxId, taxon, WorldRegisterOfMarineSpeciesTaxonService.this.name2nodeIds);
 
-            NameType nameType = getNameType(status);
-            if (NameType.SYNONYM_OF.equals(nameType)
-                    && childTaxId != null
-                    && parentTaxId != null) {
-                mergedNodes.put(childTaxId, parentTaxId);
+            if (!childTaxId.equals(acceptedNameUsageId)) {
+                mergedNodes.put(childTaxId, acceptedNameUsageId);
             }
 
-            if (childTaxId != null) {
-                if (NameType.HAS_UNCHECKED_NAME.equals(nameType)) {
-                    taxon.setStatus(new TermImpl(NameType.HAS_UNCHECKED_NAME.name(), NameType.HAS_UNCHECKED_NAME.name()));
-                }
-                nodes.put(childTaxId, TaxonUtil.taxonToMap(taxon));
-                if (parentTaxId != null) {
-                    childParent.put(
-                            childTaxId,
-                            parentTaxId
-                    );
-                }
+            nodes.put(childTaxId, TaxonUtil.taxonToMap(taxon));
+            if (parentTaxId != null) {
+                childParent.put(
+                        childTaxId,
+                        parentTaxId
+                );
             }
-
         }
     }
 }

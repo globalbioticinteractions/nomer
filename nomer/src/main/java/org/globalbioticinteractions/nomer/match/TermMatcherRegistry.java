@@ -48,6 +48,7 @@ public class TermMatcherRegistry {
             "remove-stop-words",
             "translate-names",
             "wikidata-web",
+            "worms-web",
             "worms",
             "col",
             "wfo",
@@ -86,7 +87,7 @@ public class TermMatcherRegistry {
             put("remove-stop-words", "remove-stop-words");
             put("translate-names", "translate-names");
             put("wikidata-taxon-id-web", "wikidata-web");
-            put("worms-taxon", "worms");
+            put("worms-taxon", "worms-web");
             put("indexfungorum", "indexfungorum");
             put("col", "col");
             put("wfo", "wfo");
@@ -98,6 +99,7 @@ public class TermMatcherRegistry {
             put("batnames", "batnames");
             put("tpt", "tpt");
             put("mdd", "mdd");
+            put("worms", "worms");
             put("hesperomys", "hesperomys");
             put("pbdb", "pbdb");
         }
@@ -139,6 +141,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherBatNamesTaxonFactory());
         add(new TermMatcherTPTFactory());
         add(new TermMatcherMDDFactory());
+        add(new TermMatcherWorldRegisterOfMarineSpeciesFactory());
         // disabled until data update is available see https://github.com/globalbioticinteractions/nomer/issues/144#issuecomment-1405187944
         //add(new TermMatcherHesperomysFactory());
     }});

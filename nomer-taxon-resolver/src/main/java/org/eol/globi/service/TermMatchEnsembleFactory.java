@@ -22,6 +22,7 @@ import org.globalbioticinteractions.nomer.match.ITISTaxonService;
 import org.globalbioticinteractions.nomer.match.IndexFungorumTaxonService;
 import org.globalbioticinteractions.nomer.match.NCBITaxonIdService;
 import org.globalbioticinteractions.nomer.match.WorldOfFloraOnlineTaxonService;
+import org.globalbioticinteractions.nomer.match.WorldRegisterOfMarineSpeciesTaxonService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ public class TermMatchEnsembleFactory {
                 add(new AtlasOfLivingAustraliaService());
                 add(new ITISService());
                 add(new CatalogueOfLifeTaxonService(ctx));
+                add(new WorldRegisterOfMarineSpeciesTaxonService(ctx));
                 add(new WorldOfFloraOnlineTaxonService(ctx));
                 add(new ORCIDService());
             }
