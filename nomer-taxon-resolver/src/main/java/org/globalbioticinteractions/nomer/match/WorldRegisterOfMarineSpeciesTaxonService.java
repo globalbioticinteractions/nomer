@@ -36,7 +36,7 @@ import java.util.Objects;
 
 public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService<Long> {
     private static final Logger LOG = LoggerFactory.getLogger(WorldRegisterOfMarineSpeciesTaxonService.class);
-    
+
     private static final List<String> uncheckedStatus = Arrays.asList(
             "unassessed",
             "nomen dubium",
