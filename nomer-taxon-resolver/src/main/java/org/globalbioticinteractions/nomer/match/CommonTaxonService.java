@@ -126,7 +126,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                     LOG.warn("failed to resolve [" + taxonFrom.getExternalId() + ";" + taxonFrom.getName() + "]: does accepted name id [" + acceptedId + "] exist?");
                 } else {
                     if (!StringUtils.equals(taxonTo.getExternalId(), taxonFrom.getExternalId())) {
-                        nameType = NameType.SYNONYM_OF;
+                        nameType = getNameTypeFor(taxonFrom);
                         termMatchListener.foundTaxonForTerm(
                                 null,
                                 taxonFrom,
@@ -148,6 +148,10 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 }
             }
         });
+    }
+
+    protected NameType getNameTypeFor(Taxon taxon) {
+        return NameType.SYNONYM_OF;
     }
 
     private static boolean isUnchecked(Taxon taxon) {

@@ -37,9 +37,28 @@ import java.util.Objects;
 public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService<Long> {
     private static final Logger LOG = LoggerFactory.getLogger(WorldRegisterOfMarineSpeciesTaxonService.class);
 
-    private static final String ACCEPTED_LABEL = "accepted";
-    private static final String SYNONYM_LABEL = "unaccepted";
-    private static final String UNCHECKED_LABEL = "UNCHECKED";
+
+    private static final List<String> acceptedStatus = Arrays.asList(
+            "accepted"
+    );
+
+    private static final List<String> uncheckedStatus = Arrays.asList(
+            "unassessed",
+            "nomen dubium",
+            "uncertain",
+            "taxon inquirendum",
+            "temporary name",
+            "nomen nudum",
+            "interim unpublished",
+            "nomen oblitum"
+    );
+
+    private static final List<String> synonymStatus = Arrays.asList(
+            "junior objective synonym",
+            "junior subjective synonym",
+            "unaccepted"
+    );
+
     public static final String TAXON_ID = "http://rs.tdwg.org/dwc/terms/taxonID";
     public static final String PARENT_NAME_USAGE_ID = "http://rs.tdwg.org/dwc/terms/parentNameUsageID";
     public static final String ACCEPTED_NAME_USAGE_ID = "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID";
@@ -148,6 +167,15 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
     }
 
 
+    @Override
+    protected NameType getNameTypeFor(Taxon taxon) {
+        return taxon.getStatus() == null
+                ? NameType.NONE
+                : getNameType(taxon.getStatus().getName()
+        );
+    }
+
+
     private InputStream getClassificationStream() throws PropertyEnricherException {
         InputStream resource;
         try {
@@ -198,7 +226,6 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
         Long parentTaxId = getIdAsLong(parentTaxIdString);
         String acceptedNameUsageIdString = pruneTaxonId(jsonNode, ACCEPTED_NAME_USAGE_ID);
         Long acceptedNameUsageId = getIdAsLong(acceptedNameUsageIdString);
-        String status = jsonNode.get(TAXONOMIC_STATUS).asText("");
         String completeName = removeQuotes(jsonNode.get(SCIENTIFIC_NAME).asText(""));
         String authorship = removeQuotes(jsonNode.get(SCIENTIFIC_NAME_AUTHORSHIP).asText(""));
         String rank = StringUtils.lowerCase(jsonNode.get(TAXON_RANK).asText(""));
@@ -207,7 +234,8 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
         TaxonImpl taxon = new TaxonImpl(completeName, idPrefix + taxIdString);
         taxon.setAuthorship(StringUtils.trim(authorship));
 
-        taxon.setStatus(new TermImpl(null, status));
+        String status = jsonNode.get(TAXONOMIC_STATUS).asText("");
+        taxon.setStatus(new TermImpl(null, getNameType(status).name()));
 
         taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
 
@@ -219,6 +247,19 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
                 taxon
         );
     }
+
+    private NameType getNameType(String statusValue) {
+        NameType nameType = NameType.TRANSLATES_TO;
+        if (synonymStatus.contains(statusValue)) {
+            nameType = NameType.SYNONYM_OF;
+        } else if (acceptedStatus.contains(statusValue)) {
+            nameType = NameType.HAS_ACCEPTED_NAME;
+        } else if (uncheckedStatus.contains(statusValue)) {
+            nameType = NameType.HAS_UNCHECKED_NAME;
+        }
+        return nameType;
+    }
+
 
     private String pruneTaxonId(JsonNode jsonNode, String taxonIdName) {
         JsonNode jsonNode1 = jsonNode.get(taxonIdName);
@@ -237,22 +278,6 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
 
     interface NameUsageListener<T> {
         void handle(String status, T childTaxId, T parentTaxId, T acceptedNameUsage, Taxon taxon);
-    }
-
-    private NameType getNameType(String statusValue) {
-        NameType nameType = NameType.NONE;
-        if (StringUtils.equalsIgnoreCase(statusValue, SYNONYM_LABEL)) {
-            nameType = NameType.SYNONYM_OF;
-        } else if (StringUtils.equalsIgnoreCase(statusValue, ACCEPTED_LABEL)) {
-            nameType = NameType.HAS_ACCEPTED_NAME;
-        } else if (StringUtils.equalsIgnoreCase(statusValue, UNCHECKED_LABEL)) {
-            nameType = NameType.HAS_UNCHECKED_NAME;
-        }
-        return nameType;
-    }
-
-    private void skipFirstLine(BufferedReader reader) throws IOException {
-        reader.readLine();
     }
 
     private URI getClassificationResource() {
@@ -277,7 +302,9 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
         public void handle(String status, Long childTaxId, Long parentTaxId, Long acceptedNameUsageId, Taxon taxon) {
             registerIdForName(childTaxId, taxon, WorldRegisterOfMarineSpeciesTaxonService.this.name2nodeIds);
 
-            if (!childTaxId.equals(acceptedNameUsageId)) {
+            if (childTaxId != null
+                    && acceptedNameUsageId != null
+                    && !childTaxId.equals(acceptedNameUsageId)) {
                 mergedNodes.put(childTaxId, acceptedNameUsageId);
             }
 

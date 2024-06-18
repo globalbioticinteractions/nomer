@@ -51,6 +51,7 @@ public class TermMatcherRegistryTest {
             "col",
             "wfo",
             "worms-taxon",
+            "worms",
             "uksi-current-name",
             "gn-parse",
             "gbif-parse",
