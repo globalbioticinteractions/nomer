@@ -36,12 +36,7 @@ import java.util.Objects;
 
 public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService<Long> {
     private static final Logger LOG = LoggerFactory.getLogger(WorldRegisterOfMarineSpeciesTaxonService.class);
-
-
-    private static final List<String> acceptedStatus = Arrays.asList(
-            "accepted"
-    );
-
+    
     private static final List<String> uncheckedStatus = Arrays.asList(
             "unassessed",
             "nomen dubium",
@@ -170,9 +165,13 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
     @Override
     protected NameType getNameTypeFor(Taxon taxon) {
         return taxon.getStatus() == null
-                ? NameType.NONE
+                ? defaultRelation()
                 : getNameType(taxon.getStatus().getName()
         );
+    }
+
+    private NameType defaultRelation() {
+        return NameType.HAS_ACCEPTED_NAME;
     }
 
 
@@ -249,11 +248,9 @@ public class WorldRegisterOfMarineSpeciesTaxonService extends CommonTaxonService
     }
 
     private NameType getNameType(String statusValue) {
-        NameType nameType = NameType.TRANSLATES_TO;
+        NameType nameType = defaultRelation();
         if (synonymStatus.contains(statusValue)) {
             nameType = NameType.SYNONYM_OF;
-        } else if (acceptedStatus.contains(statusValue)) {
-            nameType = NameType.HAS_ACCEPTED_NAME;
         } else if (uncheckedStatus.contains(statusValue)) {
             nameType = NameType.HAS_UNCHECKED_NAME;
         }
