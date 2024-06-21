@@ -112,6 +112,11 @@ public class TermMatcherCorrectFactoryTest {
     }
 
     @Test
+    public void correctAllLower() throws PropertyEnricherException {
+        assertCorrection("homo sapiens", "Homo sapiens");
+    }
+
+    @Test
     public void correctBatSARSCoV() throws PropertyEnricherException {
         assertPassThroughName("Bat SARS CoV");
     }

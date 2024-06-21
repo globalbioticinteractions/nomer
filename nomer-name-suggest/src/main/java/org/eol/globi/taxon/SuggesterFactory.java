@@ -2,7 +2,6 @@ package org.eol.globi.taxon;
 
 import org.eol.globi.service.NameSuggester;
 import org.eol.globi.service.ServiceUtil;
-import org.eol.globi.service.UKSISuggestionService;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
 import java.util.ArrayList;
@@ -31,6 +30,7 @@ public class SuggesterFactory {
                 add(new SnakeCaseUndoer());
                 add(new PeriodAsWhitespaceUndoer());
                 add(new AllCapsUndoer());
+                add(new AllLowerCaseUndoer());
                 add(new NameScrubber());
             }
         };
