@@ -222,6 +222,53 @@ public class NCBITaxonServiceTest {
     }
 
     @Test
+    public void enrichEquivalentCandidatus() throws PropertyEnricherException {
+        //
+        // reproducing https://github.com/globalbioticinteractions/nomer/issues/180
+        // NCBI taxonomy reports equivalence
+        // between [Candidatus Endoriftia persephone] and [Endoriftia persephone]
+        // but Nomer's NCBI matcher does not
+        //
+        NCBITaxonService service = createService();
+
+        String taxonId = "";
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl("Endoriftia persephone", null)));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:393765"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Candidatus Endoriftia persephone"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:393764 | NCBI:393765"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+    }
+
+    @Test
+    public void enrichCandidatusById() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        String taxonId = "NCBI:393765";
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl(null, taxonId)));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:393765"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Candidatus Endoriftia persephone"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:393764 | NCBI:393765"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+    }
+
+    @Test
+    public void enrichCandidatusByName() throws PropertyEnricherException {
+        NCBITaxonService service = createService();
+
+        Map<String, String> enriched = service.enrich(TaxonUtil.taxonToMap(new TaxonImpl("Candidatus Endoriftia persephone", null)));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("NCBI:393765"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Candidatus Endoriftia persephone"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("NCBI:393764 | NCBI:393765"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+    }
+
+    @Test
     public void enrichNoMatch() throws PropertyEnricherException {
         NCBITaxonService service = createService();
 
@@ -357,13 +404,14 @@ public class NCBITaxonServiceTest {
 
         NCBITaxonService.parseNames(namesStream, nameMap, nameIds, commonNameIds, synonymIds, nameAuthorities);
 
-        assertThat(nameMap.size(), is(3));
+        assertThat(nameMap.size(), is(7));
         assertThat(nameMap.get("NCBI:1"), is("root"));
         assertThat(nameMap.get("NCBI:2"), is("Bacteria"));
         assertThat(nameMap.get("NCBI:385028"), is("Anteholosticha manca"));
 
         assertThat(nameIds.get("Anteholosticha manca"), hasItem("NCBI:385028"));
         assertThat(synonymIds.get("Holosticha manca"), hasItem("NCBI:385028"));
+        assertThat(synonymIds.get("Endoriftia persephone"), hasItem("NCBI:393765"));
         assertThat(commonNameIds.get("eubacteria"), hasItem("NCBI:2"));
         assertThat(nameAuthorities.get("NCBI:385028").size(), is(2));
         assertThat(nameAuthorities.get("NCBI:385028"), hasItem("Holosticha manca Kahl, 1932"));

@@ -37,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,6 +72,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
         for (Term term : terms) {
             List<Taxon> matchedTaxa = new ArrayList<>();
             List<Taxon> matchedSynonyms = new ArrayList<>();
+            List<Taxon> matchedEquivalentNames = new ArrayList<>();
             List<Taxon> matchedCommonNames = new ArrayList<>();
 
             String ncbiId = NCBIService.getNCBIId(term.getId());
@@ -177,11 +179,18 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
 
     @Override
     public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-        String ncbiTaxonId = NCBIService.getNCBITaxonId(properties);
-        Map<String, String> enriched = lookupTaxonById(ncbiTaxonId);
-        return enriched == null
+        final AtomicReference<Map<String, String>> enriched = new AtomicReference<>();
+        match(Collections.singletonList(TaxonUtil.mapToTaxon(properties)), new TermMatchListener() {
+
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                enriched.set(TaxonUtil.taxonToMap(taxon));
+            }
+        });
+
+        return enriched.get() == null
                 ? properties
-                : enriched;
+                : enriched.get();
     }
 
     private Map<String, String> lookupTaxonById(String ncbiTaxonId) throws PropertyEnricherException {
@@ -493,7 +502,7 @@ public class NCBITaxonService extends PropertyEnricherSimple implements TermMatc
                         addIdMapEntry(nameIds, taxonName, ncbiTaxonId);
                     } else if (StringUtils.equals("authority", taxonNameClass)) {
                         addIdMapEntry(authorityIds, ncbiTaxonId, taxonName);
-                    } else if (StringUtils.equals("synonym", taxonNameClass)) {
+                    } else if (Arrays.asList("synonym", "equivalent name").contains(taxonNameClass)) {
                         addIdMapEntry(synonymIds, taxonName, ncbiTaxonId);
                     } else if (Arrays.asList("genbank common name", "common name").contains(taxonNameClass)) {
                         addIdMapEntry(commonNameIds, taxonName, ncbiTaxonId);
