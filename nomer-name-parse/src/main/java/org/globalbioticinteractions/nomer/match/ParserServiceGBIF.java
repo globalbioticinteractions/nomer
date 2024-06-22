@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
@@ -25,7 +26,8 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
         try {
             ParsedName nameParsed = parser.parse(nameString, Rank.UNRANKED, null);
             Taxon taxonParsed = new TaxonImpl();
-            taxonParsed.setName(nameParsed.canonicalNameWithoutAuthorship());
+            String canonicalNameWithoutAuthorship = undoCandidatusQuotesIfPresent(nameParsed);
+            taxonParsed.setName(canonicalNameWithoutAuthorship);
             taxonParsed.setAuthorship(nameParsed.authorshipComplete());
             if (!nameParsed.getRank().hasAmbiguousMarker()) {
                 taxonParsed.setRank(StringUtils.lowerCase(nameParsed.getRank().toString()));
@@ -74,6 +76,17 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
                     ? TaxonUtil.copy((Taxon) term)
                     : (term == null ? new TaxonImpl(nameString) : new TaxonImpl(term.getName(), term.getId()));
         }
+    }
+
+    private String undoCandidatusQuotesIfPresent(ParsedName nameParsed) {
+        String canonicalNameWithoutAuthorship = nameParsed.canonicalNameWithoutAuthorship();
+        if (nameParsed.isCandidatus()) {
+            canonicalNameWithoutAuthorship
+                    = RegExUtils.replacePattern(RegExUtils
+                            .replacePattern(canonicalNameWithoutAuthorship, "^\"Candidatus ", "Candidatus "),
+                    "\"$", "");
+        }
+        return canonicalNameWithoutAuthorship;
     }
 
 }

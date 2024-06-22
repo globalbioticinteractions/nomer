@@ -65,6 +65,26 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
         assertTrue(foundMatch.get());
     }
 
+    @Test
+    public void nameWithCandidatus() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Candidatus Endoriftia persephone")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Candidatus Endoriftia persephone"));
+                assertThat(taxon.getName(), Is.is("Candidatus Endoriftia persephone"));
+                assertThat(taxon.getRank(), Is.is("species"));
+                assertThat(taxon.getPath(), Is.is("Endoriftia | persephone"));
+                assertThat(taxon.getPathNames(), Is.is("genus | specificEpithet"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
 
 
 }
