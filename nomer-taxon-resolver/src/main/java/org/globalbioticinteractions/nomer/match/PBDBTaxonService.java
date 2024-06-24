@@ -274,11 +274,6 @@ public class PBDBTaxonService extends CommonLongTaxonService {
         LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
     }
 
-    @Override
-    public void shutdown() {
-
-    }
-
     private URI getNodesUrl() throws PropertyEnricherException {
         return CacheUtil.getValueURI(getCtx(), "nomer.pbdb.taxa");
     }

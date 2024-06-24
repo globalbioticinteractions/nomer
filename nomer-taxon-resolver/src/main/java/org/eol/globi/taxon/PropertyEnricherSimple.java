@@ -21,8 +21,4 @@ public abstract class PropertyEnricherSimple implements PropertyEnricher {
         return Collections.singletonList(enrich(properties));
     }
 
-    @Override
-    public void shutdown() {
-
-    }
 }

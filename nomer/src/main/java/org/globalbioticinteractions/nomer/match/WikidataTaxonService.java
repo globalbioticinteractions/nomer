@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.LineReader;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.Taxon;
@@ -14,7 +13,6 @@ import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
-import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.util.ExternalIdUtil;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -34,17 +32,11 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 public class WikidataTaxonService extends CommonStringTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(WikidataTaxonService.class);
-
-    private static final String NAME_TO_EXTERNAL_IDS = "node2externalId";
-
-
-    private BTreeMap<String, String> externalIdNodes = null;
 
     public WikidataTaxonService(TermMatcherContext ctx) {
         super(ctx);
@@ -126,7 +118,6 @@ public class WikidataTaxonService extends CommonStringTaxonService {
 
         if (db.exists(NODES)
                 && db.exists(CHILD_PARENT)
-                && db.exists(NAME_TO_EXTERNAL_IDS)
                 && db.exists(MERGED_NODES)
                 && db.exists(NAME_TO_NODE_IDS)
         ) {
@@ -135,7 +126,6 @@ public class WikidataTaxonService extends CommonStringTaxonService {
             childParent = db.getTreeMap(CHILD_PARENT);
             name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
             mergedNodes = db.getTreeMap(MERGED_NODES);
-            externalIdNodes = db.getTreeMap(NAME_TO_EXTERNAL_IDS);
         } else {
             index(db);
         }
@@ -166,7 +156,7 @@ public class WikidataTaxonService extends CommonStringTaxonService {
                 .make();
 
         mergedNodes = db
-                .createTreeMap(NAME_TO_EXTERNAL_IDS)
+                .createTreeMap(MERGED_NODES)
                 .keySerializer(BTreeKeySerializer.STRING)
                 .valueSerializer(Serializer.STRING)
                 .make();
@@ -186,11 +176,6 @@ public class WikidataTaxonService extends CommonStringTaxonService {
         watch.stop();
         TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
         LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
-    }
-
-    @Override
-    public void shutdown() {
-
     }
 
     @Override

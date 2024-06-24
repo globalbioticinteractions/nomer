@@ -232,12 +232,6 @@ public class HesperomysTaxonService extends CommonLongTaxonService {
         return false;
     }
 
-
-    @Override
-    public void shutdown() {
-
-    }
-
     private URI getNodesUrl() throws PropertyEnricherException {
         return CacheUtil.getValueURI(getCtx(), "nomer.hesperomys.url");
     }

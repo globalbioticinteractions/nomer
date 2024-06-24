@@ -72,7 +72,7 @@ public class WikidataTaxonServiceTest {
 
     @Test
     public void indexAndFindById() throws IOException, PropertyEnricherException {
-        assertFindById(createService());
+        assertFindById(createService(folder.newFolder()));
 
     }
 
@@ -101,8 +101,13 @@ public class WikidataTaxonServiceTest {
 
     @Test
     public void findByNonWikidataId() throws IOException, PropertyEnricherException {
-        WikidataTaxonService service = createService();
+        WikidataTaxonService service = createService(folder.newFolder());
 
+        assertNonWikidataTaxonId(service);
+
+    }
+
+    private void assertNonWikidataTaxonId(WikidataTaxonService service) throws PropertyEnricherException {
         List<Triple<Term, NameType, Taxon>> found = new ArrayList<>();
 
         service.match(Arrays.asList(new TermImpl("ITIS:183803", null)), new TermMatchListener() {
@@ -123,12 +128,25 @@ public class WikidataTaxonServiceTest {
         assertThat(resolved.getName(), is("Panthera leo"));
         assertThat(resolved.getId(), is("WD:Q140"));
         assertThat(resolved.getCommonNames(), containsString("Leeuw @nl"));
+    }
 
+    @Test
+    public void findByNonWikidataIdTwice() throws IOException, PropertyEnricherException {
+        File file1 = folder.newFolder();
+        assertNonWikidataTaxonId(file1);
+        assertNonWikidataTaxonId(file1);
+
+    }
+
+    private void assertNonWikidataTaxonId(File file1) throws IOException, PropertyEnricherException {
+        WikidataTaxonService service = createService(file1);
+        assertNonWikidataTaxonId(service);
+        service.shutdown();
     }
 
     @Test
     public void indexAndFindByName() throws IOException, PropertyEnricherException {
-        WikidataTaxonService service = createService();
+        WikidataTaxonService service = createService(folder.newFolder());
         List<Triple<Term, NameType, Taxon>> found = new ArrayList<>();
 
         service.match(Arrays.asList(new TermImpl(null, "Panthera leo")), new TermMatchListener() {
@@ -153,8 +171,8 @@ public class WikidataTaxonServiceTest {
 
     }
 
-    private WikidataTaxonService createService() throws IOException {
-        File file = folder.newFolder();
+    private WikidataTaxonService createService(File file1) throws IOException {
+        File file = file1;
         return new WikidataTaxonService(new TermMatcherContext() {
             @Override
             public String getCacheDir() {

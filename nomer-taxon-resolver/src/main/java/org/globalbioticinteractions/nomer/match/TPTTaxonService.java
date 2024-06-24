@@ -110,11 +110,6 @@ public class TPTTaxonService extends CommonTaxonService<String> {
         LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
     }
 
-    @Override
-    public void shutdown() {
-
-    }
-
     private List<URI> getResourceList() throws PropertyEnricherException {
         String propertyName = "nomer.tpt.taxon";
         String property = getCtx().getProperty(propertyName);

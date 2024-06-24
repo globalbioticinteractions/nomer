@@ -247,12 +247,6 @@ public class MDDTaxonService extends CommonStringTaxonService {
         return false;
     }
 
-
-    @Override
-    public void shutdown() {
-
-    }
-
     private URI getNodesUrl() throws PropertyEnricherException {
         return CacheUtil.getValueURI(getCtx(), "nomer.mdd.url");
     }

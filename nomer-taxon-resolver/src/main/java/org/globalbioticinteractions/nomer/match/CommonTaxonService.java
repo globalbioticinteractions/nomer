@@ -386,6 +386,9 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
 
     @Override
     public void shutdown() {
+        if (!needsInit()) {
+            nodes.getEngine().close();
+        }
 
     }
 

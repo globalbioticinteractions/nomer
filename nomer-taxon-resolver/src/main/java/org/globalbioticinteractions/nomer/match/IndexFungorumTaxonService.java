@@ -166,11 +166,6 @@ public class IndexFungorumTaxonService extends CommonLongTaxonService {
         return StringUtils.lowerCase(getTaxonomyProvider().name());
     }
 
-    @Override
-    public void shutdown() {
-
-    }
-
     private URI getNodesUrl() throws PropertyEnricherException {
         return CacheUtil.getValueURI(getCtx(), INDEXFUNGORUM_EXPORT_PROPERTY_NAME);
     }

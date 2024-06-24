@@ -22,4 +22,8 @@ public class GulfBaseService extends OfflineService {
         );
     }
 
+    @Override
+    public void shutdown() {
+
+    }
 }
