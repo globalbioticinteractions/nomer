@@ -200,7 +200,7 @@ public class WikidataTaxonService extends CommonStringTaxonService {
 
 
     private URI getNodesUrl() throws PropertyEnricherException {
-        return CacheUtil.getValueURI(getCtx(), "nomer.wikidata.items");
+        return CacheUtil.getValueURI(getCtx(), "nomer.wikidata.url");
     }
 
     public static List<String> parseRelatedIds(JsonNode jsonNode) {
@@ -249,11 +249,6 @@ public class WikidataTaxonService extends CommonStringTaxonService {
         JsonNode name = jsonNode.at("/claims/P225/0/mainsnak/datavalue/value");
         if (!name.isMissingNode()) {
             taxon.setName(name.asText());
-        }
-
-        JsonNode parentId = getParentId(jsonNode);
-        if (!parentId.isMissingNode()) {
-            taxon.setPathIds("WD:" + parentId.asText() + CharsetConstant.SEPARATOR + taxon.getId());
         }
 
         JsonNode thumbnailUrl = jsonNode.at("/claims/P18/0/mainsnak/datavalue/value");

@@ -51,7 +51,6 @@ public class WikidataTaxonServiceTest {
         assertThat(taxon.getName(), Is.is("Panthera leo"));
         assertThat(taxon.getCommonNames(), containsString("Leeuw @nl"));
         assertThat(taxon.getCommonNames(), containsString("Lion @en"));
-        assertThat(taxon.getPathIds(), Is.is("WD:Q127960 | WD:Q140"));
         assertThat(taxon.getThumbnailUrl(), Is.is("https://commons.wikimedia.org/wiki/File:002_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg"));
     }
 
@@ -191,7 +190,7 @@ public class WikidataTaxonServiceTest {
             public String getProperty(String key) {
                 return new TreeMap<String, String>() {
                     {
-                        put("nomer.wikidata.items", "/org/globalbioticinteractions/nomer/match/wikidata/items.json");
+                        put("nomer.wikidata.url", "/org/globalbioticinteractions/nomer/match/wikidata/items.json");
                     }
                 }.get(key);
             }
