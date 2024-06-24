@@ -241,7 +241,11 @@ public class WikidataTaxonService extends CommonStringTaxonService {
         List<String> commonNames = new ArrayList<>();
         for (JsonNode label : labels) {
             JsonNode value = label.at("/mainsnak/datavalue/value");
-            commonNames.add(value.get("text").asText() + " @" + value.get("language").asText());
+            if (!value.isMissingNode()
+                    && value.has("text")
+                    && value.has("language")) {
+                commonNames.add(value.get("text").asText() + " @" + value.get("language").asText());
+            }
         }
 
         taxon.setCommonNames(StringUtils.join(commonNames, CharsetConstant.SEPARATOR));
