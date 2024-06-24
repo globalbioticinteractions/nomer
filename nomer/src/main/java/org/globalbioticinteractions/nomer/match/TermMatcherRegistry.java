@@ -87,6 +87,7 @@ public class TermMatcherRegistry {
             put("remove-stop-words", "remove-stop-words");
             put("translate-names", "translate-names");
             put("wikidata-taxon-id-web", "wikidata-web");
+            put("wikidata", "wikidata");
             put("worms-taxon", "worms-web");
             put("indexfungorum", "indexfungorum");
             put("col", "col");

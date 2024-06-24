@@ -46,6 +46,7 @@ public class TermMatcherRegistryTest {
             "pmid-doi",
             "remove-stop-words",
             "translate-names",
+            "wikidata",
             "wikidata-taxon-id-web",
             "indexfungorum",
             "col",
