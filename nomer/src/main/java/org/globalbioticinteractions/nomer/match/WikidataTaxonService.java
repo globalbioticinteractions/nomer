@@ -240,11 +240,6 @@ public class WikidataTaxonService extends CommonStringTaxonService {
             taxon.setName(name.asText());
         }
 
-        JsonNode thumbnailUrl = jsonNode.at("/claims/P18/0/mainsnak/datavalue/value");
-        if (!thumbnailUrl.isMissingNode()) {
-            String s = StringUtils.replace(thumbnailUrl.asText(), " ", "_");
-            taxon.setThumbnailUrl("https://commons.wikimedia.org/wiki/File:" + s);
-        }
         return taxon;
     }
 

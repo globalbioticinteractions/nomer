@@ -307,7 +307,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 term);
     }
 
-    protected Map<String, String> enrichNameMatches(Taxon providedTaxon,
+    private Map<String, String> enrichNameMatches(Taxon providedTaxon,
                                                   TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
         Map<String, String> enriched = TaxonUtil.taxonToMap(providedTaxon);

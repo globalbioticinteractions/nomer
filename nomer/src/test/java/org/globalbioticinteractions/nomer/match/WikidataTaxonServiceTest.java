@@ -51,7 +51,7 @@ public class WikidataTaxonServiceTest {
         assertThat(taxon.getName(), Is.is("Panthera leo"));
         assertThat(taxon.getCommonNames(), containsString("Leeuw @nl"));
         assertThat(taxon.getCommonNames(), containsString("Lion @en"));
-        assertThat(taxon.getThumbnailUrl(), Is.is("https://commons.wikimedia.org/wiki/File:002_The_lion_king_Snyggve_in_the_Serengeti_National_Park_Photo_by_Giles_Laurent.jpg"));
+        assertThat(taxon.getThumbnailUrl(), Is.is(nullValue()));
     }
 
     @Test
