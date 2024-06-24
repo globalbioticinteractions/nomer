@@ -142,6 +142,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherTPTFactory());
         add(new TermMatcherMDDFactory());
         add(new TermMatcherWorldRegisterOfMarineSpeciesFactory());
+        add(new TermMatcherWikidataTaxonFactory());
         // disabled until data update is available see https://github.com/globalbioticinteractions/nomer/issues/144#issuecomment-1405187944
         //add(new TermMatcherHesperomysFactory());
     }});

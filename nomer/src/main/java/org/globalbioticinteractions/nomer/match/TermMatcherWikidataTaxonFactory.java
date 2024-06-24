@@ -17,6 +17,6 @@ public class TermMatcherWikidataTaxonFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return new PBDBTaxonService(ctx);
+        return new WikidataTaxonService(ctx);
     }
 }
