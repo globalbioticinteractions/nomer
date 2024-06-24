@@ -233,7 +233,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         };
     }
 
-    private Map<String, String> enrichIdMatches(Taxon toBeEnriched,
+    protected Map<String, String> enrichIdMatches(Taxon toBeEnriched,
                                                 TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
         T key = getIdOrNull(toBeEnriched, getTaxonomyProvider());
@@ -307,7 +307,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
                 term);
     }
 
-    private Map<String, String> enrichNameMatches(Taxon providedTaxon,
+    protected Map<String, String> enrichNameMatches(Taxon providedTaxon,
                                                   TermMatchListener listener) throws PropertyEnricherException {
         checkInit();
         Map<String, String> enriched = TaxonUtil.taxonToMap(providedTaxon);
@@ -333,7 +333,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
 
                             if (acceptedExternalId.equals(taxonKey)) {
                                 listener.foundTaxonForTerm(null,
-                                        resolvedTaxon,
+                                        providedTaxon,
                                         uncheckedOrAccepted(resolvedTaxon),
                                         resolvedTaxon
                                 );
