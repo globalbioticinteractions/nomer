@@ -55,6 +55,15 @@ public class WikidataTaxonServiceTest {
     }
 
     @Test
+    public void parseParentId() throws IOException {
+        InputStream is = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/wikidata/lion.json");
+        JsonNode jsonNode = new ObjectMapper().readTree(is);
+
+        String parentId = WikidataTaxonService.getParentId(jsonNode);
+        assertThat(parentId, Is.is("WD:Q127960"));
+    }
+
+    @Test
     public void relatedIdentifiers() throws IOException {
         InputStream is = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/wikidata/lion.json");
         JsonNode jsonNode = new ObjectMapper().readTree(is);
@@ -96,7 +105,11 @@ public class WikidataTaxonServiceTest {
         Taxon resolved = found.get(0).getRight();
         assertThat(resolved.getName(), is("Panthera leo"));
         assertThat(resolved.getId(), is("WD:Q140"));
+        assertThat(resolved.getRank(), is("WD:Q7432"));
         assertThat(resolved.getCommonNames(), containsString("Leeuw @nl"));
+        assertThat(resolved.getPath(), Is.is("Panthera | Panthera leo"));
+        assertThat(resolved.getPathIds(), Is.is("WD:Q127960 | WD:Q140"));
+        assertThat(resolved.getPathNames(), Is.is("WD:Q34740 | WD:Q7432"));
     }
 
     @Test

@@ -87,12 +87,9 @@ public class WikidataTaxonService extends CommonStringTaxonService {
                             nodeIds.add(taxon.getExternalId());
                             name2nodeIds.put(taxon.getName(), nodeIds);
                         }
-                        JsonNode parentId = getParentId(jsonNode);
-                        if (!parentId.isMissingNode()) {
-                            String parentIdString = parentId.asText();
-                            if (StringUtils.isNotBlank(parentIdString)) {
-                                childParent.putIfAbsent(wikidataItemId, parentIdString);
-                            }
+                        String parentId = getParentId(jsonNode);
+                        if (StringUtils.isNotBlank(parentId)) {
+                            childParent.putIfAbsent(taxon.getExternalId(), parentId);
                         }
                     }
                 }
@@ -217,9 +214,9 @@ public class WikidataTaxonService extends CommonStringTaxonService {
     public static Taxon parseTaxon(JsonNode jsonNode) {
         Taxon taxon = new TaxonImpl();
 
-        JsonNode at = getId(jsonNode);
-        if (!at.isMissingNode()) {
-            taxon.setExternalId("WD:" + at.asText());
+        String id = getId(jsonNode);
+        if (StringUtils.isNotBlank(id)) {
+            taxon.setExternalId(id);
         }
 
         JsonNode labels = jsonNode.at("/claims/P1843");
@@ -235,6 +232,11 @@ public class WikidataTaxonService extends CommonStringTaxonService {
 
         taxon.setCommonNames(StringUtils.join(commonNames, CharsetConstant.SEPARATOR));
 
+        String rank = getId(jsonNode.at("/claims/P105/0/mainsnak/datavalue/value"));
+        if (StringUtils.isNotBlank(rank)) {
+            taxon.setRank(rank);
+        }
+
         JsonNode name = jsonNode.at("/claims/P225/0/mainsnak/datavalue/value");
         if (!name.isMissingNode()) {
             taxon.setName(name.asText());
@@ -243,12 +245,18 @@ public class WikidataTaxonService extends CommonStringTaxonService {
         return taxon;
     }
 
-    private static JsonNode getId(JsonNode jsonNode) {
-        return jsonNode.at("/id");
+    private static String getId(JsonNode jsonNode) {
+        return getWikidataId(jsonNode.at("/id"));
     }
 
-    private static JsonNode getParentId(JsonNode jsonNode) {
-        return jsonNode.at("/claims/P171/0/mainsnak/datavalue/value/id");
+    private static String getWikidataId(JsonNode idNode) {
+        return idNode == null || idNode.isMissingNode()
+                ? null
+                : TaxonomyProvider.WIKIDATA.getIdPrefix() + idNode.asText();
+    }
+
+    public static String getParentId(JsonNode jsonNode) {
+        return getId(jsonNode == null ? null : jsonNode.at("/claims/P171/0/mainsnak/datavalue/value"));
     }
 
 }
