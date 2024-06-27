@@ -61,6 +61,44 @@ public class SynonymizerTest {
         assertThat(countTotal.get(), Is.is(2L));
         assertThat(synonymMatches.get(), Is.is(1L));
     }
+    @Test
+    public void matchNoRetry() throws PropertyEnricherException {
+
+
+        TermMatcher matcherBasic = new TermMatcher() {
+
+            @Override
+            public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                for (Term term : list) {
+                    if ("Xysticus logunovi".equals(term.getName())) {
+                        TaxonImpl homoSapiens = new TaxonImpl("Xysticus logunovi", "FOO:123");
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.HAS_ACCEPTED_NAME, homoSapiens);
+                    } else {
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.NONE, new TaxonImpl(term.getName(), term.getId()));
+                    }
+                }
+            }
+        };
+
+        TermMatcher matcher = new Synonymizer(matcherBasic);
+
+
+        AtomicLong countTotal = new AtomicLong(0);
+        AtomicLong synonymMatches = new AtomicLong(0);
+        TermImpl spider = new TermImpl(null, "Xysticus logunovi");
+        matcher.match(Arrays.asList(spider), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                countTotal.incrementAndGet();
+                if (NameType.SYNONYM_OF.equals(nameType)) {
+                    synonymMatches.incrementAndGet();
+                }
+            }
+        });
+
+        assertThat(countTotal.get(), Is.is(1L));
+        assertThat(synonymMatches.get(), Is.is(0L));
+    }
 
     @Test
     public void proposeNameAlternate() {
@@ -181,10 +219,11 @@ public class SynonymizerTest {
 
     @Test
     public void proposeNameAlternatePteropus_gilliardi () {
+        // see https://github.com/globalbioticinteractions/nomer/issues/143
         List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Pteropus gilliardi");
         assertThat(
                 alternate,
-                hasItems("Pteropus gilliardorum")
+                not(hasItems("Pteropus gilliardorum"))
         );
     }
 
@@ -203,6 +242,16 @@ public class SynonymizerTest {
         assertThat(
                 alternate,
                 hasItems("Crocidura greenwoodae")
+        );
+    }
+
+    @Test
+    public void proposeNameAlternateXysticus_logunovi () {
+        // see https://github.com/globalbioticinteractions/nomer/issues/143
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Xysticus logunovi");
+        assertThat(
+                alternate,
+                not(hasItems("Xysticus logunovorum"))
         );
     }
 

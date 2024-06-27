@@ -184,6 +184,31 @@ public class WikidataTaxonServiceTest {
 
     }
 
+    @Test
+    public void indexAndFindBySpiderName() throws IOException, PropertyEnricherException {
+        WikidataTaxonService service = createService(folder.newFolder());
+        List<Triple<Term, NameType, Taxon>> found = new ArrayList<>();
+
+        service.match(Arrays.asList(new TermImpl(null, "Xysticus logunovi")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                found.add(Triple.of(term, nameType, taxon));
+
+            }
+        });
+        assertThat(found.size(), Is.is(1));
+
+        Term provided = found.get(0).getLeft();
+        assertThat(provided.getName(), Is.is("Xysticus logunovi"));
+        assertThat(provided.getId(), Is.is(nullValue()));
+
+        assertThat(found.get(0).getMiddle(), is(NameType.HAS_ACCEPTED_NAME));
+
+        Taxon resolved = found.get(0).getRight();
+        assertThat(resolved.getName(), is("Xysticus logunovi"));
+        assertThat(resolved.getId(), is("WD:Q5308576"));
+    }
+
     private WikidataTaxonService createService(File file1) throws IOException {
         File file = file1;
         return new WikidataTaxonService(new TermMatcherContext() {

@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.Synonymizer;
 import org.eol.globi.service.PropertyEnricherException;
@@ -65,7 +66,13 @@ public class MatchUtil {
             throw new IllegalArgumentException("unknown matcher");
         }
 
-        return new TermMatcherHierarchical(new Synonymizer(firstMatcher.get()));
+        String property = ctx.getProperty("nomer.guess.synonyms");
+
+        TermMatcherHierarchical termMatcherHierarchical = new TermMatcherHierarchical(firstMatcher.get());
+        if (StringUtils.isNotBlank(property) && !StringUtils.equalsIgnoreCase("false", StringUtils.trim(property))) {
+            termMatcherHierarchical = new TermMatcherHierarchical(new Synonymizer(firstMatcher.get()));
+        }
+        return termMatcherHierarchical;
     }
 
     public static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
