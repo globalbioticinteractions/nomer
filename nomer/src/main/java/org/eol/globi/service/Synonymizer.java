@@ -30,8 +30,11 @@ public class Synonymizer implements TermMatcher {
         put("is", Arrays.asList("e")); // e.g., Baeodon gracilis -> Baeodon gracile
         put("e", Arrays.asList("is")); // e.g., Styloctenium mindorense -> Styloctenium mindorensis
         put("or", Arrays.asList("us")); //e.g., major -> majus
-        put("i", Arrays.asList("ii")); // e.g., Mops bemmeleni -> Mops bemmelenii
+        put("i", Arrays.asList("ii", "ae", "orum", "ei")); // e.g., Mops bemmeleni -> Mops bemmelenii, Pteropus gilliardi -> Pteropus gilliardorum, Plecotus christii -> Plecotus christiei
+        put("ae", Arrays.asList("i")); // e.g., Crocidura greenwoodae -> Crocidura greenwoodi
+        put("ei", Arrays.asList("i", "ii")); // e.g., Plecotus christiei -> Plecotus christii
         put("ii", Arrays.asList("i")); // e.g., Plecotus christii -> Plecotus christi
+        put("orum", Arrays.asList("i")); // e.g., Pteropus gilliardorum -> Pteropus gilliardi
     }};
 
     public Synonymizer(TermMatcher matcher) {

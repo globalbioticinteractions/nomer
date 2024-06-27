@@ -162,6 +162,51 @@ public class SynonymizerTest {
     }
 
     @Test
+    public void proposeNameAlternatePeromyscus_boylei() {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Peromyscus boylei");
+        assertThat(
+                alternate,
+                hasItems("Peromyscus boylii")
+        );
+    }
+
+    @Test
+    public void proposeNameAlternatePlecotus_christii () {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Plecotus christii");
+        assertThat(
+                alternate,
+                hasItems("Plecotus christiei")
+        );
+    }
+
+    @Test
+    public void proposeNameAlternatePteropus_gilliardi () {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Pteropus gilliardi");
+        assertThat(
+                alternate,
+                hasItems("Pteropus gilliardorum")
+        );
+    }
+
+    @Test
+    public void proposeNameAlternateCrocidura_greenwoodae () {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Crocidura greenwoodae");
+        assertThat(
+                alternate,
+                hasItems("Crocidura greenwoodi")
+        );
+    }
+
+    @Test
+    public void proposeNameAlternateCrocidura_greenwoodi () {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Crocidura greenwoodi");
+        assertThat(
+                alternate,
+                hasItems("Crocidura greenwoodae")
+        );
+    }
+
+    @Test
     public void superLong() {
         List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald majus bla blaus bla bla bla bla");
         assertThat(
