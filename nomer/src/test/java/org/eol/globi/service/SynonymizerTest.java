@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.hamcrest.core.IsNot.not;
 
 public class SynonymizerTest {
 
@@ -64,7 +65,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Bla blaii"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Bla blaii"),
                 hasItem("Bla blai")
         );
     }
@@ -72,7 +73,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate2() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Bla blai"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Bla blai"),
                 hasItem("Bla blaii")
         );
     }
@@ -80,7 +81,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate3() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Donald duckus"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald duckus"),
                 hasItem("Donald ducka")
         );
     }
@@ -88,7 +89,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate4() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Donald ducka"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald ducka"),
                 hasItem("Donald duckus")
         );
     }
@@ -96,7 +97,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate44() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Donald ducka var. ducka"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald ducka var. ducka"),
                 hasItems("Donald duckus var. duckus", "Donald duckus var. ducka")
         );
     }
@@ -104,7 +105,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate45() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Donald ducka var. ducka (L. 1758)"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald ducka var. ducka (L. 1758)"),
                 hasItems("Donald duckus var. ducka (L. 1758)")
         );
     }
@@ -112,7 +113,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate5() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Archaeotherium palustre"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Archaeotherium palustre"),
                 hasItem("Archaeotherium palustris")
         );
     }
@@ -120,7 +121,7 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate6() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Archaeotherium palustris"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Archaeotherium palustris"),
                 hasItem("Archaeotherium palustre")
         );
     }
@@ -128,20 +129,20 @@ public class SynonymizerTest {
     @Test
     public void proposeNameAlternate7() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Donald major"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald major"),
                 hasItem("Donald majus")
         );
     }
 
     @Test
     public void proposeNameAlternate9() {
-        assertThat(Synonymizer.proposeNameAlternate("Carollia brevicauda"), hasItem("Carollia brevicaudum"));
+        assertThat(Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Carollia brevicauda"), hasItem("Carollia brevicaudum"));
     }
 
     @Test
     public void proposeNameAlternate10() {
         assertThat(
-                Synonymizer.proposeNameAlternate("Carollia brevicaudum colombiana"),
+                Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Carollia brevicaudum colombiana"),
                 hasItem("Carollia brevicauda colombiana")
         );
 
@@ -149,7 +150,7 @@ public class SynonymizerTest {
 
     @Test
     public void proposeNameAlternate8() {
-        List<String> alternate = Synonymizer.proposeNameAlternate("Donald majus");
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald majus");
         assertThat(
                 alternate,
                 hasItems("Donald major", "Donald maja", "Donald majum")
@@ -157,6 +158,33 @@ public class SynonymizerTest {
         assertThat(
                 alternate.size(),
                 Is.is(3)
+        );
+    }
+
+    @Test
+    public void superLong() {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("Donald majus bla blaus bla bla bla bla");
+        assertThat(
+                alternate,
+                hasItem("Donald maja blus blaus bla bla bla bla")
+        );
+        assertThat(
+                alternate,
+                not(hasItem("Donald maja blus blaus bla bla bla blus"))
+        );
+
+        assertThat(
+                alternate.size(),
+                Is.is(11)
+        );
+    }
+
+    @Test
+    public void noCapitalizedGenus() {
+        List<String> alternate = Synonymizer.proposeSynonymForUpToTwoNonGenusNameParts("donald majus bla blaus bla bla bla bla");
+        assertThat(
+                alternate.size(),
+                Is.is(0)
         );
     }
 
