@@ -1,6 +1,5 @@
 package org.globalbioticinteractions.nomer.util;
 
-import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.Capitalizer;
 import org.eol.globi.taxon.RowHandler;
