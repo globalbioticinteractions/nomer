@@ -13,6 +13,7 @@ import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.Capitalizer;
 import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
@@ -87,7 +88,7 @@ public class MDDTaxonService extends CommonStringTaxonService {
                         if (StringUtils.equalsIgnoreCase("specificEpithet", rank)) {
                             value = StringUtils.lowerCase(value);
                         } else {
-                            value = StringUtils.capitalize(StringUtils.lowerCase(value));
+                            value = Capitalizer.capitalize(StringUtils.lowerCase(value));
                         }
 
                         return StringUtils.equalsIgnoreCase(value, "NA")

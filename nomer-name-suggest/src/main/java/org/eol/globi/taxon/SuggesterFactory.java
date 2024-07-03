@@ -30,7 +30,7 @@ public class SuggesterFactory {
                 add(new SnakeCaseUndoer());
                 add(new PeriodAsWhitespaceUndoer());
                 add(new AllCapsUndoer());
-                add(new AllLowerCaseUndoer());
+                add(new CapitalizeFirstWord());
                 add(new NameScrubber());
             }
         };

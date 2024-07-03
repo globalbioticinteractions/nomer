@@ -2,6 +2,7 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.taxon.Capitalizer;
 import org.eol.globi.taxon.RowHandler;
 
 import java.io.OutputStream;
@@ -42,9 +43,9 @@ public class HeaderRowHandler implements RowHandler {
                 name = "relationName";
             } else {
                 if (i < rowOrig.length) {
-                    name = "provided" + StringUtils.capitalize(inputSchema.getOrDefault(i, "col" + i));
+                    name = "provided" + Capitalizer.capitalize(inputSchema.getOrDefault(i, "col" + i));
                 } else {
-                    name = "resolved" + StringUtils.capitalize(outputSchema.getOrDefault(i - (rowOrig.length + 1), "col" + i));
+                    name = "resolved" + Capitalizer.capitalize(outputSchema.getOrDefault(i - (rowOrig.length + 1), "col" + i));
                 }
             }
             if (i > 0) {

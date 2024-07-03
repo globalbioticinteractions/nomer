@@ -14,7 +14,7 @@ public class PeriodAsWhitespaceUndoer implements org.eol.globi.service.NameSugge
         String suggestion = name;
         Matcher matcher = pattern.matcher(name);
         if (matcher.matches()) {
-            suggestion = StringUtils.capitalize(StringUtils.replace(name, ".", " "));
+            suggestion = Capitalizer.capitalize(StringUtils.replace(name, ".", " "));
         }
         return suggestion;
     }

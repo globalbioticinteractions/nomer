@@ -169,7 +169,7 @@ public class AtlasOfLivingAustraliaService extends PropertyEnricherSimple {
         for (String rank : ranks) {
             if (classification.has(rank)) {
                 String textValue = classification.get(rank).asText();
-                path.add(StringUtils.capitalize(StringUtils.lowerCase(textValue)));
+                path.add(Capitalizer.capitalize(StringUtils.lowerCase(textValue)));
                 pathNames.add(getRankString(rank));
                 String guid = "";
                 String guidName = rank + "Guid";

@@ -1,17 +1,15 @@
 package org.eol.globi.taxon;
 
-import org.apache.commons.lang.StringUtils;
-import org.eol.globi.service.NameSuggester;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AllLowerCaseUndoer implements NameSuggester {
+public final class Capitalizer {
 
-    final private Pattern pattern = Pattern.compile("(?<first>[a-z]{2,})(?<remainder>.*)");
+    static final private Pattern pattern = Pattern.compile("(?<first>[a-z]{2,})(?<remainder>.*)");
 
-    @Override
-    public String suggest(final String name) {
+    public static String capitalize(String name) {
         String suggestion = name;
         Matcher matcher = pattern.matcher(name);
         if (matcher.matches()) {

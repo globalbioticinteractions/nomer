@@ -15,7 +15,7 @@ public class AllCapsUndoer implements NameSuggester {
         String suggestion = name;
         Matcher matcher = pattern.matcher(name);
         if (matcher.matches()) {
-            suggestion = StringUtils.capitalize(StringUtils.lowerCase(name));
+            suggestion = Capitalizer.capitalize(StringUtils.lowerCase(name));
         }
         return suggestion;
     }

@@ -15,7 +15,7 @@ public class SnakeCaseUndoer implements NameSuggester {
         String suggestion = name;
         Matcher matcher = pattern.matcher(name);
         if (matcher.matches()) {
-            suggestion = StringUtils.capitalize(StringUtils.replace(name, "_", " "));
+            suggestion = Capitalizer.capitalize(StringUtils.replace(name, "_", " "));
         }
         return suggestion;
     }
