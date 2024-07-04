@@ -69,21 +69,29 @@ public class ResourceServiceContentBased extends ResourceServiceReadOnly {
         String location = "[" + resource + "] at [" + tmpFile.getAbsolutePath() + "]";
 
         try (OutputStream outputStream = ResourceServiceUtil.getOutputStreamForCache(tmpFile)) {
-            String msg = "caching " + location;
-            LOG.info(msg + "...");
-            cmdGet.setOutputStream(outputStream);
-            cmdGet.run();
-            outputStream.flush();
-            LOG.info(msg + " done.");
-            File destFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
-            FileUtils.moveFile(tmpFile, destFile);
+            cacheIfNeeded(resource, cmdGet, tmpFile, location, outputStream);
         } catch (IOException ex) {
-            throw new IOException("failed to access [" + resource + "] in preston verse [", ex);
+            throw new IOException("failed to access [" + resource + "] in preston verse.", ex);
         }
         finally {
             FileUtils.deleteQuietly(tmpFile);
         }
         return super.retrieve(resource);
+    }
+
+    private void cacheIfNeeded(URI resource, CmdGet cmdGet, File tmpFile, String location, OutputStream outputStream) throws IOException {
+        String msg = "caching " + location;
+        LOG.info(msg + "...");
+        cmdGet.setOutputStream(outputStream);
+        cmdGet.run();
+        outputStream.flush();
+        LOG.info(msg + " done.");
+        File destFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
+        // move retrieved resource into destination unless someone else cached it already
+        // https://github.com/globalbioticinteractions/nomer/issues/183
+        if (!destFile.exists()) {
+            FileUtils.moveFile(tmpFile, destFile);
+        }
     }
 
 }
