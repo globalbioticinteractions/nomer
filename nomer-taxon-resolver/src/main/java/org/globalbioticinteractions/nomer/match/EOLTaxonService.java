@@ -193,17 +193,15 @@ public class EOLTaxonService extends CommonLongTaxonService {
 
         if (db.exists(NODES)
                 && db.exists(CHILD_PARENT)
-                && db.exists(MERGED_NODES)
                 && db.exists(PAGEID_TO_ID)
                 && db.exists(ID_TO_PAGEID)
                 && db.exists(NAME_TO_NODE_IDS)) {
-            LOG.debug("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            LOG.debug("EOL taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
             nodes = db.getTreeMap(NODES);
             childParent = db.getTreeMap(CHILD_PARENT);
-            mergedNodes = db.getTreeMap(MERGED_NODES);
             name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
             id2pageId = db.getTreeMap(ID_TO_PAGEID);
-            pageId2Id = db.getTreeMap(ID_TO_PAGEID);
+            pageId2Id = db.getTreeMap(PAGEID_TO_ID);
         } else {
             LOG.info("EOL taxonomy indexing...");
             StopWatch watch = new StopWatch();
