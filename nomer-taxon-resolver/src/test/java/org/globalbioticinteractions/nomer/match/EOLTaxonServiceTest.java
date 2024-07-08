@@ -7,7 +7,9 @@ import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +26,30 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class EOLTaxonServiceTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
+
     @Test
-    public void enrich() throws PropertyEnricherException {
+    public void enrichById() throws PropertyEnricherException {
         PropertyEnricher service = createService();
 
         TaxonImpl taxon = new TaxonImpl(null, "EOL:327955");
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Homo | Homo sapiens"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("EOL:327955"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Homo sapiens"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("EOL:42268 | EOL:327955"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+    }
+
+    @Test
+    public void enrichByName() throws PropertyEnricherException {
+        PropertyEnricher service = createService();
+
+        TaxonImpl taxon = new TaxonImpl("Homo sapiens", null);
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Homo | Homo sapiens"));
@@ -58,43 +79,33 @@ public class EOLTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is(nullValue()));
     }
 
-    private PropertyEnricher createService() {
-        EOLTaxonService taxonService = new EOLTaxonService(new TermMatcherContextClasspath() {
-            @Override
-            public String getCacheDir() {
-                return new File("target/eolCache" + UUID.randomUUID()).getAbsolutePath();
-            }
+    private PropertyEnricher createService() throws PropertyEnricherException {
+        try {
+            final String absolutePath = folder.newFolder().getAbsolutePath();
+            return new EOLTaxonService(new TermMatcherContextClasspath() {
 
-            @Override
-            public OutputFormat getOutputFormat() {
-                return null;
-            }
+                @Override
+                public String getCacheDir() {
+                    return absolutePath;
+                }
 
-            @Override
-            public String getProperty(String key) {
-                return new TreeMap<String, String>() {
-                    {
-                        put("nomer.eol.taxon", "/org/globalbioticinteractions/nomer/match/eol/taxon.tab");
-                    }
-                }.get(key);
-            }
-        });
-        return taxonService;
-    }
+                @Override
+                public OutputFormat getOutputFormat() {
+                    return null;
+                }
 
-    @Test
-    public void parseNodes() throws PropertyEnricherException {
-        Map<String, Map<String,String>> node = new TreeMap<>();
-        Map<String, String> childParent = new TreeMap<>();
-
-        InputStream nodesStream = getClass().getResourceAsStream("/org/globalbioticinteractions/nomer/match/eol/taxon.tab");
-        EOLTaxonService.parseNodes(node, childParent, nodesStream);
-
-        assertThat(childParent.get("EOL-000000641745"), is("EOL-000000641744"));
-        Map<String, String> properties = node.get("EOL-000000641745");
-        assertThat(TaxonUtil.mapToTaxon(properties).getExternalId(), is("EOL:327955"));
-        assertThat(TaxonUtil.mapToTaxon(properties).getRank(), is("species"));
-        assertThat(TaxonUtil.mapToTaxon(properties).getName(), is("Homo sapiens"));
+                @Override
+                public String getProperty(String key) {
+                    return new TreeMap<String, String>() {
+                        {
+                            put("nomer.eol.taxon", "/org/globalbioticinteractions/nomer/match/eol/taxon.tab");
+                        }
+                    }.get(key);
+                }
+            });
+        } catch (IOException e) {
+            throw new PropertyEnricherException("failed to create test folder", e);
+        }
 
     }
 

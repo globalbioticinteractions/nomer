@@ -1,74 +1,83 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
-import org.globalbioticinteractions.nomer.util.CacheUtil;
-import org.mapdb.Serializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.eol.globi.data.CharsetConstant;
-import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
-import org.eol.globi.taxon.PropertyEnricherSimple;
 import org.eol.globi.taxon.TaxonCacheService;
+import org.eol.globi.util.ExternalIdUtil;
+import org.globalbioticinteractions.nomer.util.CacheUtil;
 import org.globalbioticinteractions.nomer.util.PropertyEnricherInfo;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.mapdb.BTreeKeySerializer;
 import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.Serializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @PropertyEnricherInfo(name = "eol-taxon-id", description = "Lookup EOL pages by id with EOL:* prefix using offline-enabled database dump")
-public class EOLTaxonService extends PropertyEnricherSimple {
+public class EOLTaxonService extends CommonLongTaxonService {
 
     private static final Logger LOG = LoggerFactory.getLogger(EOLTaxonService.class);
-    private static final String DENORMALIZED_NODES = "denormalizedNodes";
 
-    private final TermMatcherContext ctx;
+    private static final String INTERNAL_ID = "internalId";
+    private static final String INTERNAL_ID_PATTERN_STRING = "(?<prefix>EOL-[0]+)(?<" + INTERNAL_ID + ">[0-9]+)";
+    private static final Pattern PATTERN_INTERNAL_ID
+            = Pattern.compile(INTERNAL_ID_PATTERN_STRING);
+
+    private static final String ID_TO_PAGEID = "id2pageId";
+    private BTreeMap<Long, Long> id2pageId;
+    private static final String PAGEID_TO_ID = "pageId2Id";
+    private BTreeMap<Long, Long> pageId2Id;
+
+
 
     private BTreeMap<String, Map<String, String>> eolDenormalizedNodes = null;
 
     public EOLTaxonService(TermMatcherContext ctx) {
-        this.ctx = ctx;
+        super(ctx);
+    }
+
+
+    @Override
+    public TaxonomyProvider getTaxonomyProvider() {
+        return TaxonomyProvider.EOL;
     }
 
     @Override
-    public Map<String, String> enrich(Map<String, String> properties) throws PropertyEnricherException {
-        Map<String, String> enriched = new TreeMap<>(properties);
-        String externalId = properties.get(PropertyAndValueDictionary.EXTERNAL_ID);
-        if (StringUtils.startsWith(externalId, TaxonomyProvider.ID_PREFIX_EOL)) {
-            if (needsInit()) {
-                if (ctx == null) {
-                    throw new PropertyEnricherException("context needed to initialize");
-                }
-                lazyInit();
-            }
-            Map<String, String> enrichedProperties = eolDenormalizedNodes.get(externalId);
-            enriched = enrichedProperties == null ? enriched : new TreeMap<>(enrichedProperties);
-        }
-        return enriched;
+    public Long getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
+        String idString = ExternalIdUtil.stripPrefix(matchingTaxonomyProvider, key.getExternalId());
+        return (matchingTaxonomyProvider.equals(taxonomyProvider)
+                && NumberUtils.isCreatable(idString))
+                ? pageId2Id.get(Long.parseLong(idString))
+                : null;
     }
 
 
-    static void parseNodes(Map<String, Map<String, String>> taxonMap,
-                           Map<String, String> childParent,
+
+    void parseNodes(Map<Long, Map<String, String>> taxonMap,
+                           Map<Long, Long> childParent,
                            InputStream resourceAsStream) throws PropertyEnricherException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
 
@@ -83,21 +92,34 @@ public class EOLTaxonService extends PropertyEnricherSimple {
 
                     String canonicalName = rowValues[11];
                     String pageId = rowValues[12];
+                    Matcher idMatcher = PATTERN_INTERNAL_ID.matcher(taxId);
 
-                    String externalId = StringUtils.isBlank(pageId)
-                            ? ""
-                            : (TaxonomyProvider.ID_PREFIX_EOL + pageId);
+                    if (idMatcher.matches() && NumberUtils.isDigits(pageId)) {
 
-                    TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
-                    taxon.setRank(rank);
-                    taxon.setExternalId(externalId);
+                        String externalId = StringUtils.isBlank(pageId)
+                                ? ""
+                                : (TaxonomyProvider.ID_PREFIX_EOL + pageId);
 
-                    taxonMap.put(taxId, TaxonUtil.taxonToMap(taxon));
+                        TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
+                        taxon.setRank(rank);
+                        taxon.setExternalId(externalId);
 
-                    childParent.put(
-                            taxId,
-                            parentTaxId
-                    );
+                        long pageIdNumber = Long.parseLong(pageId);
+                        Long internalTaxonId = Long.parseLong(idMatcher.group(INTERNAL_ID));
+                        id2pageId.put(internalTaxonId, pageIdNumber);
+                        pageId2Id.put(pageIdNumber, internalTaxonId);
+                        registerIdForName(internalTaxonId, taxon, name2nodeIds);
+                        taxonMap.put(internalTaxonId, TaxonUtil.taxonToMap(taxon));
+
+                        Matcher parentIdMatcher = PATTERN_INTERNAL_ID.matcher(parentTaxId);
+                        if (idMatcher.matches() && parentIdMatcher.matches()) {
+                            childParent.put(
+                                    Long.parseLong(idMatcher.group(INTERNAL_ID)),
+                                    Long.parseLong(parentIdMatcher.group(INTERNAL_ID))
+                            );
+                        }
+
+                    }
                 }
             }
         } catch (IOException e) {
@@ -154,8 +176,9 @@ public class EOLTaxonService extends PropertyEnricherSimple {
         taxonEnrichMap.put(externalId, TaxonUtil.taxonToMap(origTaxon));
     }
 
-    private void lazyInit() throws PropertyEnricherException {
-        File cacheDir = getCacheDir(ctx);
+    @Override
+    protected void lazyInit() throws PropertyEnricherException {
+        File cacheDir = getCacheDir();
         if (!cacheDir.exists()) {
             if (!cacheDir.mkdirs()) {
                 throw new PropertyEnricherException("failed to create cache dir at [" + cacheDir.getAbsolutePath() + "]");
@@ -172,59 +195,71 @@ public class EOLTaxonService extends PropertyEnricherSimple {
                 .transactionDisable()
                 .make();
 
-        if (db.exists(DENORMALIZED_NODES)) {
-            LOG.debug("EOL taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
-            eolDenormalizedNodes = db.getTreeMap(DENORMALIZED_NODES);
+        if (db.exists(NODES)
+                && db.exists(CHILD_PARENT)
+                && db.exists(MERGED_NODES)
+                && db.exists(PAGEID_TO_ID)
+                && db.exists(ID_TO_PAGEID)
+                && db.exists(NAME_TO_NODE_IDS)) {
+            LOG.debug("ITIS taxonomy already indexed at [" + taxonomyDir.getAbsolutePath() + "], no need to import.");
+            nodes = db.getTreeMap(NODES);
+            childParent = db.getTreeMap(CHILD_PARENT);
+            mergedNodes = db.getTreeMap(MERGED_NODES);
+            name2nodeIds = db.getTreeMap(NAME_TO_NODE_IDS);
+            id2pageId = db.getTreeMap(ID_TO_PAGEID);
+            pageId2Id = db.getTreeMap(ID_TO_PAGEID);
         } else {
-            LOG.info("EOL taxonomy importing...");
+            LOG.info("EOL taxonomy indexing...");
             StopWatch watch = new StopWatch();
             watch.start();
 
-            BTreeMap<String, Map<String, String>> eolNodes = db
-                    .createTreeMap("nodes")
+            nodes = db
+                    .createTreeMap(NODES)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.JAVA)
+                    .make();
+
+            childParent = db
+                    .createTreeMap(CHILD_PARENT)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.LONG)
+                    .make();
+
+            name2nodeIds = db
+                    .createTreeMap(NAME_TO_NODE_IDS)
                     .keySerializer(BTreeKeySerializer.STRING)
                     .valueSerializer(Serializer.JAVA)
                     .make();
 
-            BTreeMap<String, String> childParent = db
-                    .createTreeMap("childParent")
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .valueSerializer(Serializer.STRING)
+            id2pageId = db
+                    .createTreeMap(ID_TO_PAGEID)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.LONG)
+                    .make();
+
+            pageId2Id = db
+                    .createTreeMap(PAGEID_TO_ID)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.LONG)
                     .make();
 
             try {
-                InputStream resource = ctx.retrieve(CacheUtil.getValueURI(ctx, "nomer.eol.taxon"));
-                parseNodes(eolNodes, childParent, resource);
+                InputStream resource = getCtx().retrieve(CacheUtil.getValueURI(getCtx(), "nomer.eol.taxon"));
+                parseNodes(nodes, childParent, resource);
             } catch (IOException e) {
                 throw new PropertyEnricherException("failed to parse EOL nodes", e);
             }
 
-            eolDenormalizedNodes = db
-                    .createTreeMap(DENORMALIZED_NODES)
-                    .keySerializer(BTreeKeySerializer.STRING)
-                    .valueSerializer(Serializer.JAVA)
-                    .make();
-            denormalizeTaxa(eolNodes, eolDenormalizedNodes, childParent);
 
             watch.stop();
-            TaxonCacheService.logCacheLoadStats(watch.getTime(), eolNodes.size(), LOG);
-            LOG.info("EOL taxonomy imported.");
+            TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
+            LOG.info("EOL taxonomy indexed.");
         }
-    }
-
-    private boolean needsInit() {
-        return eolDenormalizedNodes == null;
     }
 
     @Override
     public void shutdown() {
-
-    }
-
-    private File getCacheDir(TermMatcherContext ctx) {
-        File cacheDir = new File(ctx.getCacheDir(), "eol");
-        cacheDir.mkdirs();
-        return cacheDir;
+        super.shutdown();
     }
 
 }
