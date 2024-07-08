@@ -37,12 +37,12 @@ public class EOLTaxonServiceTest {
         TaxonImpl taxon = new TaxonImpl(null, "EOL:327955");
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Homo | Homo sapiens"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Hominidae | Homininae | Homo | Homo sapiens"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("EOL:327955"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Homo sapiens"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("EOL:42268 | EOL:327955"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("EOL:47049573 |  | EOL:42268 | EOL:327955"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | subfamily | genus | species"));
     }
 
     @Test
@@ -52,12 +52,12 @@ public class EOLTaxonServiceTest {
         TaxonImpl taxon = new TaxonImpl("Homo sapiens", null);
         Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
 
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Homo | Homo sapiens"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Hominidae | Homininae | Homo | Homo sapiens"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("EOL:327955"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Homo sapiens"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("EOL:42268 | EOL:327955"));
-        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("EOL:47049573 |  | EOL:42268 | EOL:327955"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | subfamily | genus | species"));
     }
 
 

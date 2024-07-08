@@ -90,20 +90,23 @@ public class EOLTaxonService extends CommonLongTaxonService {
                     String pageId = rowValues[12];
                     Matcher idMatcher = PATTERN_INTERNAL_ID.matcher(taxId);
 
-                    if (idMatcher.matches() && NumberUtils.isDigits(pageId)) {
+                    if (idMatcher.matches()) {
 
-                        String externalId = StringUtils.isBlank(pageId)
-                                ? ""
-                                : (TaxonomyProvider.ID_PREFIX_EOL + pageId);
+
+                        Long internalTaxonId = Long.parseLong(idMatcher.group(INTERNAL_ID));
+
+                        String externalId = "";
+                        if (NumberUtils.isDigits(pageId)) {
+                            long pageIdNumber = Long.parseLong(pageId);
+                            id2pageId.put(internalTaxonId, pageIdNumber);
+                            pageId2Id.put(pageIdNumber, internalTaxonId);
+                            externalId = TaxonomyProvider.ID_PREFIX_EOL + pageId;
+                        }
 
                         TaxonImpl taxon = new TaxonImpl(canonicalName, externalId);
                         taxon.setRank(rank);
                         taxon.setExternalId(externalId);
 
-                        long pageIdNumber = Long.parseLong(pageId);
-                        Long internalTaxonId = Long.parseLong(idMatcher.group(INTERNAL_ID));
-                        id2pageId.put(internalTaxonId, pageIdNumber);
-                        pageId2Id.put(pageIdNumber, internalTaxonId);
                         registerIdForName(internalTaxonId, taxon, name2nodeIds);
                         taxonMap.put(internalTaxonId, TaxonUtil.taxonToMap(taxon));
 
