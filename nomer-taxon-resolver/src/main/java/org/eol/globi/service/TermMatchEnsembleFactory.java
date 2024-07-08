@@ -53,7 +53,6 @@ public class TermMatchEnsembleFactory {
                 add(new EOLTaxonService(ctx));
                 add(new GBIFService());
                 add(new INaturalistTaxonService());
-//                add(new EOLService2());
                 add(new WoRMSService());
                 add(new GulfBaseService(ctx));
                 add(new AtlasOfLivingAustraliaService());
