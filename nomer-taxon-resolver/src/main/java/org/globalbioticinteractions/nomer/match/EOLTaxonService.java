@@ -50,10 +50,6 @@ public class EOLTaxonService extends CommonLongTaxonService {
     private static final String PAGEID_TO_ID = "pageId2Id";
     private BTreeMap<Long, Long> pageId2Id;
 
-
-
-    private BTreeMap<String, Map<String, String>> eolDenormalizedNodes = null;
-
     public EOLTaxonService(TermMatcherContext ctx) {
         super(ctx);
     }
