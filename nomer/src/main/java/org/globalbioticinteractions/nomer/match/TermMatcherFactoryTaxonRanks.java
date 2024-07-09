@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
 
@@ -93,7 +94,8 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
     }
 
     private Pair<PrintStream, File> writerAndFileFor(URL terms, String resourceName, File cacheDir) throws IOException {
-        File tmpRanks = new File(cacheDir, "wikidata_appended_" + resourceName);
+        File tmpRanks = new File(cacheDir, "wikidata_appended_" + UUID.randomUUID().toString() + "_" + resourceName);
+        tmpRanks.deleteOnExit();
         FileUtils.copyURLToFile(terms, tmpRanks);
         FileOutputStream os = FileUtils.openOutputStream(tmpRanks, true);
         return Pair.of(new PrintStream(os), tmpRanks);
