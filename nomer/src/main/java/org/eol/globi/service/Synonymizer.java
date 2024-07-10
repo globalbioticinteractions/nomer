@@ -50,15 +50,18 @@ public class Synonymizer implements TermMatcher {
                     String name = term.getName();
                     List<String> synonyms = proposeSynonymForUpToTwoNonGenusNameParts(name);
                     try {
-                        matcher.match(synonyms.stream().map(alt -> new TermImpl(term.getId(), alt)).collect(Collectors.toList()), new TermMatchListener() {
-                            @Override
-                            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
-                                if (!NameType.NONE.equals(nameType)) {
-                                    rematched.set(true);
-                                    termMatchListener.foundTaxonForTerm(aLong, term, NameType.SYNONYM_OF, taxon);
+                        List<Term> termsToBeMatched = synonyms.stream().map(alt -> new TermImpl(term.getId(), alt)).collect(Collectors.toList());
+                        if (termsToBeMatched.size() > 0) {
+                            matcher.match(termsToBeMatched, new TermMatchListener() {
+                                @Override
+                                public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                                    if (!NameType.NONE.equals(nameType)) {
+                                        rematched.set(true);
+                                        termMatchListener.foundTaxonForTerm(aLong, term, NameType.SYNONYM_OF, taxon);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     } catch (PropertyEnricherException e) {
                         //
                     }
