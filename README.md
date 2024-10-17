@@ -13,13 +13,15 @@ Standard out (stdout) is used for results, and standard error (stderr) is used f
 
 ```Nomer``` expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema.*``` properties. See ```properties``` command to list available properties.
 
-Different kind of matchers can be select to do the term matching. Offline matching is supported by some matchers like ```globi-cache```. Note that ```globi-cache``` will download a taxon map/cache archive initially, and re-uses the indexes until the cache in cleaned up. The cache itself can be archived so that results can be reproduced in a different environment without need to rebuild the term match index.` 
+Different kind of matchers can be select to do the term matching. Offline matching is supported by some matchers like ```col```, and ```itis```. Note that offline-enabled matchers will download versioned taxonomic resources initially (e.g., an ITIS data dump as included in [Nomer's Corpus of Taxonomic Resources*](https://doi.org/10.5281/zenodo.12695629)), and re-uses the indexes until the cache in cleaned up. The cache itself can be archived so that results can be reproduced in a different environment without need to rebuild the term match index. For prebuilt indexes, please inspect the release assets at https://github.com/globalbioticinteractions/nomer/releases/0.5.13 (e.g., [Catalogue of Life: prebuilt index Nomer v0.5.13](https://github.com/globalbioticinteractions/nomer/releases/download/0.5.13/col_mapdb.zip)). Note, however, that indexes may take some time to build from scratch, and, when built, they can take hundreds of megabytes of disk space. 
 
 Matchers can be added by writing some java code that implements an interface.
 
 Note that a python wrapper was made available by [nleguillarme](https://github.com/nleguillarme) at [https://github.com/nleguillarme/pynomer](https://github.com/nleguillarme/pynomer). 
 
 Note that a NodeJS wrapper was made available by [zedomel](https://github.com/zedomel) at [https://github.com/zedomel/nodejs-nomer](https://github.com/zedomel/nodejs-nomer). 
+
+*Poelen, J. H. (ed . ) . (2024). Nomer Corpus of Taxonomic Resources hash://sha256/b60c0d25a16ae77b24305782017b1a270b79b5d1746f832650f2027ba536e276 hash://md5/17f1363a277ee0e4ecaf1b91c665e47e (0.27) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.12695629
 
 ## Table of Contents
 
@@ -194,9 +196,14 @@ Usage: nomer [command] [command options]
 
 ### Show version
 
-``` console
-$ nomer version
-0.0.7
+```bash
+nomer version
+```
+
+produces:
+
+```
+0.5.13
 ```
 
 ### Show supported matchers
