@@ -109,87 +109,140 @@ Please use [maven](https://maven.apache.org) version 3.3+ , otherwise you might 
 For documentation see [docs/nomer.adoc](docs/nomer.adoc) or type ```man nomer``` in the terminal after installing nomer.
 
 ## Usage
+As generated using:
+
+```bash
+nomer help
+```
+
+
 
 ```
-Usage: nomer [command] [command options]
-  Commands:
-    version      Show Version.
-      Usage: version
-
-    replace      Replace exact term matches in row. The input schema is used
-            to select the id and/or name to match to. The output schema is
-            used to select the columns to write into. If a term has multiple
-            matches, first match is used.
-      Usage: replace [options] [matcher]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    append      Append term match to row using id and name columns specified
-            in input schema. Multiple matches result in multiple rows.
-      Usage: append [options] [matcher]
-        Options:
-          -o, --output-format
-            tsv, json
-            Default: tsv
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    matchers      Lists supported matcher and (optionally) their descriptions.
-      Usage: matchers [options]
-        Options:
-          -o, --output-format
-            tsv, json
-            Default: tsv
-          -v, --verbose
-            if set, matcher descriptions are included for tsv.
-            Default: false
-
-    properties      Lists configuration properties. Can be used to make a
-            local copy and override default settings using the
-            [--properties=[local copy]] option.
-      Usage: properties [options]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    input-schema      Show input schema in JSON.
-      Usage: input-schema [options]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    output-schema      Show output schema.
-      Usage: output-schema [options]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    validate-term      Validate terms.
-      Usage: validate-term [options]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    validate-term-link      Validate term links.
-      Usage: validate-term-link [options]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
-
-    clean      Cleans term matcher cache.
-      Usage: clean [options] [matcher]
-        Options:
-          -p, --properties
-            Path to properties file to override defaults.
-            Default: <empty string>
+Usage: nomer [-hV] [COMMAND]
+maps identifiers and names to other identifiers and names
+  -h, --help      Show this help message and exit.
+  -V, --version   Print version information and exit.
+Commands:
+  version                                      Show Version
+  replace                                      Replace exact term matches in
+                                                 row from stdin. The input
+                                                 schema is used to select the
+                                                 id and/or name to match to.
+                                                 The output schema is used to
+                                                 select the columns to write
+                                                 into. If a term has multiple
+                                                 matches, first match is used.
+                                               For example:
+                                               echo -e '\tHomo sapiens' | nomer
+                                                 replace col
+                                               has expected result:
+                                               COL:6MB3T	Homo sapiens
+  append                                       Append term match to row from
+                                                 stdin using id and name
+                                                 columns specified in input
+                                                 schema. Multiple matches
+                                                 result in multiple rows.
+                                               For example:
+                                               echo -e '\tHomo sapiens' | nomer
+                                                 append col
+                                               has expected result:
+                                               	Homo sapiens	HAS_ACCEPTED_NAME	
+                                                 COL:6MB3T	Homo sapiens	
+                                                 Linnaeus, 1758	species		Biota
+                                                 | Animalia | Chordata |
+                                                 Vertebrata | Gnathostomata |
+                                                 Osteichthyes | Sarcopterygii |
+                                                 Tetrapoda | Amniota | Mammalia
+                                                 | Theria | Eutheria | Primates
+                                                 | Haplorrhini | Simiiformes |
+                                                 Hominoidea | Hominidae |
+                                                 Homininae | Homo | Homo
+                                                 sapiens	COL:5T6MX | COL:N |
+                                                 COL:CH2 | COL:8V4V3 | COL:
+                                                 8V4V5 | COL:8VVWB | COL:8VSMX
+                                                 | COL:9CK8W | COL:8VLBH | COL:
+                                                 6224G | COL:924GT | COL:LG |
+                                                 COL:8ZXYB | COL:4DT | COL:4PM
+                                                 | COL:58L | COL:6256T | COL:
+                                                 JPH | COL:636X2 | COL:6MB3T	
+                                                 unranked | kingdom | phylum |
+                                                 subphylum | infraphylum |
+                                                 parvphylum | gigaclass |
+                                                 megaclass | superclass | class
+                                                 | subclass | infraclass |
+                                                 order | suborder | infraorder
+                                                 | superfamily | family |
+                                                 subfamily | genus | species	|
+                                                 |  |  |  |  |  |  |  |
+                                                 Linnaeus, 1758 | Parker &
+                                                 Haswell, 1897 | Gill, 1872 |
+                                                 Linnaeus, 1758 | Pocock, 1918
+                                                 | Haeckel, 1866 | Gray, 1825 |
+                                                 Gray, 1825 | Gray, 1825 |
+                                                 Linnaeus, 1758 | Linnaeus,
+                                                 1758	https://www.
+                                                 catalogueoflife.
+                                                 org/data/taxon/6MB3T
+  list, ls, dump, export                       Dumps all terms into the defined
+                                                 output schema.
+                                               For example:
+                                               nomer ls col | head -n2
+                                               has expected result:
+                                               providedExternalId	providedName	
+                                                 providedAuthorship	
+                                                 relationName	
+                                                 resolvedExternalId	
+                                                 resolvedName	...
+                                                 resolvedAuthorship	
+                                                 resolvedRank	
+                                                 resolvedCommonNames	
+                                                 resolvedPath	resolvedPathIds	
+                                                 resolvedPathNames	
+                                                 resolvedPathAuthorships	
+                                                 resolvedExternalUrlCOL:
+                                                 001417c6-d3fc-4f42-aa3d-b1de3a5
+                                                 92e58	Cheilostomatida incertae
+                                                 sedis		HAS_ACCEPTED_NAME	COL:
+                                                 001417c6-d3fc-4f42-aa3d-b1de3a5
+                                                 92e58	Cheilostomatida incertae
+                                                 sedis		suborder		Biota |
+                                                 Animalia | Bryozoa |
+                                                 Gymnolaemata | Cheilostomatida
+                                                 | Cheilostomatida incertae
+                                                 sedis	COL:5T6MX | COL:N | COL:
+                                                 622CG | COL:8ZXG2 | COL:84JWL
+                                                 | COL:
+                                                 001417c6-d3fc-4f42-aa3d-b1de3a5
+                                                 92e58	unranked | kingdom |
+                                                 phylum | class | order |
+                                                 suborder	|  |  | Allman, 1856
+                                                 | Busk, 1852 |	https://www.
+                                                 catalogueoflife.
+                                                 org/data/taxon/001417c6-d3fc-4f
+                                                 42-aa3d-b1de3a592e58
+  matchers                                     Lists supported matcher and
+                                                 (optionally) their
+                                                 descriptions.
+  properties                                   Lists configuration properties.
+                                                 Can be used to make a local
+                                                 copy and override default
+                                                 settings using the
+                                                 [--properties=[local copy]]
+                                                 option.
+  input-schema                                 Show input schema in JSON.
+  output-schema                                Show output schema in JSON.
+  validate-terms                               Validate terms.
+  validate-term-link                           Validate term links.
+  clean                                        Cleans term matcher cache.
+  config-man, config-manpage, install-manpage  Installs/configures Nomer man
+                                                 page, so you can type [man
+                                                 nomer] on unix-like system to
+                                                 learn more about Nomer.
+  gen-manpage                                  Generates man pages for all
+                                                 commands in the specified
+                                                 directory.
+  help                                         Displays help information about
+                                                 the specified command
 ```
 
 ## Examples 
