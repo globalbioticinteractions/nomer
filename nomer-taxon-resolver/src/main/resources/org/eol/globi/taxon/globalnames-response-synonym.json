@@ -1,0 +1,50 @@
+[
+  {
+    "id": "176edafc-a594-5f6d-b0bf-8a39b78bfe90",
+    "name": "Arius felis",
+    "cardinality": 2,
+    "matchType": "Exact",
+    "results": [{
+      "dataSourceId": 3,
+      "dataSourceTitleShort": "ITIS",
+      "curation": "Curated",
+      "recordId": "164165",
+      "outlink": "https://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=164165#null",
+      "entryDate": "2025-02-04",
+      "sortScore": 9.411093439783798,
+      "matchedNameID": "2d769369-4144-53b8-9819-d2c7a545b1a0",
+      "matchedName": "Arius felis (Linnaeus, 1766)",
+      "matchedCardinality": 2,
+      "matchedCanonicalSimple": "Arius felis",
+      "matchedCanonicalFull": "Arius felis",
+      "currentRecordId": "680665",
+      "currentNameId": "81444bff-1c6e-593c-9a03-5dae15de52fe",
+      "currentName": "Ariopsis felis (Linnaeus, 1766)",
+      "currentCardinality": 2,
+      "currentCanonicalSimple": "Ariopsis felis",
+      "currentCanonicalFull": "Ariopsis felis",
+      "taxonomicStatus": "Synonym",
+      "isSynonym": true,
+      "classificationPath": "Bilateria|Deuterostomia|Chordata|Vertebrata|Gnathostomata|Actinopterygii|Teleostei|Ostariophysi|Siluriformes|Ariidae|Ariopsis|Ariopsis felis",
+      "classificationRanks": "subkingdom|infrakingdom|phylum|subphylum|infraphylum|superclass|class|superorder|order|family|genus|species",
+      "classificationIds": "914154|914156|158852|331030|914179|161061|161105|162845|163992|164157|639019|680665",
+      "editDistance": 0,
+      "stemEditDistance": 0,
+      "matchType": "Exact",
+      "scoreDetails": {
+        "cardinalityScore": 1,
+        "infraSpecificRankScore": 0,
+        "fuzzyLessScore": 1,
+        "curatedDataScore": 0.6666667,
+        "authorMatchScore": 0.14285715,
+        "acceptedNameScore": 0,
+        "parsingQualityScore": 1
+      }
+    }],
+    "dataSourcesNum": 1,
+    "dataSourcesIds": [
+      3
+    ],
+    "curation": "Curated"
+  }
+]

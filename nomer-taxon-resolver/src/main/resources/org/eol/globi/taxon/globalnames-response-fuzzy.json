@@ -1,0 +1,50 @@
+[
+  {
+    "id": "8d58cc2c-20e0-5f8e-991c-32e22e10ebb1",
+    "name": "Homo saliens",
+    "cardinality": 2,
+    "matchType": "Fuzzy",
+    "results": [{
+      "dataSourceId": 3,
+      "dataSourceTitleShort": "ITIS",
+      "curation": "Curated",
+      "recordId": "180092",
+      "outlink": "https://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=180092#null",
+      "entryDate": "2025-02-04",
+      "sortScore": 9.388235333070135,
+      "matchedNameID": "7db4f8a2-aafe-56b6-8838-89522c67d9f0",
+      "matchedName": "Homo sapiens Linnaeus, 1758",
+      "matchedCardinality": 2,
+      "matchedCanonicalSimple": "Homo sapiens",
+      "matchedCanonicalFull": "Homo sapiens",
+      "currentRecordId": "180092",
+      "currentNameId": "7db4f8a2-aafe-56b6-8838-89522c67d9f0",
+      "currentName": "Homo sapiens Linnaeus, 1758",
+      "currentCardinality": 2,
+      "currentCanonicalSimple": "Homo sapiens",
+      "currentCanonicalFull": "Homo sapiens",
+      "taxonomicStatus": "Accepted",
+      "isSynonym": false,
+      "classificationPath": "Bilateria|Deuterostomia|Chordata|Vertebrata|Gnathostomata|Tetrapoda|Mammalia|Theria|Eutheria|Primates|Haplorrhini|Simiiformes|Hominoidea|Hominidae|Homininae|Homo|Homo sapiens",
+      "classificationRanks": "subkingdom|infrakingdom|phylum|subphylum|infraphylum|superclass|class|subclass|infraclass|order|suborder|infraorder|superfamily|family|subfamily|genus|species",
+      "classificationIds": "914154|914156|158852|331030|914179|914181|179913|179916|179925|180089|943773|943778|943782|180090|943805|180091|180092",
+      "editDistance": 1,
+      "stemEditDistance": 1,
+      "matchType": "Fuzzy",
+      "scoreDetails": {
+        "cardinalityScore": 1,
+        "infraSpecificRankScore": 0,
+        "fuzzyLessScore": 0.6666667,
+        "curatedDataScore": 0.6666667,
+        "authorMatchScore": 0.14285715,
+        "acceptedNameScore": 1,
+        "parsingQualityScore": 1
+      }
+    }],
+    "dataSourcesNum": 1,
+    "dataSourcesIds": [
+      3
+    ],
+    "curation": "Curated"
+  }
+]
