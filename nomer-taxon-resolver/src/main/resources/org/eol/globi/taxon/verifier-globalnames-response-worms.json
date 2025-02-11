@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "namesNumber": 1,
+    "withAllMatches": true,
+    "dataSources": [
+      9
+    ]
+  },
+  "names": [
+    {
+      "id": "d09779c2-a374-5bea-bd96-97e3e3faf756",
+      "name": "Gadus morhua",
+      "cardinality": 2,
+      "matchType": "Exact",
+      "results": [
+        {
+          "dataSourceId": 9,
+          "dataSourceTitleShort": "WoRMS",
+          "curation": "Curated",
+          "recordId": "urn:lsid:marinespecies.org:taxname:126436",
+          "outlink": "https://www.marinespecies.org/aphia.php?p=taxdetails\u0026id=126436",
+          "entryDate": "2025-02-04",
+          "sortScore": 9.411446740174974,
+          "matchedNameID": "5128ca17-9b42-5b3b-a280-b6121ffff53b",
+          "matchedName": "Gadus morhua Linnaeus, 1758",
+          "matchedCardinality": 2,
+          "matchedCanonicalSimple": "Gadus morhua",
+          "matchedCanonicalFull": "Gadus morhua",
+          "currentRecordId": "urn:lsid:marinespecies.org:taxname:126436",
+          "currentNameId": "5128ca17-9b42-5b3b-a280-b6121ffff53b",
+          "currentName": "Gadus morhua Linnaeus, 1758",
+          "currentCardinality": 2,
+          "currentCanonicalSimple": "Gadus morhua",
+          "currentCanonicalFull": "Gadus morhua",
+          "taxonomicStatus": "Accepted",
+          "isSynonym": false,
+          "classificationPath": "Animalia|Chordata|Vertebrata|Gnathostomata|Osteichthyes|Actinopterygii|Actinopteri|Teleostei|Gadiformes|Gadidae|Gadus|Gadus morhua",
+          "classificationRanks": "kingdom|phylum|subphylum|infraphylum|parvphylum|gigaclass|superclass|class|order|family|genus|species",
+          "classificationIds": "urn:lsid:marinespecies.org:taxname:2|urn:lsid:marinespecies.org:taxname:1821|urn:lsid:marinespecies.org:taxname:146419|urn:lsid:marinespecies.org:taxname:1828|urn:lsid:marinespecies.org:taxname:152352|urn:lsid:marinespecies.org:taxname:10194|urn:lsid:marinespecies.org:taxname:843664|urn:lsid:marinespecies.org:taxname:293496|urn:lsid:marinespecies.org:taxname:10313|urn:lsid:marinespecies.org:taxname:125469|urn:lsid:marinespecies.org:taxname:125732|urn:lsid:marinespecies.org:taxname:126436",
+          "editDistance": 0,
+          "stemEditDistance": 0,
+          "matchType": "Exact",
+          "scoreDetails": {
+            "cardinalityScore": 1,
+            "infraSpecificRankScore": 0,
+            "fuzzyLessScore": 1,
+            "curatedDataScore": 0.6666667,
+            "authorMatchScore": 0.14285715,
+            "acceptedNameScore": 1,
+            "parsingQualityScore": 1
+          }
+        }
+      ],
+      "curation": "Curated"
+    }
+  ]
+}

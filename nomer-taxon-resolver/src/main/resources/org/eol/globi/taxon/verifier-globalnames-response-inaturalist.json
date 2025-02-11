@@ -1,0 +1,50 @@
+[
+  {
+    "id": "a9140a43-7a9b-52b0-b97d-01ba55d214b2",
+    "name": "Ariopsis felis",
+    "cardinality": 2,
+    "matchType": "Exact",
+    "bestResult": {
+      "dataSourceId": 180,
+      "dataSourceTitleShort": "iNaturalist",
+      "curation": "NotCurated",
+      "recordId": "94635",
+      "outlink": "https://www.inaturalist.org/taxa/94635",
+      "entryDate": "2025-02-04",
+      "sortScore": 9.41003181086182,
+      "matchedNameID": "a9140a43-7a9b-52b0-b97d-01ba55d214b2",
+      "matchedName": "Ariopsis felis",
+      "matchedCardinality": 2,
+      "matchedCanonicalSimple": "Ariopsis felis",
+      "matchedCanonicalFull": "Ariopsis felis",
+      "currentRecordId": "",
+      "currentNameId": "",
+      "currentName": "",
+      "currentCardinality": 0,
+      "currentCanonicalSimple": "",
+      "currentCanonicalFull": "",
+      "taxonomicStatus": "N/A",
+      "isSynonym": false,
+      "classificationPath": "Animalia|Chordata|Vertebrata|Actinopterygii|Ostariophysi|Siluriformes|Siluroidei|Ariidae|Ariinae|Ariopsis|Ariopsis felis",
+      "classificationRanks": "kingdom|phylum|subphylum|class|superorder|order|suborder|family|subfamily|genus|species",
+      "classificationIds": "1|2|355675|47178|1543570|49175|1303579|69955|788690|86634|94635",
+      "editDistance": 0,
+      "stemEditDistance": 0,
+      "matchType": "Exact",
+      "scoreDetails": {
+        "cardinalityScore": 1,
+        "infraSpecificRankScore": 0,
+        "fuzzyLessScore": 1,
+        "curatedDataScore": 0,
+        "authorMatchScore": 0.14285715,
+        "acceptedNameScore": 1,
+        "parsingQualityScore": 1
+      }
+    },
+    "dataSourcesNum": 1,
+    "dataSourcesIds": [
+      180
+    ],
+    "curation": "NotCurated"
+  }
+]

@@ -1,0 +1,131 @@
+{
+  "metadata": {
+    "namesNumber": 1,
+    "withAllMatches": true,
+    "dataSources": [
+      4
+    ]
+  },
+  "names": [
+    {
+      "id": "16f235a0-e4a3-529c-9b83-bd15fe722110",
+      "name": "Homo sapiens",
+      "cardinality": 2,
+      "matchType": "Exact",
+      "results": [
+        {
+          "dataSourceId": 4,
+          "dataSourceTitleShort": "NCBI",
+          "curation": "NotCurated",
+          "recordId": "9606",
+          "outlink": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef\u0026name=Homo%20sapiens\u0026lvl=0\u0026srchmode=1\u0026keep=1\u0026unlock",
+          "entryDate": "2025-02-04",
+          "sortScore": 9.41003181086182,
+          "matchedNameID": "16f235a0-e4a3-529c-9b83-bd15fe722110",
+          "matchedName": "Homo sapiens",
+          "matchedCardinality": 2,
+          "matchedCanonicalSimple": "Homo sapiens",
+          "matchedCanonicalFull": "Homo sapiens",
+          "currentRecordId": "",
+          "currentNameId": "",
+          "currentName": "",
+          "currentCardinality": 0,
+          "currentCanonicalSimple": "",
+          "currentCanonicalFull": "",
+          "taxonomicStatus": "N/A",
+          "isSynonym": false,
+          "classificationPath": "Eukaryota|Opisthokonta|Metazoa|Eumetazoa|Bilateria|Deuterostomia|Chordata|Craniata|Vertebrata|Gnathostomata|Teleostomi|Euteleostomi|Sarcopterygii|Dipnotetrapodomorpha|Tetrapoda|Amniota|Mammalia|Theria|Eutheria|Boreoeutheria|Euarchontoglires|Primates|Haplorrhini|Simiiformes|Catarrhini|Hominoidea|Hominidae|Homininae|Homo|Homo sapiens",
+          "classificationRanks": "superkingdom|unranked|kingdom|unranked|unranked|unranked|phylum|subphylum|unranked|unranked|unranked|unranked|superclass|unranked|unranked|unranked|class|unranked|unranked|unranked|superorder|order|suborder|infraorder|parvorder|superfamily|family|subfamily|genus|species",
+          "classificationIds": "2759|33154|33208|6072|33213|33511|7711|89593|7742|7776|117570|117571|8287|1338369|32523|32524|40674|32525|9347|1437010|314146|9443|376913|314293|9526|314295|9604|207598|9605|9606",
+          "editDistance": 0,
+          "stemEditDistance": 0,
+          "matchType": "Exact",
+          "scoreDetails": {
+            "cardinalityScore": 1,
+            "infraSpecificRankScore": 0,
+            "fuzzyLessScore": 1,
+            "curatedDataScore": 0,
+            "authorMatchScore": 0.14285715,
+            "acceptedNameScore": 1,
+            "parsingQualityScore": 1
+          }
+        },
+        {
+          "dataSourceId": 4,
+          "dataSourceTitleShort": "NCBI",
+          "curation": "NotCurated",
+          "recordId": "2665953",
+          "outlink": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef\u0026name=Homo%20sapiens\u0026lvl=0\u0026srchmode=1\u0026keep=1\u0026unlock",
+          "entryDate": "2025-02-04",
+          "sortScore": 9.409765997644156,
+          "matchedNameID": "fec5c63e-9a8f-56d4-9ce5-a0365ca51e2a",
+          "matchedName": "Homo sapiens environmental sample",
+          "matchedCardinality": 2,
+          "matchedCanonicalSimple": "Homo sapiens",
+          "matchedCanonicalFull": "Homo sapiens",
+          "currentRecordId": "",
+          "currentNameId": "",
+          "currentName": "",
+          "currentCardinality": 0,
+          "currentCanonicalSimple": "",
+          "currentCanonicalFull": "",
+          "taxonomicStatus": "N/A",
+          "isSynonym": false,
+          "classificationPath": "Eukaryota|Opisthokonta|Metazoa|Eumetazoa|Bilateria|Deuterostomia|Chordata|Craniata|Vertebrata|Gnathostomata|Teleostomi|Euteleostomi|Sarcopterygii|Dipnotetrapodomorpha|Tetrapoda|Amniota|Mammalia|Theria|Eutheria|Boreoeutheria|Euarchontoglires|Primates|Haplorrhini|Simiiformes|Catarrhini|Hominoidea|Hominidae|Homininae|Homo||Homo sapiens",
+          "classificationRanks": "superkingdom|unranked|kingdom|unranked|unranked|unranked|phylum|subphylum|unranked|unranked|unranked|unranked|superclass|unranked|unranked|unranked|class|unranked|unranked|unranked|superorder|order|suborder|infraorder|parvorder|superfamily|family|subfamily|genus|unranked|species",
+          "classificationIds": "2759|33154|33208|6072|33213|33511|7711|89593|7742|7776|117570|117571|8287|1338369|32523|32524|40674|32525|9347|1437010|314146|9443|376913|314293|9526|314295|9604|207598|9605|2665952|2665953",
+          "editDistance": 0,
+          "stemEditDistance": 0,
+          "matchType": "Exact",
+          "scoreDetails": {
+            "cardinalityScore": 1,
+            "infraSpecificRankScore": 0,
+            "fuzzyLessScore": 1,
+            "curatedDataScore": 0,
+            "authorMatchScore": 0.14285715,
+            "acceptedNameScore": 1,
+            "parsingQualityScore": 0
+          }
+        },
+        {
+          "dataSourceId": 4,
+          "dataSourceTitleShort": "NCBI",
+          "curation": "NotCurated",
+          "recordId": "741158",
+          "outlink": "https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?mode=Undef\u0026name=Homo%20sapiens\u0026lvl=0\u0026srchmode=1\u0026keep=1\u0026unlock",
+          "entryDate": "2025-02-04",
+          "sortScore": 9.409765997644156,
+          "matchedNameID": "4df7757f-bbf4-5ee0-aaed-b5bb3c2c5cf7",
+          "matchedName": "Homo sapiens subsp. Denisova",
+          "matchedCardinality": 2,
+          "matchedCanonicalSimple": "Homo sapiens",
+          "matchedCanonicalFull": "Homo sapiens",
+          "currentRecordId": "",
+          "currentNameId": "",
+          "currentName": "",
+          "currentCardinality": 0,
+          "currentCanonicalSimple": "",
+          "currentCanonicalFull": "",
+          "taxonomicStatus": "N/A",
+          "isSynonym": false,
+          "classificationPath": "Eukaryota|Opisthokonta|Metazoa|Eumetazoa|Bilateria|Deuterostomia|Chordata|Craniata|Vertebrata|Gnathostomata|Teleostomi|Euteleostomi|Sarcopterygii|Dipnotetrapodomorpha|Tetrapoda|Amniota|Mammalia|Theria|Eutheria|Boreoeutheria|Euarchontoglires|Primates|Haplorrhini|Simiiformes|Catarrhini|Hominoidea|Hominidae|Homininae|Homo|Homo sapiens|Homo sapiens",
+          "classificationRanks": "superkingdom|unranked|kingdom|unranked|unranked|unranked|phylum|subphylum|unranked|unranked|unranked|unranked|superclass|unranked|unranked|unranked|class|unranked|unranked|unranked|superorder|order|suborder|infraorder|parvorder|superfamily|family|subfamily|genus|species|subspecies",
+          "classificationIds": "2759|33154|33208|6072|33213|33511|7711|89593|7742|7776|117570|117571|8287|1338369|32523|32524|40674|32525|9347|1437010|314146|9443|376913|314293|9526|314295|9604|207598|9605|9606|741158",
+          "editDistance": 0,
+          "stemEditDistance": 0,
+          "matchType": "Exact",
+          "scoreDetails": {
+            "cardinalityScore": 1,
+            "infraSpecificRankScore": 0,
+            "fuzzyLessScore": 1,
+            "curatedDataScore": 0,
+            "authorMatchScore": 0.14285715,
+            "acceptedNameScore": 1,
+            "parsingQualityScore": 0
+          }
+        }
+      ],
+      "curation": "NotCurated"
+    }
+  ]
+}

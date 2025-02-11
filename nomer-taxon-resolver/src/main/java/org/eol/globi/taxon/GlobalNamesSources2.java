@@ -11,6 +11,10 @@ public enum GlobalNamesSources2 {
     OTT(179, TaxonomyProvider.OPEN_TREE_OF_LIFE),
     FISHBASE_CACHE(177, TaxonomyProvider.FISHBASE_CACHE),
     INATURALIST(180, TaxonomyProvider.INATURALIST_TAXON),
+    WORLD_OF_FLORA_ONLINE(196, TaxonomyProvider.WORLD_OF_FLORA_ONLINE),
+    CATALOGUE_OF_LIFE(1, TaxonomyProvider.CATALOGUE_OF_LIFE),
+    WIKIDATA(207, TaxonomyProvider.WIKIDATA),
+    PBDB(172, TaxonomyProvider.PBDB),
     WORMS(9, TaxonomyProvider.WORMS);
 
     private final int id;

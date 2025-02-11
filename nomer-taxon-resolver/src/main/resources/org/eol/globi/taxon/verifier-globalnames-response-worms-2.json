@@ -1,0 +1,57 @@
+{
+  "metadata": {
+    "namesNumber": 1,
+    "withAllMatches": true,
+    "dataSources": [
+      9
+    ]
+  },
+  "names": [
+    {
+      "id": "a9140a43-7a9b-52b0-b97d-01ba55d214b2",
+      "name": "Ariopsis felis",
+      "cardinality": 2,
+      "matchType": "Exact",
+      "results": [
+        {
+          "dataSourceId": 9,
+          "dataSourceTitleShort": "WoRMS",
+          "curation": "Curated",
+          "recordId": "urn:lsid:marinespecies.org:taxname:158709",
+          "outlink": "https://www.marinespecies.org/aphia.php?p=taxdetails\u0026id=158709",
+          "entryDate": "2025-02-04",
+          "sortScore": 9.411446740174974,
+          "matchedNameID": "81444bff-1c6e-593c-9a03-5dae15de52fe",
+          "matchedName": "Ariopsis felis (Linnaeus, 1766)",
+          "matchedCardinality": 2,
+          "matchedCanonicalSimple": "Ariopsis felis",
+          "matchedCanonicalFull": "Ariopsis felis",
+          "currentRecordId": "urn:lsid:marinespecies.org:taxname:158709",
+          "currentNameId": "81444bff-1c6e-593c-9a03-5dae15de52fe",
+          "currentName": "Ariopsis felis (Linnaeus, 1766)",
+          "currentCardinality": 2,
+          "currentCanonicalSimple": "Ariopsis felis",
+          "currentCanonicalFull": "Ariopsis felis",
+          "taxonomicStatus": "Accepted",
+          "isSynonym": false,
+          "classificationPath": "Ariopsis felis",
+          "classificationRanks": "species",
+          "classificationIds": "urn:lsid:marinespecies.org:taxname:158709",
+          "editDistance": 0,
+          "stemEditDistance": 0,
+          "matchType": "Exact",
+          "scoreDetails": {
+            "cardinalityScore": 1,
+            "infraSpecificRankScore": 0,
+            "fuzzyLessScore": 1,
+            "curatedDataScore": 0.6666667,
+            "authorMatchScore": 0.14285715,
+            "acceptedNameScore": 1,
+            "parsingQualityScore": 1
+          }
+        }
+      ],
+      "curation": "Curated"
+    }
+  ]
+}

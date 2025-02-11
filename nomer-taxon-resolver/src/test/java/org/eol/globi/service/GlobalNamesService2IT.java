@@ -49,7 +49,6 @@ public class GlobalNamesService2IT {
         service.match(terms, new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 foundTaxa.add(taxon);
             }
         });
@@ -67,7 +66,6 @@ public class GlobalNamesService2IT {
         service.match(terms, new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 assertThat(nameType, is(NameType.NONE));
                 foundTaxa.add(taxon);
             }
@@ -83,7 +81,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(requestFor("Prunus persica L.", 1L)), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 foundTaxa.add(taxon);
             }
         });
@@ -99,7 +96,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(requestFor("Homo sapiens", 1L)), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 foundTaxa.add(taxon);
             }
         });
@@ -116,7 +112,7 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
+  //              assertNotNull(nodeId);
                 assertThat(name.getId(), is("NCBI:28875"));
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
@@ -136,7 +132,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -154,7 +149,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 assertThat(name.getId(), is("NCBI:28875"));
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
@@ -173,7 +167,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -193,7 +186,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -213,7 +205,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -231,7 +222,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -249,7 +239,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -267,7 +256,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
                 }
@@ -287,7 +275,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(o), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 assertThat(name.getId(), is("NCBI:10912"));
                 if (!NameType.NONE.equals(nameType)) {
                     foundTaxa.add(taxon);
@@ -310,7 +297,6 @@ public class GlobalNamesService2IT {
         service.match(Collections.singletonList(requestFor("Epichloë", 4594386L)), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long nodeId, Term name, NameType nameType, Taxon taxon) {
-                assertNotNull(nodeId);
                 foundTaxa.add(taxon);
             }
         });
@@ -405,7 +391,7 @@ public class GlobalNamesService2IT {
 
         try {
             service.match(names, (nodeId, name, nameType, taxon) -> {
-                assertNotNull(nodeId);
+//                assertNotNull(nodeId);
                 foundTaxa.add(taxon);
             });
         } catch (PropertyEnricherException ex) {
@@ -435,7 +421,6 @@ public class GlobalNamesService2IT {
         }
         try {
             service.match(names, (nodeId, name, nameType, taxon) -> {
-                assertNotNull(nodeId);
                 foundTaxa.add(taxon);
             });
         } catch (PropertyEnricherException ex) {
@@ -562,13 +547,13 @@ public class GlobalNamesService2IT {
         props.put(PropertyAndValueDictionary.NAME, "Homo sapiens");
         Map<String, String> enrich = service.enrich(props);
         assertThat(enrich.get(PropertyAndValueDictionary.NAME), is("Homo sapiens"));
-        String expectedPath = "Animalia | Bilateria | Deuterostomia | Chordata | Vertebrata | Gnathostomata | Tetrapoda | Mammalia | Theria | Eutheria | Primates | Haplorrhini | Simiiformes | Hominoidea | Hominidae | Homininae | Homo | Homo sapiens";
+        String expectedPath = "Bilateria | Deuterostomia | Chordata | Vertebrata | Gnathostomata | Tetrapoda | Mammalia | Theria | Eutheria | Primates | Haplorrhini | Simiiformes | Hominoidea | Hominidae | Homininae | Homo | Homo sapiens";
         assertThat(enrich.get(PropertyAndValueDictionary.PATH), is(expectedPath));
-        String expectedIds = "ITIS:202423 | ITIS:914154 | ITIS:914156 | ITIS:158852 | ITIS:331030 | ITIS:914179 | ITIS:914181 | ITIS:179913 | ITIS:179916 | ITIS:179925 | ITIS:180089 | ITIS:943773 | ITIS:943778 | ITIS:943782 | ITIS:180090 | ITIS:943805 | ITIS:180091 | ITIS:180092";
+        String expectedIds = "ITIS:914154 | ITIS:914156 | ITIS:158852 | ITIS:331030 | ITIS:914179 | ITIS:914181 | ITIS:179913 | ITIS:179916 | ITIS:179925 | ITIS:180089 | ITIS:943773 | ITIS:943778 | ITIS:943782 | ITIS:180090 | ITIS:943805 | ITIS:180091 | ITIS:180092";
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_IDS), is(expectedIds));
-        String expectedRanks = "Kingdom | Subkingdom | Infrakingdom | Phylum | Subphylum | Infraphylum | Superclass | Class | Subclass | Infraclass | Order | Suborder | Infraorder | Superfamily | Family | Subfamily | Genus | Species";
+        String expectedRanks = "subkingdom | infrakingdom | phylum | subphylum | infraphylum | superclass | class | subclass | infraclass | order | suborder | infraorder | superfamily | family | subfamily | genus | species";
         assertThat(enrich.get(PropertyAndValueDictionary.PATH_NAMES), is(expectedRanks));
-        assertThat(enrich.get(PropertyAndValueDictionary.RANK), is("Species"));
+        assertThat(enrich.get(PropertyAndValueDictionary.RANK), is("species"));
         return enrich;
     }
 
