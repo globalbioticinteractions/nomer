@@ -206,7 +206,7 @@ public class BatNamesTaxonService implements TermMatcher {
                 }
 
             } catch (SAXException | ParserConfigurationException | XPathExpressionException e) {
-                throw new IOException("failed to retrieve resource [" + batNamesExploreUrl + "]");
+                throw new IOException("failed to retrieve resource [" + batNamesExploreUrl + "]", e);
             }
 
             for (List<Pair<String, Map<String, String>>> value : homonymsToBeResolved.values()) {
