@@ -53,7 +53,7 @@
         <em>
           Miniopterus
         </em>
-         resulted in 39 species-level matches: 
+         resulted in 41 species-level matches: 
         <br/>
       </div>
       <div class="link" id="families">
@@ -108,7 +108,7 @@
                 </i>
               </b>
             </span>
-            Goodman, Maminirina, Weyeneth, Bradman, Christidis, Ruedi, &amp; Appleton, 2009.
+            Goodman, Maminirina, Weyeneth, Bradman, Christidis, Ruedi &amp; Appleton, 2009.
             <br/>
             <i>
               Zoologica Scripta
@@ -167,6 +167,27 @@
             <span>
               <b>
                 <i>
+                  Miniopterus arenarius 
+                </i>
+              </b>
+            </span>
+            Heller, 1912.
+            <br/>
+            <i>
+              Smithsonian Misc. Collect.
+            </i>
+             60(12): 2.
+            <br/>
+            Sandy Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Miniopterus australis 
                 </i>
               </b>
@@ -192,7 +213,7 @@
                 </i>
               </b>
             </span>
-            Goodman, Maminirina, Bradman, Christidis, &amp; Appleton, 2009.
+            Goodman, Maminirina, Bradman, Christidis &amp; Appleton, 2009.
             <br/>
             <i>
               Am. Mus. Novitates
@@ -213,7 +234,7 @@
                 </i>
               </b>
             </span>
-            Goodman, Ramasindrazana, Maminirina, Schoeman, &amp; Appleton, 2011.
+            Goodman, Ramasindrazana, Maminirina, Schoeman &amp; Appleton, 2011.
             <br/>
             <i>
               Zootaxa
@@ -423,7 +444,7 @@
                 </i>
               </b>
             </span>
-            Puechmaille, Allegrini, Benda, Bilgin, Ibáñez, &amp; Juste, 2014.
+            Puechmaille, Allegrini, Benda, Bilgin, Ibáñez &amp; Juste, 2014.
             <br/>
             <i>
               Zootaxa
@@ -465,7 +486,7 @@
                 </i>
               </b>
             </span>
-            Goodman, Maminirina, Bradman, Christidis, &amp; Appleton, 2009.
+            Goodman, Maminirina, Bradman, Christidis &amp; Appleton, 2009.
             <br/>
             <i>
               Am. Mus. Novitates
@@ -570,7 +591,7 @@
                 </i>
               </b>
             </span>
-            Monadjem, Goodman, Stanley, &amp; Appleton, 2013.
+            Monadjem, Goodman, Stanley &amp; Appleton, 2013.
             <br/>
             <i>
               Zootaxa
@@ -663,7 +684,10 @@ to the west of Mount Nimba
             <b>
                CITES - 
             </b>
-            Not listed
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (new species). 
             <b>
                IUCN - 
             </b>
@@ -686,7 +710,7 @@ to the west of Mount Nimba
         </div>
         <div class="bibentry" id="species">
           <p>
-            Monadjem, A., J.T. Shapiro, L.R. Richards, H. Karabulut, W. Crawley, I.B. Nielsen, A. Hansen, K. Bohmann, and T. Mourier. 2019. Systematics of West African 
+            Monadjem, A., J.T. Shapiro, L.R. Richards, H. Karabulut, W. Crawley, I.B. Nielsen, A. Hansen, K. Bohmann, and T. Mourier. 2020. Systematics of West African 
             <i>
               Miniopterus
             </i>
@@ -761,7 +785,7 @@ to the west of Mount Nimba
             <i>
               Proc. U. S. Nat. Mus.
             </i>
-             46: 311.
+             46(2028): 311.
             <br/>
             Philippine Long-fingered Bat
           </p>
@@ -798,7 +822,7 @@ to the west of Mount Nimba
                 </i>
               </b>
             </span>
-            Kusuminda, Mannakkara, Ukuwela, Kruskop, Amarasinghe, Saikia, Venugopal, Karunarathna, Gamage, Ruedi, Csorba, Yapa, &amp; Patterson, 2022.
+            Kusuminda, Mannakkara, Ukuwela, Kruskop, Amarasinghe, Saikia, Venugopal, Karunarathna, Gamage, Ruedi, Csorba, Yapa &amp; Patterson, 2022.
             <br/>
             <i>
               Acta Chiropterol.
@@ -827,11 +851,14 @@ to the west of Mount Nimba
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (new species). 
             <b>
                IUCN - 
             </b>
-            Not evaluated (new species).
+            Not Evaluated (new species).
           </p>
         </div>
         <div class="refs" id="species">
@@ -912,7 +939,7 @@ to the west of Mount Nimba
             <i>
               Die Deutschen Fledermäuse, Hanau
             </i>
-             p. 14.
+             p. 6, 41.
             <br/>
             Schreiber's Long-fingered Bat
           </p>
@@ -949,7 +976,7 @@ to the west of Mount Nimba
                 </i>
               </b>
             </span>
-            Goodman, Ryan, Maminirina, Christidis, &amp; Appleton, 2007.
+            Goodman, Ryan, Maminirina, Fahr, Christidis &amp; Appleton, 2007.
             <br/>
             <i>
               J. Mammal.
@@ -957,6 +984,80 @@ to the west of Mount Nimba
              88(5): 1219.
             <br/>
             Malagasy Long-fingered Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Miniopterus srinii 
+                </i>
+              </b>
+            </span>
+            Srinivasulu &amp; Srinivasulu, 2023.
+            <br/>
+            <i>
+              Zootaxa
+            </i>
+             5296: 233, 237.
+            <br/>
+            Srini's Bent-winged Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            India, Karnataka, Kodagu district, near Makuta, subterranean cave in Matre
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Kerala, Tamil Nadu, S Karnataka (India)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (new species). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Srinivasulu, B., and A. Srinivasulu. 2023. A new species of the 
+            <i>
+              Miniopterus australis
+            </i>
+             species complex (Chiroptera: Miniopteridae) from the Western Ghats, India. 
+            <i>
+              Zootaxa
+            </i>
+             5296(2): 233-249. 
+            <a href="https://www.mapress.com/zt/article/view/zootaxa.5296.2.5" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
           </p>
         </div>
       </div>
@@ -1029,7 +1130,10 @@ to the west of Mount Nimba
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
@@ -1054,9 +1158,9 @@ to the west of Mount Nimba
           <p>
             Aellen, V. 1956. Speologica africana. Chiroptères des  grottes  de  Guinée. 
             <i>
-              Bulletin de l'Institut français d'Afrique noire. Série A. Sciences naturelles
+              Bulletin de l'Institut Français d'Afrique Noire. Série A. Sciences naturelles
             </i>
-             18: 884-894. Not available online.
+             18(3): 884-894. Not available online.
             <br/>
             <br/>
           </p>
@@ -1086,7 +1190,7 @@ to the west of Mount Nimba
         </div>
         <div class="bibentry" id="species">
           <p>
-            Monadjem, A., J.T. Shapiro, L.R. Richards, H. Karabulut, W. Crawley, I.B. Nielsen, A. Hansen, K. Bohmann, and T. Mourier. 2019. Systematics of West African 
+            Monadjem, A., J.T. Shapiro, L.R. Richards, H. Karabulut, W. Crawley, I.B. Nielsen, A. Hansen, K. Bohmann, and T. Mourier. 2020. Systematics of West African 
             <i>
               Miniopterus
             </i>
@@ -1114,7 +1218,7 @@ to the west of Mount Nimba
                 </i>
               </b>
             </span>
-            Monadjem, Guyton, Naskrecki, Richards, Kropff, &amp; Dalton, 2020.
+            Monadjem, Guyton, Naskrecki, Richards, Kropff &amp; Dalton, 2020.
             <br/>
             <i>
               Acta Chiropterol.
@@ -1144,7 +1248,10 @@ National Park, Mount Gorongosa
             <b>
                CITES - 
             </b>
-            Not listed (new species).
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (new species). 
             <b>
                IUCN - 
             </b>
@@ -1189,11 +1296,11 @@ National Park, Mount Gorongosa
           </div>
           <div class="cite">
             <p>
-              Cite the database: Simmons, N.B. and A.L. Cirranello. 2023. 
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2025. 
               <i>
-                Bat Species of the World: A taxonomic and geographic database.  Version 1.3
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.7
               </i>
-              . Accessed on 05/16/2023.
+              . Accessed on 02/12/2025.
             </p>
           </div>
         </div>

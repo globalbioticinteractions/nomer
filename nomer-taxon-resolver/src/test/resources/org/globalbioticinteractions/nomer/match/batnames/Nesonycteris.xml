@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <title>
+      batnames | genera
+    </title>
+    <link rel="stylesheet" type="text/css" href="/MSOW.css"/>
+    <base target="_blank"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, target-densitydpi=high-dpi"/>
+  </head>
+  <body>
+    <header>
+      <div class="headertextwrap">
+        <div class="headerleft">
+          <a href="https://batnames.org/home.html" target="_self">
+            <h1>
+               Bats of the World 
+            </h1>
+            <h2>
+               A Taxonomic and Geographic Database 
+            </h2>
+          </a>
+        </div>
+        <div class="headerright">
+          <h3>
+            <div class="compile">
+              Compiled and Edited by:
+            </div>
+            <div class="authors">
+              Nancy B. Simmons and Andrea L. Cirranello
+            </div>
+            <div class="museum">
+              <span style="font-style:italic">
+                 American Museum of Natural History
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+    </header>
+    <div id="homeresults">
+      <div>
+        <form class="export-submit" action="https://batnames.org/exploreexport.php" method="post" name="upload_excel" target="_self" enctype="multipart/form-data">
+          <div class="form-group">
+            <div class="col-md-4 col-md-offset-4">
+              <input type="submit" name="export" class="btn btn-success" value="Export"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="resulttxt">
+        Your search for 
+        <em>
+          Nesonycteris
+        </em>
+         resulted in 4 species-level matches: 
+        <br/>
+      </div>
+      <div class="link" id="families">
+        <p>
+          <a href="/family/Pteropodidae" target="_blank">
+            Pteropodidae
+          </a>
+        </p>
+      </div>
+      <div class="link" id="genus">
+        <p>
+          <a href="/family/Pteropodidae" target="_self">
+            Pteropodidae
+          </a>
+        </p>
+      </div>
+      <div class="taxon" id="genus">
+        <p>
+          <span>
+            <b>
+              <i>
+                Nesonycteris
+              </i>
+            </b>
+          </span>
+           Thomas, 1887. 
+          <i>
+            Proc. Zool. Soc. London
+          </i>
+           1887: 323.
+        </p>
+      </div>
+      <div class="typesp" id="genus">
+        <p>
+          <i>
+            Nesonycteris woodfordi
+          </i>
+           Thomas, 1887
+        </p>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Nesonycteris fardoulisi 
+                </i>
+              </b>
+            </span>
+            (Flannery, 1993).
+            <br/>
+            <i>
+              Rec. Aust. Mus.
+            </i>
+             45: 68.
+            <br/>
+            Fardoulis' Blossom Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=11115397&amp;resolution=2&amp;zoom=2&amp;lng=160&amp;lat=-10" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/11115397" target="_blank">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="orig_name" id="species">
+          <p>
+            <i>
+              Melonycteris fardoulisi
+            </i>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  fardoulisi
+                </p>
+              </i>
+            </b>
+             Flannery, 1993
+            <p>
+            </p>
+            .
+          </div>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  schouteni
+                </p>
+              </i>
+            </b>
+             Flannery, 1993
+            <p>
+            </p>
+            .
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Solomon Isls., Makira (= San Cristobal Isl.), Sesena
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Makira (Solomon Isls)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/13141/21978862/" target="_blank">
+              Near Threatened
+            </a>
+             (2020).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            Previously considered a subgenus of 
+            <i>
+              Melonycteris
+            </i>
+             (see e.g., Phillips, 1968; Flannery 1993; Simmons, 2005). Raised to full generic status by Almeida et al. (2020). 
+            <i>
+              Melonycteris
+            </i>
+            , including 
+            <i>
+              Nesonycteris
+            </i>
+            , was revised by Flannery (1993). Does not include 
+            <i>
+              maccoyi
+            </i>
+             or 
+            <i>
+              mengermani
+            </i>
+            ; see Pulvers and Colgan (2006) and Lavery et al. (2023).  See also Flannery (1995). Populations on Guadalcanal previously attributed to 
+            <i>
+              fardoulisi
+            </i>
+             appear to belong to 
+            <i>
+              woodfordi
+            </i>
+            ; see Lavery et al. (2023).  For phylogeography see Pulvers and Colgan (2006) and Lavery et al. (2023).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Almeida, F.C., N.B. Simmons, and N.P. Giannini. 2020. A species-level phylogeny of Old World Fruit Bats with a new higher-level classification of the family Pteropodidae. 
+            <i>
+              Amer. Mus. Novitates
+            </i>
+             3950: 1-24. 
+            <a href="https://digitallibrary.amnh.org/bitstream/handle/2246/7111/N3950.pdf?sequence=1&amp;isAllowed=y" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Flannery, T.F 1993. Revision of the genus 
+            <i>
+              Melonycteris
+            </i>
+             (Pteropodidae: Mammalia). 
+            <i>
+              Records of the Australian Museum
+            </i>
+             45: 59-80. 
+            <a href="https://media.australian.museum/media/Uploads/Journals/17784/130_complete.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Flannery, T.F. 1995. 
+            <i>
+              Mammals of the South-West Pacific and Moluccan Islands
+            </i>
+            . Cornell University Press, Ithaca: 464 pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Lavery, T.H., L.H. DeCicco, K.V. Olson, P.S. Holland, and R.G. Moyle. 2023. Phylogeography of Solomon Islands blossom bats reflects oceanic divides and Pleistocene connections. 
+            <i>
+              Journal of Biogeography
+            </i>
+             50: 920-931. 
+            <a href="https://onlinelibrary.wiley.com/doi/10.1111/jbi.14585" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Phillips, C.J. 1968. Systematics of megachiropteran bats in the Solomon Islands. 
+            <i>
+              University of Kansas Publications, Museum of Natural History
+            </i>
+             16: 777-837. 
+            <a href="https://www.biodiversitylibrary.org/page/4385428" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Pulvers, J.N., and D.J. Colgan. 2006. Molecular phylogeography of the fruit bat genus 
+            <i>
+              Melonycteris
+            </i>
+             in northern Melanesia. 
+            <i>
+              Journal of Biogeography
+            </i>
+             34(4): 713-723. 
+            <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2699.2006.01634.x" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Simmons, N.B. 2005. Chiroptera.  Pages 312-529
+            <i>
+               In
+            </i>
+             D.E. Wilson and D.M. Reeder (eds.) 
+            <i>
+              Mammal Species of the World: A Taxonomic and Geographic Reference, 3rd edition, Volume 1
+            </i>
+            . Baltimore: Johns Hopkins University Press. 
+            <a href="http://www.departments.bucknell.edu/biology/resources/msw3/browse.asp?id=13800001" target="_blank">
+              Read chapter
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Nesonycteris maccoyi 
+                </i>
+              </b>
+            </span>
+            (Flannery, 1993).
+            <br/>
+            <i>
+              Rec. Aust. Mus.
+            </i>
+             45: 71.
+            <br/>
+            McCoy's Blossom Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Nesonycteris mengermani 
+                </i>
+              </b>
+            </span>
+            (Flannery, 1993).
+            <br/>
+            <i>
+              Rec. Aust. Mus.
+            </i>
+             45: 73.
+            <br/>
+            Mengden and German's Blossom Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=11139464&amp;resolution=2&amp;zoom=2&amp;lng=160&amp;lat=-10" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/11139464" target="_blank">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="orig_name" id="species">
+          <p>
+            <i>
+              Melonycteris fardoulisi mengermani
+            </i>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Solomon Islands, Western Province, Kolombangara Island, Vanga Point
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Vella Lavella, Kolombangara, New Georgia, Vangunu, and Russell Isls. (Solomon Islands)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (raised from synonymy).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            Previously considered a subspecies of 
+            <i>
+              Nesonycteris fardoulisi
+            </i>
+            , but distinct; see Lavery et al. (2023).  See also Flannery (1995). For phylogeography see Pulvers and Colgan (2006) and Lavery et al. (2023).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Flannery, T.F 1993. Revision of the genus 
+            <i>
+              Melonycteris
+            </i>
+             (Pteropodidae: Mammalia). 
+            <i>
+              Records of the Australian Museum
+            </i>
+             45: 59-80. 
+            <a href="https://media.australian.museum/media/Uploads/Journals/17784/130_complete.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Flannery, T.F. 1995. 
+            <i>
+              Mammals of the South-West Pacific and Moluccan Islands
+            </i>
+            . Cornell University Press, Ithaca: 464 pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Lavery, T.H., L.H. DeCicco, K.V. Olson, P.S. Holland, and R.G. Moyle. 2023. Phylogeography of Solomon Islands blossom bats reflects oceanic divides and Pleistocene connections. 
+            <i>
+              Journal of Biogeography
+            </i>
+             50: 920-931. 
+            <a href="https://onlinelibrary.wiley.com/doi/10.1111/jbi.14585" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Pulvers, J.N., and D.J. Colgan. 2006. Molecular phylogeography of the fruit bat genus 
+            <i>
+              Melonycteris
+            </i>
+             in northern Melanesia. 
+            <i>
+              Journal of Biogeography
+            </i>
+             34(4): 713-723. 
+            <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2699.2006.01634.x" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Nesonycteris woodfordi 
+                </i>
+              </b>
+            </span>
+            Thomas, 1887.
+            <br/>
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             1887: 324.
+            <br/>
+            Woodford's Fruit Bat
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="push">
+    </div>
+    <footer>
+      <div class="footertextwrap">
+        <div class="footerleft">
+          <div class="contact">
+            <p>
+               Contact us: acirranello@batnames.org
+            </p>
+          </div>
+          <div class="cite">
+            <p>
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2025. 
+              <i>
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.7
+              </i>
+              . Accessed on 02/12/2025.
+            </p>
+          </div>
+        </div>
+        <div class="footerright">
+          <ul class="footertop">
+            <li>
+              <a href="about.html">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="standards.html">
+                Standards
+              </a>
+            </li>
+            <li>
+              <a href="privacy.html">
+                Privacy
+              </a>
+            </li>
+          </ul>
+          <div class="photo">
+            <p>
+              Background photo: M. Brock Fenton
+            </p>
+          </div>
+          <div class="site">
+            <p>
+              Site and database: Andrea Cirranello
+            </p>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

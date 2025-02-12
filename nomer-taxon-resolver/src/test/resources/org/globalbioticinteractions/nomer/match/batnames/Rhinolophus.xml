@@ -53,7 +53,7 @@
         <em>
           Rhinolophus
         </em>
-         resulted in 110 species-level matches: 
+         resulted in 117 species-level matches: 
         <br/>
       </div>
       <div class="link" id="families">
@@ -89,10 +89,514 @@
       <div class="typesp" id="genus">
         <p>
           <i>
-            Vespertilio ferrum-equuinum
+            Vespertilio ferrum-equinum
           </i>
            Schreber, 1774.  Conserved in ICZN Opinion 91 (1926) and Direction 24 (1955)
         </p>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus achilles 
+                </i>
+              </b>
+            </span>
+            O. Thomas, 1900.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser 7., 5:154.
+            <br/>
+            Queensland Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=8751900&amp;resolution=2&amp;lat=-25&amp;lng=133&amp;zoom=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/8751900">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  achilles
+                </p>
+              </i>
+            </b>
+             O. Thomas, 1900:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 robertsi
+              </i>
+               Tate, 1952.
+            </p>
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Indonesia, Kai Islands
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Kai Isls. (Indonesia), NE Queensland (Australia)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (raised from synonymy).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            Distinct from 
+            <i>
+              philippinensis
+            </i>
+            , but the exact composition of this species is currently unclear.  Two morphologically distinct populations occur on the Cape York peninisula of Australia; see Flannery (1995
+            <i>
+              a
+            </i>
+            , 
+            <i>
+              b
+            </i>
+            ), Churchill (1998), and Csorba et al. (2003). Flannery (1995
+            <i>
+              a
+            </i>
+            , 
+            <i>
+              b
+            </i>
+            ) referred the smaller of these forms to the subspecies 
+            <i>
+              maros
+            </i>
+             (which he considered to be a senior synonym of 
+            <i>
+              alleni
+            </i>
+             and 
+            <i>
+              sanborni)
+            </i>
+             and the larger-bodied form to 
+            <i>
+              achilles.
+            </i>
+             The only name based on an Australian holotype, 
+            <i>
+              robertsi,
+            </i>
+             was treated as a junior synonym of 
+            <i>
+              achilles
+            </i>
+             by Flannery (1995
+            <i>
+              b)
+            </i>
+            . Flannery (1995
+            <i>
+              a
+            </i>
+            , 
+            <i>
+              b
+            </i>
+            ) referred all New Guinea populations to 
+            <i>
+              maros
+            </i>
+            , but Bonaccorso (1998) referred the New Guinea and Cape York populations to 
+            <i>
+              robertsi
+            </i>
+            , while recognizing the Kai Island form, 
+            <i>
+              achilles
+            </i>
+            , as a distinct subspecies. Jackson and Groves (2015) followed Churchill (2008) and Reardon et al. (2010) in recognizing 
+            <i>
+              robersti
+            </i>
+             as a distinct Australian species, but did not mention the other form, often referred to as the "intermediate" form (see Churchill, 2008; Reardon et al., 2010).  Burgin (2019) synonymized 
+            <i>
+              robertsi
+            </i>
+             with 
+            <i>
+               achilles
+            </i>
+            , which has priority, on the basis of morphology.  Burgin (2019) notes that there are two forms of 
+            <i>
+              achilles
+            </i>
+             in Queensland that differ in size and echolocation peak frequency (true 
+            <i>
+              achilles
+            </i>
+             and the "intermediate" form).  Addiitional work is needed to resolve issues surrounding the composition and distribution of 
+            <i>
+              philippinesis
+            </i>
+            , 
+            <i>
+              achilles
+            </i>
+            , 
+            <i>
+              robertsi
+            </i>
+            , and the "intermediate" form.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Bonaccorso, F.J. 1998. 
+            <i>
+              Bats of Papua New Guinea
+            </i>
+            . Conservation International Tropical Field Guide Series, Conservation International, Washington, D.C.: 489. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Burgin, C.J. 2019. 
+            <i>
+              Rhinolophus achilles
+            </i>
+            .  Pages 305-306
+            <i>
+               In
+            </i>
+             D.E. Wilson and R.A. Mittermeier (eds.) 
+            <i>
+              Handbook of the Mammals of the World, vol. 9
+            </i>
+            . Barcelona: Lynx Edicions. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Churchill, S. 1998. 
+            <i>
+              Australian Bats
+            </i>
+            . Reed New Holland Publishers, Sydney: 230. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Churchill, S. 2008. 
+            <i>
+              Australian Bats. Second edition
+            </i>
+            . Reed New Holland Publishers, Sydney: 256 pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G., P. Ujhelyi, and N. Thomas. 2003. 
+            <i>
+              Horseshoe Bats of the World
+            </i>
+            . Alana Books, Bishop's Castle: 160pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Flannery, T.F. 1995. 
+            <i>
+              Mammals of the South-West Pacific and Moluccan Islands
+            </i>
+            . Cornell University Press, Ithaca: 464 pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Flannery, T.F. 1995. 
+            <i>
+              Mammals of New Guinea. Revised and updated edition
+            </i>
+            . Cornell University Press, Ithaca: 568 pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Jackson, S., and C. Groves. 2015. 
+            <i>
+              Taxonomy of Australian Mammals
+            </i>
+            . CSIRO Publishing, Clayton South, Australia: 1-529. 
+            <a href="https://www.publish.csiro.au/book/7122/" target="_blank">
+              Read description
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Reardon, T.B., S.K.A. Robson, J.G. Parsons, and T. Inkster. 2010. 
+            <i>
+              Review of the threatened status of the microchiropteran bat species on Cape York Peninsula
+            </i>
+            . South Australian Museum, Adelaide: 83 pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Thomas, O. 1900. A new bat from the Key Islands. 
+            <i>
+              Annals and Magazine of Natural History
+            </i>
+             ser. 7(5): 145. 
+            <a href="https://www.biodiversitylibrary.org/item/55143#page/161/mode/1up" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus acrotis 
+                </i>
+              </b>
+            </span>
+            von Heuglin, 1861.
+            <br/>
+            <i>
+              Nov. Actorum Acad. Caes. Leop.-Carol. Nat. Cur.
+            </i>
+             29, 8: p. 4, 10.
+            <br/>
+            Eritrean Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=4266751&amp;resolution=2&amp;lng=35" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/4266751" target="_blank">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  acrotis
+                </p>
+              </i>
+            </b>
+             Heuglin, 1861:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 andersoni
+              </i>
+               Thomas, 1904.
+            </p>
+          </div>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  augur
+                </p>
+              </i>
+            </b>
+             K. Andersen, 1904:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 keniensis
+              </i>
+               Hollister, 1916;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 zambesiensis
+              </i>
+               K. Andersen, 1904;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 zuluensis
+              </i>
+               K. Andersen, 1904.
+            </p>
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Eritrea, Keren
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Chad, Sudan, and Eritrea south to South Africa
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/19531/21980500/" target="_blank">
+              Least Concern
+            </a>
+             (2017).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              ferrumequinum
+            </i>
+             species group. Previously considered a subspecies of 
+            <i>
+              clivosus
+            </i>
+            , but apparently distinct; see Uvizl et al. (2024).  We follow Uvizl et al. (2024) in recognizing just two subspecies at present, pending further study.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Uvizl, M., Z.K. Varadínová, and P. Benda.
+
+
+ 2024. Phylogenetic relationships among horseshoe bats within the 
+            <i>
+              Rhinolophus ferrumequinum
+            </i>
+             group (Mammalia, Chiroptera). 
+            <i>
+              Zoologica Scripta
+            </i>
+             53(3): 249-266. 
+            <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/zsc.12650" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            von Heuglin, T. 1861. Beitrage zur Fauna der Saugethiere N.O.-Afrika's. I. Chiroptera.. 
+            <i>
+              Nova Acta Academiae Caesarea Leopoldino-Carolinae Germanicae Naturae Curiosorum
+            </i>
+             29(8): 1-24. 
+            <a href="https://www.biodiversitylibrary.org/page/45613517" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
       </div>
       <div class="speciestest">
         <div class="taxon" id="species">
@@ -184,6 +688,249 @@
             <span>
               <b>
                 <i>
+                  Rhinolophus alticolus 
+                </i>
+              </b>
+            </span>
+            Sanborn, 1936.
+            <br/>
+            <i>
+              Publ. Field Mus. Nat. Hist., Zool. ser
+            </i>
+             20(14): 108.
+            <br/>
+            Cameroon Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=10855520&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/10855520">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Cameroon, cave at 5,800 feet on Mount Cameroon
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            SE Guinea; N Liberia; C Nigeria; WC Cameroon
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (raised from synonymy).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              capensis
+            </i>
+             species group. Distinct from 
+            <i>
+              simulator
+            </i>
+             based on its morphological distinctiveness (see Kock et al., 2000: 237; Csorba et al., 2003: 11) and its distributional discontinuity with 
+            <i>
+              simulator
+            </i>
+             s.s.; see Burgin (2019).  Originally described as a subspecies of 
+            <i>
+              alcyone
+            </i>
+             from which it is clearly distinct; see Eisentraut (1956). Subsequently considered a full species (see e.g., Rosevear, 1965; Hayman and Hill, 1971).  Koopman (1975) first suggested that 
+            <i>
+              alticolus
+            </i>
+             was conspecific with 
+            <i>
+              simulator
+            </i>
+             and this conclusion was widely adopted (see e.g., Kock et al., 2000; Simmons 2005).  Demos et al. (2019) indicate that the type has been lost.  Additional research is still needed.     
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Burgin, C.J. 2019. 
+            <i>
+              Rhinolophus alticolus
+            </i>
+            .  Pages 287
+            <i>
+               In
+            </i>
+             D.E. Wilson and R.A. Mittermeier (eds.) 
+            <i>
+              Handbook of the Mammals of the World, vol. 9
+            </i>
+            . Barcelona: Lynx Edicions. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G., P. Ujhelyi, and N. Thomas. 2003. 
+            <i>
+              Horseshoe Bats of the World
+            </i>
+            . Alana Books, Bishop's Castle: 160pp. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Demos, T.C., P.W. Webala, S.M. Goodman, J.C. Kerbis Peterhans, M. Bartonjo, and B.D. Patterson. 2019. Molecular phylogenetics of the African horseshoe bats (Chiroptera: Rhinolophidae): expanded geographic and taxonomic sampling of the Afrotropics. 
+            <i>
+              BMC Evolutionary Biology
+            </i>
+             19(166): 1-14. 
+            <a href="https://link.springer.com/article/10.1186/s12862-019-1485-1" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Eisentraut, M. 1956. Beitrag zur Chiropteren-Fauna van
+Kamerun (Westafrika). 
+            <i>
+              Zoologische Jahrbücher Abteilung für Systematik, Geographie und Biologie der Tiere
+            </i>
+             84(): 505-540. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Hayman, R.W., and J.E. Hill 1971. Order Chiroptera, part 2.  Pages 1-73
+            <i>
+               In
+            </i>
+             J. Meester and H.W. Setzer (eds.) 
+            <i>
+              The Mammals of Africa: An Identification Manual
+            </i>
+            . Washington, D.C.: Smithsonian Institution Press. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Kock, D., G. Csorba, and K.M. Howell. 2000. 
+            <i>
+              Rhinolophus maendeleo
+            </i>
+             n. sp. from Tanzania, a horseshoe bat noteworthy for its systematics and biogeography (Mammalia, Chiroptera, Rhinolophidae). 
+            <i>
+              Senkenbergiana Biologica
+            </i>
+             80: 233-239. 
+            <a href="http://hunbat.hu/html/publikaciok_link/cikkek/east-asia/Rhinolophus_maendeleo_from_Tanzania.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Koopman, K.F. 1975. Bats of the Sudan. 
+            <i>
+              Bulletin of the American Museum of Natural History
+            </i>
+             154: 353-444. 
+            <a href="https://digitallibrary.amnh.org/handle/2246/609" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Rosevear, D.R. 1965. 
+            <i>
+              The bats of West Africa
+            </i>
+            . British Museum (Natural History), London: 418. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Sanborn, C.C. 1936. Descriptions and records of African bats. 
+            <i>
+              Publications Field Museum of Natural History, Zoological Series
+            </i>
+             20(14): 107-114. 
+            <a href="https://www.biodiversitylibrary.org/page/2831442" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Simmons, N.B. 2005. Chiroptera.  Pages 312-529
+            <i>
+               In
+            </i>
+             D.E. Wilson and D.M. Reeder (eds.) 
+            <i>
+              Mammal Species of the World: A Taxonomic and Geographic Reference, 3rd edition, Volume 1
+            </i>
+            . Baltimore: Johns Hopkins University Press. 
+            <a href="http://www.departments.bucknell.edu/biology/resources/msw3/browse.asp?id=13800001" target="_blank">
+              Read chapter
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Rhinolophus andamanensis 
                 </i>
               </b>
@@ -217,6 +964,110 @@
              1871: 305.
             <br/>
             Arcuate Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus axillaris 
+                </i>
+              </b>
+            </span>
+            J.A. Allen, 1917.
+            <br/>
+            <i>
+              Bull. Am. Mus. Nat. Hist.
+            </i>
+             37(18): 429.
+            <br/>
+            Tufted Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Democratic Republic of the Congo, Haut-Uélé province, Aba ("Aba, Uele district, Belgian Congo")
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Known only from the type locality
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/19546/21977797/" target="_blank">
+              Least Concern
+            </a>
+             under 
+            <i>
+              Rhinolophus landeri
+            </i>
+             (2017).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              landeri
+            </i>
+             species group (provisional); see Patterson et al. (2024).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Allen, J.A. 1917. Systematic List. 
+            <i>
+              Bulletin of the American Museum of Natural History
+            </i>
+             37(18): I: 405-478. 
+            <a href="https://digitallibrary.amnh.org/items/ce98d1e8-8b3c-4dba-b6b3-edd48fee9aa5" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Patterson, B.D., T.C Demos, L. Torrent, A.L. Grunwald, C. Montauban, J.C. Kerbis Peterhans, M.M McDonough, C.W. Dick, M. Bartonjo, M.C Schoeman, L.A. Ruedas, and J. Juste. 2024. Systematics of the 
+            <i>
+              Rhinolophus landeri
+            </i>
+             complex, with evidence for 3 additional Afrotropical bat species. 
+            <i>
+              Journal of Mammalogy
+            </i>
+             106(1): 187-201. 
+            <a href="https://academic.oup.com/jmammal/article/106/1/187/7756705" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
           </p>
         </div>
       </div>
@@ -385,6 +1236,84 @@
              1905(2): 83.
             <br/>
             Sulawesi Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus cervenyi 
+                </i>
+              </b>
+            </span>
+            Benda, Uvizl, Eiseb &amp; Avenant, 2024.
+            <br/>
+            <i>
+              Mammalia
+            </i>
+             88(3): 250.
+            <br/>
+            Červený's Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Kingdom of Lesotho, Sehlabathebe National Park, small cave near the old park lodge
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            W Free State and SE Northern Cape (South Africa), Lesotho
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              fumigatus
+            </i>
+             species group.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Benda, P., M. Uvizl, S.J. Eiseb, and N.L. Avenant. 2024. On the systematic position of the horseshoe bats (Mammalia: Chiroptera) from Lesotho. 
+            <i>
+              Mammalia
+            </i>
+             88(3): 239-258. 
+            <a href="https://www.degruyter.com/document/doi/10.1515/mammalia-2023-0119/html" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
           </p>
         </div>
       </div>
@@ -688,6 +1617,113 @@
             <span>
               <b>
                 <i>
+                  Rhinolophus dobsoni 
+                </i>
+              </b>
+            </span>
+            Thomas, 1904.
+            <br/>
+            <i>
+              Ann. Mag. Nat. Hist.
+            </i>
+             ser 7, 14: 156.
+            <br/>
+            Dobson's Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Sudan ("Kordofan")
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Sudan
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/19546/21977797/" target="_blank">
+              Least Concern
+            </a>
+             under 
+            <i>
+              Rhinolophus landeri
+            </i>
+             (2017).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              landeri
+            </i>
+             species group.  Previously considered a synonym of 
+            <i>
+              landeri
+            </i>
+            , but distinct.  See Patterson et al. (2024).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Patterson, B.D., T.C Demos, L. Torrent, A.L. Grunwald, C. Montauban, J.C. Kerbis Peterhans, M.M McDonough, C.W. Dick, M. Bartonjo, M.C Schoeman, L.A. Ruedas, and J. Juste. 2024. Systematics of the 
+            <i>
+              Rhinolophus landeri
+            </i>
+             complex, with evidence for 3 additional Afrotropical bat species. 
+            <i>
+              Journal of Mammalogy
+            </i>
+             106(1): 187-201. 
+            <a href="https://academic.oup.com/jmammal/article/106/1/187/7756705" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Thomas, O. 1904. On some small mammals collected by Mr. A. M. Mackilligin in the Eastern desert of Egypt. 
+            <i>
+              Annals and Magazine of Natural History
+            </i>
+             ser. 7, 14(80): 155-159. 
+            <a href="https://www.biodiversitylibrary.org/page/27733882" target="_blank">
+              Read article.
+              <br/>
+              <br/>
+            </a>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Rhinolophus eloquens 
                 </i>
               </b>
@@ -797,7 +1833,7 @@
                 </i>
               </b>
             </span>
-            Andersen, 1918.
+            K. Andersen, 1918.
             <br/>
             <i>
               Ann. Mag. Nat. Hist.
@@ -965,12 +2001,12 @@
                 </i>
               </b>
             </span>
-            (Borkhausen, 1797).
+            (André, 1797).
             <br/>
             <i>
-              Deutsche Fauna
+              Der Zoologe
             </i>
-             1: 85.
+             1 (5-8): 65.
             <br/>
             Lesser Horseshoe Bat
           </p>
@@ -1108,27 +2144,6 @@
             <span>
               <b>
                 <i>
-                  Rhinolophus lanosus 
-                </i>
-              </b>
-            </span>
-            K. Andersen, 1905.
-            <br/>
-            <i>
-              Ann. Mag. Nat. Hist.
-            </i>
-             ser. 7, 16: 248.
-            <br/>
-            Woolly Horseshoe Bat
-          </p>
-        </div>
-      </div>
-      <div class="speciestest">
-        <div class="taxon" id="species">
-          <p>
-            <span>
-              <b>
-                <i>
                   Rhinolophus lepidus 
                 </i>
               </b>
@@ -1175,7 +2190,7 @@
                 </i>
               </b>
             </span>
-            Volleth, Loidl, Mayer, Yong, Müller, &amp; Heller, 2015.
+            Volleth, Loidl, Mayer, Yong, Müller &amp; Heller, 2015.
             <br/>
             <i>
               Acta Chiropterol.
@@ -1444,6 +2459,27 @@
             <span>
               <b>
                 <i>
+                  Rhinolophus midas 
+                </i>
+              </b>
+            </span>
+            (K. Andersen, 1905).
+            <br/>
+            <i>
+              Proc. Zool. Soc. London
+            </i>
+             1905(2): 138.
+            <br/>
+            Midas' Horseshoe Bat
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Rhinolophus mitratus 
                 </i>
               </b>
@@ -1549,6 +2585,119 @@
             <span>
               <b>
                 <i>
+                  Rhinolophus namuli 
+                </i>
+              </b>
+            </span>
+            Curran, Kopp, Ruedi &amp; Bayliss, 2022.
+            <br/>
+            <i>
+              Acta Chiropterol.
+            </i>
+             24: 26.
+            <br/>
+            Namuli Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Mozambique, Zambezia Province, ca. 10 km. north-west of Gurue, Mount Namuli
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Malawi, Mozambique, and Tanzania
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (new species). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              capensis
+            </i>
+             species group. Morphologically very similar to 
+            <i>
+               maendeleo
+            </i>
+            , which was moved to the 
+            <i>
+              adami
+            </i>
+             species group by Kock et al. (2000).  No sequences are available for either 
+            <i>
+              maendeleo
+            </i>
+             or 
+            <i>
+              adami
+            </i>
+             and the validity of this group is open to quesion (Curran et al. 2022).
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Curran, M., M. Kopp, M. Ruedi, and J. Bayliss. 2022. A new species of horseshoe bat (Chiroptera: Rhinolophidae) from Mount Namuli, Mozambique. 
+            <i>
+              Acta Chiropterologica
+            </i>
+             24(1): 19-40. 
+            <a href="https://www.ingentaconnect.com/content/miiz/actac/2022/00000024/00000001/art00002" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Kock, D., G. Csorba, and K.M. Howell. 2000. 
+            <i>
+              Rhinolophus maendeleo
+            </i>
+             n. sp. from Tanzania, a horseshoe bat noteworthy for its systematics and biogeography (Mammalia, Chiroptera, Rhinolophidae). 
+            <i>
+              Senkenbergiana Biologica
+            </i>
+             80: 233-239. 
+            <a href="http://hunbat.hu/html/publikaciok_link/cikkek/east-asia/Rhinolophus_maendeleo_from_Tanzania.pdf" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Rhinolophus nereis 
                 </i>
               </b>
@@ -1637,7 +2786,7 @@
                 </i>
               </b>
             </span>
-            Andersen, 1918.
+            K. Andersen, 1918.
             <br/>
             <i>
               Ann. Mag. Nat. Hist.
@@ -1648,6 +2797,15 @@
           </p>
         </div>
         <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=5787428&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/5787428" target="_blank">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
           <p>
           </p>
         </div>
@@ -1666,11 +2824,17 @@
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Endangered (2018).
+            <a href="https://www.iucnredlist.org/species/85707170/85707174/" target="_blank">
+              Endangered
+            </a>
+             (2020).
           </p>
         </div>
         <div class="comments" id="species">
@@ -1686,7 +2850,7 @@
             <i>
               imaizumii
             </i>
-            ; see Wu et al. (2012).  See also Yoshiyuki (1989), Csorba et al. (2003), and Sano and Armstrong (2009). Csorba et al. (2019) consider 
+            ; see Wu et al. (2012).  See also Yoshiyuki (1989), Csorba et al. (2003), and Sano and Armstrong (2009). Burgin (2019) considers 
             <i>
               imaizumii
             </i>
@@ -1694,7 +2858,7 @@
             <i>
               perditus
             </i>
-            , but given the data presented by Wu et al. (2012), we continue to recognize it as a distinct species.   
+            , but given the data presented by Wu et al. (2012), we continue to recognize it as a distinct species.
           </p>
         </div>
         <div class="refs" id="species">
@@ -1713,6 +2877,36 @@
               Read article
             </a>
             .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Burgin, C. 2019. 
+            <i>
+              Rhinolophus perditus
+            </i>
+            .  Pages 311-312
+            <i>
+               In
+            </i>
+             D.E. Wilson and R.A. Mittermeier (eds.) 
+            <i>
+              Handbook of the Mammals of the World – Volume 9 Bats
+            </i>
+            . Barcelona: Lynx Edicions. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Csorba, G., P. Ujhelyi, and N. Thomas. 2003. 
+            <i>
+              Horseshoe Bats of the World
+            </i>
+            . Alana Books, Bishop's Castle: 160pp. Not available online.
             <br/>
             <br/>
           </p>
@@ -1746,6 +2940,67 @@
             .
             <br/>
             <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Wu, Y., M. Motokawa, M. Harada, V.D. Thong, L.-K. Lin, and Y-C. Li. 2012. Morphometric variation in the 
+            <i>
+              pusillus
+            </i>
+             group of the genus
+
+            <i>
+              Rhinolophus
+            </i>
+             (Mammalia: Chiroptera: Rhinolophidae)
+in East Asia. 
+            <i>
+              Zoological Science
+            </i>
+             29(6): 396-402. 
+            <a href="https://bioone.org/journals/zoological-science/volume-29/issue-6/zsj.29.396/Morphometric-Variation-in-the-Pusillus-Group-of-the-Genus-Rhinolophus/10.2108/zsj.29.396.short" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Yoshiyuki, M. 1989. A systematic study of the Japanese Chiroptera. 
+            <i>
+              National Science Museum Monographs
+            </i>
+             16: 1-242. 
+            <a href="https://ci.nii.ac.jp/naid/110006684308" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Rhinolophus perniger 
+                </i>
+              </b>
+            </span>
+            Hodgson, 1843.
+            <br/>
+            <i>
+              J. Asiat. Soc. Bengal
+            </i>
+             12(1): 414.
+            <br/>
+            Northern Woolly Horseshoe Bat
           </p>
         </div>
       </div>
@@ -1843,7 +3098,7 @@
                 </i>
               </b>
             </span>
-            Andersen, 1906.
+            K. Andersen, 1906.
             <br/>
             <i>
               Proc. Zool. Soc. Lond.
@@ -1874,25 +3129,268 @@
             King Horseshoe Bat
           </p>
         </div>
-      </div>
-      <div class="speciestest">
-        <div class="taxon" id="species">
+        <div class="map">
           <p>
-            <span>
-              <b>
-                <i>
-                  Rhinolophus rhodesiae 
-                </i>
-              </b>
-            </span>
-            Roberts, 1946.
-            <br/>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432619&amp;resolution=2&amp;lng=105&amp;zoom=2&amp;lat=20" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/2432619">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  rex
+                </p>
+              </i>
+            </b>
+             G. M. Allen, 1923:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 paradoxolophus
+              </i>
+               Bourret, 1951;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 schnitzleri
+              </i>
+               Wu &amp; Thong, 2011.
+            </p>
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            China, Szechwan, Wanhsien
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            China, Myanmar, Vietnam, Laos P.D.R., Thailand
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/19562/21994639/" target="_blank">
+              Endangered
+            </a>
+             (2020).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
             <i>
-              Ann. Transvaal Mus.
+              philippinensis
             </i>
-             20(4): 304.
+             species group. Redescribed by Hill (1972). Includes 
+            <i>
+              paradoxolophus
+            </i>
+            ; see Corbet and Hill (1992), Zhang et al. (2018), and Tu et al. (2023). See also Dorst (1954), Eger and Fenton (2003), and Thonglongya (1973). Includes 
+            <i>
+              schnitzleri
+            </i>
+            ; see Tu et al. (2023).  We follow Tu et al. (2023) who found no evidence of subspecific divergence within 
+            <i>
+              rex
+            </i>
+             sensu lato.  Also see Tu et al's (2023) discussion of Chornelia et al.'s (2022) suggestion that this taxon contains cryptic diversity. Tu et al. (2023) note that 
+            <i>
+              rex
+            </i>
+             s.l. is likely Near Threatened under IUCN criteria.  
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Allen, G.M. 1923. New Chinese bats. 
+            <i>
+              American Museum Novitates
+            </i>
+             85: 1-8. 
+            <a href="https://digitallibrary.amnh.org/server/api/core/bitstreams/1d694b81-a724-45a0-97d6-9361825beaf2/content" target="_blank">
+              Read article
+            </a>
+            .
             <br/>
-            Zimbabwean Horseshoe Bat
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Chornelia, A., J. Lu, and A.C. Hughes. 2022. How to accurately delineate morphologically conserved taxa and diagnose their phenotypic disparities: Species delimitation in cryptic Rhinolophidae (Chiroptera). 
+            <i>
+              Frontiers in Ecology and Evolution
+            </i>
+             10:854509: 1-18. 
+            <a href="https://www.frontiersin.org/articles/10.3389/fevo.2022.854509/full" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Corbet, G.B., and J.E. Hill 1992. 
+            <i>
+              Mammals of the Indomalayan Region. A Systematic Review
+            </i>
+            . Oxford University Press, Oxford: 1-488. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Dorst, J. 1954. Précisions sur un rhinolophidé rare du Tonkin. 
+            <i>
+              Mammalia
+            </i>
+             18(2): 212-215. 
+            <a href="https://www.degruyter.com/document/doi/10.1515/mamm.1954.18.2.212/html" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Eger, J.L., and M.B. Fenton. 2003. 
+            <i>
+              Rhinolophus paradoxolophus
+            </i>
+            . 
+            <i>
+              Mammalian Species
+            </i>
+             731: 1-4. 
+            <a href="https://academic.oup.com/mspecies/article/doi/10.1644/731/2600503?searchresult=1" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Hill, J.E. 1972. A note on 
+            <i>
+              Rhinolophus rex
+            </i>
+            , Allen 1923 and 
+            <i>
+              Rhinomegalophus paradoxolophus
+            </i>
+            , Bourret, 1951. 
+            <i>
+              Mammalia
+            </i>
+             36: 428-434. 
+            <a href="https://www.degruyter.com/document/doi/10.1515/mamm.1972.36.3.428/html" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Thonglongya, K. 1973. First record of 
+            <i>
+              Rhinolophus paradoxolophus
+            </i>
+             (Bourret, 1951) from Thailand, with the description of a new species of the 
+            <i>
+              Rhinolophus philippinensis
+            </i>
+             group (Chiroptera: Rhinolophidae). 
+            <i>
+              Mammalia
+            </i>
+             37: 587-597. 
+            <a href="https://www.degruyter.com/document/doi/10.1515/mamm.1973.37.4.587/html" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Tu, V.T., N.M Furey, T Görföl, A. Hassanin, S. Arai, D. Koyabu, B. Douangboubpha, and G. Csorba. 2023. A taxonomic reassessement of 
+            <i>
+              Rhinolophus rex
+            </i>
+             Allen, 1923 and its allies (Chiroptera: Rhinolophidae). 
+            <i>
+              Vertebrate Zoology
+            </i>
+             73(2023): 545-556. 
+            <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/jzs.12448" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Zhang, L.,  K. Sun,  T. Liu, H. Zhao,  G. Csorba,  L. Jin,  V.D. Thong, and J. Feng 2018. Multilocus phylogeny and species delimitation within the 
+            <i>
+              philippinensis
+            </i>
+             group (Chiroptera: Rhinolophidae). 
+            <i>
+              Zoologica Scripta
+            </i>
+             (): . 
+            <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/zsc.12308" target="_blank">
+              Read abstract
+            </a>
+            .
+            <br/>
+            <br/>
           </p>
         </div>
       </div>
@@ -1943,7 +3441,7 @@
         </div>
         <div class="map">
           <p>
-            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432664&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432664&amp;resolution=2&amp;lat=20&amp;lng=85&amp;zoom=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
             </iframe>
             <a id="GBIFlink" href="https://www.gbif.org/species/2432664">
             </a>
@@ -2048,11 +3546,17 @@
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Least Concern (2018).
+            <a href="https://www.iucnredlist.org/species/84379218/21995537/" target="_blank">
+              Least Concern
+            </a>
+             (2019).
           </p>
         </div>
         <div class="comments" id="species">
@@ -2267,27 +3771,6 @@
             <span>
               <b>
                 <i>
-                  Rhinolophus schnitzleri 
-                </i>
-              </b>
-            </span>
-            Wu &amp; Thong, 2011.
-            <br/>
-            <i>
-              Zool. Sci.
-            </i>
-             28: 236.
-            <br/>
-            Schnitzler's Horseshoe Bat
-          </p>
-        </div>
-      </div>
-      <div class="speciestest">
-        <div class="taxon" id="species">
-          <p>
-            <span>
-              <b>
-                <i>
                   Rhinolophus sedulus 
                 </i>
               </b>
@@ -2351,15 +3834,14 @@
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Least Concern under 
-            <i>
-              Rhinolophus sinicus
-            </i>
-             (2018).
+            Not Evaluated (raised from synonymy).
           </p>
         </div>
         <div class="comments" id="species">
@@ -2589,11 +4071,9 @@
           <p>
             <iframe width="275" height="275" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="Rhinolophus sinicus" src="//stonybrook.maps.arcgis.com/apps/Embed/index.html?webmap=0d63136344ee48079e6e614adb782b79&amp;extent=73.9747,10.5174,125.7422,36.9388&amp;zoom=true&amp;previewImage=false&amp;scale=false&amp;disable_scroll=true&amp;theme=light">
             </iframe>
-            <a id="GBIFlink" href="GBIFlink" target="_blank">
+            <a id="GBIFlink" href="GBIFlink" target="_blank" <p="">
+              View large map with legend
             </a>
-          </p>
-          <p>
-            View large map with legend
           </p>
           <p>
              Data sources: 
@@ -2622,11 +4102,17 @@
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Least Concern (2018).
+            <a href="https://www.iucnredlist.org/species/41529/22005184/" target="_blank">
+              Least Concern
+            </a>
+             (2019).
           </p>
         </div>
         <div class="comments" id="species">
@@ -2638,7 +4124,7 @@
             <i>
               rouxii,
             </i>
-             but distinct; see Thomas (2000), Wu et al. (2003), and Wu and Harada (2005). Does not include 
+             but distinct; see Thomas (2000), Wu et al. (2005), and Wu and Harada (2005). Does not include 
             <i>
               septentrionalis,
             </i>
@@ -2662,6 +4148,21 @@
             </i>
              1905(2): 75-145. 
             <a href="https://www.biodiversitylibrary.org/page/31887794" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Chornelia, A., J. Lu, and A.C. Hughes. 2022. How to accurately delineate morphologically conserved taxa and diagnose their phenotypic disparities: Species delimitation in cryptic Rhinolophidae (Chiroptera). 
+            <i>
+              Frontiers in Ecology and Evolution
+            </i>
+             10:854509: 1-18. 
+            <a href="https://www.frontiersin.org/articles/10.3389/fevo.2022.854509/full" target="_blank">
               Read article
             </a>
             .
@@ -2752,8 +4253,8 @@
               Acta Theriologica Sinica
             </i>
              25(2): 163-167. 
-            <a href="http://www.mammal.cn/EN/article/searchArticle.do#" target="_blank">
-              Read article
+            <a href="http://www.mammal.cn/EN/Y2005/V25/I2/163" target="_blank">
+              Read abstract
             </a>
             .
             <br/>
@@ -2762,13 +4263,13 @@
         </div>
         <div class="bibentry" id="species">
           <p>
-            Wu, Y., Harada, M. and Li, Y. 2004. Karyology of seven species bats from Sichuan, China. 
+            Wu, Y., Harada, M. and Li, Y. 2005. Karyology of seven species bats from Sichuan, China. 
             <i>
               Acta Theriologica Sinica
             </i>
              24(1): 30-35. 
-            <a href="http://www.mammal.cn//EN/article/searchArticle.do" target="_blank">
-              Read article
+            <a href="http://www.mammal.cn/EN/abstract/abstract1305.shtml" target="_blank">
+              Read abstract
             </a>
             .
             <br/>
@@ -2891,7 +4392,7 @@
                 </i>
               </b>
             </span>
-            Bergmans and Rozendaal, 1982.
+            Bergmans &amp; Rozendaal, 1982.
             <br/>
             <i>
               Bijdr.
@@ -2946,7 +4447,7 @@ Dierk.
         </div>
         <div class="map">
           <p>
-            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432660&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432660&amp;resolution=2&amp;lat=20&amp;lng=105&amp;zoom=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
             </iframe>
             <a id="GBIFlink" href="https://www.gbif.org/species/2432660">
             </a>
@@ -2999,11 +4500,17 @@ Dierk.
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Least Concern (2018).
+            <a href="https://www.iucnredlist.org/species/19573/21990671/" target="_blank">
+              Least Concern
+            </a>
+             (2019).
           </p>
         </div>
         <div class="comments" id="species">
@@ -3015,7 +4522,7 @@ Dierk.
             <i>
               septentrionalis
             </i>
-            ; see Csorba (2002) and Csorba et al. (2003, 2019). Also see Corbet and Hill (1992) and Hendrichsen et al.(2001).  Zhang et al (2009) suggested that 
+            ; see Csorba (2002), Csorba et al. (2003) and Burgin (2019). Also see Corbet and Hill (1992) and Hendrichsen et al.(2001).  Zhang et al (2009) suggested that 
             <i>
               thomasi
             </i>
@@ -3023,7 +4530,7 @@ Dierk.
             <i>
               sinicus
             </i>
-             may be conspecific (see also Csorba, 2002), but data from Mao et al. (2019) support the distinctiveness of both taxa.  Following Csorba et al. (2003, 2019) we do not recognize any subspecies of 
+             may be conspecific (see also Csorba, 2002), but data from Mao et al. (2019) support the distinctiveness of both taxa.  Following Csorba et al. (2003) and Burgin (2019) we do not recognize any subspecies of 
             <i>
               thomasi
             </i>
@@ -3056,6 +4563,25 @@ Dierk.
         </div>
         <div class="bibentry" id="species">
           <p>
+            Burgin, C. 2019. 
+            <i>
+              Rhinolophus thomasi
+            </i>
+            .  Pages 326
+            <i>
+               In
+            </i>
+             D.E. Wilson and R.A. Mittermeier (eds.) 
+            <i>
+              Handbook of the Mammals of the World – Volume 9 Bats
+            </i>
+            . Barcelona: Lynx Edicions. Not available online.
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
             Corbet, G.B., and J.E. Hill 1992. 
             <i>
               Mammals of the Indomalayan Region. A Systematic Review
@@ -3080,21 +4606,6 @@ Dierk.
               Read article
             </a>
             .
-            <br/>
-            <br/>
-          </p>
-        </div>
-        <div class="bibentry" id="species">
-          <p>
-            Csorba, G., A. Hutso, S. Rossiter, and C. Burgin. 2019. Family Rhinolophidae (Horseshoe Bats).  Pages 
-            <i>
-               In
-            </i>
-             Wilson, Don E., Mittermeier, Russell A (eds.) 
-            <i>
-              Handbook of the Mammals of the World – Volume 9 Bats
-            </i>
-            . Barcelona: Lynx Edicions. Not available online.
             <br/>
             <br/>
           </p>
@@ -3204,11 +4715,93 @@ Dierk.
             <span>
               <b>
                 <i>
+                  Rhinolophus webalai 
+                </i>
+              </b>
+            </span>
+            Patterson, Dick, Bartonjo &amp; Demos, 2024.
+            <br/>
+            <i>
+              J. Mammal.
+            </i>
+             106(1): 193.
+            <br/>
+            Webala's Horseshoe Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+          </p>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Kenya, Kilifi County, Malindi Marine Park, KWS Headquarters
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            South Sudan, Kenya, likely N Uganda and N Tanzania
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            Not Evaluated (new species).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            <i>
+              landeri
+            </i>
+             species group.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Patterson, B.D., T.C Demos, L. Torrent, A.L. Grunwald, C. Montauban, J.C. Kerbis Peterhans, M.M McDonough, C.W. Dick, M. Bartonjo, M.C Schoeman, L.A. Ruedas, and J. Juste. 2024. Systematics of the 
+            <i>
+              Rhinolophus landeri
+            </i>
+             complex, with evidence for 3 additional Afrotropical bat species. 
+            <i>
+              Journal of Mammalogy
+            </i>
+             106(1): 187-201. 
+            <a href="https://academic.oup.com/jmammal/article/106/1/187/7756705" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
                   Rhinolophus willardi 
                 </i>
               </b>
             </span>
-            Kerbis Peterhans and Fahr, 2013.
+            Kerbis Peterhans &amp; Fahr, 2013.
             <br/>
             <i>
               Bonn Zool Bull
@@ -3316,11 +4909,11 @@ Dierk.
           </div>
           <div class="cite">
             <p>
-              Cite the database: Simmons, N.B. and A.L. Cirranello. 2022B. 
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2025. 
               <i>
-                Bat Species of the World: A taxonomic and geographic database
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.7
               </i>
-              . Accessed on 07/21/2022.
+              . Accessed on 02/12/2025.
             </p>
           </div>
         </div>
@@ -3343,9 +4936,6 @@ Dierk.
             </li>
           </ul>
           <div class="photo">
-            <p>
-              Interactive web maps: Maria Brown
-            </p>
             <p>
               Background photo: M. Brock Fenton
             </p>

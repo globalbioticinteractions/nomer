@@ -200,9 +200,14 @@ public class BatNamesTaxonService implements TermMatcher {
                 Iterable<String> genera = BatNamesUtil.extractGenera(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8));
 
                 for (String genus : genera) {
-                    String genusXml = BatNamesUtil.getGenusXml(genus);
-                    BatNamesUtil.parseTaxaForGenus(IOUtils.toInputStream(genusXml, StandardCharsets.UTF_8),
-                            termMatchListener);
+                    String url = BatNamesUtil.getGenusUrl(genus);
+                    String genusXml = BatNamesUtil.getGenusXml(url);
+                    try {
+                        BatNamesUtil.parseTaxaForGenus(IOUtils.toInputStream(genusXml, StandardCharsets.UTF_8),
+                                termMatchListener);
+                    } catch (Exception ex) {
+                        throw new IOException("failed to parse content related to [" + url + "]", ex);
+                    }
                 }
 
             } catch (SAXException | ParserConfigurationException | XPathExpressionException e) {

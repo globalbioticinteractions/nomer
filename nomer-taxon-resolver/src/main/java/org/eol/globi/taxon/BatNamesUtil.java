@@ -26,9 +26,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -49,7 +47,9 @@ public class BatNamesUtil {
         Map<String, String> patches = new TreeMap<>();
         patches.put("'target=\"_blank'\"", "target=\"_blank\"");
         patches.put("'target=\"_blank\"", "target=\"_blank\"");
+        patches.put("target=\"_blank\" <p=\"\"", "target=\"_blank\"");
         patches.put("\"target=\"_blank\"","target=\"_blank\"");
+        patches.put("7 target=\" blank\"\"=\"\"","7\" target=\"_blank\"");
         patches.put("target=_blank","target=\"_blank\"");
         patches.put(" target=\"_self\" '=\"\""," target=\"_blank\"");
         patches.put("8 target=\" _blank\"=\"\"","8\" target=\"_blank\"");
@@ -63,12 +63,15 @@ public class BatNamesUtil {
         return patchedXml.replace(NON_BREAKING_SPACE, ' ');
     }
 
-    public static String getGenusXml(String genusName) throws IOException {
-        String url = "https://batnames.org/genera/" + genusName;
-        String htmlAsXmlString = HtmlUtil.getHtmlAsXmlString
+    public static String getGenusXml(String url) throws IOException {
+        try {
+            String htmlAsXmlString = HtmlUtil.getHtmlAsXmlString
                 (url);
         LOG.info("indexing [" + url + "]");
-        return toPatchedXmlString(htmlAsXmlString);
+            return toPatchedXmlString(htmlAsXmlString);
+        } catch (IOException ex) {
+            throw new IOException("failed to retrieve [" + url + "]", ex);
+        }
     }
 
     public static Collection<String> extractGenera(InputStream is) throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
@@ -155,5 +158,9 @@ public class BatNamesUtil {
 
             listener.foundTaxonForTerm(0L, taxon, NameType.HAS_ACCEPTED_NAME, taxon);
         }
+    }
+
+    public static String getGenusUrl(String genus) {
+        return "https://batnames.org/genera/" + genus;
     }
 }

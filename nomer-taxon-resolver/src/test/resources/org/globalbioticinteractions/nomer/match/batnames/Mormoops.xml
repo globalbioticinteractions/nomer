@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <title>
+      batnames | genera
+    </title>
+    <link rel="stylesheet" type="text/css" href="/MSOW.css"/>
+    <base target="_blank"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, target-densitydpi=high-dpi"/>
+  </head>
+  <body>
+    <header>
+      <div class="headertextwrap">
+        <div class="headerleft">
+          <a href="https://batnames.org/home.html" target="_self">
+            <h1>
+               Bats of the World 
+            </h1>
+            <h2>
+               A Taxonomic and Geographic Database 
+            </h2>
+          </a>
+        </div>
+        <div class="headerright">
+          <h3>
+            <div class="compile">
+              Compiled and Edited by:
+            </div>
+            <div class="authors">
+              Nancy B. Simmons and Andrea L. Cirranello
+            </div>
+            <div class="museum">
+              <span style="font-style:italic">
+                 American Museum of Natural History
+              </span>
+            </div>
+          </h3>
+        </div>
+      </div>
+    </header>
+    <div id="homeresults">
+      <div>
+        <form class="export-submit" action="https://batnames.org/exploreexport.php" method="post" name="upload_excel" target="_self" enctype="multipart/form-data">
+          <div class="form-group">
+            <div class="col-md-4 col-md-offset-4">
+              <input type="submit" name="export" class="btn btn-success" value="Export"/>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="resulttxt">
+        Your search for 
+        <em>
+          Mormoops
+        </em>
+         resulted in 2 species-level matches: 
+        <br/>
+      </div>
+      <div class="link" id="families">
+        <p>
+          <a href="/family/Mormoopidae" target="_blank">
+            Mormoopidae
+          </a>
+        </p>
+      </div>
+      <div class="link" id="genus">
+        <p>
+          <a href="/family/Mormoopidae" target="_blank">
+            Mormoopidae
+          </a>
+        </p>
+      </div>
+      <div class="taxon" id="genus">
+        <p>
+          <span>
+            <b>
+              <i>
+                Mormoops
+              </i>
+            </b>
+          </span>
+           Leach, 1821. 
+          <i>
+            Trans. Linn. Soc. Lond.
+          </i>
+           13: 76
+        </p>
+      </div>
+      <div class="typesp" id="genus">
+        <p>
+          <i>
+            Mormoops blainvillii
+          </i>
+           Leach, 1821
+        </p>
+      </div>
+      <div class="syns" id="genus">
+        <p>
+          <i>
+            Aello
+          </i>
+           Leach, 1821.
+        </p>
+      </div>
+      <div class="comments" id="genus">
+        <p>
+          This name is used instead of 
+          <i>
+            Aello
+          </i>
+           following Opinion 462 of the International Commission on Zoological Nomenclature (ICZN, 1957).
+        </p>
+      </div>
+      <div class="refs" id="genus">
+        <p>
+          References:
+        </p>
+      </div>
+      <div class="bibentry" id="genus">
+        <p>
+          International Commission on Zoological Nomenclature. 1957. Additions to the 
+          <i>
+            Official List of Generic Names in Zoology
+          </i>
+           of the generic name 
+          <i>
+            Mormoops
+          </i>
+           Leach, 1821 (Class Mammalia). 
+          <i>
+            Opinions of the International Commission of Zoological Nomenclature
+          </i>
+           16: 1-12. 
+          <a href="https://biodiversitylibrary.org/page/34656958" target="_blank">
+            Read article
+          </a>
+          .
+          <br/>
+          <br/>
+        </p>
+      </div>
+      <div class="bibentry" id="genus">
+        <p>
+          Leach, W.E. 1821. The characters of seven genera of bats with foliaceous appendages to the nose. 
+          <i>
+            Transactions of the Linnean Society of London
+          </i>
+           13(1): 73-82. 
+          <a href="https://biodiversitylibrary.org/page/754800" target="_blank">
+            Read article
+          </a>
+          .
+          <br/>
+          <br/>
+        </p>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Mormoops blainvillei 
+                </i>
+              </b>
+            </span>
+            Leach, 1821.
+            <br/>
+            <i>
+              Trans. Linn. Soc. Lond.
+            </i>
+             13: 77.
+            <br/>
+            Antillean Ghost-faced Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe class="GBIF" src="https://api.gbif.org/v1/map/index.html?type=TAXON&amp;key=2432760&amp;resolution=2" allowfullscreen="" width="250px" height="250px" frameborder="0">
+            </iframe>
+            <a id="GBIFlink" href="https://www.gbif.org/species/2432760">
+            </a>
+          </p>
+          <p>
+            Source: GBIF.org
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  blainvillei
+                </p>
+              </i>
+            </b>
+             Leach, 1821:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 cinnamomeum
+              </i>
+               Gundlach, 1840;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 cuvieri
+              </i>
+               Leach, 1821.
+            </p>
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Jamaica
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            Greater Antilles, adjacent small islands
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/13877/22085914/" target="_blank">
+              Least Concern
+            </a>
+             (2016).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            See Lancaster and Kalko (1996) and Timm and Genoways (2003). Apparently no longer occurs on the islands of the Bahamas, but known from fossil material (see Koopman et al. 1957).  Often spelled 
+            <i>
+              blainvillii
+            </i>
+            , but this was an incorrect original spelling; the correct spelling is 
+            <i>
+              blainvillei
+            </i>
+             (see Opinion 462 of the International Commission on Zoological Nomenclature, 1957). The ICZN placed 
+            <i>
+              blainvilli
+            </i>
+             on the Offical Index of Rejected and Invalid Specific Names in Zoology, and placed 
+            <i>
+              blainvillei
+            </i>
+             on the Offical List of Specific Names in Zoology in Opinion 462.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            International Commission on Zoological Nomenclature. 1957. Additions to the 
+            <i>
+              Official List of Generic Names in Zoology
+            </i>
+             of the generic name 
+            <i>
+              Mormoops
+            </i>
+             Leach, 1821 (Class Mammalia). 
+            <i>
+              Opinions of the International Commission of Zoological Nomenclature
+            </i>
+             16: 1-12. 
+            <a href="https://biodiversitylibrary.org/page/34656958" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Lancaster, W.C., and E.K.V. Kalko 1996. 
+            <i>
+              Mormoops blanvillii
+            </i>
+            . 
+            <i>
+              Mammalian Species
+            </i>
+             544: 1-5. 
+            <a href="https://academic.oup.com/mspecies/article/doi/10.2307/3504228/2600409" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Leach, W.E. 1821. The characters of seven genera of bats with foliaceous appendages to the nose. 
+            <i>
+              Transactions of the Linnean Society of London
+            </i>
+             13(1): 73-82. 
+            <a href="https://biodiversitylibrary.org/page/754800" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Timm, R.M. and H.H. Genoways. 2003. West Indian mammals from the Albert Schwartz Collection: biological and historical information. 
+            <i>
+              Mammalogy Papers: University of Nebraska State Musuem
+            </i>
+             107: 1-47. 
+            <a href="http://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1106&amp;context=museummammalogy" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+      <div class="speciestest">
+        <div class="taxon" id="species">
+          <p>
+            <span>
+              <b>
+                <i>
+                  Mormoops megalophylla 
+                </i>
+              </b>
+            </span>
+            (Peters, 1864).
+            <br/>
+            <i>
+              Monatsb. K. Preuss. Akad. Wiss. Berlin
+            </i>
+             1864: 381.
+            <br/>
+            Peters's Ghost-faced Bat
+          </p>
+        </div>
+        <div class="map">
+          <p>
+            <iframe width="275" height="275" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" title="Mormoops_megalophylla_10182019" src="//stonybrook.maps.arcgis.com/apps/Embed/index.html?webmap=b27b29303aa9446097fbe0444fb2b4f3&amp;center=-80,10&amp;level=2&amp;zoom=false&amp;previewImage=false&amp;scale=false&amp;disable_scroll=true&amp;theme=light">
+            </iframe>
+            <a id="GBIFlink" href="//stonybrook.maps.arcgis.com/apps/Embed/index.html?webmap=b27b29303aa9446097fbe0444fb2b4f3&amp;center=-80,10&amp;level=4&amp;zoom=true&amp;scale=false&amp;legend=true&amp;details=true&amp;disable_scroll=true&amp;theme=light" target="_blank">
+              View large map with legend
+            </a>
+          </p>
+          <p>
+             Data sources: 
+            <a id="sourcelink" href="https://www.iucnredlist.org/species/13878/22086060" target="_blank">
+              IUCN
+            </a>
+            <a id="sourcelink" href="https://www.gbif.org/species/2432759" target="_blank">
+              GBIF
+            </a>
+          </p>
+          <p>
+          </p>
+        </div>
+        <div class="orig_name" id="species">
+          <p>
+            <i>
+              Mormops megalophylla
+            </i>
+          </p>
+        </div>
+        <div class="syns" id="species">
+          <p>
+          </p>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  carteri
+                </p>
+              </i>
+            </b>
+             Smith, 1972
+            <p>
+            </p>
+            .
+          </div>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  intermedia
+                </p>
+              </i>
+            </b>
+             Miller, 1900
+            <p>
+            </p>
+            .
+          </div>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  megalophylla
+                </p>
+              </i>
+            </b>
+             Peters, 1864:
+            <p>
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 rufescens
+              </i>
+               Davis &amp; Carter, 1962;
+            </p>
+          </div>
+          <div class="synonyms">
+            <p>
+              <i>
+                 senicula
+              </i>
+               Rehn, 1902.
+            </p>
+          </div>
+        </div>
+        <div class="syn_group" id="species">
+          <div class="subspecies">
+             
+            <b>
+              <i>
+                <p>
+                  tumidiceps
+                </p>
+              </i>
+            </b>
+             Miller, 1902
+            <p>
+            </p>
+            .
+          </div>
+        </div>
+        <div class="type_local" id="species">
+          <p>
+            Mexico, Coahuila, Parras
+          </p>
+        </div>
+        <div class="dist" id="species">
+          <p>
+            S Texas, S Arizona (USA), and Baja California (Mexico) south to NW Peru and N Venezuela; Aruba, Curaçao, and Bonaire (Netherlands Antilles); Trinidad; Margarita Isl (Venezuela)
+          </p>
+        </div>
+        <div class="status" id="species">
+          <p>
+            <b>
+               CITES - 
+            </b>
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
+            <b>
+               IUCN - 
+            </b>
+            <a href="https://www.iucnredlist.org/species/13878/22086060/" target="_blank">
+              Least Concern
+            </a>
+             (2019).
+          </p>
+        </div>
+        <div class="comments" id="species">
+          <p>
+            See Rezsutek and Cameron (1993).  Observed in Costa Rica; see York et al. 2020.
+          </p>
+        </div>
+        <div class="refs" id="species">
+          <p>
+            References:
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Peters, H.W. 1864 [dated 1865]. Hr. W. Peters berichtete über einige neue Säugethiere (
+            <i>
+              Mormops
+            </i>
+            , 
+            <i>
+              Macrotus
+            </i>
+            , 
+            <i>
+              Hesperus
+            </i>
+            , 
+            <i>
+              Molossus
+            </i>
+            , 
+            <i>
+              Caproniys
+            </i>
+            ), Amphibien (
+            <i>
+              Platydactflus
+            </i>
+            , 
+            <i>
+              Otocryptis
+            </i>
+            , 
+            <i>
+              Euprepes
+            </i>
+            , 
+            <i>
+              Ungalia
+            </i>
+            , 
+            <i>
+              Dromicus
+            </i>
+            , 
+            <i>
+              Tropidonotus
+            </i>
+            , 
+            <i>
+              Xenodon
+            </i>
+            , 
+            <i>
+              Hylodes
+            </i>
+            ) und Fische (
+            <i>
+              Silage
+            </i>
+            , 
+            <i>
+              Webastes
+            </i>
+            , 
+            <i>
+              Channa
+            </i>
+            , 
+            <i>
+              Myctophum
+            </i>
+            , 
+            <i>
+              Carassius
+            </i>
+            , 
+            <i>
+              Barbus
+            </i>
+            , 
+            <i>
+              Capoeta
+            </i>
+            , 
+            <i>
+              Poecilia
+            </i>
+            , 
+            <i>
+              Saurenchelys
+            </i>
+            , 
+            <i>
+              Leptocephalus
+            </i>
+            ). 
+            <i>
+              Monatsberichte der Königlichen Preussische Akademie des Wissenschaften zu Berlin
+            </i>
+             1865: 381-399. 
+            <a href="https://biodiversitylibrary.org/page/35180592">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+        <div class="bibentry" id="species">
+          <p>
+            Rezsutek, M., and G.N. Cameron 1993. 
+            <i>
+              Mormoops megalophylla
+            </i>
+            . 
+            <i>
+              Mammalian Species
+            </i>
+             448: 1-5. 
+            <a href="https://academic.oup.com/mspecies/article-abstract/doi/10.2307/3504289/2600377?redirectedFrom=fulltext" target="_blank">
+              Read article
+            </a>
+            .
+            <br/>
+            <br/>
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="push">
+    </div>
+    <footer>
+      <div class="footertextwrap">
+        <div class="footerleft">
+          <div class="contact">
+            <p>
+               Contact us: acirranello@batnames.org
+            </p>
+          </div>
+          <div class="cite">
+            <p>
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2025. 
+              <i>
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.7
+              </i>
+              . Accessed on 02/12/2025.
+            </p>
+          </div>
+        </div>
+        <div class="footerright">
+          <ul class="footertop">
+            <li>
+              <a href="about.html">
+                About
+              </a>
+            </li>
+            <li>
+              <a href="standards.html">
+                Standards
+              </a>
+            </li>
+            <li>
+              <a href="privacy.html">
+                Privacy
+              </a>
+            </li>
+          </ul>
+          <div class="photo">
+            <p>
+              Background photo: M. Brock Fenton
+            </p>
+          </div>
+          <div class="site">
+            <p>
+              Site and database: Andrea Cirranello
+            </p>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

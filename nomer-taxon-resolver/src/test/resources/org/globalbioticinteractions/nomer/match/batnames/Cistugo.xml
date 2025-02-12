@@ -357,11 +357,17 @@
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Least Concern (2014).
+            <a href="https://www.iucnredlist.org/species/44787/22069233/" target="_blank">
+              Least Concern
+            </a>
+             (2017).
           </p>
         </div>
         <div class="comments" id="species">
@@ -484,11 +490,17 @@
             <b>
                CITES - 
             </b>
-            Not listed.
+            <a href="https://cites.org/eng/app/appendices.php" target="_blank">
+              Not Listed
+            </a>
+              (2023). 
             <b>
                IUCN - 
             </b>
-            Least Concern (2016).
+            <a href="https://www.iucnredlist.org/species/44788/22069073/" target="_blank">
+              Least Concern
+            </a>
+             (2017).
           </p>
         </div>
         <div class="comments" id="species">
@@ -561,11 +573,11 @@
           </div>
           <div class="cite">
             <p>
-              Cite the database: Simmons, N.B. and A.L. Cirranello. 2023. 
+              Cite the database: Simmons, N.B. and A.L. Cirranello. 2025. 
               <i>
-                Bat Species of the World: A taxonomic and geographic database.  Version 1.3
+                Bat Species of the World: A taxonomic and geographic database.  Version 1.7
               </i>
-              . Accessed on 05/16/2023.
+              . Accessed on 02/12/2025.
             </p>
           </div>
         </div>

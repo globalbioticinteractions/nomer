@@ -105,7 +105,7 @@
         <dependency>
             <groupId>org.htmlunit</groupId>
             <artifactId>htmlunit</artifactId>
-            <version>3.9.0</version>
+            <version>4.9.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-io</groupId>
