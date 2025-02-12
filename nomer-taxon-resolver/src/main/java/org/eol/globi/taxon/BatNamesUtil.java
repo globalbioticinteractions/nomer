@@ -141,7 +141,8 @@ public class BatNamesUtil {
                             Matcher matcher = TAXON_NAME_PATTERN.matcher(rawXmlSnippet);
 
                             if (matcher.matches()) {
-                                taxon.setAuthorship(RegExUtils.removeAll(StringUtils.trim(matcher.group("authorship")), ".$"));
+                                String authorship = RegExUtils.removeAll(StringUtils.trim(matcher.group("authorship")), ".$");
+                                taxon.setAuthorship(StringUtils.replace(authorship, "&amp;", "&"));
                                 String commonNames = StringUtils.trim(matcher.group("commonNames"));
                                 if (StringUtils.isNoneBlank(commonNames)) {
                                     taxon.setCommonNames(commonNames + " @en");
