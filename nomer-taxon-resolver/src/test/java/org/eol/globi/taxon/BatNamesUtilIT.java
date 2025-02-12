@@ -16,6 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class BatNamesUtilIT {
 
+    private final boolean shouldReplaceResource = false;
+
     @Test
     public void getExplorePage() throws IOException, URISyntaxException {
         String htmlAsXmlString = HtmlUtil.getHtmlAsXmlString("https://batnames.org/explore.html");
@@ -23,13 +25,19 @@ public class BatNamesUtilIT {
         String patchedXml = BatNamesUtil.toPatchedXmlString(htmlAsXmlString);
 
         String resourceName = "/org/globalbioticinteractions/nomer/match/batnames/explore.xml";
-        URL resource = getClass().getResource(resourceName);
-        IOUtils.copy(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8), new FileOutputStream(new File(resource.toURI())));
+        replaceResource(patchedXml, resourceName);
 
         String expectedPatchedXml = IOUtils.toString(getClass().getResourceAsStream(resourceName), StandardCharsets.UTF_8);
 
         assertThat(patchedXml, Is.is(expectedPatchedXml));
 
+    }
+
+    private void replaceResource(String patchedXml, String resourceName) throws IOException, URISyntaxException {
+        if (shouldReplaceResource) {
+            URL resource = getClass().getResource(resourceName);
+            IOUtils.copy(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8), new FileOutputStream(new File(resource.toURI())));
+        }
     }
 
     @Test
@@ -61,8 +69,7 @@ public class BatNamesUtilIT {
         String patchedXml = BatNamesUtil.getGenusXml(BatNamesUtil.getGenusUrl(genusName));
 
         String genusResourceName = "/org/globalbioticinteractions/nomer/match/batnames/" + genusName + ".xml";
-        URL resource = getClass().getResource(genusResourceName);
-        IOUtils.copy(IOUtils.toInputStream(patchedXml, StandardCharsets.UTF_8), new FileOutputStream(new File(resource.toURI())));
+        replaceResource(patchedXml, genusResourceName);
 
         String expectedPatchedXml = IOUtils.toString(getClass().getResourceAsStream(genusResourceName), StandardCharsets.UTF_8);
 
