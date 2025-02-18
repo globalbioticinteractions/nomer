@@ -2,7 +2,6 @@ package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.TermMatcher;
@@ -28,7 +27,6 @@ import java.util.TreeMap;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.notNullValue;
 
 public class MatchUtilTest {
@@ -88,6 +86,21 @@ public class MatchUtilTest {
         assertThat(taxon.getExternalId(), is("id"));
         assertThat(taxon.getName(), is("name"));
         assertThat(taxon.getAuthorship(), is("author"));
+    }
+
+    @Test
+    public void readNameAndAuthorshipPath() {
+        Taxon taxon = MatchUtil.asTaxon(new String[]{"id", "name", "author", "path"}, new TreeMap<Integer, String>() {{
+            put(0, "externalId");
+            put(1, "name");
+            put(2, "authorship");
+            put(3, "path");
+        }});
+
+        assertThat(taxon.getExternalId(), is("id"));
+        assertThat(taxon.getName(), is("name"));
+        assertThat(taxon.getAuthorship(), is("author"));
+        assertThat(taxon.getPath(), is("path"));
     }
 
 
