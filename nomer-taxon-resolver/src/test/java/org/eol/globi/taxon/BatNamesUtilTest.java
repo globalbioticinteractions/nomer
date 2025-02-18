@@ -69,7 +69,9 @@ public class BatNamesUtilTest {
                 taxa.add(resolvedTaxon);
             }
         };
-        BatNamesUtil.parseTaxaForGenus(is, listener);
+
+        String s = BatNamesUtil.toPatchedXmlString(IOUtils.toString(is, StandardCharsets.UTF_8));
+        BatNamesUtil.parseTaxaForGenus(IOUtils.toInputStream(s, StandardCharsets.UTF_8), listener);
 
         assertThat(taxa.size(), Is.is(117));
 
