@@ -20,8 +20,6 @@ public class TermMatcherHierarchicalTest {
 
     @Test
     public void hierarchyMatchByName() throws PropertyEnricherException {
-
-
         TermMatcher matcherBasic = new TermMatcher() {
 
             @Override
@@ -46,6 +44,47 @@ public class TermMatcherHierarchicalTest {
         AtomicLong countTotal = new AtomicLong(0);
         AtomicLong countMatches = new AtomicLong(0);
         matcher.match(Arrays.asList(new TermImpl(null, "Amphibia | Anura")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                countTotal.incrementAndGet();
+                if (!NameType.NONE.equals(nameType)) {
+                    countMatches.incrementAndGet();
+                }
+            }
+        });
+
+        assertThat(countTotal.get(), Is.is(2L));
+        assertThat(countMatches.get(), Is.is(1L));
+    }
+
+    @Test
+    public void hierarchyMatchByNameAndPath() throws PropertyEnricherException {
+        TermMatcher matcherBasic = new TermMatcher() {
+
+            @Override
+            public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                for (Term term : list) {
+                    if ("Anura".equals(term.getName())) {
+                        TaxonImpl homoSapiens = new TaxonImpl("Anura", "FOO:123");
+                        homoSapiens.setPath("Amphibia | Anura");
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, homoSapiens);
+
+                        TaxonImpl anuraPlant = new TaxonImpl("Anura", "FOO:456");
+                        anuraPlant.setPath("Plantae | Magnoliophyta | Anura");
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SAME_AS, anuraPlant);
+                    }
+                }
+            }
+        };
+
+        TermMatcher matcher = new TermMatcherHierarchical(matcherBasic);
+
+
+        AtomicLong countTotal = new AtomicLong(0);
+        AtomicLong countMatches = new AtomicLong(0);
+        TaxonImpl taxon = new TaxonImpl("Anura", null);
+        taxon.setPath("Amphibia");
+        matcher.match(Arrays.asList(taxon), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 countTotal.incrementAndGet();
