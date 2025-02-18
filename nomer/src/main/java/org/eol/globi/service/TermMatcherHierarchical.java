@@ -49,7 +49,7 @@ public class TermMatcherHierarchical implements TermMatcher {
                         requestId = requestId == null ? idGenerator.getAndIncrement() : requestId;
                         providedTaxonForId.put(requestId, taxon);
                         origTermForId.put(requestId, x);
-                        unpackedTerm = new TermRequestImpl(lastId, lastName, requestId);
+                        unpackedTerm = new TaxonRequestImpl(lastId, lastName, requestId);
                     }
                     return unpackedTerm;
                 }).collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class TermMatcherHierarchical implements TermMatcher {
         matcher.match(unpacked, new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long requestId, Term term, NameType nameType, Taxon resolvedTaxon) {
-                Long derivedRequestId = requestId == null ? (term instanceof TermRequestImpl ? ((TermRequestImpl) term).getNodeId() : requestId) : requestId;
+                Long derivedRequestId = requestId == null ? (term instanceof TaxonRequestImpl ? ((TaxonRequestImpl) term).getRequestId() : requestId) : requestId;
                 Taxon providedTaxon = providedTaxonForId.get(derivedRequestId);
                 Term origTerm = origTermForId.get(derivedRequestId);
                 NameType matchType = providedTaxon == null ? nameType : getMatchType(providedTaxon, resolvedTaxon, nameType);
