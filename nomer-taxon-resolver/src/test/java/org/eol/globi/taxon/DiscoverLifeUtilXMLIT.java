@@ -14,7 +14,7 @@ import java.util.zip.GZIPInputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DiscoverLifeUtilXMLIntegrationTest {
+public class DiscoverLifeUtilXMLIT {
 
     public static final String BEES_XML_GZIP = "/org/globalbioticinteractions/nomer/match/discoverlife/bees.xml.gz";
 
