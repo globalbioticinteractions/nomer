@@ -13,7 +13,7 @@ Standard out (stdout) is used for results, and standard error (stderr) is used f
 
 ```Nomer``` expects tab separated input in form of ```[term id]\t[term name]```. To change this default behavior, you can select the columns to be used for id/name selection by defining an alternate ```nomer.schema.*``` properties. See ```properties``` command to list available properties.
 
-Different kind of matchers can be select to do the term matching. Offline matching is supported by some matchers like ```col```, and ```itis```. Note that offline-enabled matchers will download versioned taxonomic resources initially (e.g., an ITIS data dump as included in [Nomer's Corpus of Taxonomic Resources*](https://doi.org/10.5281/zenodo.12695629)), and re-uses the indexes until the cache is cleaned up. The cache itself can be archived so that results can be reproduced in a different environment without need to rebuild the term match index. For prebuilt indexes, please inspect the release assets at https://github.com/globalbioticinteractions/nomer/releases/0.5.13 (e.g., [Catalogue of Life: prebuilt index Nomer v0.5.13](https://github.com/globalbioticinteractions/nomer/releases/download/0.5.13/col_mapdb.zip)). Note, however, that indexes may take some time to build from scratch, and, when built, they can take hundreds of megabytes of disk space. 
+Different kind of matchers can be select to do the term matching. Offline matching is supported by some matchers like ```col```, and ```itis```. Note that offline-enabled matchers will download versioned taxonomic resources initially (e.g., an ITIS data dump as included in [Nomer's Corpus of Taxonomic Resources*](https://doi.org/10.5281/zenodo.12695629)), and re-uses the indexes until the cache is cleaned up. The cache itself can be archived so that results can be reproduced in a different environment without need to rebuild the term match index. For prebuilt indexes, please inspect the release assets at https://github.com/globalbioticinteractions/nomer/releases/0.5.15 (e.g., [Catalogue of Life: prebuilt index Nomer v0.5.15](https://github.com/globalbioticinteractions/nomer/releases/download/0.5.15/col_mapdb.zip)). Note, however, that indexes may take some time to build from scratch, and, when built, they can take hundreds of megabytes of disk space. 
 
 Matchers can be added by writing some java code that implements an interface.
 
@@ -56,7 +56,7 @@ Nomer is a stand-alone java application, packaged in a jarfile. You can build yo
 
 On linux and mac, you can use the following script to install nomer:
 ```console
-sudo sh -c '(curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.5.13/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer && nomer install-manpage' && nomer clean && nomer version
+sudo sh -c '(curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.5.15/nomer.jar) > /usr/local/bin/nomer && chmod +x /usr/local/bin/nomer && nomer install-manpage' && nomer clean && nomer version
 ```
 :warning: Please review the script before running it.
 
@@ -67,7 +67,7 @@ Note that a debian package (Debian, Ubuntu, etc) is also available for use with 
 ```console
 sudo apt update
 sudo apt upgrade
-curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.5.13/nomer.deb > nomer.deb
+curl -L https://github.com/globalbioticinteractions/nomer/releases/download/0.5.15/nomer.deb > nomer.deb
 sudo apt install ./nomer.deb
 ```
 
@@ -256,17 +256,18 @@ nomer version
 produces:
 
 ```
-0.5.13
+0.5.15
 ```
 
 ### Show supported matchers
 ```bash
 nomer matchers -v
 ```
-Result as of v0.5.13 (July 2024) is formatted as a table below:
+Result as of v0.5.15 (Feb 2025) is formatted as a table below:
 
-| ala | Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix. |
+| name | description |
 | --- | --- |
+| ala | Lookup taxon in Atlas of Living Australia by name or by id using ALATaxon:* prefix. |
 | batnames | Lookup BatNames taxa by name, synonym using offline-enabled database dump |
 | bold-web | Use BOLD webservice to lookup taxa by bin/taxon id using BOLD:* and BOLDTaxon:* prefixes. |
 | col | Lookup Catalogue of Life taxon by name or COL:* prefixed ids using offline-enabled database dump |
@@ -309,6 +310,7 @@ Result as of v0.5.13 (July 2024) is formatted as a table below:
 | wikidata-web | uses wikidata to cross-walk taxon id across taxonomies |
 | worms | Lookup World Register of Marine Species by name or WORMS:* prefixed ids using offline-enabled database dump |
 | worms-web | Lookup taxon in WoRMS by name or by id with WORMS:* prefix. |
+
 
 
 
