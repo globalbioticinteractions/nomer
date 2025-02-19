@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
 
-public class DiscoverLifeUtilXHTMLIntegrationTest {
+public class DiscoverLifeUtilXHTMLIT {
 
     private static final String DISCOVER_LIFE_URL
             = DiscoverLifeUtilXHTML.URL_ENDPOINT_DISCOVER_LIFE +
