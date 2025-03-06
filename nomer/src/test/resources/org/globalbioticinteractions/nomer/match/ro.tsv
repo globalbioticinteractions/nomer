@@ -29,7 +29,7 @@ http://purl.obolibrary.org/obo/RO_0002470	eats	A biotic interaction where one or
 http://purl.obolibrary.org/obo/RO_0002471	is eaten by	Inverse of eats
 http://purl.obolibrary.org/obo/RO_0002553	hyperparasite of	x is a hyperparasite of y iff x is a parasite of a parasite of the target organism y
 http://purl.obolibrary.org/obo/RO_0002554	hyperparasitized by	inverse of hyperparasite of
-http://purl.obolibrary.org/obo/RO_0002555	allelopath of	needs definition
+http://purl.obolibrary.org/obo/RO_0002555	allelopath of	A relationship between organisms where one organism is influenced by the biochemicals produced by another.
 http://purl.obolibrary.org/obo/RO_0002556	pathogen of	Inverse of has pathogen
 http://purl.obolibrary.org/obo/RO_0002557	has pathogen	A host interaction where the smaller of the two members of a symbiosis causes a disease in the larger member
 http://purl.obolibrary.org/obo/RO_0002574	participates in a biotic-biotic interaction with	needs definition
@@ -59,3 +59,6 @@ http://purl.obolibrary.org/obo/RO_0008503	kleptoparasite of	A sub-relation of pa
 http://purl.obolibrary.org/obo/RO_0008504	kleptoparasitized by	inverse of kleptoparasite of
 http://purl.obolibrary.org/obo/RO_0008507	lays eggs on	An interaction relationship in which organism a lays eggs on the outside surface of organism b. Organism b is neither helped nor harmed in the process of egg laying or incubation.
 http://purl.obolibrary.org/obo/RO_0008508	has eggs laid on by	inverse of lays eggs on
+http://purl.obolibrary.org/obo/RO_0008510	symbiotrophically interacts with@en	A trophic interaction in which one organism acquires nutrients through a symbiotic relationship with another organism
+http://purl.obolibrary.org/obo/RO_0008511	trophic parasite of@en	A symbiotrophic interaction in which one organism acquires nutrients through a parasitic relationship with another organism
+http://purl.obolibrary.org/obo/RO_0020301	has allelopath@en	inverse of allelopath of
