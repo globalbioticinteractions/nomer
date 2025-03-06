@@ -2,7 +2,7 @@
 [![Java CI](https://github.com/globalbioticinteractions/nomer/workflows/Java%20CI/badge.svg)](https://github.com/globalbioticinteractions/nomer/actions?query=workflow%3A%22Java+CI%22) [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![DOI](https://zenodo.org/badge/117019305.svg)](https://zenodo.org/badge/latestdoi/117019305)
 
-Maps identifiers and names to other identifiers and names.
+Maps identifiers and names to other identifiers and names. Nomer [[1]](#1) is a GloBI [[2]](#2) software tool, and relies on the Nomer Corpus of Taxonomic Resources [[3]](#3).
 
 ```
 $ echo -e "\tHomo sapiens" | nomer append itis
@@ -660,3 +660,14 @@ Feel free to join in. All welcome. Open an [issue](https://github.com/globalbiot
 ## License
 
 [GPL](LICENSE)
+
+## References 
+
+### 1
+José Augusto Salim, & Jorrit Poelen. (2025). globalbioticinteractions/nomer: 0.5.15 (0.5.15). Zenodo. https://doi.org/10.5281/zenodo.14893840
+
+### 2 
+Jorrit H. Poelen, James D. Simons and Chris J. Mungall. (2014). Global Biotic Interactions: An open infrastructure to share and analyze species-interaction datasets. Ecological Informatics. https://doi.org/10.1016/j.ecoinf.2014.08.005.
+
+### 3
+Poelen, J. H. (ed . ) . (2024). Nomer Corpus of Taxonomic Resources hash://sha256/b60c0d25a16ae77b24305782017b1a270b79b5d1746f832650f2027ba536e276 hash://md5/17f1363a277ee0e4ecaf1b91c665e47e (0.27) [Data set]. Zenodo. https://doi.org/10.5281/zenodo.12695629
