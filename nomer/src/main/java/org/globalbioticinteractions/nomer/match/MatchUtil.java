@@ -3,6 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.Synonymizer;
+import org.eol.globi.service.MultipleTermMatcher;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.service.TermMatcherHierarchical;
@@ -30,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MatchUtil {
@@ -60,19 +62,25 @@ public class MatchUtil {
                         }).filter(Optional::isPresent)
                         .map(Optional::get);
 
-        Optional<TermMatcher> firstMatcher = matchers.findFirst();
+//        Optional<TermMatcher> firstMatcher = matchers.findFirst();
+//
+//        if (!firstMatcher.isPresent()) {
+//            throw new IllegalArgumentException("unknown matcher");
+//        }
 
-        if (!firstMatcher.isPresent()) {
-            throw new IllegalArgumentException("unknown matcher");
-        }
-
+        MultipleTermMatcher termMatcher;
         String property = ctx.getProperty("nomer.guess.synonyms");
-
-        TermMatcherHierarchical termMatcherHierarchical = new TermMatcherHierarchical(firstMatcher.get());
         if (StringUtils.isNotBlank(property) && !StringUtils.equalsIgnoreCase("false", StringUtils.trim(property))) {
-            termMatcherHierarchical = new TermMatcherHierarchical(new Synonymizer(firstMatcher.get()));
+        	 termMatcher = new MultipleTermMatcher(
+        			matchers.map(m -> {
+        				return new TermMatcherHierarchical(new Synonymizer(m));
+        			})
+        			.collect(Collectors.toList()));
+        } else {
+        	termMatcher = new MultipleTermMatcher(matchers.map(TermMatcherHierarchical::new).collect(Collectors.toList()));
         }
-        return termMatcherHierarchical;
+                
+        return termMatcher;
     }
 
     public static Taxon asTaxon(String[] row, Map<Integer, String> schema) {
