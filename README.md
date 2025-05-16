@@ -62,7 +62,9 @@ sudo sh -c '(curl -L https://github.com/globalbioticinteractions/nomer/releases/
 
 With this, you can now run things like ```nomer version``` instead of ```java -jar [some long dir path]/nomer.jar version``` . 
 
-Note that a debian package (Debian, Ubuntu, etc) is also available for use with the [Advanced Package Tool (or apt)](https://en.wikipedia.org/wiki/APT_(software)) via:
+Note that [nomer.deb](https://github.com/globalbioticinteractions/nomer/releases/latest/download/nomer.deb) (Debian, Ubuntu, etc) and [preston.rpm](https://github.com/globalbioticinteractions/nomer/latest/download/nomer.rpm) (RedHat, Fedora, etc) packages are also available.
+
+### deb package example
 
 ```console
 sudo apt update
@@ -72,6 +74,15 @@ sudo apt install ./nomer.deb
 ```
 
 To remove type ```sudo apt remove nomer```.
+
+### rpm package example
+
+```console
+curl -L https://github.com/globalbioticinteractions/nomer/releases/latest/download/nomer.rpm > nomer.rpm
+sudo dnf install ./nomer.rpm
+```
+
+To remove type ```sudo dnf remove nomer```.
 
 
 ### Maven, Gradle, SBT
