@@ -18,6 +18,7 @@
         <asciidoctorj.version>2.5.3</asciidoctorj.version>
         <generated.docs.dir>${project.build.outputDirectory}/org/globalbioticinteractions/nomer/docs
         </generated.docs.dir>
+        <cmd.class>org.globalbioticinteractions.nomer.Nomer</cmd.class>
     </properties>
 
     <dependencies>
@@ -127,23 +128,44 @@
                 <version>1.2.1</version>
                 <executions>
                     <execution>
+                        <id>generate-manpages</id>
                         <phase>process-classes</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-classpath</argument>
+                                <classpath/>
+                                <argument>${cmd.class}</argument>
+                                <argument>gen-manpage</argument>
+                                <argument>--outdir</argument>
+                                <argument>${generated.docs.dir}/adoc</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-completion</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Dpicocli.autocomplete.systemExitOnError</argument>
+                                <argument>-cp</argument>
+                                <classpath/>
+                                <argument>picocli.AutoComplete</argument>
+                                <argument>--force</argument><!-- overwrite if exists -->
+                                <argument>--completionScript</argument>
+                                <argument>${project.build.directory}/${project.artifactId}_completion</argument>
+                                <argument>${cmd.class}</argument>
+                            </arguments>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <executable>java</executable>
-                    <arguments>
-                        <argument>-classpath</argument>
-                        <classpath/>
-                        <argument>org.globalbioticinteractions.nomer.Nomer</argument>
-                        <argument>gen-manpage</argument>
-                        <argument>--outdir</argument>
-                        <argument>${generated.docs.dir}/adoc</argument>
-                    </arguments>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.asciidoctor</groupId>
@@ -300,6 +322,10 @@
                             <defineStatements>
                                 <defineStatement>_unpackaged_files_terminate_build 0</defineStatement>
                             </defineStatements>
+                            <requires>
+                                <require>java-headless >= 1.8</require>
+                                <require>bash-completion</require>
+                            </requires>
                             <mappings>
                                 <mapping>
                                     <directory>/opt/${project.artifactId}/lib</directory>
@@ -341,12 +367,20 @@
                                         </source>
                                     </sources>
                                 </mapping>
+                                <mapping>
+                                    <directory>/usr/share/bash-completion/completions</directory>
+                                    <directoryIncluded>false</directoryIncluded>
+                                    <filemode>644</filemode>
+                                    <username>root</username>
+                                    <groupname>root</groupname>
+                                    <sources>
+                                        <source>
+                                            <location>target/${project.artifactId}_completion</location>
+                                            <destination>${project.artifactId}</destination>
+                                        </source>
+                                    </sources>
+                                </mapping>
                             </mappings>
-                            <preinstallScriptlet>
-                                <scriptFile>src/main/rpm/preinstall.sh</scriptFile>
-                                <fileEncoding>utf-8</fileEncoding>
-                                <filter>true</filter>
-                            </preinstallScriptlet>
                         </configuration>
                     </execution>
                 </executions>
