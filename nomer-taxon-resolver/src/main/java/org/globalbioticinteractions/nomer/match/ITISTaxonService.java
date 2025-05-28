@@ -196,73 +196,77 @@ public class ITISTaxonService extends CommonLongTaxonService {
         watch.start();
 
         BTreeMap<String, String> rankIdNameMap = DBMaker.newTempTreeMap();
-
         try {
-            InputStream resource = getCtx().retrieve(getTaxonUnitTypes());
-            if (resource == null) {
-                throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonUnitTypes() + "]");
+
+            try {
+                InputStream resource = getCtx().retrieve(getTaxonUnitTypes());
+                if (resource == null) {
+                    throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonUnitTypes() + "]");
+                }
+                parseTaxonUnitTypes(rankIdNameMap, resource);
+            } catch (IOException e) {
+                throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
             }
-            parseTaxonUnitTypes(rankIdNameMap, resource);
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
-        }
 
-        authorIds = db
-                .createTreeMap(AUTHORS)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .valueSerializer(Serializer.STRING)
-                .make();
+            authorIds = db
+                    .createTreeMap(AUTHORS)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.STRING)
+                    .make();
 
-        try {
-            InputStream resource = getCtx().retrieve(getTaxonAuthors());
-            if (resource == null) {
-                throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonAuthors() + "]");
+            try {
+                InputStream resource = getCtx().retrieve(getTaxonAuthors());
+                if (resource == null) {
+                    throw new PropertyEnricherException("ITIS init failure: failed to find [" + getTaxonAuthors() + "]");
+                }
+                parseAuthors(authorIds, resource);
+            } catch (IOException e) {
+                throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
             }
-            parseAuthors(authorIds, resource);
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
+
+            nodes = db
+                    .createTreeMap(NODES)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.JAVA)
+                    .make();
+
+            childParent = db
+                    .createTreeMap(CHILD_PARENT)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.LONG)
+                    .make();
+
+            name2nodeIds = db
+                    .createTreeMap(NAME_TO_NODE_IDS)
+                    .keySerializer(BTreeKeySerializer.STRING)
+                    .valueSerializer(Serializer.JAVA)
+                    .make();
+
+            try {
+                parseNodes(nodes, childParent, rankIdNameMap, name2nodeIds, authorIds, getCtx().retrieve(getNodesUrl()));
+            } catch (IOException e) {
+                throw new PropertyEnricherException("failed to parse ITIS nodes", e);
+            }
+
+            mergedNodes = db
+                    .createTreeMap(MERGED_NODES)
+                    .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+                    .valueSerializer(Serializer.LONG)
+                    .make();
+
+
+            try {
+                parseMerged(mergedNodes, getCtx().retrieve(getMergedNodesUrl()));
+            } catch (IOException e) {
+                throw new PropertyEnricherException("failed to parse ITIS nodes", e);
+            }
+
+            watch.stop();
+            TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
+            LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
+        } finally {
+            rankIdNameMap.close();
         }
-
-        nodes = db
-                .createTreeMap(NODES)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .valueSerializer(Serializer.JAVA)
-                .make();
-
-        childParent = db
-                .createTreeMap(CHILD_PARENT)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .valueSerializer(Serializer.LONG)
-                .make();
-
-        name2nodeIds = db
-                .createTreeMap(NAME_TO_NODE_IDS)
-                .keySerializer(BTreeKeySerializer.STRING)
-                .valueSerializer(Serializer.JAVA)
-                .make();
-
-        try {
-            parseNodes(nodes, childParent, rankIdNameMap, name2nodeIds, authorIds, getCtx().retrieve(getNodesUrl()));
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS nodes", e);
-        }
-
-        mergedNodes = db
-                .createTreeMap(MERGED_NODES)
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
-                .valueSerializer(Serializer.LONG)
-                .make();
-
-
-        try {
-            parseMerged(mergedNodes, getCtx().retrieve(getMergedNodesUrl()));
-        } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS nodes", e);
-        }
-
-        watch.stop();
-        TaxonCacheService.logCacheLoadStats(watch.getTime(), nodes.size(), LOG);
-        LOG.info("[" + getTaxonomyProvider().name() + "] taxonomy imported.");
     }
 
     private URI getNodesUrl() throws PropertyEnricherException {
