@@ -99,7 +99,7 @@ public class GBIFServiceTest {
         assertThat(enriched.get(PropertyAndValueDictionary.EXTERNAL_ID), is("GBIF:5202927"));
         assertThat(enriched.get(PropertyAndValueDictionary.NAME), is("Ariopsis felis"));
         assertThat(enriched.get(PropertyAndValueDictionary.RANK), is("species"));
-        assertThat(enriched.get(PropertyAndValueDictionary.COMMON_NAMES), containsString("Hardhead catfish"));
+        assertThat(enriched.get(PropertyAndValueDictionary.COMMON_NAMES), containsString("Hardhead Sea Catfish"));
         List<String> commonNames = Arrays.asList(StringUtils.splitByWholeSeparator(enriched.get(PropertyAndValueDictionary.COMMON_NAMES), CharsetConstant.SEPARATOR));
 
         assertThat("expecting no duplicates in " + commonNames, commonNames.size(), is(new HashSet<String>(commonNames).size()));
