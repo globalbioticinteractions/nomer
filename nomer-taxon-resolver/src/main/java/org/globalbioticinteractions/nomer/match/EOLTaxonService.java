@@ -78,6 +78,7 @@ public class EOLTaxonService extends CommonStringTaxonService {
         put("EOLidAnnotations", EOL_ID_ANNOTATIONS);
         put("Landmark", LANDMARK);
         put("authority", AUTHORITY);
+        put("scientificNameAuthorship", AUTHORITY);
     }};
 
     public EOLTaxonService(TermMatcherContext ctx) {
@@ -109,17 +110,16 @@ public class EOLTaxonService extends CommonStringTaxonService {
         String line;
         try {
             Map<String, Integer> headerMap = new TreeMap<>();
+            long lineNumber = 0L;
             while ((line = reader.readLine()) != null) {
-
-                if (headerMap.size() == 0) {
-                    String fixedHeader = StringUtils.replace(line, "taxonID\tsource\tfurtherInformationURL\tacceptedNameUsageID\tparentNameUsageID\tscientificName\thigherClassification\ttaxonRank\ttaxonomicStatustaxonRemarks\tdatasetID\tcanonicalName\tEOLid\tEOLidAnnotations\tLandmark", "taxonID\tsource\tfurtherInformationURL\tacceptedNameUsageID\tparentNameUsageID\tscientificName\thigherClassification\ttaxonRank\ttaxonomicStatus\ttaxonRemarks\tdatasetID\tcanonicalName\tEOLid\tEOLidAnnotations\tLandmark");
-                    String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(fixedHeader, "\t");
-                    for (int i = 0; i < rowValues.length; i++) {
-                        String normalizedLabel = HEADER_NORMALIZER.get(rowValues[i]);
-                        if (StringUtils.isBlank(normalizedLabel)) {
-                            throw new IllegalArgumentException("unmapped name [" + rowValues[i] + "]");
-                        }
-                        headerMap.put(normalizedLabel, i);
+                if (headerMap.isEmpty()) {
+                    if (StringUtils.equals(line, "taxonID\tacceptedNameUsageID\tparentNameUsageID\tscientificName\tcanonicalName\tscientificNameAuthorship\ttaxonRank\ttaxonomicStatus\tdatasetID\tsource\tfurtherInformationURL\teolID\tLandmark\thigherClassification")) {
+                        // possibly version 2.2.6
+                        populatedHeaderMap(line, headerMap);
+                    } else {
+                        // possibly version 2.1
+                        String fixedHeader = StringUtils.replace(line, "taxonID\tsource\tfurtherInformationURL\tacceptedNameUsageID\tparentNameUsageID\tscientificName\thigherClassification\ttaxonRank\ttaxonomicStatustaxonRemarks\tdatasetID\tcanonicalName\tEOLid\tEOLidAnnotations\tLandmark", "taxonID\tsource\tfurtherInformationURL\tacceptedNameUsageID\tparentNameUsageID\tscientificName\thigherClassification\ttaxonRank\ttaxonomicStatus\ttaxonRemarks\tdatasetID\tcanonicalName\tEOLid\tEOLidAnnotations\tLandmark");
+                        populatedHeaderMap(fixedHeader, headerMap);
                     }
                 } else {
                     String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(line, "\t");
@@ -135,6 +135,17 @@ public class EOLTaxonService extends CommonStringTaxonService {
             }
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to parse EOL taxon dump", e);
+        }
+    }
+
+    private static void populatedHeaderMap(String fixedHeader, Map<String, Integer> headerMap) {
+        String[] rowValues = StringUtils.splitByWholeSeparatorPreserveAllTokens(fixedHeader, "\t");
+        for (int i = 0; i < rowValues.length; i++) {
+            String normalizedLabel = HEADER_NORMALIZER.get(rowValues[i]);
+            if (StringUtils.isBlank(normalizedLabel)) {
+                throw new IllegalArgumentException("unmapped name [" + rowValues[i] + "]");
+            }
+            headerMap.put(normalizedLabel, i);
         }
     }
 

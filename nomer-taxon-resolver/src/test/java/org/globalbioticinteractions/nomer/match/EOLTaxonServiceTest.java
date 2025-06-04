@@ -55,7 +55,24 @@ public class EOLTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | subfamily | genus | species"));
     }
 
-    @Ignore("note that the 1.1 version of the Dynamic Hierachy did not provide canonical names for synonyms." +
+    @Test
+    public void enrichByNameVersion226() throws PropertyEnricherException {
+        PropertyEnricher service = createService("taxon226.tsv");
+
+        TaxonImpl taxon = new TaxonImpl("Homo sapiens", null);
+        Map<String, String> enriched = service.enrichFirstMatch(TaxonUtil.taxonToMap(taxon));
+
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPath(), is("Hominidae | Homininae | Homo | Homo sapiens"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getExternalId(), is("EOL:327955"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getName(), is("Homo sapiens"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getAuthorship(), is("Linnaeus, 1758"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("EOL:47049573 | EOL:52231771 | EOL:42268 | EOL:327955"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("family | subfamily | genus | species"));
+        assertThat(TaxonUtil.mapToTaxon(enriched).getPathAuthorships(), is(" |  | Linnaeus, 1758 | Linnaeus, 1758"));
+    }
+
+    @Ignore("note that the 1.1 version of the Dynamic Hierarchy did not provide canonical names for synonyms." +
             "This is why the synonym lookup does not work for the v1.1 style taxon table")
     @Test
     public void enrichBySynonymName() throws PropertyEnricherException {
