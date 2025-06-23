@@ -37,6 +37,11 @@
         </dependency>
         <dependency>
             <groupId>org.eol</groupId>
+            <artifactId>eol-globi-resource-remote</artifactId>
+            <version>${globi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eol</groupId>
             <artifactId>eol-globi-taxon-resolver</artifactId>
             <version>${globi.version}</version>
             <exclusions>

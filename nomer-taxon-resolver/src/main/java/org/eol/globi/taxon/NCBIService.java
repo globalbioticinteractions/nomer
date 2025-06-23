@@ -31,10 +31,6 @@ public class NCBIService extends PropertyEnricherSimple {
 
     private final ResourceService resourceService;
 
-    public NCBIService() {
-        this(new ResourceServiceHTTP(is -> is));
-    }
-
     public NCBIService(ResourceService resourceService) {
         this.resourceService = resourceService;
     }

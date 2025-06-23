@@ -6,7 +6,9 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.ResourceService;
 import org.eol.globi.util.ResourceServiceHTTP;
 import org.eol.globi.util.ResourceServiceLocal;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,12 +25,20 @@ import static org.junit.Assert.assertTrue;
 
 public class WikidataTaxonRankLoaderTest {
 
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
+
+
     @Test
     public void importFromWikidataInternet() throws IOException, URISyntaxException {
         AtomicInteger counter = new AtomicInteger(0);
         URI req = WikidataTaxonRankLoader.createWikidataTaxonRankQuery();
 
-        WikidataTaxonRankLoader.importTaxonRanks(taxon -> counter.incrementAndGet(), new ResourceServiceHTTP(is -> is), req);
+        WikidataTaxonRankLoader.importTaxonRanks(
+                taxon -> counter.incrementAndGet(),
+                new ResourceServiceHTTP(is -> is, folder.newFolder("tmpCacheDir")),
+                req
+        );
         assertTrue(counter.get() > 10);
     }
 

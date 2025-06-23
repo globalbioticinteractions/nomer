@@ -38,7 +38,7 @@ public class ResourceServiceLocationBased extends ResourceServiceReadOnly {
         String msg = "caching " + location;
         LOG.info(msg + "...");
 
-        ResourceService resourceService = new ResourceServiceLocalAndRemote(is -> is);
+        ResourceService resourceService = new ResourceServiceLocalAndRemote(is -> is, cachedFile);
         try (OutputStream output =
                 ResourceServiceUtil.getOutputStreamForCache(cachedFile)) {
             IOUtils.copyLarge(resourceService.retrieve(resource), output);

@@ -48,7 +48,7 @@ public class TermMatchEnsembleFactory {
                 add(new ITISTaxonService(ctx));
                 add(new IndexFungorumTaxonService(ctx));
                 add(new GBIFTaxonService(ctx));
-                add(new NCBIService());
+                add(new NCBIService(ctx));
                 add(new BOLDService());
                 add(new EOLTaxonService(ctx));
                 add(new GBIFService());

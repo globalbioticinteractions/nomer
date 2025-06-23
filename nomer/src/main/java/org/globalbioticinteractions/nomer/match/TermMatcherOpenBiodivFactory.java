@@ -16,6 +16,7 @@ import org.globalbioticinteractions.nomer.util.UUIDUtil;
 import org.globalbioticinteractions.util.SparqlClient;
 import org.globalbioticinteractions.util.SparqlClientImpl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public class TermMatcherOpenBiodivFactory implements TermMatcherFactory {
                     if (UUIDUtil.isaUUID(term.getId())) {
                         try {
                             SparqlClient sparqlClient = new SparqlClientImpl(
-                                    resourceName -> new ResourceServiceHTTP(in -> in).retrieve(resourceName),
+                                    resourceName -> new ResourceServiceHTTP(in -> in, new File(ctx.getCacheDir())).retrieve(resourceName),
                                     PropertyAndValueDictionary.SPARQL_ENDPOINT_OPEN_BIODIV
                             );
 
