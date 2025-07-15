@@ -62,7 +62,13 @@ sudo sh -c '(curl -L https://github.com/globalbioticinteractions/nomer/releases/
 
 With this, you can now run things like ```nomer version``` instead of ```java -jar [some long dir path]/nomer.jar version``` . 
 
-Note that [nomer.deb](https://github.com/globalbioticinteractions/nomer/releases/latest/download/nomer.deb) (Debian, Ubuntu, etc) and [preston.rpm](https://github.com/globalbioticinteractions/nomer/latest/download/nomer.rpm) (RedHat, Fedora, etc) packages are also available.
+Note that aside from a [Homebrew formula](https://github.com/globalbioticinteractions/homebrew-globi/blob/main/Formula/nomer.rb) (Mac OS), [nomer.deb](https://github.com/globalbioticinteractions/nomer/releases/latest/download/nomer.deb) (Debian, Ubuntu, etc) and [preston.rpm](https://github.com/globalbioticinteractions/nomer/latest/download/nomer.rpm) (RedHat, Fedora, etc) packages are also available.
+
+### homebrew install 
+
+```console
+brew install globalbioticinteractions/globi/nomer
+```
 
 ### deb package example
 
