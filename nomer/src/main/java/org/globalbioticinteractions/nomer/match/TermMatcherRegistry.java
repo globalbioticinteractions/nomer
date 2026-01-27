@@ -54,7 +54,8 @@ public class TermMatcherRegistry {
             "wfo",
             "ott",
             "orcid-web",
-            "mdd"));
+            "mdd",
+            "moure"));
 
     static final Map<String, String> MATCH_NAME_MAPPER = Collections.unmodifiableMap(new TreeMap<String, String>() {
         {
@@ -103,6 +104,7 @@ public class TermMatcherRegistry {
             put("worms", "worms");
             put("hesperomys", "hesperomys");
             put("pbdb", "pbdb");
+            put("moure", "moure");
         }
     });
 
@@ -144,6 +146,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherMDDFactory());
         add(new TermMatcherWorldRegisterOfMarineSpeciesFactory());
         add(new TermMatcherWikidataTaxonFactory());
+        add(new TermMatcherMoureCatalogueFactory());
         // disabled until data update is available see https://github.com/globalbioticinteractions/nomer/issues/144#issuecomment-1405187944
         //add(new TermMatcherHesperomysFactory());
     }});
