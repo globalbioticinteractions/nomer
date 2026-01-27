@@ -3,7 +3,7 @@ package org.globalbioticinteractions.nomer.match;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
-public class TermMatcherMooreCatalogueFactory implements TermMatcherFactory {
+public class TermMatcherMoureCatalogueFactory implements TermMatcherFactory {
 
 	@Override
 	public String getDescription() {
