@@ -64,7 +64,8 @@ public class TermMatcherRegistryTest {
 // hesperomys disabled until new data export is available
 // also see https://github.com/globalbioticinteractions/nomer/issues/144#issuecomment-1405187944
 //            "hesperomys",
-            "mdd"
+            "mdd",
+            "moure"
     ));
 
     @Test(expected = IllegalArgumentException.class)
