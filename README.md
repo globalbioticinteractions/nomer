@@ -327,6 +327,7 @@ Result as of v0.5.15 (Feb 2025) is formatted as a table below:
 | wikidata-web | uses wikidata to cross-walk taxon id across taxonomies |
 | worms | Lookup World Register of Marine Species by name or WORMS:* prefixed ids using offline-enabled database dump |
 | worms-web | Lookup taxon in WoRMS by name or by id with WORMS:* prefix. |
+| moure | Lookup Moure Neotropical Bees Catalogue taxon by name or id using offline-enabled database dump |
 
 
 
