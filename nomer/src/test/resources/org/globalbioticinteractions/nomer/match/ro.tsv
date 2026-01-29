@@ -53,6 +53,10 @@ http://purl.obolibrary.org/obo/RO_0002640	intracellular endoparasite of	A sub-re
 http://purl.obolibrary.org/obo/RO_0002641	has intracellular endoparasite	inverse of intracellular endoparasite of
 http://purl.obolibrary.org/obo/RO_0002802	reservoir host of	A relation between a host organism and a hosted organism in which the hosted organism naturally occurs in an indefinitely maintained reservoir provided by the host.
 http://purl.obolibrary.org/obo/RO_0002803	has reservoir host	inverse of reservoir host of
+http://purl.obolibrary.org/obo/RO_0002804	ectomycorrhizal host of	x is an ectomycorrhizal host of y if and only if x is a plant (Plantae) whose roots form an intercellular interface (aka Hartig net) with fungus (Fungi) y. This interface consists of highly branched hyphae forming a latticework between epidermal and cortical root cells.
+http://purl.obolibrary.org/obo/RO_0002805	has ectomycorrhizal host	inverse of ectomycorrhizal host of
+http://purl.obolibrary.org/obo/RO_0002806	arbuscular mycorrhizal host of	x is an arbuscular mycorrhizal host of y if and only if x is a vascular plant (Plantae) whose cortical cells of the roots are penetrated by fungus (Fungi) y and form arbuscules.
+http://purl.obolibrary.org/obo/RO_0002807	has arbuscular mycorrhizal host	inverse of arbuscular mycorrhizal host of
 http://purl.obolibrary.org/obo/RO_0008501	epiphyte of	An interaction relationship wherein a plant or algae is living on the outside surface of another plant.
 http://purl.obolibrary.org/obo/RO_0008502	has epiphyte	inverse of epiphyte of
 http://purl.obolibrary.org/obo/RO_0008503	kleptoparasite of	A sub-relation of parasite of in which a parasite steals resources from another organism, usually food or nest material
