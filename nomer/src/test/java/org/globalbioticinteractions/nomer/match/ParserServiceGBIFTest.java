@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
@@ -58,6 +59,48 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
                 assertThat(taxon.getRank(), Is.is("variety"));
                 assertThat(taxon.getPath(), Is.is("Andrena | erberi | sanguiniventris"));
                 assertThat(taxon.getPathNames(), Is.is("genus | specificEpithet | infraspecificEpithet"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
+    @Test
+    public void nameWithSp() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Abia sp.")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Abia sp."));
+                assertThat(taxon.getName(), Is.is("Abia sp."));
+                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getRank(), Is.is("species"));
+                assertThat(taxon.getPath(), Is.is("Abia"));
+                assertThat(taxon.getPathNames(), Is.is("genus"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
+    @Test
+    public void nameWithSsp() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Abia ssp.")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Abia ssp."));
+                assertThat(taxon.getName(), Is.is("Abia subsp."));
+                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getRank(), Is.is("subspecies"));
+                assertThat(taxon.getPath(), Is.is("Abia"));
+                assertThat(taxon.getPathNames(), Is.is("genus"));
                 foundMatch.set(true);
             }
         });
