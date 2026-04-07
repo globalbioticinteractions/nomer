@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TermMatcherWikidataFactoryTest {
+public class TermMatcherWikidataFactoryIT {
 
     @Test
     public void matchByNCBITaxonId() throws PropertyEnricherException {
