@@ -104,6 +104,7 @@ public class TermMatcherRegistry {
             put("worms", "worms");
             put("hesperomys", "hesperomys");
             put("pbdb", "pbdb");
+            put("irmng", "irmng");
             put("moure", "moure");
         }
     });
@@ -134,6 +135,7 @@ public class TermMatcherRegistry {
         add(new TermMatcherDiscoverLifeTaxonFactory());
         add(new TermMatcherITISFactory());
         add(new TermMatcherPBDBFactory());
+        add(new TermMatcherIIRMNGFactory());
         add(new TermMatcherIndexFungorumFactory());
         add(new TermMatcherCatalogueOfLifeFactory());
         add(new TermMatcherWorldOfFloraOnlineFactory());

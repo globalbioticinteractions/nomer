@@ -65,6 +65,7 @@ public class TermMatcherRegistryTest {
 // also see https://github.com/globalbioticinteractions/nomer/issues/144#issuecomment-1405187944
 //            "hesperomys",
             "mdd",
+            "irmng",
             "moure"
     ));
 

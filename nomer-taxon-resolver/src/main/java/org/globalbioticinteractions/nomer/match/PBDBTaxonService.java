@@ -146,7 +146,7 @@ public class PBDBTaxonService extends CommonLongTaxonService {
                 }
             }
         } catch (IOException e) {
-            throw new PropertyEnricherException("failed to parse ITIS taxon unit types", e);
+            throw new PropertyEnricherException("failed to parse PBDB taxon unit types", e);
         }
     }
 
