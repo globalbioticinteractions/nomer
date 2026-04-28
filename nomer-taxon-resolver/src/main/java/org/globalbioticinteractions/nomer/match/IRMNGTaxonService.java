@@ -5,9 +5,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
@@ -26,11 +28,38 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+
+import static org.eol.globi.domain.NameType.HAS_UNCHECKED_NAME;
 
 public class IRMNGTaxonService extends CommonLongTaxonService {
     private static final Logger LOG = LoggerFactory.getLogger(IRMNGTaxonService.class);
+    public static final List<String> CHECKED_NAMES = Arrays.asList("accepted", "unaccepted");
+    public static final TreeMap<String, NameType> statusMap = new TreeMap<String, NameType>() {{
+        put("accepted", NameType.HAS_ACCEPTED_NAME);
+        put("alternative representation", NameType.HAS_ACCEPTED_NAME);
+        put("interim unpublished", NameType.HAS_UNCHECKED_NAME);
+        put("junior homonym", NameType.HAS_UNCHECKED_NAME);
+        put("junior objective synonym", NameType.HAS_ACCEPTED_NAME);
+        put("junior subjective synonym", NameType.HAS_ACCEPTED_NAME);
+        put("misapplication", NameType.HAS_ACCEPTED_NAME);
+        put("misspelling - incorrect original spelling", NameType.HAS_ACCEPTED_NAME);
+        put("misspelling - incorrect subsequent spelling", NameType.HAS_ACCEPTED_NAME);
+        put("nomen dubium", NameType.HAS_UNCHECKED_NAME);
+        put("nomen nudum", NameType.HAS_UNCHECKED_NAME);
+        put("nomen oblitum", NameType.HAS_UNCHECKED_NAME);
+        put("taxon inquirendum", NameType.HAS_UNCHECKED_NAME);
+        put("temporary name", NameType.HAS_UNCHECKED_NAME);
+        put("unaccepted", NameType.HAS_ACCEPTED_NAME);
+        put("unassessed", NameType.HAS_UNCHECKED_NAME);
+        put("unavailable name", NameType.HAS_UNCHECKED_NAME);
+        put("uncertain", NameType.HAS_UNCHECKED_NAME);
+        put("unjustified emendation", NameType.HAS_UNCHECKED_NAME);
+        put(NameType.HAS_UNCHECKED_NAME.name(), NameType.HAS_UNCHECKED_NAME);
+    }};
 
     public IRMNGTaxonService(TermMatcherContext ctx) {
         super(ctx);
@@ -54,18 +83,18 @@ public class IRMNGTaxonService extends CommonLongTaxonService {
                 String providedName = labeledTSVParser.getValueByLabel("scientificName");
                 String providedRank = StringUtils.lowerCase(labeledTSVParser.getValueByLabel("taxonRank"));
                 String providedParentId = getTaxonID(labeledTSVParser.getValueByLabel("parentNameUsageID"));
+                String status = labeledTSVParser.getValueByLabel("taxonomicStatus");
+                String statusId = labeledTSVParser.getValueByLabel("nomenclaturalStatus");
                 Taxon providedTaxon = new TaxonImpl(
                         providedName,
                         TaxonomyProvider.INTERIM_REGISTER_OF_MARINE_AND_NONMARINE_GENERA.getIdPrefix() + providedId
                 );
+                NameType statusTerm = statusMap.getOrDefault(status, HAS_UNCHECKED_NAME);
+
+                providedTaxon.setStatus(new TermImpl(statusTerm.name(), statusTerm.name()));
                 providedTaxon.setRank(providedRank);
 
                 String acceptedId = getTaxonID(labeledTSVParser.getValueByLabel("acceptedNameUsageID"));
-                String acceptedName = labeledTSVParser.getValueByLabel("acceptedNameUsage");
-                Taxon acceptedTaxon = new TaxonImpl(
-                        acceptedName,
-                        acceptedId
-                );
 
                 String authorship = labeledTSVParser.getValueByLabel("scientificNameAuthorship");
 
@@ -82,7 +111,7 @@ public class IRMNGTaxonService extends CommonLongTaxonService {
                         );
                     }
 
-                    if (!StringUtils.equals(providedId, acceptedId)) {
+                    if (StringUtils.isNotBlank(acceptedId) && !StringUtils.equals(providedId, acceptedId)) {
                         mergedNodes.put(Long.parseLong(providedId), Long.parseLong(acceptedId));
                     }
                 }

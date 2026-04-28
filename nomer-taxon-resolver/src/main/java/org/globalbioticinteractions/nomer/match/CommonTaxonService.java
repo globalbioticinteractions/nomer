@@ -28,6 +28,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import static org.eol.globi.domain.NameType.HAS_UNCHECKED_NAME;
+
 public abstract class CommonTaxonService<T> extends PropertyEnricherSimple implements TermMatcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(CommonTaxonService.class);
@@ -156,7 +158,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
 
     private static boolean isUnchecked(Taxon taxon) {
         return taxon.getStatus() != null
-                && NameType.HAS_UNCHECKED_NAME.name()
+                && HAS_UNCHECKED_NAME.name()
                 .equals(taxon.getStatus().getName());
     }
 
@@ -281,7 +283,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
         for (Map<String, String> enrichedProperty : enrichedProperties) {
             Taxon taxon = TaxonUtil.mapToTaxon(enrichedProperty);
             if (isUnchecked(taxon)) {
-                type = NameType.HAS_UNCHECKED_NAME;
+                type = HAS_UNCHECKED_NAME;
             }
             listener.foundTaxonForTerm(
                     null,
@@ -354,7 +356,7 @@ public abstract class CommonTaxonService<T> extends PropertyEnricherSimple imple
 
     private NameType uncheckedOrAccepted(Taxon resolvedTaxon) {
         return isUnchecked(resolvedTaxon)
-                ? NameType.HAS_UNCHECKED_NAME
+                ? HAS_UNCHECKED_NAME
                 : NameType.HAS_ACCEPTED_NAME;
     }
 
