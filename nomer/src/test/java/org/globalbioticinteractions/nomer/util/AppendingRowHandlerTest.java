@@ -18,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -49,7 +50,7 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCache() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        applyMatcher(is, os, MatchTestUtil.createTaxonCacheService());
+        applyMatcher(is, os, MatchTestUtil.createTaxonCacheService(new File("bla")));
         String[] lines = os.toString().split("\n");
         assertThat(lines[0], startsWith("EOL:327955\tHomo sapiens\tSAME_AS\tEOL:327955\tHomo sapiens\tSpecies\tإنسان @ar | Insan @az | човешки @bg | মানবীয় @bn | Ljudsko biće @bs | Humà @ca | Muž @cs | Menneske @da | Mensch @de | ανθρώπινο ον @el | Humans @en | Humano @es | Gizakiaren @eu | Ihminen @fi | Homme @fr | Mutum @ha | אנושי @he | մարդու @hy | Umano @it | ადამიანის @ka | Homo @la | žmogaus @lt | Om @mo | Mens @nl | Òme @oc | Om @ro | Человек разумный современный @ru | Qenie Njerëzore @sq | மனிதன் @ta | మానవుడు @te | Aadmi @ur | umuntu @zu |\tAnimalia | Bilateria | Deuterostomia | Chordata | Vertebrata | Gnathostomata | Tetrapoda | Mammalia | Theria | Eutheria | Primates | Haplorrhini | Simiiformes | Hominoidea | Hominidae | Homininae | Homo | Homo sapiens\tEOL:1 | EOL:3014411 | EOL:8814528 | EOL:694 | EOL:2774383 | EOL:12094272 | EOL:4712200 | EOL:1642 | EOL:57446 | EOL:2844801 | EOL:1645 | EOL:10487985 | EOL:10509493 | EOL:4529848 | EOL:1653 | EOL:10551052 | EOL:42268 | EOL:327955\tkingdom | subkingdom | infrakingdom | division | subdivision | infraphylum | superclass | class | subclass | infraclass | order | suborder | infraorder | superfamily | family | subfamily | genus | species\thttp://eol.org/pages/327955\thttp://media.eol.org/content/2014/08/07/23/02836_98_68.jpg"));
         assertThat(lines.length, Is.is(2));
@@ -61,7 +62,7 @@ public class AppendingRowHandlerTest {
     public void resolveTaxonCacheMatchFirstLine() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        applyMatcher(is, os, MatchTestUtil.createTaxonCacheService());
+        applyMatcher(is, os, MatchTestUtil.createTaxonCacheService(new File("bla")));
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("EOL:1276240\tHomo sapiens\tSAME_AS\tEOL:1276240\tAnas crecca carolinensis"));
@@ -73,7 +74,7 @@ public class AppendingRowHandlerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         MatchUtil.apply(is, new AppendingRowHandler(
                 os,
-                MatchTestUtil.createTaxonCacheService(),
+                MatchTestUtil.createTaxonCacheService(new File("bla")),
                 new TestTermMatcherContextDefault() {
                     @Override
                     public Map<Integer, String> getInputSchema() {
@@ -94,7 +95,7 @@ public class AppendingRowHandlerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         MatchUtil.apply(is, new AppendingRowHandler(
                 os,
-                MatchTestUtil.createTaxonCacheService(),
+                MatchTestUtil.createTaxonCacheService(new File("bla")),
                 new TestTermMatcherContextDefault() {
                     @Override
                     public Map<Integer, String> getInputSchema() {
@@ -122,7 +123,7 @@ public class AppendingRowHandlerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         MatchUtil.apply(is, new AppendingRowHandler(
                 os,
-                MatchTestUtil.createTaxonCacheService(),
+                MatchTestUtil.createTaxonCacheService(new File("bla")),
                 new TestTermMatcherContextDefault() {
                     @Override
                     public Map<Integer, String> getInputSchema() {

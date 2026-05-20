@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ReplacingRowHandler implements RowHandler {
+    public static final String MATCH_TYPE = "matchType";
     private final PrintStream p;
     private final TermMatcherContext ctx;
     private TermMatcher termMatcher;
@@ -91,7 +92,7 @@ public class ReplacingRowHandler implements RowHandler {
             if (!NameType.NONE.equals(nameType)) {
                 putAll(TaxonUtil.taxonToMap(otherTaxon));
             }
-            put("matchType", nameType.name());
+            put(MATCH_TYPE, nameType.name());
         }};
     }
 

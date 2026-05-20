@@ -1,13 +1,8 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.eol.globi.service.CacheService;
 import org.eol.globi.service.CacheServiceUtil;
-import org.eol.globi.service.PropertyEnricherException;
-import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.ResourceServiceLocal;
-import org.globalbioticinteractions.nomer.match.TermMatcherCacheFactory;
-import org.globalbioticinteractions.nomer.util.MatchTestUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.globalbioticinteractions.nomer.util.TermValidator;
 import org.globalbioticinteractions.nomer.util.TermValidatorFactory;

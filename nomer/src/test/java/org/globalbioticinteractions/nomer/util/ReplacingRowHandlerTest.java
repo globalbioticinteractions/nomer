@@ -1,6 +1,7 @@
 package org.globalbioticinteractions.nomer.util;
 
 import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
@@ -14,9 +15,13 @@ import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.ResourceServiceLocal;
 import org.globalbioticinteractions.nomer.match.MatchUtil;
 import org.hamcrest.core.Is;
+import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -29,22 +34,29 @@ import static org.hamcrest.core.StringStartsWith.startsWith;
 
 public class ReplacingRowHandlerTest {
 
+    @Rule
+    public TemporaryFolder tmpDir = new TemporaryFolder();
+
     @Test
     public void resolveTaxonCache() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
+        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService(getCacheDir());
         MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new TestTermMatcherContextDefault()));
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("EOL:327955\tHomo sapiens"));
     }
 
+    private @NonNull File getCacheDir() throws IOException {
+        return tmpDir.newFolder();
+    }
+
     @Test
     public void resolveTaxonCacheAuthorshipNotProvided() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
+        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService(getCacheDir());
         MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
@@ -65,7 +77,7 @@ public class ReplacingRowHandlerTest {
     public void resolveTaxonCacheAuthorshipEmpty() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens\t", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
+        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService(getCacheDir());
         MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
@@ -86,7 +98,7 @@ public class ReplacingRowHandlerTest {
     public void resolveTaxonCacheAuthorshipPopulated() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens\tDuck, 1951", StandardCharsets.UTF_8);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService();
+        final TermMatcher matcher = MatchTestUtil.createTaxonCacheService(getCacheDir());
         MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
             @Override
             public Map<Integer, String> getInputSchema() {
@@ -194,6 +206,81 @@ public class ReplacingRowHandlerTest {
         assertThat(os.toString(), Is.is("\t| Animalia\n"));
     }
 
+    @Ignore
+    @Test
+    public void replaceMultipleTaxonMatchWithFirstNotNONE() throws IOException, PropertyEnricherException {
+        String pathPlantae = "Eukaryota   Plantae   Pteridobiotina   Tracheophyta   Magnoliopsida   Asterales   Asteraceae   Asteroideae   Gnaphalieae   Antennariinae   Lucilia";
+        assertReplaceOutput("Lucilia\tPlantae\t", "Lucilia\t" + pathPlantae + "\tSAME_AS\n");
+
+        String pathAnimalia = "Eukaryota   Animalia   Arthropoda   Hexapoda   Insecta   Diptera   Calliphoridae   Luciliinae   Lucilia";
+        assertReplaceOutput("Lucilia\tAnimalia\t", "Lucilia\t" + pathAnimalia + "\tSAME_AS\n");
+    }
+
+    @Ignore
+    @Test
+    public void replaceHigherOrderMismatchWithNONE() throws IOException, PropertyEnricherException {
+        assertReplaceOutput("Lucilia\tFOO\t", "Lucilia\tFOO\tNONE\n");
+    }
+
+    @Ignore
+    @Test
+    public void replaceMismatchWithNONE() throws IOException, PropertyEnricherException {
+        assertReplaceOutput("BAR\tFOO\t", "BAR\t\tNONE\n");
+    }
+
+    private void assertReplaceOutput(String input, String expectedOutput) throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream(input, StandardCharsets.UTF_8);
+        TermMatcherContext ctx = new TestTermMatcherContextDefault() {
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.NAME);
+                    put(1, PropertyAndValueDictionary.PATH);
+                    put(2, ReplacingRowHandler.MATCH_TYPE);
+                }};
+            }
+
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.NAME);
+                    put(1, PropertyAndValueDictionary.PATH);
+                    put(2, ReplacingRowHandler.MATCH_TYPE);
+                }};
+            }
+        };
+        String termResource = "classpath:/org/eol/globi/taxon/taxonCacheLucilia.tsv";
+        String taxonMapResource = "classpath:/org/eol/globi/taxon/taxonMapLucilia.tsv";
+        ByteArrayOutputStream os = replace(is, ctx, termResource, taxonMapResource);
+        assertThat(os.toString(), Is.is(expectedOutput));
+    }
+
+    @Ignore
+    @Test
+    public void replaceMultipleTaxonMatchWithFirstSameAs() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("Lucilia\tPlantae\t", StandardCharsets.UTF_8);
+        TermMatcherContext ctx = new TestTermMatcherContextDefault(tmpDir.getRoot()) {
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.NAME);
+                    put(1, PropertyAndValueDictionary.PATH);
+                }};
+            }
+
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.NAME);
+                    put(1, PropertyAndValueDictionary.PATH);
+                    put(2, ReplacingRowHandler.MATCH_TYPE);
+                }};
+            }
+        };
+        ByteArrayOutputStream os = replace(is, ctx);
+        assertThat(os.toString(), Is.is("Lucilia\tsome | path\tHAS_ACCEPTED_NAME\n"));
+    }
+
     @Test
     public void resolveTaxonCacheMatchFirstLineByIdOnly() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("EOL:1276240\tJohnny Bravo", StandardCharsets.UTF_8);
@@ -289,10 +376,17 @@ public class ReplacingRowHandlerTest {
     }
 
     private ByteArrayOutputStream replace(InputStream is, TermMatcherContext ctx) throws IOException, PropertyEnricherException {
+        String termResource = "classpath:/org/eol/globi/taxon/taxonCache.tsv";
+        String taxonMapResource = "classpath:/org/eol/globi/taxon/taxonMap.tsv";
+        return replace(is, ctx, termResource, taxonMapResource);
+    }
+
+    private @NonNull ByteArrayOutputStream replace(InputStream is, TermMatcherContext ctx, String termResource, String taxonMapResource) throws IOException, PropertyEnricherException {
         final TermMatcher matcher = new TaxonCacheService(
-                "classpath:/org/eol/globi/taxon/taxonCache.tsv",
-                "classpath:/org/eol/globi/taxon/taxonMap.tsv",
-                new ResourceServiceLocal());
+                termResource,
+                taxonMapResource,
+                new ResourceServiceLocal(),
+                tmpDir.newFolder());
         return replace(is, ctx, matcher);
     }
 
