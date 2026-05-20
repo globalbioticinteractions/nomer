@@ -28,20 +28,6 @@ public class WikidataTaxonRankLoaderTest {
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
 
-
-    @Test
-    public void importFromWikidataInternet() throws IOException, URISyntaxException {
-        AtomicInteger counter = new AtomicInteger(0);
-        URI req = WikidataTaxonRankLoader.createWikidataTaxonRankQuery();
-
-        WikidataTaxonRankLoader.importTaxonRanks(
-                taxon -> counter.incrementAndGet(),
-                new ResourceServiceHTTP(is -> is, folder.newFolder("tmpCacheDir")),
-                req
-        );
-        assertTrue(counter.get() > 10);
-    }
-
     @Test
     public void importFromWikidataContentBased() throws IOException, URISyntaxException {
         AtomicInteger counter = new AtomicInteger(0);
