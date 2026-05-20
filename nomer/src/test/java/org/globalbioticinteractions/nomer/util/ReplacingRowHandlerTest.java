@@ -8,6 +8,7 @@ import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TermMatcherHierarchical;
 import org.eol.globi.taxon.GlobalNamesService2;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatchListener;
@@ -206,26 +207,23 @@ public class ReplacingRowHandlerTest {
         assertThat(os.toString(), Is.is("\t| Animalia\n"));
     }
 
-    @Ignore
     @Test
     public void replaceMultipleTaxonMatchWithFirstNotNONE() throws IOException, PropertyEnricherException {
-        String pathPlantae = "Eukaryota   Plantae   Pteridobiotina   Tracheophyta   Magnoliopsida   Asterales   Asteraceae   Asteroideae   Gnaphalieae   Antennariinae   Lucilia";
+        String pathPlantae = "Eukaryota | Plantae | Pteridobiotina | Tracheophyta | Magnoliopsida | Asterales | Asteraceae | Asteroideae | Gnaphalieae | Antennariinae | Lucilia";
         assertReplaceOutput("Lucilia\tPlantae\t", "Lucilia\t" + pathPlantae + "\tSAME_AS\n");
 
-        String pathAnimalia = "Eukaryota   Animalia   Arthropoda   Hexapoda   Insecta   Diptera   Calliphoridae   Luciliinae   Lucilia";
+        String pathAnimalia = "Eukaryota | Animalia | Arthropoda | Hexapoda | Insecta | Diptera | Calliphoridae | Luciliinae | Lucilia";
         assertReplaceOutput("Lucilia\tAnimalia\t", "Lucilia\t" + pathAnimalia + "\tSAME_AS\n");
     }
 
-    @Ignore
     @Test
     public void replaceHigherOrderMismatchWithNONE() throws IOException, PropertyEnricherException {
         assertReplaceOutput("Lucilia\tFOO\t", "Lucilia\tFOO\tNONE\n");
     }
 
-    @Ignore
     @Test
     public void replaceMismatchWithNONE() throws IOException, PropertyEnricherException {
-        assertReplaceOutput("BAR\tFOO\t", "BAR\t\tNONE\n");
+        assertReplaceOutput("BAR\tFOO\t", "BAR\tFOO\tNONE\n");
     }
 
     private void assertReplaceOutput(String input, String expectedOutput) throws IOException, PropertyEnricherException {
@@ -251,11 +249,20 @@ public class ReplacingRowHandlerTest {
         };
         String termResource = "classpath:/org/eol/globi/taxon/taxonCacheLucilia.tsv";
         String taxonMapResource = "classpath:/org/eol/globi/taxon/taxonMapLucilia.tsv";
-        ByteArrayOutputStream os = replace(is, ctx, termResource, taxonMapResource);
+        final TermMatcher matcher = new TaxonCacheService(
+                termResource,
+                taxonMapResource,
+                new ResourceServiceLocal(),
+                tmpDir.newFolder()
+        );
+        ByteArrayOutputStream os = replace(
+                is,
+                ctx,
+                new TermMatcherHierarchical(matcher)
+        );
         assertThat(os.toString(), Is.is(expectedOutput));
     }
 
-    @Ignore
     @Test
     public void replaceMultipleTaxonMatchWithFirstSameAs() throws IOException, PropertyEnricherException {
         InputStream is = IOUtils.toInputStream("Lucilia\tPlantae\t", StandardCharsets.UTF_8);
@@ -278,7 +285,7 @@ public class ReplacingRowHandlerTest {
             }
         };
         ByteArrayOutputStream os = replace(is, ctx);
-        assertThat(os.toString(), Is.is("Lucilia\tsome | path\tHAS_ACCEPTED_NAME\n"));
+        assertThat(os.toString(), Is.is("Lucilia\tEukaryota | Animalia | Arthropoda | Hexapoda | Insecta | Diptera | Calliphoridae | Luciliinae | Lucilia\tHOMONYM_OF\n"));
     }
 
     @Test

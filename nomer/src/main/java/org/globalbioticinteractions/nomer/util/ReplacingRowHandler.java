@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.util;
 
+import it.unimi.dsi.fastutil.Pair;
 import org.apache.commons.lang.StringUtils;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
@@ -22,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -69,15 +72,13 @@ public class ReplacingRowHandler implements RowHandler {
                 if (indexType.getKey() < rowMerged.length) {
                     List<String> values = new ArrayList<>(taxonMaps.size());
                     for (Map<String, String> taxonMap : taxonMaps) {
-
                         Taxon taxon = TaxonUtil.mapToTaxon(taxonMap);
-
                         String taxonPropertyValue = AppenderUtil.valueForTaxonPropertyName2(taxon, taxonMap, taxonPropertyName);
                         values.add(taxonPropertyValue);
                     }
                     rowMerged[indexType.getKey()] = values
                             .stream()
-                            .map(x -> StringUtils.replaceChars(x, '|', ' '))
+                            //.map(x -> StringUtils.replaceChars(x, '|', ' '))
                             .collect(Collectors.joining(CharsetConstant.SEPARATOR));
 
                 }
@@ -105,17 +106,32 @@ public class ReplacingRowHandler implements RowHandler {
         for (Map.Entry<Integer, Map<String, String>> taxonMapEntry : taxonProvided.entrySet()) {
             Taxon providedTaxon = TaxonUtil.mapToTaxon(taxonMapEntry.getValue());
             List<Term> terms = Collections.singletonList(providedTaxon);
-            AtomicBoolean replacedOne = new AtomicBoolean(false);
+            AtomicBoolean multipleNotNone = new AtomicBoolean(false);
+            AtomicReference<Taxon> lastNone = new AtomicReference<Taxon>(providedTaxon);
+            AtomicReference<Pair<NameType, Taxon>> lastNotNone = new AtomicReference<>();
             termMatcher.match(terms, (id, nameToBeReplaced, nameType, resolvedTaxon) -> {
-                if (!replacedOne.get()) {
-                    replacedOne.set(true);
-                    Taxon taxonToBeReplaced = new TaxonImpl(nameToBeReplaced.getName(), nameToBeReplaced.getId());
-                    taxonReplaced.put(
-                            taxonMapEntry.getKey(),
-                            mergeTaxon(taxonToBeReplaced, nameType, resolvedTaxon)
-                    );
+                if (NameType.NONE.equals(nameType)) {
+                    lastNone.set(resolvedTaxon);
+                } else {
+                    if (lastNotNone.get() != null && !multipleNotNone.get()) {
+                        multipleNotNone.set(true);
+                    }
+                    lastNotNone.set(Pair.of(nameType, resolvedTaxon));
                 }
             });
+            Pair<NameType, Taxon> nameTypeTaxonPair = lastNotNone.get();
+            Map<String, String> merged;
+            if (nameTypeTaxonPair != null) {
+                NameType type = multipleNotNone.get() ? NameType.HOMONYM_OF : nameTypeTaxonPair.key();
+                merged = mergeTaxon(providedTaxon, type, lastNotNone.get().value());
+            } else {
+                merged = mergeTaxon(providedTaxon, NameType.NONE, lastNone.get());
+            }
+
+            taxonReplaced.put(
+                    taxonMapEntry.getKey(),
+                    merged
+            );
         }
 
         String[] lineMerged = mergeTaxonMapsIntoRow(row, taxonReplaced.values(), ctx.getOutputSchema());
