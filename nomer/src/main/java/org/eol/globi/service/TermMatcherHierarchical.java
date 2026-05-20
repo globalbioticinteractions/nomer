@@ -1,7 +1,6 @@
 package org.eol.globi.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.eol.globi.data.CharsetConstant;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
@@ -12,12 +11,11 @@ import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.tool.TermRequestImpl;
 import org.eol.globi.util.CSVTSVUtil;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.LongSupplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -105,8 +103,8 @@ public class TermMatcherHierarchical implements TermMatcher {
                 String[] providedNames = CSVTSVUtil.splitPipes(provided);
                 String[] resolvedNames = CSVTSVUtil.splitPipes(resolved);
                 if (providedNames != null && resolvedNames != null) {
-                    List<String> providedNamesTrimmed = filterList(providedNames);
-                    List<String> resolvedNamesTrimmed = filterList(resolvedNames);
+                    Set<String> providedNamesTrimmed = filterList(providedNames);
+                    Set<String> resolvedNamesTrimmed = filterList(resolvedNames);
                     namesMatch = resolvedNamesTrimmed.containsAll(providedNamesTrimmed);
                 } else if (providedNames == null) {
                     namesMatch = true;
@@ -114,12 +112,12 @@ public class TermMatcherHierarchical implements TermMatcher {
                 return namesMatch;
             }
 
-            private List<String> filterList(String[] providedNames) {
+            private Set<String> filterList(String[] providedNames) {
                 return Stream.of(providedNames)
                         .filter(StringUtils::isNotBlank)
                         .map(String::trim)
                         .map(String::toLowerCase)
-                        .collect(Collectors.toList());
+                        .collect(Collectors.toSet());
             }
         });
     }
