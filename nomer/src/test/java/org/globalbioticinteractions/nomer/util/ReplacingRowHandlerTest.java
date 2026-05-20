@@ -216,6 +216,13 @@ public class ReplacingRowHandlerTest {
         assertReplaceOutput("Lucilia\tAnimalia\t", "Lucilia\t" + pathAnimalia + "\tSAME_AS\n");
     }
 
+    @Ignore
+    @Test
+    public void replaceWithMultipartTaxonomicScopeFirstNotNONE() throws IOException, PropertyEnricherException {
+        String pathPlantae = "Eukaryota | Plantae | Pteridobiotina | Tracheophyta | Magnoliopsida | Asterales | Asteraceae | Asteroideae | Gnaphalieae | Antennariinae | Lucilia";
+        assertReplaceOutput("Lucilia\tPlantae | Pteridobiotina | Tracheophyta\t", "Lucilia\t" + pathPlantae + "\tSAME_AS\n");
+    }
+
     @Test
     public void replaceHigherOrderMismatchWithNONE() throws IOException, PropertyEnricherException {
         assertReplaceOutput("Lucilia\tFOO\t", "Lucilia\tFOO\tNONE\n");
