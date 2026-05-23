@@ -22,11 +22,11 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
     private final NameParser parser = new NameParserGBIF();
     private final boolean ignoreAbbreviations;
 
-    ParserServiceGBIF() {
+    public ParserServiceGBIF() {
         this(true);
     }
 
-    ParserServiceGBIF(boolean ignoreAbbreviations) {
+    public ParserServiceGBIF(boolean ignoreAbbreviations) {
         this.ignoreAbbreviations = ignoreAbbreviations;
     }
 
