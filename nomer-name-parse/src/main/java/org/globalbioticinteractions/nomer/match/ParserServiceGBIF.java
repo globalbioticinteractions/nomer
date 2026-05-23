@@ -20,6 +20,15 @@ import java.util.List;
 public class ParserServiceGBIF extends ParserServiceAbstract {
 
     private final NameParser parser = new NameParserGBIF();
+    private final boolean ignoreAbbreviations;
+
+    ParserServiceGBIF() {
+        this(true);
+    }
+
+    ParserServiceGBIF(boolean ignoreAbbreviations) {
+        this.ignoreAbbreviations = ignoreAbbreviations;
+    }
 
     @Override
     public Taxon parse(Term term, String nameString) throws PropertyEnricherException {
@@ -67,6 +76,12 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
                     taxonParsed.setPathNames(pathNamesString);
                 }
 
+                if (ignoreAbbreviations && containsSubgenusAbbreviation(nameParsed, pathNamesString)) {
+                    taxonParsed.setName(nameParsed.getGenus());
+                    taxonParsed.setRank("genus");
+                }
+
+
             }
 
 
@@ -76,6 +91,13 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
                     ? TaxonUtil.copy((Taxon) term)
                     : (term == null ? new TaxonImpl(nameString) : new TaxonImpl(term.getName(), term.getId()));
         }
+    }
+
+    private static boolean containsSubgenusAbbreviation(ParsedName nameParsed, String pathNamesString) {
+        return nameParsed.getRank().lowerThan(Rank.GENUS)
+                &&
+                (StringUtils.equals(pathNamesString, "genus")
+                        || StringUtils.endsWith(pathNamesString, CharsetConstant.SEPARATOR + "genus"));
     }
 
     private String undoCandidatusQuotesIfPresent(ParsedName nameParsed) {

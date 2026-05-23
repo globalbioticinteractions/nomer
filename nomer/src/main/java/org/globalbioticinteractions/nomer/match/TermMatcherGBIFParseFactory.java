@@ -1,5 +1,6 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 
@@ -7,7 +8,8 @@ public class TermMatcherGBIFParseFactory implements TermMatcherFactory {
 
     @Override
     public TermMatcher createTermMatcher(TermMatcherContext ctx) {
-        return new ParserServiceGBIF();
+        String ignoreAbbreviationValue = StringUtils.defaultIfBlank(ctx.getProperty("nomer.parser.gbif.ignoreAbbreviations"), "true");
+        return new ParserServiceGBIF(StringUtils.equalsIgnoreCase(ignoreAbbreviationValue, "true"));
     }
 
     @Override

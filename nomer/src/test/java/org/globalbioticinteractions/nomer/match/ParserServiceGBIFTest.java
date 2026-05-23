@@ -70,7 +70,7 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
     public void nameWithSp() throws PropertyEnricherException {
 
         AtomicBoolean foundMatch = new AtomicBoolean(false);
-        getParserService().match(Arrays.asList(new TermImpl("someId", "Abia sp.")), new TermMatchListener() {
+        new ParserServiceGBIF(false).match(Arrays.asList(new TermImpl("someId", "Abia sp.")), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
@@ -88,10 +88,31 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
     }
 
     @Test
+    public void nameWithSpIgnoreAbbreviations() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        new ParserServiceGBIF(true).match(Arrays.asList(new TermImpl("someId", "Abia sp.")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Abia sp."));
+                assertThat(taxon.getName(), Is.is("Abia"));
+                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getRank(), Is.is("genus"));
+                assertThat(taxon.getPath(), Is.is("Abia"));
+                assertThat(taxon.getPathNames(), Is.is("genus"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
+    @Test
     public void nameWithSsp() throws PropertyEnricherException {
 
         AtomicBoolean foundMatch = new AtomicBoolean(false);
-        getParserService().match(Arrays.asList(new TermImpl("someId", "Abia ssp.")), new TermMatchListener() {
+        new ParserServiceGBIF(false).match(Arrays.asList(new TermImpl("someId", "Abia ssp.")), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
@@ -121,6 +142,26 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
                 assertThat(taxon.getRank(), Is.is("species"));
                 assertThat(taxon.getPath(), Is.is("Endoriftia | persephone"));
                 assertThat(taxon.getPathNames(), Is.is("genus | specificEpithet"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
+
+    @Test
+    public void nameWithAggregate() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Taraxacum agg.")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Taraxacum agg."));
+                assertThat(taxon.getName(), Is.is("Taraxacum"));
+                assertThat(taxon.getRank(), Is.is("genus"));
+                assertThat(taxon.getPath(), Is.is("Taraxacum"));
+                assertThat(taxon.getPathNames(), Is.is("genus"));
                 foundMatch.set(true);
             }
         });
