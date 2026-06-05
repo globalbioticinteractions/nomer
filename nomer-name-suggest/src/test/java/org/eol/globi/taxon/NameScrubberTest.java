@@ -82,6 +82,11 @@ public class NameScrubberTest {
     }
 
     @Test
+    public void hybridNameWithPlainX() {
+        assertThat(getNameSuggester().suggest("Medicago x varia"), is("Medicago × varia"));
+    }
+
+    @Test
     public void singleNumbers3() {
         assertThat(getNameSuggester().suggest("234 ostrac234od 1 0 1 4"), is("ostrac234od"));
     }

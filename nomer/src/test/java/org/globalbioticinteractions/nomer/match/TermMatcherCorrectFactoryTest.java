@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -114,6 +115,12 @@ public class TermMatcherCorrectFactoryTest {
     @Test
     public void correctAllLower() throws PropertyEnricherException {
         assertCorrection("homo sapiens", "Homo sapiens");
+    }
+
+    @Test
+    public void replacePlainXWithHybridCharacter() throws PropertyEnricherException {
+        assertCorrection("Medicago x varia", "Medicago × varia");
+
     }
 
     @Test
