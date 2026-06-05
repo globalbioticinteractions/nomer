@@ -52,6 +52,16 @@ public class NameScrubberTest {
     }
 
     @Test
+    public void keepHyphen() {
+        assertThat(getNameSuggester().suggest("Oxalis pes-caprae"), is("Oxalis pes-caprae"));
+    }
+
+    @Test
+    public void dropSingleHyphen() {
+        assertThat(getNameSuggester().suggest("-"), is(""));
+    }
+
+    @Test
     public void sigma() {
         assertThat(getNameSuggester().suggest("Σ Cephalopoda"), is("Cephalopoda"));
     }

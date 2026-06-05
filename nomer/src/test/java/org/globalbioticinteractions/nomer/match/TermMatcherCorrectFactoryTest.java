@@ -120,6 +120,10 @@ public class TermMatcherCorrectFactoryTest {
     public void correctBatSARSCoV() throws PropertyEnricherException {
         assertPassThroughName("Bat SARS CoV");
     }
+    @Test
+    public void correctHyphen() throws PropertyEnricherException {
+        assertPassThroughName("Oxalis pes-caprae");
+    }
 
     @Test
     public void correctVirusAcronymNPV() throws PropertyEnricherException {
