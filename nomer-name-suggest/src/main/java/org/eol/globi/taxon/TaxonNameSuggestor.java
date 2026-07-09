@@ -2,18 +2,18 @@ package org.eol.globi.taxon;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eol.globi.domain.NameType;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
-import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.NameSuggester;
 import org.eol.globi.service.PropertyEnricherException;
+import org.eol.globi.service.TaxonUtil;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class TaxonNameSuggestor extends TaxonNameSuggestorBase implements SuggestionService {
 
@@ -75,15 +75,19 @@ public class TaxonNameSuggestor extends TaxonNameSuggestorBase implements Sugges
 
     @Override
     public void match(List<Term> terms, TermMatchListener listener) throws PropertyEnricherException {
-        Stream<TermImpl> correctedTerms = terms.stream()
-                .map(term -> new TermImpl(term.getId(), suggest(term.getName())));
-        correctedTerms.forEach(term -> {
-            listener.foundTaxonForTerm(null,
-                    term,
-                    NameType.SAME_AS,
-                    new TaxonImpl(term.getName(), term.getId())
-            );
-        });
+        terms.stream()
+                .map(term -> {
+                    Taxon taxon = term instanceof Taxon
+                            ? TaxonUtil.copy((Taxon) term)
+                            : new TaxonImpl(term.getName(), term.getId());
+                    taxon.setName(suggest(term.getName()));
+                    return taxon;
+                })
+                .forEach(taxon -> listener.foundTaxonForTerm(null,
+                        taxon,
+                        NameType.SAME_AS,
+                        taxon
+                ));
 
     }
 

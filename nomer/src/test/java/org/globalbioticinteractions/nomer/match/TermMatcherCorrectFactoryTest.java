@@ -1,14 +1,12 @@
 package org.globalbioticinteractions.nomer.match;
 
 import org.apache.commons.io.IOUtils;
-import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.taxon.SuggesterFactory;
-import org.eol.globi.taxon.TermMatchListener;
 import org.eol.globi.taxon.TermMatcher;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.globalbioticinteractions.nomer.util.TermMatcherContext;
@@ -19,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -127,6 +124,7 @@ public class TermMatcherCorrectFactoryTest {
     public void correctBatSARSCoV() throws PropertyEnricherException {
         assertPassThroughName("Bat SARS CoV");
     }
+
     @Test
     public void correctHyphen() throws PropertyEnricherException {
         assertPassThroughName("Oxalis pes-caprae");
@@ -135,6 +133,24 @@ public class TermMatcherCorrectFactoryTest {
     @Test
     public void correctVirusAcronymNPV() throws PropertyEnricherException {
         assertPassThroughName("Spodoptera frugiperda NPV");
+    }
+
+
+    @Test
+    public void retainNonNameData() throws PropertyEnricherException {
+        TermMatcher termMatcher = new TermMatcherCorrectFactory()
+                .createTermMatcher(createTestContext());
+        AtomicBoolean found = new AtomicBoolean(false);
+        Taxon withPath = new TaxonImpl( "unidentified copepods", null);
+        withPath.setPath("Animalia");
+        termMatcher.match(
+                Collections.singletonList(withPath),
+                (nodeId, name1, nameType, taxon) -> {
+                    assertThat(taxon.getName(), is("Copepoda"));
+                    assertThat(taxon.getPath(), is("Animalia"));
+                    found.set(true);
+                });
+        assertTrue(found.get());
     }
 
     private void assertPassThroughName(String passThoughName) throws PropertyEnricherException {

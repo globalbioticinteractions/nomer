@@ -71,15 +71,18 @@ public class MatchUtil {
         MultipleTermMatcher termMatcher;
         String property = ctx.getProperty("nomer.guess.synonyms");
         if (StringUtils.isNotBlank(property) && !StringUtils.equalsIgnoreCase("false", StringUtils.trim(property))) {
-        	 termMatcher = new MultipleTermMatcher(
-        			matchers.map(m -> {
-        				return new TermMatcherHierarchical(new Synonymizer(m));
-        			})
-        			.collect(Collectors.toList()));
+            termMatcher = new MultipleTermMatcher(
+                    matchers.map(m -> {
+                                return new TermMatcherHierarchical(new Synonymizer(m));
+                            })
+                            .collect(Collectors.toList()));
         } else {
-        	termMatcher = new MultipleTermMatcher(matchers.map(TermMatcherHierarchical::new).collect(Collectors.toList()));
+            termMatcher = new MultipleTermMatcher(
+                    matchers.map(TermMatcherHierarchical::new)
+                            .collect(Collectors.toList())
+            );
         }
-                
+
         return termMatcher;
     }
 
