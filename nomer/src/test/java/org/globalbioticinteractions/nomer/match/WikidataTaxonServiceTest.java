@@ -3,8 +3,10 @@ package org.globalbioticinteractions.nomer.match;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.tuple.Triple;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
+import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
 import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
@@ -86,19 +88,7 @@ public class WikidataTaxonServiceTest {
     }
 
     private void assertFindById(WikidataTaxonService service) throws PropertyEnricherException {
-        List<Triple<Term, NameType, Taxon>> found = new ArrayList<>();
-
-        service.match(Arrays.asList(new TermImpl("WD:Q140", null)), new TermMatchListener() {
-            @Override
-            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
-                found.add(Triple.of(term, nameType, taxon));
-            }
-        });
-
-        assertThat(found.size(), Is.is(1));
-        Term provided = found.get(0).getLeft();
-        assertThat(provided.getName(), Is.is(nullValue()));
-        assertThat(provided.getId(), Is.is("WD:Q140"));
+        List<Triple<Term, NameType, Taxon>> found = findMatch(service, "WD:Q140");
 
         assertThat(found.get(0).getMiddle(), is(NameType.HAS_ACCEPTED_NAME));
 
@@ -115,15 +105,62 @@ public class WikidataTaxonServiceTest {
     @Test
     public void findByNonWikidataId() throws IOException, PropertyEnricherException {
         WikidataTaxonService service = createService(folder.newFolder());
-
         assertNonWikidataTaxonId(service);
+    }
+
+    @Test
+    public void findByINATId() throws IOException, PropertyEnricherException {
+        WikidataTaxonService service = createService(folder.newFolder());
+
+        List<Triple<Term, NameType, Taxon>> found = findMatch(service, "INAT_TAXON:41964");
+
+        assertThat(found.get(0).getMiddle(), is(NameType.SYNONYM_OF));
+
+        Taxon resolved = found.get(0).getRight();
+        assertThat(resolved.getName(), is("Panthera leo"));
+        assertThat(resolved.getId(), is("WD:Q140"));
+        assertThat(resolved.getCommonNames(), containsString("Leeuw @nl"));
 
     }
 
-    private void assertNonWikidataTaxonId(WikidataTaxonService service) throws PropertyEnricherException {
+    @Test
+    public void findByINATUrlToID() throws IOException, PropertyEnricherException {
+        WikidataTaxonService service = createService(folder.newFolder());
+        String externalId = service.getIdOrNull(
+                new TaxonImpl("lion", "https://www.inaturalist.org/taxa/41964"),
+                service.getTaxonomyProvider()
+        );
+        assertThat(externalId, is("INAT_TAXON:41964"));
+    }
+
+    @Test
+    public void findByINATCURIToID() throws IOException, PropertyEnricherException {
+        WikidataTaxonService service = createService(folder.newFolder());
+        String id = "INAT_TAXON:41964";
+        String externalId = service.getIdOrNull(new TaxonImpl("lion", id), service.getTaxonomyProvider());
+        assertThat(externalId, is("INAT_TAXON:41964"));
+    }
+
+        @Test
+    public void findByINATUrl() throws IOException, PropertyEnricherException {
+        WikidataTaxonService service = createService(folder.newFolder());
+        String id = "https://www.inaturalist.org/taxa/41964";
+
+        List<Triple<Term, NameType, Taxon>> found = findMatch(service, id);
+
+        assertThat(found.get(0).getMiddle(), is(NameType.SYNONYM_OF));
+
+        Taxon resolved = found.get(0).getRight();
+        assertThat(resolved.getName(), is("Panthera leo"));
+        assertThat(resolved.getId(), is("WD:Q140"));
+        assertThat(resolved.getCommonNames(), containsString("Leeuw @nl"));
+
+    }
+
+    private static @NonNull List<Triple<Term, NameType, Taxon>> findMatch(WikidataTaxonService service, String id) throws PropertyEnricherException {
         List<Triple<Term, NameType, Taxon>> found = new ArrayList<>();
 
-        service.match(Arrays.asList(new TermImpl("ITIS:183803", null)), new TermMatchListener() {
+        service.match(Arrays.asList(new TermImpl(id, null)), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
                 found.add(Triple.of(term, nameType, taxon));
@@ -133,7 +170,12 @@ public class WikidataTaxonServiceTest {
         assertThat(found.size(), Is.is(1));
         Term provided = found.get(0).getLeft();
         assertThat(provided.getName(), Is.is(nullValue()));
-        assertThat(provided.getId(), Is.is("ITIS:183803"));
+        assertThat(provided.getId(), Is.is(id));
+        return found;
+    }
+
+    private void assertNonWikidataTaxonId(WikidataTaxonService service) throws PropertyEnricherException {
+        List<Triple<Term, NameType, Taxon>> found = findMatch(service, "ITIS:183803");
 
         assertThat(found.get(0).getMiddle(), is(NameType.SYNONYM_OF));
 

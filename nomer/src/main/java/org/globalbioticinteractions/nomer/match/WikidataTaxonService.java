@@ -45,7 +45,11 @@ public class WikidataTaxonService extends CommonStringTaxonService {
 
     @Override
     public String getIdOrNull(Taxon key, TaxonomyProvider matchingTaxonomyProvider) {
-        return key.getExternalId();
+        TaxonomyProvider taxonomyProvider = ExternalIdUtil.taxonomyProviderFor(key.getExternalId());
+        String id = ExternalIdUtil.stripPrefix(taxonomyProvider, key.getExternalId());
+        return StringUtils.isNotBlank(id) && taxonomyProvider != null
+                ? taxonomyProvider.getIdPrefix() + id
+                : key.getExternalId();
     }
 
 
