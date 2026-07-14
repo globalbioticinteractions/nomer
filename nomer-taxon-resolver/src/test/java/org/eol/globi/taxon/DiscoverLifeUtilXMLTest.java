@@ -105,7 +105,7 @@ public class DiscoverLifeUtilXMLTest {
         Taxon lastTaxon = taxons.get(10);
         assertThat(lastTaxon.getName(), is("Bombus"));
         assertThat(lastTaxon.getRank(), is("variety"));
-        assertThat(lastTaxon.getAuthorship(), is(nullValue()));
+        assertThat(lastTaxon.getAuthorship(), is(""));
         assertThat(lastTaxon.getStatus().getName(), is(NameType.SYNONYM_OF.name()));
 
         lastTaxon = taxons.get(11);
