@@ -7,6 +7,7 @@ import org.eol.globi.domain.PropertyAndValueDictionary;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.Term;
+import org.eol.globi.domain.TermImpl;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TermMatcherHierarchical;
 import org.eol.globi.taxon.GlobalNamesService2;
@@ -72,6 +73,51 @@ public class ReplacingRowHandlerTest {
         String[] lines = os.toString().split("\n");
         assertThat(lines.length, Is.is(1));
         assertThat(lines[0], startsWith("EOL:327955\tHomo sapiens"));
+    }
+
+    @Test
+    public void resolveTaxonCacheNullAuthorship() throws IOException, PropertyEnricherException {
+        InputStream is = IOUtils.toInputStream("EOL:327955\tHomo sapiens\t\t", StandardCharsets.UTF_8);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        final TermMatcher matcher = new TermMatcher() {
+            @Override
+            public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                TaxonImpl taxon = new TaxonImpl("nameResolved", "idResolved");
+                taxon.setAuthorship(null);
+                taxon.setPath(null);
+                termMatchListener.foundTaxonForTerm(
+                        null,
+                        new TermImpl("id1", "name1"),
+                        NameType.SAME_AS,
+                        taxon
+                );
+            }
+        };
+        MatchUtil.apply(is, new ReplacingRowHandler(os, matcher, new TestTermMatcherContextDefault() {
+            @Override
+            public Map<Integer, String> getInputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                    put(1, PropertyAndValueDictionary.NAME);
+                    put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                    put(3, PropertyAndValueDictionary.RANK);
+                }};
+            }
+
+            @Override
+            public Map<Integer, String> getOutputSchema() {
+                return new TreeMap<Integer, String>() {{
+                    put(0, PropertyAndValueDictionary.EXTERNAL_ID);
+                    put(1, PropertyAndValueDictionary.NAME);
+                    put(2, PropertyAndValueDictionary.AUTHORSHIP);
+                    put(3, PropertyAndValueDictionary.RANK);
+                }};
+            }
+
+        }));
+        String[] lines = os.toString().split("\n");
+        assertThat(lines.length, Is.is(1));
+        assertThat(lines[0], startsWith("idResolved\tnameResolved\tnull\tnull"));
     }
 
     @Test

@@ -37,7 +37,7 @@ public class ParserServiceGBIF extends ParserServiceAbstract {
             Taxon taxonParsed = new TaxonImpl();
             String canonicalNameWithoutAuthorship = undoCandidatusQuotesIfPresent(nameParsed);
             taxonParsed.setName(canonicalNameWithoutAuthorship);
-            taxonParsed.setAuthorship(nameParsed.authorshipComplete());
+            taxonParsed.setAuthorship(StringUtils.defaultString(nameParsed.authorshipComplete()));
             if (!nameParsed.getRank().hasAmbiguousMarker()) {
                 taxonParsed.setRank(StringUtils.lowerCase(nameParsed.getRank().toString()));
                 List<String> path = new ArrayList<>();

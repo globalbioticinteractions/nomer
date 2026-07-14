@@ -168,6 +168,26 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
 
         assertTrue(foundMatch.get());
     }
+    @Test
+    public void nameWithSpeciesAggregate() throws PropertyEnricherException {
+
+        AtomicBoolean foundMatch = new AtomicBoolean(false);
+        getParserService().match(Arrays.asList(new TermImpl("someId", "Alchemilla vulgaris agg.")), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, Is.is(NameType.SAME_AS));
+                assertThat(term.getName(), Is.is("Alchemilla vulgaris agg."));
+                assertThat(taxon.getName(), Is.is("Alchemilla vulgaris"));
+                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getRank(), Is.is("species_aggregate"));
+                assertThat(taxon.getPath(), Is.is("Alchemilla | vulgaris"));
+                assertThat(taxon.getPathNames(), Is.is("genus | specificEpithet"));
+                foundMatch.set(true);
+            }
+        });
+
+        assertTrue(foundMatch.get());
+    }
 
 
 

@@ -23,6 +23,55 @@ public class AppenderUtilTest {
     }
 
     @Test
+    public void getNullAuthorship() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setAuthorship(null);
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "authorship");
+
+        assertThat(authorship, is(nullValue()));
+    }
+    @Test
+    public void getEmptyAuthorship() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        taxon.setAuthorship("");
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "authorship");
+
+        assertThat(authorship, is(""));
+    }
+
+    @Test
+    public void getEmptyId() {
+        TaxonImpl taxon = new TaxonImpl("someName", "");
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "id");
+
+        assertThat(authorship, is(""));
+    }
+    @Test
+    public void getNullId() {
+        TaxonImpl taxon = new TaxonImpl("someName", null);
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "id");
+
+        assertThat(authorship, is(nullValue()));
+    }
+    @Test
+    public void getPath() {
+        TaxonImpl taxon = new TaxonImpl("someName", "someId");
+        String authorship = AppenderUtil.valueForTaxonProperty(
+                taxon,
+                "path");
+
+        assertThat(authorship, is(""));
+    }
+
+    @Test
     public void getKingdomFromPath2() {
         TaxonImpl taxon = new TaxonImpl("someName", "someId");
         taxon.setPath("Animalia | Arthropoda | Insecta | Hymenoptera | Apidae | Apinae | Apini | None | Apis | Apis | Apis mellifera");
