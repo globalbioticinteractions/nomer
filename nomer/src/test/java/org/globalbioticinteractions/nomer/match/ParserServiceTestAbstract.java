@@ -69,7 +69,7 @@ public abstract class ParserServiceTestAbstract {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
                 assertThat(term.getName(), Is.is("Homo sapiens"));
                 assertThat(taxon.getName(), Is.is("Homo sapiens"));
-                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getAuthorship(), Is.is(""));
                 foundMatch.set(true);
             }
         });

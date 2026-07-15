@@ -76,7 +76,7 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
                 assertThat(term.getName(), Is.is("Abia sp."));
                 assertThat(taxon.getName(), Is.is("Abia sp."));
-                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getAuthorship(), Is.is(""));
                 assertThat(taxon.getRank(), Is.is("species"));
                 assertThat(taxon.getPath(), Is.is("Abia"));
                 assertThat(taxon.getPathNames(), Is.is("genus"));
@@ -97,7 +97,7 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
                 assertThat(term.getName(), Is.is("Abia sp."));
                 assertThat(taxon.getName(), Is.is("Abia"));
-                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getAuthorship(), Is.is(""));
                 assertThat(taxon.getRank(), Is.is("genus"));
                 assertThat(taxon.getPath(), Is.is("Abia"));
                 assertThat(taxon.getPathNames(), Is.is("genus"));
@@ -118,7 +118,7 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
                 assertThat(term.getName(), Is.is("Abia ssp."));
                 assertThat(taxon.getName(), Is.is("Abia subsp."));
-                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getAuthorship(), Is.is(""));
                 assertThat(taxon.getRank(), Is.is("subspecies"));
                 assertThat(taxon.getPath(), Is.is("Abia"));
                 assertThat(taxon.getPathNames(), Is.is("genus"));
@@ -178,7 +178,7 @@ public class ParserServiceGBIFTest extends ParserServiceTestAbstract {
                 assertThat(nameType, Is.is(NameType.SAME_AS));
                 assertThat(term.getName(), Is.is("Alchemilla vulgaris agg."));
                 assertThat(taxon.getName(), Is.is("Alchemilla vulgaris"));
-                assertThat(taxon.getAuthorship(), Is.is(nullValue()));
+                assertThat(taxon.getAuthorship(), Is.is(""));
                 assertThat(taxon.getRank(), Is.is("species_aggregate"));
                 assertThat(taxon.getPath(), Is.is("Alchemilla | vulgaris"));
                 assertThat(taxon.getPathNames(), Is.is("genus | specificEpithet"));
