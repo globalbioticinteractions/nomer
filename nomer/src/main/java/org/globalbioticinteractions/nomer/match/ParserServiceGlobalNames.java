@@ -18,7 +18,7 @@ public class ParserServiceGlobalNames extends ParserServiceAbstract {
         ScientificNameParser.Result result = parser.fromString(name);
         TaxonImpl nameParsed = new TaxonImpl();
         nameParsed.setName(canonicalName);
-        nameParsed.setAuthorship(StringUtils.isBlank(result.authorshipDelimited()) ? null : result.authorshipDelimited());
+        nameParsed.setAuthorship(StringUtils.isBlank(result.authorshipDelimited()) ? "" : result.authorshipDelimited());
         return nameParsed;
     }
 
