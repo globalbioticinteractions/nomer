@@ -43,6 +43,13 @@ public class ResourceServiceUtil {
     }
 
     public static File getCachedFileName(TermMatcherContext ctx, URI resource) throws IOException {
+        return getCachedFileName(
+                getCacheDir(ctx),
+                resource
+        );
+    }
+
+    public static File getCacheDir(TermMatcherContext ctx) {
         String provenanceVersion = ctx.getProperty(NOMER_PRESTON_VERSION);
         File cacheDir;
         if (StringUtils.isBlank(provenanceVersion)) {
@@ -50,7 +57,7 @@ public class ResourceServiceUtil {
         }  else {
             cacheDir = new File(ctx.getCacheDir(), StringUtils.replace(provenanceVersion, ":", ""));
         }
-        return getCachedFileName(cacheDir, resource);
+        return cacheDir;
     }
 
     public static OutputStream getOutputStreamForCache(File cachedFile) throws IOException {

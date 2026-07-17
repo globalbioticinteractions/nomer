@@ -33,14 +33,17 @@ public class ResourceServiceLocationBased extends ResourceServiceReadOnly {
 
     private void cacheResource(URI resource) throws IOException {
         File cachedFile = ResourceServiceUtil.getCachedFileName(ctx, resource);
-
+        File cacheDir = ResourceServiceUtil.getCacheDir(ctx);
         String location = "[" + resource + "] at [" + cachedFile.getAbsolutePath() + "]";
         String msg = "caching " + location;
         LOG.info(msg + "...");
 
-        ResourceService resourceService = new ResourceServiceLocalAndRemote(is -> is, cachedFile);
+        ResourceService resourceService = new ResourceServiceLocalAndRemote(
+                is -> is,
+                cacheDir
+        );
         try (OutputStream output =
-                ResourceServiceUtil.getOutputStreamForCache(cachedFile)) {
+                     ResourceServiceUtil.getOutputStreamForCache(cachedFile)) {
             IOUtils.copyLarge(resourceService.retrieve(resource), output);
             output.flush();
         }

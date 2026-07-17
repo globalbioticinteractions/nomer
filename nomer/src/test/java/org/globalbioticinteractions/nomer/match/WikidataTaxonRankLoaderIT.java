@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -33,9 +34,11 @@ public class WikidataTaxonRankLoaderIT {
         AtomicInteger counter = new AtomicInteger(0);
         URI req = WikidataTaxonRankLoader.createWikidataTaxonRankQuery();
 
+        File tmpCacheDir = folder.newFolder("tmpCacheDir");
+
         WikidataTaxonRankLoader.importTaxonRanks(
                 taxon -> counter.incrementAndGet(),
-                new ResourceServiceHTTP(is -> is, folder.newFolder("tmpCacheDir")),
+                new ResourceServiceHTTP(is -> is, tmpCacheDir),
                 req
         );
         assertTrue(counter.get() > 10);
