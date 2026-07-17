@@ -42,6 +42,42 @@ public class TermMatcherFactoryTaxonRanksTest {
     }
 
     @Test
+    public void specificName() throws PropertyEnricherException {
+        List<Term> bla = Collections.singletonList(new TermImpl("", "specific name"));
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
+            assertThat(taxon.getExternalId(), is("WD:Q908437"));
+            assertThat(taxon.getName(), is("specific name"));
+            found.set(true);
+        });
+        assertTrue(found.get());
+    }
+
+    @Test
+    public void specificEpithet() throws PropertyEnricherException {
+        List<Term> bla = Collections.singletonList(new TermImpl("", "specific epithet"));
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
+            assertThat(taxon.getExternalId(), is("WD:Q55039612"));
+            assertThat(taxon.getName(), is("specific epithet"));
+            found.set(true);
+        });
+        assertTrue(found.get());
+    }
+
+    @Test
+    public void specificEpithetCamelCase() throws PropertyEnricherException {
+        List<Term> bla = Collections.singletonList(new TermImpl("", "specificEpithet"));
+        AtomicBoolean found = new AtomicBoolean(false);
+        termMatcher.match(bla, (aLong, s, nameType, taxon) -> {
+            assertThat(taxon.getExternalId(), is("WD:Q55039612"));
+            assertThat(taxon.getName(), is("specific epithet"));
+            found.set(true);
+        });
+        assertTrue(found.get());
+    }
+
+    @Test
     public void ranksShort() throws PropertyEnricherException {
         List<Term> bla = Collections.singletonList(new TermImpl("", "sp."));
         AtomicBoolean found = new AtomicBoolean(false);

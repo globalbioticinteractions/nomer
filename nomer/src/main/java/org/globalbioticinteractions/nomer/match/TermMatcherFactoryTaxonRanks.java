@@ -3,7 +3,10 @@ package org.globalbioticinteractions.nomer.match;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.text.CaseUtils;
+import org.eol.globi.domain.Taxon;
 import org.eol.globi.service.ResourceService;
+import org.eol.globi.service.TaxonUtil;
 import org.eol.globi.taxon.TaxonCacheService;
 import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.util.ResourceServiceLocalFile;
@@ -55,6 +58,13 @@ public class TermMatcherFactoryTaxonRanks implements TermMatcherFactory {
                 WikidataTaxonRankLoader.importTaxonRanks(taxon -> {
                     for (WikidataTaxonRankLoader.TermListener listener : listeners) {
                         listener.onTerm(taxon);
+                        String name = taxon.getName();
+                        String camelCase = CaseUtils.toCamelCase(name, false);
+                        if (!StringUtils.equals(camelCase, name)) {
+                            Taxon copy = TaxonUtil.copy(taxon);
+                            copy.setName(camelCase);
+                            listener.onTerm(copy);
+                        }
                     }
                 }, ctx, new URI(wikidataQuery));
             }
