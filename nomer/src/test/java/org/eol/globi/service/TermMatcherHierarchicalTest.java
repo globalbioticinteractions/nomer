@@ -418,4 +418,54 @@ public class TermMatcherHierarchicalTest {
         assertThat(countMatches.get(), Is.is(1L));
     }
 
+    @Test
+    public void hierarchyPathAndNameSynonym() throws PropertyEnricherException {
+        TaxonImpl someTaxon = new TaxonImpl("Acaulospora appendicula", null);
+        someTaxon.setPath("Acaulospora | Acaulospora appendicula");
+        assertMatch(someTaxon);
+    }
+
+    @Test
+    public void hierarchyPathAndNameSynonymWithPathRanks() throws PropertyEnricherException {
+        TaxonImpl someTaxon = new TaxonImpl("Acaulospora appendicula", null);
+        someTaxon.setPath("Acaulospora | Acaulospora appendicula");
+        someTaxon.setPath("genus | species");
+        assertMatch(someTaxon);
+    }
+
+    private static void assertMatch(TaxonImpl someTaxon) throws PropertyEnricherException {
+        TermMatcher matcherBasic = new TermMatcher() {
+
+            @Override
+            public void match(List<Term> list, TermMatchListener termMatchListener) throws PropertyEnricherException {
+                for (Term term : list) {
+                    if ("Acaulospora appendicula".equals(term.getName())) {
+                        TaxonImpl someTaxon1 = new TaxonImpl("Ambispora appendicula", "COL:CL7N");
+                        someTaxon1.setPath("Eukaryota | Fungi | Glomeromycota | Glomeromycetes | Archaeosporales | Ambisporaceae | Ambispora | Ambispora appendicula");
+                        termMatchListener.foundTaxonForTerm(null, term, NameType.SYNONYM_OF, someTaxon1);
+                    }
+                }
+            }
+        };
+
+        TermMatcher matcher = new TermMatcherHierarchical(matcherBasic);
+
+
+        AtomicLong countTotal = new AtomicLong(0);
+        AtomicLong countMatches = new AtomicLong(0);
+
+
+        matcher.match(Arrays.asList(someTaxon), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                countTotal.incrementAndGet();
+                if (!NameType.NONE.equals(nameType)) {
+                    countMatches.incrementAndGet();
+                }
+            }
+        });
+
+        assertThat(countTotal.get(), Is.is(1L));
+        assertThat(countMatches.get(), Is.is(1L));
+    }
 }

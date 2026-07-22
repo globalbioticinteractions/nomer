@@ -11,6 +11,7 @@ import org.eol.globi.taxon.TermMatcher;
 import org.eol.globi.tool.TermRequestImpl;
 import org.eol.globi.util.CSVTSVUtil;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class TermMatcherHierarchical implements TermMatcher {
 
             private NameType getMatchType(Taxon providedTaxon, Taxon resolvedTaxon, NameType nameType) {
                 NameType matchType = nameType;
-                if (!NameType.NONE.equals(nameType)) {
+                if (!Arrays.asList(NameType.NONE, NameType.SYNONYM_OF).contains(nameType)) {
                     boolean namesMatch = hasConsistentHierarchy(providedTaxon.getPath(), resolvedTaxon.getPath());
                     boolean idsMatch = hasConsistentHierarchy(providedTaxon.getPathIds(), resolvedTaxon.getPathIds());
                     matchType = (!namesMatch || !idsMatch) ? NameType.NONE : nameType;
