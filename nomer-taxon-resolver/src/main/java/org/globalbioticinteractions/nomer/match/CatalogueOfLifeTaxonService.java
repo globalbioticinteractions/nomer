@@ -511,8 +511,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             NameType nameType = getNameType(status);
             if (NameType.SYNONYM_OF.equals(nameType)) {
                 mergedNodes.put(childTaxId, parentTaxId);
-            }
-            if (StringUtils.isNoneBlank(childTaxId)) {
+            } else if (NameType.HAS_ACCEPTED_NAME.equals(nameType) && StringUtils.isNoneBlank(childTaxId)) {
                 nodes.put(childTaxId, TaxonUtil.taxonToMap(taxon));
                 if (StringUtils.isNoneBlank(parentTaxId)) {
                     childParent.put(

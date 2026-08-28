@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -211,12 +212,16 @@ public class CatalogueOfLifeTaxonServiceTest {
         );
 
         TaxonImpl taxon = new TaxonImpl("Bombus flavifrons", null);
+        AtomicInteger count = new AtomicInteger(0);
         service.match(Arrays.asList(taxon), new TermMatchListener() {
             @Override
             public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, is(NameType.HAS_ACCEPTED_NAME));
                 assertThat(taxon.getName(), is("Bombus flavifrons"));
+                count.incrementAndGet();
             }
         });
+        assertThat(count.get(), is(1));
     }
 
     private CatalogueOfLifeTaxonService createService() {
