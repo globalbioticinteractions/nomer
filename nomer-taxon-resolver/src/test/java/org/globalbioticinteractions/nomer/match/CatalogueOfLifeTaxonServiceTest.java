@@ -1,18 +1,24 @@
 package org.globalbioticinteractions.nomer.match;
 
+import org.eol.globi.domain.NameType;
 import org.eol.globi.domain.Taxon;
 import org.eol.globi.domain.TaxonImpl;
 import org.eol.globi.domain.TaxonomyProvider;
+import org.eol.globi.domain.Term;
 import org.eol.globi.service.PropertyEnricherException;
 import org.eol.globi.service.TaxonUtil;
+import org.eol.globi.taxon.TermMatchListener;
 import org.globalbioticinteractions.nomer.cmd.OutputFormat;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -195,6 +201,22 @@ public class CatalogueOfLifeTaxonServiceTest {
         assertThat(TaxonUtil.mapToTaxon(enriched).getRank(), is("species"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathIds(), is("COL:6TH9B"));
         assertThat(TaxonUtil.mapToTaxon(enriched).getPathNames(), is("species"));
+    }
+
+    @Test
+    public void handleNameWithAmbiguousSynonym() throws PropertyEnricherException {
+        CatalogueOfLifeTaxonService service = createService(
+                "/org/globalbioticinteractions/nomer/match/col/bombus-flavifrons.tsv",
+                "/org/globalbioticinteractions/nomer/match/" + getTestSetName() + "/metadata.yaml"
+        );
+
+        TaxonImpl taxon = new TaxonImpl("Bombus flavifrons", null);
+        service.match(Arrays.asList(taxon), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(taxon.getName(), is("Bombus flavifrons"));
+            }
+        });
     }
 
     private CatalogueOfLifeTaxonService createService() {

@@ -43,6 +43,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
+    public static final Map<String, NameType> TYPE_MAP = new TreeMap<String, NameType>() {{
+        put("accepted", NameType.HAS_ACCEPTED_NAME);
+        put("synonym", NameType.SYNONYM_OF);
+        put("provisionally accepted", NameType.HAS_ACCEPTED_NAME);
+        put("ambiguous synonym", NameType.NONE);
+        put("misapplied", NameType.NONE);
+    }};
     private static final Logger LOG = LoggerFactory.getLogger(CatalogueOfLifeTaxonService.class);
     private static final String DATASET_KEY = "datasetKey";
     private static final String LABEL_TAXON_ID = "col:ID";
@@ -341,7 +348,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                                         parseLine(new NameUsageListener() {
                                             @Override
                                             public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-                                                if (StringUtils.contains(status, "synonym")) {
+                                                if (isOfSynonymStatus(status)) {
                                                     Fun.Tuple2<String, String> next = new Fun.Tuple2<>(
                                                             childTaxId,
                                                             parentTaxId
@@ -370,6 +377,10 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         } catch (IOException e) {
             throw new PropertyEnricherException("failed to skip first line", e);
         }
+    }
+
+    private static boolean isOfSynonymStatus(String status) {
+        return NameType.SYNONYM_OF.equals(getNameType(status));
     }
 
     private InputStream getNameUsageStream() throws PropertyEnricherException {
@@ -436,10 +447,11 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         void handle(String status, String childTaxId, String parentTaxId, Taxon taxon);
     }
 
-    private NameType getNameType(String statusValue) {
-        return StringUtils.contains(statusValue, "synonym")
-                ? NameType.SYNONYM_OF
-                : NameType.HAS_ACCEPTED_NAME;
+    private static NameType getNameType(String statusValue) {
+        if (!TYPE_MAP.containsKey(statusValue)) {
+            LOG.warn("unsupported name status [" + statusValue +"] found found for Catalogue of Life, mapping to NONE");
+        }
+        return TYPE_MAP.getOrDefault(statusValue, NameType.NONE);
     }
 
     private Map<String, Integer> parseFirstLine(BufferedReader reader) throws IOException {
