@@ -36,7 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
@@ -58,6 +57,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     private static final String LABEL_TAXON_SCIENTIFIC_NAME = "col:scientificName";
     private static final String LABEL_TAXON_AUTHORSHIP = "col:authorship";
     private static final String LABEL_TAXON_RANK_NAME = "col:rank";
+    public static final List<String> HANDLED_CATALOGUE_OF_LIFE_STATUS = Arrays.asList("synonym", "accepted", "provisionally accepted");
 
     private boolean reverseSorted;
 
@@ -201,8 +201,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                     .findFirst()
                     .map(line -> {
                         Matcher matcher = compile.matcher(line);
-                        matcher.matches();
-                        return Long.parseLong(matcher.group("datasetKey"));
+                        return matcher.matches() ? Long.parseLong(matcher.group("datasetKey")) : null;
                     }).orElseThrow(new Supplier<Throwable>() {
                         @Override
                         public Throwable get() {
@@ -236,18 +235,20 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                         public boolean hasNext() {
                             if (nextObj.get() == null) {
                                 try {
-                                    String line = reader.readLine();
-                                    if (StringUtils.isNoneBlank(line)) {
-                                        parseLine(new NameUsageListener() {
-                                            @Override
-                                            public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-                                                Fun.Tuple2<String, Map<String, String>> next = new Fun.Tuple2<>(
-                                                        childTaxId,
-                                                        TaxonUtil.taxonToMap(taxon)
-                                                );
-                                                nextObj.set(next);
-                                            }
-                                        }, line, schema);
+                                    String line;
+                                    while (nextObj.get() == null && (line = reader.readLine()) != null) {
+                                        if (StringUtils.isNotBlank(line)) {
+                                            parseLine(new NameUsageListener() {
+                                                @Override
+                                                public void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon) {
+                                                    Fun.Tuple2<String, Map<String, String>> next = new Fun.Tuple2<>(
+                                                            childTaxId,
+                                                            TaxonUtil.taxonToMap(taxon)
+                                                    );
+                                                    nextObj.set(next);
+                                                }
+                                            }, line, schema);
+                                        }
                                     }
                                 } catch (IOException e) {
                                     // ignore
@@ -290,19 +291,20 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                         public boolean hasNext() {
                             if (nextObj.get() == null) {
                                 try {
-                                    String line = reader.readLine();
-                                    if (StringUtils.isNoneBlank(line)) {
-                                        parseLine(new NameUsageListener() {
-                                            @Override
-                                            public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-                                                Fun.Tuple2<String, String> next = new Fun.Tuple2<>(
-                                                        childTaxId,
-                                                        parentTaxId
-                                                );
-                                                nextObj.set(next);
-                                            }
-                                        }, line, schema);
-                                    }
+                                    String line;
+                                    while (nextObj.get() == null && (line = reader.readLine()) != null)
+                                        if (StringUtils.isNotBlank(line)) {
+                                            parseLine(new NameUsageListener() {
+                                                @Override
+                                                public void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon) {
+                                                    Fun.Tuple2<String, String> next = new Fun.Tuple2<>(
+                                                            childTaxId,
+                                                            parentTaxId
+                                                    );
+                                                    nextObj.set(next);
+                                                }
+                                            }, line, schema);
+                                        }
                                 } catch (IOException e) {
                                     // ignore
                                 }
@@ -347,7 +349,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
                                     while (nextObj.get() == null && StringUtils.isNoneBlank(line = reader.readLine())) {
                                         parseLine(new NameUsageListener() {
                                             @Override
-                                            public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+                                            public void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon) {
                                                 if (isOfSynonymStatus(status)) {
                                                     Fun.Tuple2<String, String> next = new Fun.Tuple2<>(
                                                             childTaxId,
@@ -379,8 +381,8 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         }
     }
 
-    private static boolean isOfSynonymStatus(String status) {
-        return NameType.SYNONYM_OF.equals(getNameType(status));
+    private static boolean isOfSynonymStatus(NameType status) {
+        return NameType.SYNONYM_OF.equals(status);
     }
 
     private InputStream getNameUsageStream() throws PropertyEnricherException {
@@ -429,8 +431,11 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
             }
 
             taxon.setRank(StringUtils.equals(StringUtils.trim(rank), "no rank") ? "" : rank);
-            nameUsageListener.handle(status, taxId, parentTaxId, taxon);
 
+            NameType nameType = getNameType(status);
+            if (Arrays.asList(NameType.HAS_ACCEPTED_NAME, NameType.SYNONYM_OF).contains(nameType)) {
+                nameUsageListener.handle(nameType, taxId, parentTaxId, taxon);
+            }
         }
     }
 
@@ -444,12 +449,12 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     }
 
     interface NameUsageListener {
-        void handle(String status, String childTaxId, String parentTaxId, Taxon taxon);
+        void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon);
     }
 
     private static NameType getNameType(String statusValue) {
         if (!TYPE_MAP.containsKey(statusValue)) {
-            LOG.warn("unsupported name status [" + statusValue +"] found found for Catalogue of Life, mapping to NONE");
+            LOG.warn("unsupported name status [" + statusValue + "] found found for Catalogue of Life, mapping to NONE");
         }
         return TYPE_MAP.getOrDefault(statusValue, NameType.NONE);
     }
@@ -470,7 +475,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         headerLabels.forEach(label -> mapHeader(headers, schema, label));
 
         Collection<String> missingHeaders = CollectionUtils.disjunction(schema.keySet(), headerLabels);
-        if (missingHeaders.size() > 0) {
+        if (!missingHeaders.isEmpty()) {
             throw new IOException("missing headers [" + StringUtils.join(missingHeaders) + "] in header [" + line + "]");
         }
 
@@ -505,10 +510,9 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
         }
 
         @Override
-        public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
-            name2nodeIdListener.handle(status, childTaxId, parentTaxId, taxon);
+        public void handle(NameType nameType, String childTaxId, String parentTaxId, Taxon taxon) {
+            name2nodeIdListener.handle(nameType, childTaxId, parentTaxId, taxon);
 
-            NameType nameType = getNameType(status);
             if (NameType.SYNONYM_OF.equals(nameType)) {
                 mergedNodes.put(childTaxId, parentTaxId);
             } else if (NameType.HAS_ACCEPTED_NAME.equals(nameType) && StringUtils.isNoneBlank(childTaxId)) {
@@ -528,7 +532,7 @@ public class CatalogueOfLifeTaxonService extends CommonStringTaxonService {
     public class NameUsageListenerName2Id implements NameUsageListener {
 
         @Override
-        public void handle(String status, String childTaxId, String parentTaxId, Taxon taxon) {
+        public void handle(NameType status, String childTaxId, String parentTaxId, Taxon taxon) {
             registerIdForName(childTaxId, taxon, CatalogueOfLifeTaxonService.this.name2nodeIds);
         }
     }

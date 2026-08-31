@@ -19,6 +19,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -222,6 +223,17 @@ public class CatalogueOfLifeTaxonServiceTest {
             }
         });
         assertThat(count.get(), is(1));
+
+        TaxonImpl taxonRelated = new TaxonImpl(null, "COL:MFJB");
+        AtomicInteger countRelated = new AtomicInteger(0);
+        service.match(Arrays.asList(taxonRelated), new TermMatchListener() {
+            @Override
+            public void foundTaxonForTerm(Long aLong, Term term, NameType nameType, Taxon taxon) {
+                assertThat(nameType, is(NameType.NONE));
+                countRelated.incrementAndGet();
+            }
+        });
+        assertThat(countRelated.get(), is(1));
     }
 
     private CatalogueOfLifeTaxonService createService() {
